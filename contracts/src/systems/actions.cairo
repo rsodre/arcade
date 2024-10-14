@@ -20,8 +20,10 @@ trait IActions<TContractState> {
         torii_url: ByteArray,
         image_uri: ByteArray
     );
-    fn whitelist_game(self: @TContractState, world: felt252, namespace: felt252,);
-    fn blacklist_game(self: @TContractState, world: felt252, namespace: felt252,);
+    fn publish_game(self: @TContractState, world: felt252, namespace: felt252);
+    fn hide_game(self: @TContractState, world: felt252, namespace: felt252);
+    fn whitelist_game(self: @TContractState, world: felt252, namespace: felt252);
+    fn blacklist_game(self: @TContractState, world: felt252, namespace: felt252);
     fn remove_game(self: @TContractState, world: felt252, namespace: felt252);
     fn register_achievement(
         self: @TContractState,
@@ -36,6 +38,12 @@ trait IActions<TContractState> {
         namespace: felt252,
         achievement_id: felt252,
         points: u16
+    );
+    fn publish_achievement(
+        self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
+    );
+    fn hide_achievement(
+        self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
     );
     fn whitelist_achievement(
         self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
@@ -143,6 +151,20 @@ mod Actions {
                 )
         }
 
+        fn publish_game(self: @ContractState, world: felt252, namespace: felt252) {
+            // [Check] Caller is the game owner
+            self.controllable.assert_is_game_owner(world, namespace);
+            // [Effect] Publish game
+            self.registrable.publish_game(self.world(), world, namespace);
+        }
+
+        fn hide_game(self: @ContractState, world: felt252, namespace: felt252) {
+            // [Check] Caller is the game owner
+            self.controllable.assert_is_game_owner(world, namespace);
+            // [Effect] Hide game
+            self.registrable.hide_game(self.world(), world, namespace);
+        }
+
         fn whitelist_game(self: @ContractState, world: felt252, namespace: felt252) {
             // [Check] Caller is a resource owner or writer
             self.controllable.assert_is_authorized();
@@ -192,6 +214,24 @@ mod Actions {
             self
                 .registrable
                 .update_achievement(self.world(), world, namespace, achievement_id, points)
+        }
+
+        fn publish_achievement(
+            self: @ContractState, world: felt252, namespace: felt252, achievement_id: felt252
+        ) {
+            // [Check] Caller is the game owner
+            self.controllable.assert_is_game_owner(world, namespace);
+            // [Effect] Publish achievement
+            self.registrable.publish_achievement(self.world(), world, namespace, achievement_id);
+        }
+
+        fn hide_achievement(
+            self: @ContractState, world: felt252, namespace: felt252, achievement_id: felt252
+        ) {
+            // [Check] Caller is the game owner
+            self.controllable.assert_is_game_owner(world, namespace);
+            // [Effect] Whitelist achievement
+            self.registrable.whitelist_achievement(self.world(), world, namespace, achievement_id);
         }
 
         fn whitelist_achievement(

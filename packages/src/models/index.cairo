@@ -5,6 +5,7 @@ pub struct Game {
     world_address: felt252,
     #[key]
     namespace: felt252,
+    published: bool,
     whitelisted: bool,
     total_points: u16,
     name: ByteArray,
@@ -23,6 +24,7 @@ pub struct Achievement {
     namespace: felt252,
     #[key]
     id: felt252,
+    published: bool,
     whitelisted: bool,
     points: u16,
 }

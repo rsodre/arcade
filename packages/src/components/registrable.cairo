@@ -76,6 +76,46 @@ mod RegistrableComponent {
             store.set_game(game);
         }
 
+        fn publish_game(
+            self: @ComponentState<TContractState>,
+            world: IWorldDispatcher,
+            world_address: felt252,
+            namespace: felt252,
+        ) {
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+            // [Check] Game exists
+            let mut game = store.get_game(world_address, namespace);
+            game.assert_does_exist();
+
+            // [Effect] Publish game
+            game.publish();
+
+            // [Effect] Store game
+            store.set_game(game);
+        }
+
+        fn hide_game(
+            self: @ComponentState<TContractState>,
+            world: IWorldDispatcher,
+            world_address: felt252,
+            namespace: felt252,
+        ) {
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+            // [Check] Game exists
+            let mut game = store.get_game(world_address, namespace);
+            game.assert_does_exist();
+
+            // [Effect] Hide game
+            game.hide();
+
+            // [Effect] Store game
+            store.set_game(game);
+        }
+
         fn whitelist_game(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
@@ -195,6 +235,56 @@ mod RegistrableComponent {
             // [Effect] Update entities
             store.set_achievement(achievement);
             store.set_game(game);
+        }
+
+        fn publish_achievement(
+            self: @ComponentState<TContractState>,
+            world: IWorldDispatcher,
+            world_address: felt252,
+            namespace: felt252,
+            achievement_id: felt252,
+        ) {
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+            // [Check] Game exists
+            let mut game = store.get_game(world_address, namespace);
+            game.assert_does_exist();
+
+            // [Check] Achievement exists
+            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            achievement.assert_does_exist();
+
+            // [Effect] Publish achievement
+            achievement.publish();
+
+            // [Effect] Store achievement
+            store.set_achievement(achievement);
+        }
+
+        fn hide_achievement(
+            self: @ComponentState<TContractState>,
+            world: IWorldDispatcher,
+            world_address: felt252,
+            namespace: felt252,
+            achievement_id: felt252,
+        ) {
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+            // [Check] Game exists
+            let mut game = store.get_game(world_address, namespace);
+            game.assert_does_exist();
+
+            // [Check] Achievement exists
+            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            achievement.assert_does_exist();
+
+            // [Effect] Hide achievement
+            achievement.hide();
+
+            // [Effect] Store achievement
+            store.set_achievement(achievement);
         }
 
         fn whitelist_achievement(

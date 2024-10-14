@@ -14,6 +14,7 @@ pub mod errors {
     pub const GAME_INVALID_POINTS: felt252 = 'Game: cannot exceed 1000';
     pub const GAME_NOT_EXIST: felt252 = 'Game: does not exist';
     pub const GAME_ALREADY_EXISTS: felt252 = 'Game: already exists';
+    pub const GAME_NOT_WHITELISTABLE: felt252 = 'Game: not whitelistable';
 }
 
 #[generate_trait]
@@ -38,6 +39,7 @@ impl GameImpl of GameTrait {
         Game {
             world_address,
             namespace,
+            published: false,
             whitelisted: false,
             total_points: 0,
             name,
@@ -55,11 +57,17 @@ impl GameImpl of GameTrait {
         GameAssert::assert_valid_points(total_points);
         // [Update] Points
         self.total_points = total_points;
+        // [Effect] Reset visibility status
+        self.published = false;
+        self.whitelisted = false;
     }
 
     #[inline]
     fn remove(ref self: Game, points: u16) {
         self.total_points -= points;
+        // [Effect] Reset visibility status
+        self.published = false;
+        self.whitelisted = false;
     }
 
     #[inline]
@@ -74,25 +82,48 @@ impl GameImpl of GameTrait {
         GameAssert::assert_valid_name(@name);
         GameAssert::assert_valid_description(@description);
         GameAssert::assert_valid_torii_url(@torii_url);
-        // [Update] Game
+        // [Effect] Update Game
         self.name = name;
         self.description = description;
         self.torii_url = torii_url;
         self.image_uri = image_uri;
+        // [Effect] Reset visibility status
+        self.published = false;
+        self.whitelisted = false;
+    }
+
+    #[inline]
+    fn publish(ref self: Game) {
+        // [Effect] Set visibility status
+        self.published = true;
+        self.whitelisted = false;
+    }
+
+    #[inline]
+    fn hide(ref self: Game) {
+        // [Effect] Reset visibility status
+        self.published = false;
+        self.whitelisted = false;
     }
 
     #[inline]
     fn whitelist(ref self: Game) {
+        // [Check] Achievement is whitelistable
+        GameAssert::assert_is_whitelistable(@self);
+        // [Effect] Whitelist
         self.whitelisted = true;
     }
 
     #[inline]
     fn blacklist(ref self: Game) {
+        // [Effect] Reset visibility status
+        self.published = false;
         self.whitelisted = false;
     }
 
     #[inline]
     fn nullify(ref self: Game) {
+        self.published = false;
         self.whitelisted = false;
         self.total_points = 0;
         self.name = "";
@@ -142,6 +173,11 @@ impl GameAssert of AssertTrait {
     #[inline]
     fn assert_valid_points(points: u16) {
         assert(points <= constants::MAX_GAME_POINTS, errors::GAME_INVALID_POINTS);
+    }
+
+    #[inline]
+    fn assert_is_whitelistable(self: @Game) {
+        assert(*self.published, errors::GAME_NOT_WHITELISTABLE);
     }
 }
 
@@ -227,10 +263,30 @@ mod tests {
     }
 
     #[test]
+    fn test_game_publish() {
+        let mut game = GameTrait::new(
+            WORLD_ADDRESS, NAMESPACE, "NAME", "DESCRIPTION", "TORII_URL", "IMAGE_URI", OWNER,
+        );
+        game.publish();
+        assert_eq!(game.published, true);
+    }
+
+    #[test]
+    fn test_game_hide() {
+        let mut game = GameTrait::new(
+            WORLD_ADDRESS, NAMESPACE, "NAME", "DESCRIPTION", "TORII_URL", "IMAGE_URI", OWNER,
+        );
+        game.publish();
+        game.hide();
+        assert_eq!(game.published, false);
+    }
+
+    #[test]
     fn test_game_whitelist() {
         let mut game = GameTrait::new(
             WORLD_ADDRESS, NAMESPACE, "NAME", "DESCRIPTION", "TORII_URL", "IMAGE_URI", OWNER,
         );
+        game.publish();
         game.whitelist();
         assert_eq!(game.whitelisted, true);
     }
@@ -240,6 +296,8 @@ mod tests {
         let mut game = GameTrait::new(
             WORLD_ADDRESS, NAMESPACE, "NAME", "DESCRIPTION", "TORII_URL", "IMAGE_URI", OWNER,
         );
+        game.publish();
+        game.whitelist();
         game.blacklist();
         assert_eq!(game.whitelisted, false);
     }
@@ -311,5 +369,16 @@ mod tests {
     #[should_panic(expected: 'Game: cannot exceed 1000')]
     fn test_game_assert_valid_points_exceeds_max() {
         GameAssert::assert_valid_points(1001);
+    }
+
+    #[test]
+    #[should_panic(expected: 'Game: not whitelistable')]
+    fn test_game_assert_is_whitelistable_not_published() {
+        let mut game = GameTrait::new(
+            WORLD_ADDRESS, NAMESPACE, "NAME", "DESCRIPTION", "TORII_URL", "IMAGE_URI", OWNER,
+        );
+        game.publish();
+        game.hide();
+        game.whitelist();
     }
 }

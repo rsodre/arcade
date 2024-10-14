@@ -13,6 +13,8 @@ pub mod errors {
     pub const ACHIEVEMENT_INVALID_ACHIEVEMENT: felt252 = 'Achievement: invalid id';
     pub const ACHIEVEMENT_TOO_MUCH_POINTS: felt252 = 'Achievement: cannot exceed 100';
     pub const ACHIEVEMENT_TOO_FEW_POINTS: felt252 = 'Achievement: must be at least 1';
+    pub const ACHIEVEMENT_NOT_WHITELISTABLE: felt252 = 'Achievement: not whitelistable';
+    pub const ACHIEVEMENT_ALREADY_WHITELISTED: felt252 = 'Achievement: already listed';
 }
 
 #[generate_trait]
@@ -27,16 +29,42 @@ impl AchievementImpl of AchievementTrait {
         AchievementAssert::assert_valid_achievement(achievement_id);
         AchievementAssert::assert_valid_points(points);
         // [Return] Achievement
-        Achievement { world_address, namespace, id: achievement_id, whitelisted: false, points, }
+        Achievement {
+            world_address,
+            namespace,
+            id: achievement_id,
+            published: false,
+            whitelisted: false,
+            points,
+        }
+    }
+
+    #[inline]
+    fn publish(ref self: Achievement) {
+        // [Effect] Set visibility status
+        self.published = true;
+        self.whitelisted = false;
+    }
+
+    #[inline]
+    fn hide(ref self: Achievement) {
+        // [Effect] Reset visibility status
+        self.published = false;
+        self.whitelisted = false;
     }
 
     #[inline]
     fn whitelist(ref self: Achievement) {
+        // [Check] Achievement is whitelistable
+        AchievementAssert::assert_is_whitelistable(self);
+        // [Effect] Whitelist
         self.whitelisted = true;
     }
 
     #[inline]
     fn blacklist(ref self: Achievement) {
+        // [Effect] Reset visibility status
+        self.published = false;
         self.whitelisted = false;
     }
 
@@ -44,13 +72,17 @@ impl AchievementImpl of AchievementTrait {
     fn update(ref self: Achievement, points: u16) {
         // [Check] Inputs
         AchievementAssert::assert_valid_points(points);
-        // [Update] Points
+        // [Effect] Update Points
         self.points = points;
+        // [EFfect] Reset visibility status
+        self.published = false;
+        self.whitelisted = false;
     }
 
     #[inline]
     fn nullify(ref self: Achievement) {
         self.points = 0;
+        self.published = false;
         self.whitelisted = false;
     }
 }
@@ -87,6 +119,11 @@ impl AchievementAssert of AssertTrait {
         assert(points >= constants::MIN_ACHIEVEMENT_POINTS, errors::ACHIEVEMENT_TOO_FEW_POINTS);
         assert(points <= constants::MAX_ACHIEVEMENT_POINTS, errors::ACHIEVEMENT_TOO_MUCH_POINTS);
     }
+
+    #[inline]
+    fn assert_is_whitelistable(self: Achievement) {
+        assert(self.published, errors::ACHIEVEMENT_NOT_WHITELISTABLE);
+    }
 }
 
 #[cfg(test)]
@@ -112,10 +149,30 @@ mod tests {
     }
 
     #[test]
+    fn test_achievement_publish() {
+        let mut achievement = AchievementTrait::new(
+            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
+        );
+        achievement.publish();
+        assert_eq!(achievement.published, true);
+    }
+
+    #[test]
+    fn test_achievement_hide() {
+        let mut achievement = AchievementTrait::new(
+            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
+        );
+        achievement.publish();
+        achievement.hide();
+        assert_eq!(achievement.published, false);
+    }
+
+    #[test]
     fn test_achievement_whitelist() {
         let mut achievement = AchievementTrait::new(
             WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
         );
+        achievement.publish();
         achievement.whitelist();
         assert_eq!(achievement.whitelisted, true);
     }
@@ -125,6 +182,8 @@ mod tests {
         let mut achievement = AchievementTrait::new(
             WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
         );
+        achievement.publish();
+        achievement.whitelist();
         achievement.blacklist();
         assert_eq!(achievement.whitelisted, false);
     }
@@ -185,5 +244,17 @@ mod tests {
     #[should_panic(expected: 'Achievement: cannot exceed 100')]
     fn test_achievement_assert_valid_points_exceeds_max() {
         AchievementAssert::assert_valid_points(101);
+    }
+
+    #[test]
+    #[should_panic(expected: 'Achievement: not whitelistable')]
+    fn test_achievement_assert_is_whitelistable_not_published() {
+        let mut achievement = AchievementTrait::new(
+            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
+        );
+        achievement.publish();
+        achievement.hide();
+        achievement.whitelist();
+        AchievementAssert::assert_is_whitelistable(achievement);
     }
 }
