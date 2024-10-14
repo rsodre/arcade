@@ -25,20 +25,6 @@ mod RegistrableComponent {
     impl InternalImpl<
         TContractState, +HasComponent<TContractState>
     > of InternalTrait<TContractState> {
-        fn owner(
-            self: @ComponentState<TContractState>,
-            world: IWorldDispatcher,
-            world_address: felt252,
-            namespace: felt252,
-        ) -> felt252 {
-            // [Setup] Datastore
-            let store: Store = StoreTrait::new(world);
-
-            // [Return] Game owner
-            let game = store.get_game(world_address, namespace);
-            game.owner
-        }
-
         fn register_game(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,

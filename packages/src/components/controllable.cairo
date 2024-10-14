@@ -42,30 +42,13 @@ mod ControllableComponent {
         +IWorldProvider<TContractState>,
         +IContract<TContractState>
     > of InternalTrait<TContractState> {
-        fn is_owner(self: @ComponentState<TContractState>) -> bool {
-            let world = self.get_contract().world();
-            let namespace = self.get_contract().namespace_hash();
-            let caller = get_tx_info().unbox().account_contract_address;
-            world.is_owner(namespace, caller)
-        }
-
-        fn is_writer(self: @ComponentState<TContractState>) -> bool {
-            let world = self.get_contract().world();
-            let namespace = self.get_contract().namespace_hash();
-            let caller = get_tx_info().unbox().account_contract_address;
-            world.is_writer(namespace, caller)
-        }
-
-        fn assert_is_owner(self: @ComponentState<TContractState>) {
-            assert(self.is_owner(), errors::CONTROLLABLE_UNAUTHORIZED_CALLER);
-        }
-
-        fn assert_is_writer(self: @ComponentState<TContractState>) {
-            assert(self.is_writer(), errors::CONTROLLABLE_UNAUTHORIZED_CALLER);
-        }
-
         fn assert_is_authorized(self: @ComponentState<TContractState>) {
-            assert(self.is_owner() || self.is_writer(), errors::CONTROLLABLE_UNAUTHORIZED_CALLER);
+            let world = self.get_contract().world();
+            let namespace = self.get_contract().namespace_hash();
+            let caller = get_tx_info().unbox().account_contract_address;
+            let is_owner = world.is_owner(namespace, caller);
+            let is_writer = world.is_writer(namespace, caller);
+            assert(is_owner || is_writer, errors::CONTROLLABLE_UNAUTHORIZED_CALLER);
         }
 
         fn assert_is_game_owner(
