@@ -1,0 +1,24 @@
+[package]
+cairo-version = "=2.7.0"
+name = "quest_world"
+version = "0.0.0"
+
+[cairo]
+sierra-replace-ids = true
+
+[scripts]
+dev = "sozo clean && sozo build --typescript && sozo migrate plan && sozo migrate apply"
+
+[dependencies]
+quest = { path = "../packages" }
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0-alpha.14" }
+
+[[target.dojo]]
+build-external-contracts = [
+    "quest::models::index::Game",
+    "quest::models::index::Achievement",
+    "quest::events::index::AchievementCreation",
+    "quest::events::index::AchievementCompletion",
+]
+
+[profile.slot]

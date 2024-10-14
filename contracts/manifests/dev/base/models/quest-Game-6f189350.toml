@@ -1,0 +1,52 @@
+kind = "DojoModel"
+class_hash = "0x741becf3711310172f382f5b905f2e9ac80688f2df7c8de30b9dce74f3d0cdf"
+original_class_hash = "0x741becf3711310172f382f5b905f2e9ac80688f2df7c8de30b9dce74f3d0cdf"
+abi = "manifests/dev/base/abis/models/quest-Game-6f189350.json"
+tag = "quest-Game"
+qualified_path = "quest::models::index::game"
+manifest_name = "quest-Game-6f189350"
+
+[[members]]
+name = "world_address"
+type = "felt252"
+key = true
+
+[[members]]
+name = "namespace"
+type = "felt252"
+key = true
+
+[[members]]
+name = "whitelisted"
+type = "bool"
+key = false
+
+[[members]]
+name = "total_points"
+type = "u16"
+key = false
+
+[[members]]
+name = "name"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "description"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "torii_url"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "image_uri"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "owner"
+type = "felt252"
+key = false

@@ -1,0 +1,22 @@
+kind = "DojoContract"
+class_hash = "0x2cd805e13cd641654fd293cb1a7f4c68dc04b721301c00a4e513cad4bc77be6"
+original_class_hash = "0x2cd805e13cd641654fd293cb1a7f4c68dc04b721301c00a4e513cad4bc77be6"
+base_class_hash = "0x0"
+abi = "manifests/dev/base/abis/contracts/game_center-Actions-38eede8c.json"
+reads = []
+writes = []
+init_calldata = []
+tag = "game_center-Actions"
+systems = [
+    "register_game",
+    "update_game",
+    "whitelist_game",
+    "blacklist_game",
+    "remove_game",
+    "register_achievement",
+    "update_achievement",
+    "whitelist_achievement",
+    "blacklist_achievement",
+    "remove_achievement",
+]
+manifest_name = "game_center-Actions-38eede8c"
