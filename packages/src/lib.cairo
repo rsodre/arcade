@@ -18,3 +18,13 @@ mod components {
     mod controllable;
     mod registrable;
 }
+
+#[cfg(test)]
+mod tests {
+    mod setup;
+    mod test_achievable;
+
+    mod mocks {
+        mod achiever;
+    }
+}
