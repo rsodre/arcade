@@ -49,7 +49,9 @@ pub mod Achiever {
             description: ByteArray,
             image_uri: ByteArray,
         ) {
-            self.achievable.create(achievement_id, points, total, title, description, image_uri);
+            self
+                .achievable
+                .create(self.world(), achievement_id, points, total, title, description, image_uri);
         }
 
         fn update(
@@ -59,7 +61,7 @@ pub mod Achiever {
             count: u32,
             total: u32,
         ) {
-            self.achievable.update(achievement_id, player_id, count, total);
+            self.achievable.update(self.world(), achievement_id, player_id, count, total);
         }
     }
 }

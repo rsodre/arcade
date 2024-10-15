@@ -34,13 +34,11 @@ mod AchievableComponent {
 
     #[generate_trait]
     impl InternalImpl<
-        TContractState,
-        +IWorldProvider<TContractState>,
-        +IContract<TContractState>,
-        +HasComponent<TContractState>
+        TContractState, +IContract<TContractState>, +HasComponent<TContractState>
     > of InternalTrait<TContractState> {
         fn create(
             self: @ComponentState<TContractState>,
+            world: IWorldDispatcher,
             achievement_id: felt252,
             points: u16,
             total: u32,
@@ -50,7 +48,6 @@ mod AchievableComponent {
         ) {
             // [Setup] Store
             let contract_address = get_contract_address();
-            let world = IWorldDispatcher { contract_address };
             let store: Store = StoreTrait::new(world);
 
             // [Event] Emit achievement creation
@@ -65,18 +62,17 @@ mod AchievableComponent {
 
         fn update(
             self: @ComponentState<TContractState>,
+            world: IWorldDispatcher,
             achievement_id: felt252,
             player_id: felt252,
             count: u32,
             total: u32,
         ) {
             // [Setup] Store
-            let contract_address = get_contract_address();
-            println!("update-contract_address: {:?}", contract_address);
-            let world = IWorldDispatcher { contract_address };
             let store: Store = StoreTrait::new(world);
 
             // [Event] Emit achievement completion
+            let contract_address = get_contract_address();
             let namespace = IContractDispatcher { contract_address }.namespace_hash();
             let time: u64 = get_block_timestamp();
             store.update(namespace, achievement_id, player_id, count, total, time);
