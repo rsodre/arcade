@@ -2,7 +2,7 @@
 trait IAchiever<TContractState> {
     fn create(
         self: @TContractState,
-        achievement_id: felt252,
+        identifier: felt252,
         points: u16,
         total: u32,
         title: ByteArray,
@@ -10,19 +10,31 @@ trait IAchiever<TContractState> {
         image_uri: ByteArray,
     );
     fn update(
-        self: @TContractState, achievement_id: felt252, player_id: felt252, count: u32, total: u32,
+        self: @TContractState, identifier: felt252, player_id: felt252, count: u32, total: u32,
     );
 }
 
 #[dojo::contract]
 pub mod Achiever {
-    use super::IAchiever;
-    use quest::components::achievable::AchievableComponent;
+    // Starknet imports
+
     use starknet::{ContractAddress, get_block_timestamp, get_contract_address};
+
+    // Dojo imports
+
     use dojo::contract::{IContractDispatcher, IContractDispatcherTrait};
 
-    component!(path: AchievableComponent, storage: achievable, event: AchievableEvent);
+    // Internal imports
 
+    use quest::components::achievable::AchievableComponent;
+
+    // Local imports
+
+    use super::IAchiever;
+
+    // Components
+
+    component!(path: AchievableComponent, storage: achievable, event: AchievableEvent);
     impl InternalImpl = AchievableComponent::InternalImpl<ContractState>;
 
     #[storage]
@@ -42,7 +54,7 @@ pub mod Achiever {
     impl AchieverImpl of IAchiever<ContractState> {
         fn create(
             self: @ContractState,
-            achievement_id: felt252,
+            identifier: felt252,
             points: u16,
             total: u32,
             title: ByteArray,
@@ -51,17 +63,13 @@ pub mod Achiever {
         ) {
             self
                 .achievable
-                .create(self.world(), achievement_id, points, total, title, description, image_uri);
+                .create(self.world(), identifier, points, total, title, description, image_uri);
         }
 
         fn update(
-            self: @ContractState,
-            achievement_id: felt252,
-            player_id: felt252,
-            count: u32,
-            total: u32,
+            self: @ContractState, identifier: felt252, player_id: felt252, count: u32, total: u32,
         ) {
-            self.achievable.update(self.world(), achievement_id, player_id, count, total);
+            self.achievable.update(self.world(), identifier, player_id, count, total);
         }
     }
 }

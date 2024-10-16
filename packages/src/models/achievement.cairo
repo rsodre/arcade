@@ -21,21 +21,16 @@ pub mod errors {
 impl AchievementImpl of AchievementTrait {
     #[inline]
     fn new(
-        world_address: felt252, namespace: felt252, achievement_id: felt252, points: u16
+        world_address: felt252, namespace: felt252, identifier: felt252, points: u16
     ) -> Achievement {
         // [Check] Inputs
         AchievementAssert::assert_valid_world(world_address);
         AchievementAssert::assert_valid_namespace(namespace);
-        AchievementAssert::assert_valid_achievement(achievement_id);
+        AchievementAssert::assert_valid_achievement(identifier);
         AchievementAssert::assert_valid_points(points);
         // [Return] Achievement
         Achievement {
-            world_address,
-            namespace,
-            id: achievement_id,
-            published: false,
-            whitelisted: false,
-            points,
+            world_address, namespace, id: identifier, published: false, whitelisted: false, points,
         }
     }
 
@@ -136,32 +131,28 @@ mod tests {
 
     const WORLD_ADDRESS: felt252 = 'WORLD';
     const NAMESPACE: felt252 = 'NAMESPACE';
-    const ACHIEVEMENT_ID: felt252 = 'ID';
+    const IDENTIFIER: felt252 = 'ID';
     const POINTS: u16 = 42;
 
     #[test]
     fn test_achievement_new() {
-        let achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS);
+        let achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         assert_eq!(achievement.world_address, WORLD_ADDRESS);
         assert_eq!(achievement.namespace, NAMESPACE);
-        assert_eq!(achievement.id, ACHIEVEMENT_ID);
+        assert_eq!(achievement.id, IDENTIFIER);
         assert_eq!(achievement.points, POINTS);
     }
 
     #[test]
     fn test_achievement_publish() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.publish();
         assert_eq!(achievement.published, true);
     }
 
     #[test]
     fn test_achievement_hide() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.publish();
         achievement.hide();
         assert_eq!(achievement.published, false);
@@ -169,9 +160,7 @@ mod tests {
 
     #[test]
     fn test_achievement_whitelist() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.publish();
         achievement.whitelist();
         assert_eq!(achievement.whitelisted, true);
@@ -179,9 +168,7 @@ mod tests {
 
     #[test]
     fn test_achievement_blacklist() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.publish();
         achievement.whitelist();
         achievement.blacklist();
@@ -190,18 +177,14 @@ mod tests {
 
     #[test]
     fn test_achievement_update() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.update(POINTS + 1);
         assert_eq!(achievement.points, POINTS + 1);
     }
 
     #[test]
     fn test_achievement_nullify() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.nullify();
         assert_eq!(achievement.points, 0);
         assert_eq!(achievement.whitelisted, false);
@@ -210,9 +193,7 @@ mod tests {
     #[test]
     #[should_panic(expected: 'Achievement: cannot exceed 100')]
     fn test_achievement_set_points_exceeds_max() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.update(101);
     }
 
@@ -249,9 +230,7 @@ mod tests {
     #[test]
     #[should_panic(expected: 'Achievement: not whitelistable')]
     fn test_achievement_assert_is_whitelistable_not_published() {
-        let mut achievement = AchievementTrait::new(
-            WORLD_ADDRESS, NAMESPACE, ACHIEVEMENT_ID, POINTS
-        );
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
         achievement.publish();
         achievement.hide();
         achievement.whitelist();

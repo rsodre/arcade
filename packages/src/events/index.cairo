@@ -5,7 +5,7 @@ pub struct AchievementCreation {
     #[key]
     namespace: felt252,
     #[key]
-    id: felt252,
+    identifier: felt252,
     points: u16,
     total: u32,
     title: ByteArray,
@@ -21,7 +21,7 @@ pub struct AchievementCompletion {
     #[key]
     namespace: felt252,
     #[key]
-    id: felt252,
+    identifier: felt252,
     #[key]
     player_id: felt252,
     count: u32,

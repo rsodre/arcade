@@ -23,8 +23,12 @@ mod components {
 mod tests {
     mod setup;
     mod test_achievable;
+    mod test_controllable;
+    mod test_registrable;
 
     mod mocks {
         mod achiever;
+        mod controller;
+        mod registrer;
     }
 }

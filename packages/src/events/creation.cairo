@@ -21,7 +21,7 @@ impl AchievementCreationImpl of AchievementCreationTrait {
     #[inline]
     fn new(
         namespace: felt252,
-        id: felt252,
+        identifier: felt252,
         points: u16,
         total: u32,
         title: ByteArray,
@@ -32,11 +32,13 @@ impl AchievementCreationImpl of AchievementCreationTrait {
         // [Check] Inputs
         // [Info] We don't check points here, leave free the game to decide
         AchievementCreationAssert::assert_valid_namespace(namespace);
-        AchievementCreationAssert::assert_valid_id(id);
+        AchievementCreationAssert::assert_valid_identifier(identifier);
         AchievementCreationAssert::assert_valid_title(@title);
         AchievementCreationAssert::assert_valid_description(@description);
         // [Return] Achievement
-        AchievementCreation { namespace, id, points, total, title, description, image_uri, time }
+        AchievementCreation {
+            namespace, identifier, points, total, title, description, image_uri, time
+        }
     }
 }
 
@@ -48,8 +50,8 @@ impl AchievementCreationAssert of AssertTrait {
     }
 
     #[inline]
-    fn assert_valid_id(achivement_id: felt252) {
-        assert(achivement_id != 0, errors::ACHIEVEMENT_INVALID_ACHIEVEMENT);
+    fn assert_valid_identifier(identifier: felt252) {
+        assert(identifier != 0, errors::ACHIEVEMENT_INVALID_ACHIEVEMENT);
     }
 
     #[inline]

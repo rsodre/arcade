@@ -181,7 +181,7 @@ mod RegistrableComponent {
             world: IWorldDispatcher,
             world_address: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
             points: u16,
         ) {
             // [Setup] Datastore
@@ -192,13 +192,11 @@ mod RegistrableComponent {
             game.assert_does_exist();
 
             // [Check] Achievement does not exist
-            let achievement = store.get_achievement(world_address, namespace, achievement_id);
+            let achievement = store.get_achievement(world_address, namespace, identifier);
             achievement.assert_does_not_exist();
 
             // [Effect] Create achievement
-            let achievement = AchievementTrait::new(
-                world_address, namespace, achievement_id, points
-            );
+            let achievement = AchievementTrait::new(world_address, namespace, identifier, points);
 
             // [Effect] Add achievement to game
             game.add(achievement.points);
@@ -213,7 +211,7 @@ mod RegistrableComponent {
             world: IWorldDispatcher,
             world_address: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
             points: u16,
         ) {
             // [Setup] Datastore
@@ -224,7 +222,7 @@ mod RegistrableComponent {
             game.assert_does_exist();
 
             // [Check] Achievement exists
-            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            let mut achievement = store.get_achievement(world_address, namespace, identifier);
             achievement.assert_does_exist();
 
             // [Effect] Update achievement and game
@@ -242,7 +240,7 @@ mod RegistrableComponent {
             world: IWorldDispatcher,
             world_address: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
         ) {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -252,7 +250,7 @@ mod RegistrableComponent {
             game.assert_does_exist();
 
             // [Check] Achievement exists
-            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            let mut achievement = store.get_achievement(world_address, namespace, identifier);
             achievement.assert_does_exist();
 
             // [Effect] Publish achievement
@@ -267,7 +265,7 @@ mod RegistrableComponent {
             world: IWorldDispatcher,
             world_address: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
         ) {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -277,7 +275,7 @@ mod RegistrableComponent {
             game.assert_does_exist();
 
             // [Check] Achievement exists
-            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            let mut achievement = store.get_achievement(world_address, namespace, identifier);
             achievement.assert_does_exist();
 
             // [Effect] Hide achievement
@@ -292,7 +290,7 @@ mod RegistrableComponent {
             world: IWorldDispatcher,
             world_address: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
         ) {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -302,7 +300,7 @@ mod RegistrableComponent {
             game.assert_does_exist();
 
             // [Check] Achievement exists
-            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            let mut achievement = store.get_achievement(world_address, namespace, identifier);
             achievement.assert_does_exist();
 
             // [Effect] Whitelist achievement
@@ -317,7 +315,7 @@ mod RegistrableComponent {
             world: IWorldDispatcher,
             world_address: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
         ) {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -327,7 +325,7 @@ mod RegistrableComponent {
             game.assert_does_exist();
 
             // [Check] Achievement exists
-            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            let mut achievement = store.get_achievement(world_address, namespace, identifier);
             achievement.assert_does_exist();
 
             // [Effect] Blacklist achievement
@@ -342,7 +340,7 @@ mod RegistrableComponent {
             world: IWorldDispatcher,
             world_address: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
         ) {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -352,7 +350,7 @@ mod RegistrableComponent {
             game.assert_does_exist();
 
             // [Check] Achievement exists
-            let mut achievement = store.get_achievement(world_address, namespace, achievement_id);
+            let mut achievement = store.get_achievement(world_address, namespace, identifier);
             achievement.assert_does_exist();
 
             // [Effect] Remove achievement

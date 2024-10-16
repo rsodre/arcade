@@ -39,7 +39,7 @@ mod AchievableComponent {
         fn create(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
-            achievement_id: felt252,
+            identifier: felt252,
             points: u16,
             total: u32,
             title: ByteArray,
@@ -47,23 +47,20 @@ mod AchievableComponent {
             image_uri: ByteArray,
         ) {
             // [Setup] Store
-            let contract_address = get_contract_address();
             let store: Store = StoreTrait::new(world);
 
             // [Event] Emit achievement creation
+            let contract_address = get_contract_address();
             let contract = IContractDispatcher { contract_address };
             let namespace = contract.namespace_hash();
             let time: u64 = get_block_timestamp();
-            store
-                .create(
-                    namespace, achievement_id, points, total, title, description, image_uri, time
-                );
+            store.create(namespace, identifier, points, total, title, description, image_uri, time);
         }
 
         fn update(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
-            achievement_id: felt252,
+            identifier: felt252,
             player_id: felt252,
             count: u32,
             total: u32,
@@ -75,7 +72,7 @@ mod AchievableComponent {
             let contract_address = get_contract_address();
             let namespace = IContractDispatcher { contract_address }.namespace_hash();
             let time: u64 = get_block_timestamp();
-            store.update(namespace, achievement_id, player_id, count, total, time);
+            store.update(namespace, identifier, player_id, count, total, time);
         }
     }
 }

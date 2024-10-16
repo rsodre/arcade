@@ -26,33 +26,25 @@ trait IActions<TContractState> {
     fn blacklist_game(self: @TContractState, world: felt252, namespace: felt252);
     fn remove_game(self: @TContractState, world: felt252, namespace: felt252);
     fn register_achievement(
-        self: @TContractState,
-        world: felt252,
-        namespace: felt252,
-        achievement_id: felt252,
-        points: u16
+        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252, points: u16
     );
     fn update_achievement(
-        self: @TContractState,
-        world: felt252,
-        namespace: felt252,
-        achievement_id: felt252,
-        points: u16
+        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252, points: u16
     );
     fn publish_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
+        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
     );
     fn hide_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
+        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
     );
     fn whitelist_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
+        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
     );
     fn blacklist_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
+        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
     );
     fn remove_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, achievement_id: felt252
+        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
     );
 }
 
@@ -190,7 +182,7 @@ mod Actions {
             self: @ContractState,
             world: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
             points: u16,
         ) {
             // [Check] Caller is the game owner
@@ -198,67 +190,65 @@ mod Actions {
             // [Effect] Register achievement
             self
                 .registrable
-                .register_achievement(self.world(), world, namespace, achievement_id, points)
+                .register_achievement(self.world(), world, namespace, identifier, points)
         }
 
         fn update_achievement(
             self: @ContractState,
             world: felt252,
             namespace: felt252,
-            achievement_id: felt252,
+            identifier: felt252,
             points: u16,
         ) {
             // [Check] Caller is the game owner
             self.controllable.assert_is_game_owner(world, namespace);
             // [Effect] Update achievement
-            self
-                .registrable
-                .update_achievement(self.world(), world, namespace, achievement_id, points)
+            self.registrable.update_achievement(self.world(), world, namespace, identifier, points)
         }
 
         fn publish_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, achievement_id: felt252
+            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is the game owner
             self.controllable.assert_is_game_owner(world, namespace);
             // [Effect] Publish achievement
-            self.registrable.publish_achievement(self.world(), world, namespace, achievement_id);
+            self.registrable.publish_achievement(self.world(), world, namespace, identifier);
         }
 
         fn hide_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, achievement_id: felt252
+            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is the game owner
             self.controllable.assert_is_game_owner(world, namespace);
             // [Effect] Whitelist achievement
-            self.registrable.whitelist_achievement(self.world(), world, namespace, achievement_id);
+            self.registrable.whitelist_achievement(self.world(), world, namespace, identifier);
         }
 
         fn whitelist_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, achievement_id: felt252
+            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is a resource owner or writer
             self.controllable.assert_is_authorized();
             // [Effect] Whitelist achievement
-            self.registrable.whitelist_achievement(self.world(), world, namespace, achievement_id);
+            self.registrable.whitelist_achievement(self.world(), world, namespace, identifier);
         }
 
         fn blacklist_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, achievement_id: felt252
+            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is a resource owner or writer
             self.controllable.assert_is_authorized();
             // [Effect] Blacklist achievement
-            self.registrable.blacklist_achievement(self.world(), world, namespace, achievement_id);
+            self.registrable.blacklist_achievement(self.world(), world, namespace, identifier);
         }
 
         fn remove_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, achievement_id: felt252
+            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is the game owner
             self.controllable.assert_is_game_owner(world, namespace);
             // [Effect] Remove achievement
-            self.registrable.remove_achievement(self.world(), world, namespace, achievement_id);
+            self.registrable.remove_achievement(self.world(), world, namespace, identifier);
         }
     }
 }
