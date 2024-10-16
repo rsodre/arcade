@@ -4,7 +4,7 @@
 trait IActions<TContractState> {
     fn register_game(
         self: @TContractState,
-        world: felt252,
+        world_address: felt252,
         namespace: felt252,
         name: ByteArray,
         description: ByteArray,
@@ -13,38 +13,46 @@ trait IActions<TContractState> {
     );
     fn update_game(
         self: @TContractState,
-        world: felt252,
+        world_address: felt252,
         namespace: felt252,
         name: ByteArray,
         description: ByteArray,
         torii_url: ByteArray,
         image_uri: ByteArray
     );
-    fn publish_game(self: @TContractState, world: felt252, namespace: felt252);
-    fn hide_game(self: @TContractState, world: felt252, namespace: felt252);
-    fn whitelist_game(self: @TContractState, world: felt252, namespace: felt252);
-    fn blacklist_game(self: @TContractState, world: felt252, namespace: felt252);
-    fn remove_game(self: @TContractState, world: felt252, namespace: felt252);
+    fn publish_game(self: @TContractState, world_address: felt252, namespace: felt252);
+    fn hide_game(self: @TContractState, world_address: felt252, namespace: felt252);
+    fn whitelist_game(self: @TContractState, world_address: felt252, namespace: felt252);
+    fn blacklist_game(self: @TContractState, world_address: felt252, namespace: felt252);
+    fn remove_game(self: @TContractState, world_address: felt252, namespace: felt252);
     fn register_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252, points: u16
+        self: @TContractState,
+        world_address: felt252,
+        namespace: felt252,
+        identifier: felt252,
+        points: u16
     );
     fn update_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252, points: u16
+        self: @TContractState,
+        world_address: felt252,
+        namespace: felt252,
+        identifier: felt252,
+        points: u16
     );
     fn publish_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
+        self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252
     );
     fn hide_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
+        self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252
     );
     fn whitelist_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
+        self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252
     );
     fn blacklist_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
+        self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252
     );
     fn remove_achievement(
-        self: @TContractState, world: felt252, namespace: felt252, identifier: felt252
+        self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252
     );
 }
 
@@ -109,7 +117,7 @@ mod Actions {
     impl ActionsImpl of IActions<ContractState> {
         fn register_game(
             self: @ContractState,
-            world: felt252,
+            world_address: felt252,
             namespace: felt252,
             name: ByteArray,
             description: ByteArray,
@@ -120,13 +128,20 @@ mod Actions {
             self
                 .registrable
                 .register_game(
-                    self.world(), world, namespace, name, description, torii_url, image_uri, owner
+                    self.world(),
+                    world_address,
+                    namespace,
+                    name,
+                    description,
+                    torii_url,
+                    image_uri,
+                    owner
                 )
         }
 
         fn update_game(
             self: @ContractState,
-            world: felt252,
+            world_address: felt252,
             namespace: felt252,
             name: ByteArray,
             description: ByteArray,
@@ -134,121 +149,134 @@ mod Actions {
             image_uri: ByteArray,
         ) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Update game
             self
                 .registrable
                 .update_game(
-                    self.world(), world, namespace, name, description, torii_url, image_uri
+                    world, world_address, namespace, name, description, torii_url, image_uri
                 )
         }
 
-        fn publish_game(self: @ContractState, world: felt252, namespace: felt252) {
+        fn publish_game(self: @ContractState, world_address: felt252, namespace: felt252) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Publish game
-            self.registrable.publish_game(self.world(), world, namespace);
+            self.registrable.publish_game(world, world_address, namespace);
         }
 
-        fn hide_game(self: @ContractState, world: felt252, namespace: felt252) {
+        fn hide_game(self: @ContractState, world_address: felt252, namespace: felt252) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Hide game
-            self.registrable.hide_game(self.world(), world, namespace);
+            self.registrable.hide_game(world, world_address, namespace);
         }
 
-        fn whitelist_game(self: @ContractState, world: felt252, namespace: felt252) {
+        fn whitelist_game(self: @ContractState, world_address: felt252, namespace: felt252) {
             // [Check] Caller is a resource owner or writer
-            self.controllable.assert_is_authorized();
+            let world = self.world();
+            self.controllable.assert_is_authorized(world);
             // [Effect] Whitelist game
-            self.registrable.whitelist_game(self.world(), world, namespace);
+            self.registrable.whitelist_game(world, world_address, namespace);
         }
 
-        fn blacklist_game(self: @ContractState, world: felt252, namespace: felt252) {
+        fn blacklist_game(self: @ContractState, world_address: felt252, namespace: felt252) {
             // [Check] Caller is a resource owner or writer
-            self.controllable.assert_is_authorized();
+            let world = self.world();
+            self.controllable.assert_is_authorized(world);
             // [Effect] Blacklist game
-            self.registrable.blacklist_game(self.world(), world, namespace);
+            self.registrable.blacklist_game(world, world_address, namespace);
         }
 
-        fn remove_game(self: @ContractState, world: felt252, namespace: felt252) {
+        fn remove_game(self: @ContractState, world_address: felt252, namespace: felt252) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Remove game
-            self.registrable.remove_game(self.world(), world, namespace)
+            self.registrable.remove_game(world, world_address, namespace)
         }
 
         fn register_achievement(
             self: @ContractState,
-            world: felt252,
+            world_address: felt252,
             namespace: felt252,
             identifier: felt252,
             points: u16,
         ) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Register achievement
             self
                 .registrable
-                .register_achievement(self.world(), world, namespace, identifier, points)
+                .register_achievement(world, world_address, namespace, identifier, points)
         }
 
         fn update_achievement(
             self: @ContractState,
-            world: felt252,
+            world_address: felt252,
             namespace: felt252,
             identifier: felt252,
             points: u16,
         ) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Update achievement
-            self.registrable.update_achievement(self.world(), world, namespace, identifier, points)
+            self.registrable.update_achievement(world, world_address, namespace, identifier, points)
         }
 
         fn publish_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
+            self: @ContractState, world_address: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Publish achievement
-            self.registrable.publish_achievement(self.world(), world, namespace, identifier);
+            self.registrable.publish_achievement(world, world_address, namespace, identifier);
         }
 
         fn hide_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
+            self: @ContractState, world_address: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Whitelist achievement
-            self.registrable.whitelist_achievement(self.world(), world, namespace, identifier);
+            self.registrable.whitelist_achievement(world, world_address, namespace, identifier);
         }
 
         fn whitelist_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
+            self: @ContractState, world_address: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is a resource owner or writer
-            self.controllable.assert_is_authorized();
+            let world = self.world();
+            self.controllable.assert_is_authorized(world);
             // [Effect] Whitelist achievement
-            self.registrable.whitelist_achievement(self.world(), world, namespace, identifier);
+            self.registrable.whitelist_achievement(world, world_address, namespace, identifier);
         }
 
         fn blacklist_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
+            self: @ContractState, world_address: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is a resource owner or writer
-            self.controllable.assert_is_authorized();
+            let world = self.world();
+            self.controllable.assert_is_authorized(world);
             // [Effect] Blacklist achievement
-            self.registrable.blacklist_achievement(self.world(), world, namespace, identifier);
+            self.registrable.blacklist_achievement(world, world_address, namespace, identifier);
         }
 
         fn remove_achievement(
-            self: @ContractState, world: felt252, namespace: felt252, identifier: felt252
+            self: @ContractState, world_address: felt252, namespace: felt252, identifier: felt252
         ) {
             // [Check] Caller is the game owner
-            self.controllable.assert_is_game_owner(world, namespace);
+            let world = self.world();
+            self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Remove achievement
-            self.registrable.remove_achievement(self.world(), world, namespace, identifier);
+            self.registrable.remove_achievement(world, world_address, namespace, identifier);
         }
     }
 }
