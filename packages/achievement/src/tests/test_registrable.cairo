@@ -10,11 +10,13 @@ use starknet::testing;
 
 // Internal imports
 
-use quest::store::{Store, StoreTrait};
-use quest::models::game::{Game, GameTrait};
-use quest::models::achievement::{Achievement, AchievementTrait};
-use quest::tests::mocks::registrer::{Registrer, IRegistrerDispatcher, IRegistrerDispatcherTrait};
-use quest::tests::setup::setup::{spawn_game, Systems, Context, PLAYER};
+use achievement::store::{Store, StoreTrait};
+use achievement::models::game::{Game, GameTrait};
+use achievement::models::achievement::{Achievement, AchievementTrait};
+use achievement::tests::mocks::registrer::{
+    Registrer, IRegistrerDispatcher, IRegistrerDispatcherTrait
+};
+use achievement::tests::setup::setup::{spawn_game, Systems, Context, PLAYER};
 
 // Constants
 

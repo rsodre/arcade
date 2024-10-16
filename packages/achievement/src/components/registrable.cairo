@@ -6,9 +6,9 @@ mod RegistrableComponent {
 
     // Internal imports
 
-    use quest::store::{Store, StoreTrait};
-    use quest::models::game::{Game, GameTrait, GameAssert};
-    use quest::models::achievement::{Achievement, AchievementTrait, AchievementAssert};
+    use achievement::store::{Store, StoreTrait};
+    use achievement::models::game::{Game, GameTrait, GameAssert};
+    use achievement::models::achievement::{Achievement, AchievementTrait, AchievementAssert};
 
     // Storage
 

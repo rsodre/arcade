@@ -1,7 +1,7 @@
 // Intenral imports
 
-use quest::models::index::Achievement;
-use quest::constants;
+use achievement::models::index::Achievement;
+use achievement::constants;
 
 // Errors
 

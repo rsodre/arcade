@@ -8,7 +8,7 @@ trait IController<TContractState> {
 pub mod Controller {
     // Internal imports
 
-    use quest::components::controllable::ControllableComponent;
+    use achievement::components::controllable::ControllableComponent;
 
     // Local imports
 

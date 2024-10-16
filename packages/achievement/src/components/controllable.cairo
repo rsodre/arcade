@@ -15,8 +15,8 @@ mod ControllableComponent {
 
     // Internal imports
 
-    use quest::store::{Store, StoreTrait};
-    use quest::models::game::{Game, GameTrait, GameAssert};
+    use achievement::store::{Store, StoreTrait};
+    use achievement::models::game::{Game, GameTrait, GameAssert};
 
     // Storage
 

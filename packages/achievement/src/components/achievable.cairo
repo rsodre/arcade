@@ -15,7 +15,7 @@ mod AchievableComponent {
 
     // Internal imports
 
-    use quest::store::{Store, StoreTrait};
+    use achievement::store::{Store, StoreTrait};
 
     // Errors
 

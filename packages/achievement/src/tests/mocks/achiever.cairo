@@ -26,7 +26,7 @@ pub mod Achiever {
 
     // Internal imports
 
-    use quest::components::achievable::AchievableComponent;
+    use achievement::components::achievable::AchievableComponent;
 
     // Local imports
 

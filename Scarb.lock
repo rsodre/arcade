@@ -12,11 +12,3 @@ dependencies = [
 name = "dojo"
 version = "1.0.0-alpha.4"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.0.0-alpha.14#6bafcb55178888268d86aae9dccef8a1ba6e7542"
-
-[[package]]
-name = "quest_world"
-version = "0.0.0"
-dependencies = [
- "achievement",
- "dojo",
-]

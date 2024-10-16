@@ -10,9 +10,9 @@ use starknet::testing;
 
 // Internal imports
 
-use quest::events::index::{AchievementCreation, AchievementCompletion};
-use quest::tests::mocks::achiever::{Achiever, IAchieverDispatcher, IAchieverDispatcherTrait};
-use quest::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
+use achievement::events::index::{AchievementCreation, AchievementCompletion};
+use achievement::tests::mocks::achiever::{Achiever, IAchieverDispatcher, IAchieverDispatcherTrait};
+use achievement::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
 
 // Constants
 

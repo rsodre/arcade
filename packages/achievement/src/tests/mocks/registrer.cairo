@@ -63,7 +63,7 @@ pub mod Registrer {
 
     // Internal imports
 
-    use quest::components::registrable::RegistrableComponent;
+    use achievement::components::registrable::RegistrableComponent;
 
     // Local imports
 

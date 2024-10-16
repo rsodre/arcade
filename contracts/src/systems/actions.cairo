@@ -70,8 +70,8 @@ mod Actions {
 
     // Component imports
 
-    use quest::components::controllable::ControllableComponent;
-    use quest::components::registrable::RegistrableComponent;
+    use achievement::components::controllable::ControllableComponent;
+    use achievement::components::registrable::RegistrableComponent;
 
     // Local imports
 

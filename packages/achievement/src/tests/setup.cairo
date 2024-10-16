@@ -16,10 +16,10 @@ mod setup {
 
     // Internal imports
 
-    use quest::models::index;
-    use quest::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
-    use quest::tests::mocks::controller::{Controller, IController, IControllerDispatcher};
-    use quest::tests::mocks::registrer::{Registrer, IRegistrer, IRegistrerDispatcher};
+    use achievement::models::index;
+    use achievement::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
+    use achievement::tests::mocks::controller::{Controller, IController, IControllerDispatcher};
+    use achievement::tests::mocks::registrer::{Registrer, IRegistrer, IRegistrerDispatcher};
 
     // Constant
 
@@ -58,7 +58,7 @@ mod setup {
         // [Setup] World
         set_contract_address(OWNER());
         let models = array![index::game::TEST_CLASS_HASH, index::achievement::TEST_CLASS_HASH,];
-        let world = spawn_test_world(array!["quest"].span(), models.span());
+        let world = spawn_test_world(array!["achievement"].span(), models.span());
 
         // [Setup] Systems
         let achiever_address = world
@@ -72,10 +72,10 @@ mod setup {
             controller: IControllerDispatcher { contract_address: controller_address },
             registrer: IRegistrerDispatcher { contract_address: registrer_address },
         };
-        world.grant_writer(dojo::utils::bytearray_hash(@"quest"), achiever_address);
-        world.grant_writer(dojo::utils::bytearray_hash(@"quest"), controller_address);
-        world.grant_writer(dojo::utils::bytearray_hash(@"quest"), registrer_address);
-        world.grant_writer(dojo::utils::bytearray_hash(@"quest"), OWNER());
+        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), achiever_address);
+        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), controller_address);
+        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), registrer_address);
+        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), OWNER());
 
         // [Setup] Context
         let context = Context { player_id: PLAYER().into() };

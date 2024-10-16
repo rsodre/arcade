@@ -10,13 +10,13 @@ use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
 // Models imports
 
-use quest::models::game::Game;
-use quest::models::achievement::Achievement;
+use achievement::models::game::Game;
+use achievement::models::achievement::Achievement;
 
 // Events imports
 
-use quest::events::creation::{AchievementCreation, AchievementCreationTrait};
-use quest::events::completion::{AchievementCompletion, AchievementCompletionTrait};
+use achievement::events::creation::{AchievementCreation, AchievementCreationTrait};
+use achievement::events::completion::{AchievementCompletion, AchievementCompletionTrait};
 
 // Structs
 

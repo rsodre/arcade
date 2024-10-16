@@ -1,0 +1,6 @@
+[package]
+name = "achievement"
+version.workspace = true
+
+[dependencies]
+dojo.workspace = true

@@ -1,0 +1,17 @@
+[workspace]
+members = ["packages/achievement"]
+version = "0.0.0"
+description = "Dojo quest library"
+homepage = "https://github.com/cartridge-gg/quest/"
+cairo-version = "2.7.0"
+
+[workspace.package]
+version = "0.0.0"
+
+[workspace.dependencies]
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0-alpha.14" }
+starknet = "^2.7.0"
+cairo_test = "^2.7.0"
+
+[workspace.tool.fmt]
+sort-module-level-items = true

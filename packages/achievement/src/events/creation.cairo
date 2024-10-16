@@ -1,7 +1,7 @@
 // Internal imports
 
-use quest::events::index::AchievementCreation;
-use quest::constants;
+use achievement::events::index::AchievementCreation;
+use achievement::constants;
 
 // Errors
 
