@@ -30,14 +30,14 @@ trait IActions<TContractState> {
         world_address: felt252,
         namespace: felt252,
         identifier: felt252,
-        points: u16
+        karma: u16
     );
     fn update_achievement(
         self: @TContractState,
         world_address: felt252,
         namespace: felt252,
         identifier: felt252,
-        points: u16
+        karma: u16
     );
     fn publish_achievement(
         self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252
@@ -204,7 +204,7 @@ mod Actions {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            points: u16,
+            karma: u16,
         ) {
             // [Check] Caller is the game owner
             let world = self.world();
@@ -212,7 +212,7 @@ mod Actions {
             // [Effect] Register achievement
             self
                 .registrable
-                .register_achievement(world, world_address, namespace, identifier, points)
+                .register_achievement(world, world_address, namespace, identifier, karma)
         }
 
         fn update_achievement(
@@ -220,13 +220,13 @@ mod Actions {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            points: u16,
+            karma: u16,
         ) {
             // [Check] Caller is the game owner
             let world = self.world();
             self.controllable.assert_is_game_owner(world, world_address, namespace);
             // [Effect] Update achievement
-            self.registrable.update_achievement(world, world_address, namespace, identifier, points)
+            self.registrable.update_achievement(world, world_address, namespace, identifier, karma)
         }
 
         fn publish_achievement(
