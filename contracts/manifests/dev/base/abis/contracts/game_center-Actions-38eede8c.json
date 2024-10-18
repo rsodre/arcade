@@ -140,7 +140,7 @@
         "name": "register_game",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -172,7 +172,7 @@
         "name": "update_game",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -201,10 +201,42 @@
       },
       {
         "type": "function",
+        "name": "publish_game",
+        "inputs": [
+          {
+            "name": "world_address",
+            "type": "core::felt252"
+          },
+          {
+            "name": "namespace",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "hide_game",
+        "inputs": [
+          {
+            "name": "world_address",
+            "type": "core::felt252"
+          },
+          {
+            "name": "namespace",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
         "name": "whitelist_game",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -220,7 +252,7 @@
         "name": "blacklist_game",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -236,7 +268,7 @@
         "name": "remove_game",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -252,7 +284,7 @@
         "name": "register_achievement",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -260,7 +292,7 @@
             "type": "core::felt252"
           },
           {
-            "name": "achievement_id",
+            "name": "identifier",
             "type": "core::felt252"
           },
           {
@@ -276,7 +308,7 @@
         "name": "update_achievement",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -284,7 +316,7 @@
             "type": "core::felt252"
           },
           {
-            "name": "achievement_id",
+            "name": "identifier",
             "type": "core::felt252"
           },
           {
@@ -297,10 +329,10 @@
       },
       {
         "type": "function",
-        "name": "whitelist_achievement",
+        "name": "publish_achievement",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -308,7 +340,47 @@
             "type": "core::felt252"
           },
           {
-            "name": "achievement_id",
+            "name": "identifier",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "hide_achievement",
+        "inputs": [
+          {
+            "name": "world_address",
+            "type": "core::felt252"
+          },
+          {
+            "name": "namespace",
+            "type": "core::felt252"
+          },
+          {
+            "name": "identifier",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "whitelist_achievement",
+        "inputs": [
+          {
+            "name": "world_address",
+            "type": "core::felt252"
+          },
+          {
+            "name": "namespace",
+            "type": "core::felt252"
+          },
+          {
+            "name": "identifier",
             "type": "core::felt252"
           }
         ],
@@ -320,7 +392,7 @@
         "name": "blacklist_achievement",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -328,7 +400,7 @@
             "type": "core::felt252"
           },
           {
-            "name": "achievement_id",
+            "name": "identifier",
             "type": "core::felt252"
           }
         ],
@@ -340,7 +412,7 @@
         "name": "remove_achievement",
         "inputs": [
           {
-            "name": "world",
+            "name": "world_address",
             "type": "core::felt252"
           },
           {
@@ -348,7 +420,7 @@
             "type": "core::felt252"
           },
           {
-            "name": "achievement_id",
+            "name": "identifier",
             "type": "core::felt252"
           }
         ],
@@ -424,13 +496,13 @@
   },
   {
     "type": "event",
-    "name": "quest::components::controllable::ControllableComponent::Event",
+    "name": "achievement::components::controllable::ControllableComponent::Event",
     "kind": "enum",
     "variants": []
   },
   {
     "type": "event",
-    "name": "quest::components::registrable::RegistrableComponent::Event",
+    "name": "achievement::components::registrable::RegistrableComponent::Event",
     "kind": "enum",
     "variants": []
   },
@@ -446,12 +518,12 @@
       },
       {
         "name": "ControllableEvent",
-        "type": "quest::components::controllable::ControllableComponent::Event",
+        "type": "achievement::components::controllable::ControllableComponent::Event",
         "kind": "flat"
       },
       {
         "name": "RegistrableEvent",
-        "type": "quest::components::registrable::RegistrableComponent::Event",
+        "type": "achievement::components::registrable::RegistrableComponent::Event",
         "kind": "flat"
       }
     ]

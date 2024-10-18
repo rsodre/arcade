@@ -1,0 +1,67 @@
+kind = "DojoModel"
+class_hash = "0x2f4c5d5380b7cca9297f71ce1ed138a433b1f5f451e1d1f95b490d0d1ca3c72"
+original_class_hash = "0x2f4c5d5380b7cca9297f71ce1ed138a433b1f5f451e1d1f95b490d0d1ca3c72"
+abi = "manifests/dev/base/abis/models/game_center-AchievementCreation-604e47bb.json"
+tag = "game_center-AchievementCreation"
+qualified_path = "achievement::events::index::achievement_creation"
+manifest_name = "game_center-AchievementCreation-604e47bb"
+
+[[members]]
+name = "namespace"
+type = "felt252"
+key = true
+
+[[members]]
+name = "identifier"
+type = "felt252"
+key = true
+
+[[members]]
+name = "hidden"
+type = "bool"
+key = false
+
+[[members]]
+name = "points"
+type = "u16"
+key = false
+
+[[members]]
+name = "total"
+type = "u32"
+key = false
+
+[[members]]
+name = "title"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "hidden_title"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "description"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "hidden_description"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "image_uri"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "icon"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "time"
+type = "u64"
+key = false

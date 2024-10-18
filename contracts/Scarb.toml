@@ -15,10 +15,10 @@ dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0-alpha.14" }
 
 [[target.dojo]]
 build-external-contracts = [
-    "quest::models::index::Game",
-    "quest::models::index::Achievement",
-    "quest::events::index::AchievementCreation",
-    "quest::events::index::AchievementCompletion",
+    "achievement::models::index::Game",
+    "achievement::models::index::Achievement",
+    "achievement::events::index::AchievementCreation",
+    "achievement::events::index::AchievementCompletion",
 ]
 
 [profile.slot]

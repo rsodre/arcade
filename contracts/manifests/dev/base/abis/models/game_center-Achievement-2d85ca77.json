@@ -363,13 +363,31 @@
   },
   {
     "type": "impl",
-    "name": "achievement_completionImpl",
-    "interface_name": "quest::events::index::Iachievement_completion"
+    "name": "achievementImpl",
+    "interface_name": "achievement::models::index::Iachievement"
+  },
+  {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
   },
   {
     "type": "struct",
-    "name": "quest::events::index::AchievementCompletion",
+    "name": "achievement::models::index::Achievement",
     "members": [
+      {
+        "name": "world_address",
+        "type": "core::felt252"
+      },
       {
         "name": "namespace",
         "type": "core::felt252"
@@ -379,26 +397,22 @@
         "type": "core::felt252"
       },
       {
-        "name": "player_id",
-        "type": "core::felt252"
+        "name": "published",
+        "type": "core::bool"
       },
       {
-        "name": "count",
-        "type": "core::integer::u32"
+        "name": "whitelisted",
+        "type": "core::bool"
       },
       {
-        "name": "total",
-        "type": "core::integer::u32"
-      },
-      {
-        "name": "time",
-        "type": "core::integer::u64"
+        "name": "karma",
+        "type": "core::integer::u16"
       }
     ]
   },
   {
     "type": "interface",
-    "name": "quest::events::index::Iachievement_completion",
+    "name": "achievement::models::index::Iachievement",
     "items": [
       {
         "type": "function",
@@ -406,7 +420,7 @@
         "inputs": [
           {
             "name": "model",
-            "type": "quest::events::index::AchievementCompletion"
+            "type": "achievement::models::index::Achievement"
           }
         ],
         "outputs": [],
@@ -416,7 +430,7 @@
   },
   {
     "type": "event",
-    "name": "quest::events::index::achievement_completion::Event",
+    "name": "achievement::models::index::achievement::Event",
     "kind": "enum",
     "variants": []
   }

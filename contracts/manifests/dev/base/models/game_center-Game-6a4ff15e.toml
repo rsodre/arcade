@@ -1,10 +1,10 @@
 kind = "DojoModel"
-class_hash = "0x741becf3711310172f382f5b905f2e9ac80688f2df7c8de30b9dce74f3d0cdf"
-original_class_hash = "0x741becf3711310172f382f5b905f2e9ac80688f2df7c8de30b9dce74f3d0cdf"
-abi = "manifests/dev/base/abis/models/quest-Game-6f189350.json"
-tag = "quest-Game"
-qualified_path = "quest::models::index::game"
-manifest_name = "quest-Game-6f189350"
+class_hash = "0x62edd30e266fff7705231b334b0569efd8ccab6bf27695b6478f6827c3975dc"
+original_class_hash = "0x62edd30e266fff7705231b334b0569efd8ccab6bf27695b6478f6827c3975dc"
+abi = "manifests/dev/base/abis/models/game_center-Game-6a4ff15e.json"
+tag = "game_center-Game"
+qualified_path = "achievement::models::index::game"
+manifest_name = "game_center-Game-6a4ff15e"
 
 [[members]]
 name = "world_address"
@@ -17,12 +17,17 @@ type = "felt252"
 key = true
 
 [[members]]
+name = "published"
+type = "bool"
+key = false
+
+[[members]]
 name = "whitelisted"
 type = "bool"
 key = false
 
 [[members]]
-name = "total_points"
+name = "total_karma"
 type = "u16"
 key = false
 

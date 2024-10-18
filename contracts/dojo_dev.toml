@@ -12,7 +12,7 @@ telegram = "https://t.me/dojoengine"
 
 [namespace]
 default = "game_center"
-mappings = { "bushido" = "game_center" }
+mappings = { "achievement" = "game_center" }
 
 [env]
 rpc_url = "http://localhost:5050/"

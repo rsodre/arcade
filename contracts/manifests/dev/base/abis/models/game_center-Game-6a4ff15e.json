@@ -363,8 +363,8 @@
   },
   {
     "type": "impl",
-    "name": "achievementImpl",
-    "interface_name": "quest::models::index::Iachievement"
+    "name": "gameImpl",
+    "interface_name": "achievement::models::index::Igame"
   },
   {
     "type": "enum",
@@ -382,7 +382,7 @@
   },
   {
     "type": "struct",
-    "name": "quest::models::index::Achievement",
+    "name": "achievement::models::index::Game",
     "members": [
       {
         "name": "world_address",
@@ -393,22 +393,42 @@
         "type": "core::felt252"
       },
       {
-        "name": "id",
-        "type": "core::felt252"
+        "name": "published",
+        "type": "core::bool"
       },
       {
         "name": "whitelisted",
         "type": "core::bool"
       },
       {
-        "name": "points",
+        "name": "total_karma",
         "type": "core::integer::u16"
+      },
+      {
+        "name": "name",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "description",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "torii_url",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "image_uri",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "owner",
+        "type": "core::felt252"
       }
     ]
   },
   {
     "type": "interface",
-    "name": "quest::models::index::Iachievement",
+    "name": "achievement::models::index::Igame",
     "items": [
       {
         "type": "function",
@@ -416,7 +436,7 @@
         "inputs": [
           {
             "name": "model",
-            "type": "quest::models::index::Achievement"
+            "type": "achievement::models::index::Game"
           }
         ],
         "outputs": [],
@@ -426,7 +446,7 @@
   },
   {
     "type": "event",
-    "name": "quest::models::index::achievement::Event",
+    "name": "achievement::models::index::game::Event",
     "kind": "enum",
     "variants": []
   }

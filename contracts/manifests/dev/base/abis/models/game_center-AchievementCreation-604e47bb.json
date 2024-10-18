@@ -364,19 +364,37 @@
   {
     "type": "impl",
     "name": "achievement_creationImpl",
-    "interface_name": "quest::events::index::Iachievement_creation"
+    "interface_name": "achievement::events::index::Iachievement_creation"
+  },
+  {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
   },
   {
     "type": "struct",
-    "name": "quest::events::index::AchievementCreation",
+    "name": "achievement::events::index::AchievementCreation",
     "members": [
       {
         "name": "namespace",
         "type": "core::felt252"
       },
       {
-        "name": "id",
+        "name": "identifier",
         "type": "core::felt252"
+      },
+      {
+        "name": "hidden",
+        "type": "core::bool"
       },
       {
         "name": "points",
@@ -391,11 +409,23 @@
         "type": "core::byte_array::ByteArray"
       },
       {
+        "name": "hidden_title",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
         "name": "description",
         "type": "core::byte_array::ByteArray"
       },
       {
+        "name": "hidden_description",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
         "name": "image_uri",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "icon",
         "type": "core::byte_array::ByteArray"
       },
       {
@@ -406,7 +436,7 @@
   },
   {
     "type": "interface",
-    "name": "quest::events::index::Iachievement_creation",
+    "name": "achievement::events::index::Iachievement_creation",
     "items": [
       {
         "type": "function",
@@ -414,7 +444,7 @@
         "inputs": [
           {
             "name": "model",
-            "type": "quest::events::index::AchievementCreation"
+            "type": "achievement::events::index::AchievementCreation"
           }
         ],
         "outputs": [],
@@ -424,7 +454,7 @@
   },
   {
     "type": "event",
-    "name": "quest::events::index::achievement_creation::Event",
+    "name": "achievement::events::index::achievement_creation::Event",
     "kind": "enum",
     "variants": []
   }

@@ -1,6 +1,6 @@
 kind = "DojoContract"
-class_hash = "0x2cd805e13cd641654fd293cb1a7f4c68dc04b721301c00a4e513cad4bc77be6"
-original_class_hash = "0x2cd805e13cd641654fd293cb1a7f4c68dc04b721301c00a4e513cad4bc77be6"
+class_hash = "0x1eb79fe27b41d6d6bf10bc5c4f5ea2f5f33b3378908df004597eebfae6fe2ac"
+original_class_hash = "0x1eb79fe27b41d6d6bf10bc5c4f5ea2f5f33b3378908df004597eebfae6fe2ac"
 base_class_hash = "0x0"
 abi = "manifests/dev/base/abis/contracts/game_center-Actions-38eede8c.json"
 reads = []
@@ -10,11 +10,15 @@ tag = "game_center-Actions"
 systems = [
     "register_game",
     "update_game",
+    "publish_game",
+    "hide_game",
     "whitelist_game",
     "blacklist_game",
     "remove_game",
     "register_achievement",
     "update_achievement",
+    "publish_achievement",
+    "hide_achievement",
     "whitelist_achievement",
     "blacklist_achievement",
     "remove_achievement",
