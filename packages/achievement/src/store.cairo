@@ -73,7 +73,18 @@ impl StoreImpl of StoreTrait {
         time: u64,
     ) {
         let _event: AchievementCreation = AchievementCreationTrait::new(
-            namespace, identifier, hidden, points, total, title, hidden_title, description, hidden_description, image_uri, icon, time
+            namespace,
+            identifier,
+            hidden,
+            points,
+            total,
+            title,
+            hidden_title,
+            description,
+            hidden_description,
+            image_uri,
+            icon,
+            time
         );
         emit!(self.world, (_event,));
     }
