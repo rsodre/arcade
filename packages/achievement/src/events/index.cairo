@@ -14,7 +14,7 @@ pub struct AchievementCreation {
     description: ByteArray,
     hidden_description: ByteArray,
     image_uri: ByteArray,
-    icon: ByteArray,
+    icon: felt252,
     time: u64,
 }
 

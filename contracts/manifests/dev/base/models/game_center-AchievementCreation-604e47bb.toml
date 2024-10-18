@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x2f4c5d5380b7cca9297f71ce1ed138a433b1f5f451e1d1f95b490d0d1ca3c72"
-original_class_hash = "0x2f4c5d5380b7cca9297f71ce1ed138a433b1f5f451e1d1f95b490d0d1ca3c72"
+class_hash = "0x535e56e14f5c19117d153ad353efe78e4831b4926126c7783322f137509ca4c"
+original_class_hash = "0x535e56e14f5c19117d153ad353efe78e4831b4926126c7783322f137509ca4c"
 abi = "manifests/dev/base/abis/models/game_center-AchievementCreation-604e47bb.json"
 tag = "game_center-AchievementCreation"
 qualified_path = "achievement::events::index::achievement_creation"
@@ -58,7 +58,7 @@ key = false
 
 [[members]]
 name = "icon"
-type = "ByteArray"
+type = "felt252"
 key = false
 
 [[members]]

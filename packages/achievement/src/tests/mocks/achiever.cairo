@@ -11,7 +11,7 @@ trait IAchiever<TContractState> {
         description: ByteArray,
         hidden_description: ByteArray,
         image_uri: ByteArray,
-        icon: ByteArray,
+        icon: felt252,
     );
     fn update(self: @TContractState, identifier: felt252, player_id: felt252, progress: u32,);
 }
@@ -65,7 +65,7 @@ pub mod Achiever {
             description: ByteArray,
             hidden_description: ByteArray,
             image_uri: ByteArray,
-            icon: ByteArray,
+            icon: felt252,
         ) {
             self
                 .achievable

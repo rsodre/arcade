@@ -426,7 +426,7 @@
       },
       {
         "name": "icon",
-        "type": "core::byte_array::ByteArray"
+        "type": "core::felt252"
       },
       {
         "name": "time",

@@ -10,6 +10,7 @@ use starknet::testing;
 
 // Internal imports
 
+use achievement::types::icon::AchievementIcon;
 use achievement::events::index::{AchievementCreation, AchievementCompletion};
 use achievement::tests::mocks::achiever::{Achiever, IAchieverDispatcher, IAchieverDispatcherTrait};
 use achievement::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
@@ -40,7 +41,7 @@ fn test_achievable_create() {
             "Description",
             "Hidden Description",
             "Image",
-            "Icon"
+            AchievementIcon::Khanda.into(),
         );
     let event = starknet::testing::pop_log::<AchievementCreation>(world.contract_address).unwrap();
     // FIXME: Cannot check keys because they are shifted due to dojo macros
@@ -52,7 +53,7 @@ fn test_achievable_create() {
     assert_eq!(event.description, "Description");
     assert_eq!(event.hidden_description, "Hidden Description");
     assert_eq!(event.image_uri, "Image");
-    assert_eq!(event.icon, "Icon");
+    assert_eq!(event.icon, AchievementIcon::Khanda.into());
 }
 
 #[test]

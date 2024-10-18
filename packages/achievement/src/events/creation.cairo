@@ -27,7 +27,7 @@ impl AchievementCreationImpl of AchievementCreationTrait {
         description: ByteArray,
         hidden_description: ByteArray,
         image_uri: ByteArray,
-        icon: ByteArray,
+        icon: felt252,
         time: u64,
     ) -> AchievementCreation {
         // [Check] Inputs
@@ -84,6 +84,7 @@ mod tests {
     const HIDDEN: bool = false;
     const POINTS: u16 = 100;
     const TOTAL: u32 = 100;
+    const ICON: felt252 = 'ICON';
 
     #[test]
     fn test_achievement_creation_new() {
@@ -98,7 +99,7 @@ mod tests {
             "DESCRIPTION",
             "HIDDEN_DESCRIPTION",
             "IMAGE_URI",
-            "ICON",
+            ICON,
             1000000000,
         );
         assert_eq!(achievement.namespace, NAMESPACE);
@@ -110,6 +111,9 @@ mod tests {
         assert_eq!(achievement.hidden_title, "HIDDEN_TITLE");
         assert_eq!(achievement.description, "DESCRIPTION");
         assert_eq!(achievement.hidden_description, "HIDDEN_DESCRIPTION");
+        assert_eq!(achievement.image_uri, "IMAGE_URI");
+        assert_eq!(achievement.icon, ICON);
+        assert_eq!(achievement.time, 1000000000);
     }
 
     #[test]
@@ -126,7 +130,7 @@ mod tests {
             "DESCRIPTION",
             "HIDDEN_DESCRIPTION",
             "IMAGE_URI",
-            "ICON",
+            ICON,
             1000000000
         );
     }
@@ -145,7 +149,7 @@ mod tests {
             "DESCRIPTION",
             "HIDDEN_DESCRIPTION",
             "IMAGE_URI",
-            "ICON",
+            ICON,
             1000000000
         );
     }
@@ -164,7 +168,7 @@ mod tests {
             "DESCRIPTION",
             "HIDDEN_DESCRIPTION",
             "IMAGE_URI",
-            "ICON",
+            ICON,
             1000000000
         );
     }

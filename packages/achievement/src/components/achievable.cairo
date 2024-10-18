@@ -48,7 +48,7 @@ mod AchievableComponent {
             description: ByteArray,
             hidden_description: ByteArray,
             image_uri: ByteArray,
-            icon: ByteArray,
+            icon: felt252,
         ) {
             // [Setup] Store
             let store: Store = StoreTrait::new(world);

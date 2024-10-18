@@ -1,6 +1,10 @@
 mod constants;
 mod store;
 
+mod types {
+    mod icon;
+}
+
 mod models {
     mod index;
     mod game;
