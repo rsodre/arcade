@@ -7,7 +7,7 @@ pub struct Game {
     namespace: felt252,
     published: bool,
     whitelisted: bool,
-    total_points: u16,
+    total_karma: u16,
     name: ByteArray,
     description: ByteArray,
     torii_url: ByteArray,
@@ -26,5 +26,5 @@ pub struct Achievement {
     id: felt252,
     published: bool,
     whitelisted: bool,
-    points: u16,
+    karma: u16,
 }

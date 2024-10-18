@@ -74,7 +74,7 @@ fn test_registrable_register_game() {
     assert_eq!(game.namespace, NAMEPSACE);
     assert_eq!(game.published, false);
     assert_eq!(game.whitelisted, false);
-    assert_eq!(game.total_points, 0);
+    assert_eq!(game.total_karma, 0);
     assert_eq!(game.name, name);
     assert_eq!(game.description, description);
     assert_eq!(game.torii_url, torii_url);
@@ -143,16 +143,16 @@ fn test_registrable_register_achievement() {
     register_game(@systems, @context);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let points: u16 = 10;
-    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, points);
+    let karma: u16 = 10;
+    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
     // [Assert] Achievement
     let store = StoreTrait::new(world);
     let achievement = store.get_achievement(WORLD_ADDRESS, NAMEPSACE, identifier);
     assert_eq!(achievement.id, identifier);
-    assert_eq!(achievement.points, points);
+    assert_eq!(achievement.karma, karma);
     // [Assert] Game
     let game = store.get_game(WORLD_ADDRESS, NAMEPSACE);
-    assert_eq!(game.total_points, points);
+    assert_eq!(game.total_karma, karma);
 }
 
 #[test]
@@ -162,18 +162,18 @@ fn test_registrable_update_achievement() {
     register_game(@systems, @context);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let points: u16 = 10;
-    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, points);
+    let karma: u16 = 10;
+    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
     // [Update] Achievement
-    let new_points: u16 = 20;
-    systems.registrer.update_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, new_points);
+    let new_karma: u16 = 20;
+    systems.registrer.update_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, new_karma);
     // [Assert] Achievement
     let store = StoreTrait::new(world);
     let achievement = store.get_achievement(WORLD_ADDRESS, NAMEPSACE, identifier);
-    assert_eq!(achievement.points, new_points);
+    assert_eq!(achievement.karma, new_karma);
     // [Assert] Game
     let game = store.get_game(WORLD_ADDRESS, NAMEPSACE);
-    assert_eq!(game.total_points, new_points);
+    assert_eq!(game.total_karma, new_karma);
 }
 
 #[test]
@@ -183,8 +183,8 @@ fn test_registrable_publish_achievement() {
     register_game(@systems, @context);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let points: u16 = 10;
-    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, points);
+    let karma: u16 = 10;
+    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
     // [Publish] Achievement
     systems.registrer.publish_achievement(WORLD_ADDRESS, NAMEPSACE, identifier);
     // [Assert] Achievement
@@ -200,8 +200,8 @@ fn test_registrable_whitelist_achievement() {
     register_game(@systems, @context);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let points: u16 = 10;
-    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, points);
+    let karma: u16 = 10;
+    systems.registrer.register_achievement(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
     // [Whitelist] Achievement
     systems.registrer.publish_achievement(WORLD_ADDRESS, NAMEPSACE, identifier);
     systems.registrer.whitelist_achievement(WORLD_ADDRESS, NAMEPSACE, identifier);

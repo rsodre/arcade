@@ -3,15 +3,17 @@ trait IAchiever<TContractState> {
     fn create(
         self: @TContractState,
         identifier: felt252,
+        hidden: bool,
         points: u16,
         total: u32,
         title: ByteArray,
+        hidden_title: ByteArray,
         description: ByteArray,
+        hidden_description: ByteArray,
         image_uri: ByteArray,
+        icon: ByteArray,
     );
-    fn update(
-        self: @TContractState, identifier: felt252, player_id: felt252, count: u32, total: u32,
-    );
+    fn update(self: @TContractState, identifier: felt252, player_id: felt252, progress: u32,);
 }
 
 #[dojo::contract]
@@ -55,21 +57,35 @@ pub mod Achiever {
         fn create(
             self: @ContractState,
             identifier: felt252,
+            hidden: bool,
             points: u16,
             total: u32,
             title: ByteArray,
+            hidden_title: ByteArray,
             description: ByteArray,
+            hidden_description: ByteArray,
             image_uri: ByteArray,
+            icon: ByteArray,
         ) {
             self
                 .achievable
-                .create(self.world(), identifier, points, total, title, description, image_uri);
+                .create(
+                    self.world(),
+                    identifier,
+                    hidden,
+                    points,
+                    total,
+                    title,
+                    hidden_title,
+                    description,
+                    hidden_description,
+                    image_uri,
+                    icon
+                );
         }
 
-        fn update(
-            self: @ContractState, identifier: felt252, player_id: felt252, count: u32, total: u32,
-        ) {
-            self.achievable.update(self.world(), identifier, player_id, count, total);
+        fn update(self: @ContractState, identifier: felt252, player_id: felt252, progress: u32,) {
+            self.achievable.update(self.world(), identifier, player_id, progress);
         }
     }
 }

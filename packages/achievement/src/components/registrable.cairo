@@ -182,7 +182,7 @@ mod RegistrableComponent {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            points: u16,
+            karma: u16,
         ) {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -196,10 +196,10 @@ mod RegistrableComponent {
             achievement.assert_does_not_exist();
 
             // [Effect] Create achievement
-            let achievement = AchievementTrait::new(world_address, namespace, identifier, points);
+            let achievement = AchievementTrait::new(world_address, namespace, identifier, karma);
 
             // [Effect] Add achievement to game
-            game.add(achievement.points);
+            game.add(achievement.karma);
 
             // [Effect] Store entities
             store.set_achievement(achievement);
@@ -212,7 +212,7 @@ mod RegistrableComponent {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            points: u16,
+            karma: u16,
         ) {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -226,9 +226,9 @@ mod RegistrableComponent {
             achievement.assert_does_exist();
 
             // [Effect] Update achievement and game
-            game.remove(achievement.points);
-            achievement.update(points);
-            game.add(achievement.points);
+            game.remove(achievement.karma);
+            achievement.update(karma);
+            game.add(achievement.karma);
 
             // [Effect] Update entities
             store.set_achievement(achievement);
@@ -354,7 +354,7 @@ mod RegistrableComponent {
             achievement.assert_does_exist();
 
             // [Effect] Remove achievement
-            game.remove(achievement.points);
+            game.remove(achievement.karma);
             achievement.nullify();
 
             // [Effect] Store entities

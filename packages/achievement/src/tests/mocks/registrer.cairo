@@ -28,14 +28,14 @@ trait IRegistrer<TContractState> {
         world_address: felt252,
         namespace: felt252,
         identifier: felt252,
-        points: u16,
+        karma: u16,
     );
     fn update_achievement(
         self: @TContractState,
         world_address: felt252,
         namespace: felt252,
         identifier: felt252,
-        points: u16,
+        karma: u16,
     );
     fn publish_achievement(
         self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252
@@ -150,11 +150,11 @@ pub mod Registrer {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            points: u16,
+            karma: u16,
         ) {
             self
                 .registrable
-                .register_achievement(self.world(), world_address, namespace, identifier, points);
+                .register_achievement(self.world(), world_address, namespace, identifier, karma);
         }
 
         fn update_achievement(
@@ -162,11 +162,11 @@ pub mod Registrer {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            points: u16,
+            karma: u16,
         ) {
             self
                 .registrable
-                .update_achievement(self.world(), world_address, namespace, identifier, points);
+                .update_achievement(self.world(), world_address, namespace, identifier, karma);
         }
 
         fn publish_achievement(

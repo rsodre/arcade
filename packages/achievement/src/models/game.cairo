@@ -11,7 +11,7 @@ pub mod errors {
     pub const GAME_INVALID_NAME: felt252 = 'Game: invalid name';
     pub const GAME_INVALID_DESCRIPTION: felt252 = 'Game: invalid description';
     pub const GAME_INVALID_TORII_URL: felt252 = 'Game: invalid torii url';
-    pub const GAME_INVALID_POINTS: felt252 = 'Game: cannot exceed 1000';
+    pub const GAME_INVALID_KARMA: felt252 = 'Game: cannot exceed 1000';
     pub const GAME_NOT_EXIST: felt252 = 'Game: does not exist';
     pub const GAME_ALREADY_EXISTS: felt252 = 'Game: already exists';
     pub const GAME_NOT_WHITELISTABLE: felt252 = 'Game: not whitelistable';
@@ -41,7 +41,7 @@ impl GameImpl of GameTrait {
             namespace,
             published: false,
             whitelisted: false,
-            total_points: 0,
+            total_karma: 0,
             name,
             description,
             torii_url,
@@ -51,20 +51,20 @@ impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn add(ref self: Game, points: u16) {
+    fn add(ref self: Game, karma: u16) {
         // [Check] Inputs
-        let total_points = self.total_points + points;
-        GameAssert::assert_valid_points(total_points);
+        let total_karma = self.total_karma + karma;
+        GameAssert::assert_valid_karma(total_karma);
         // [Update] Points
-        self.total_points = total_points;
+        self.total_karma = total_karma;
         // [Effect] Reset visibility status
         self.published = false;
         self.whitelisted = false;
     }
 
     #[inline]
-    fn remove(ref self: Game, points: u16) {
-        self.total_points -= points;
+    fn remove(ref self: Game, karma: u16) {
+        self.total_karma -= karma;
         // [Effect] Reset visibility status
         self.published = false;
         self.whitelisted = false;
@@ -125,7 +125,7 @@ impl GameImpl of GameTrait {
     fn nullify(ref self: Game) {
         self.published = false;
         self.whitelisted = false;
-        self.total_points = 0;
+        self.total_karma = 0;
         self.name = "";
         self.description = "";
         self.torii_url = "";
@@ -171,8 +171,8 @@ impl GameAssert of AssertTrait {
     }
 
     #[inline]
-    fn assert_valid_points(points: u16) {
-        assert(points <= constants::MAX_GAME_POINTS, errors::GAME_INVALID_POINTS);
+    fn assert_valid_karma(karma: u16) {
+        assert(karma <= constants::MAX_GAME_KARMA, errors::GAME_INVALID_KARMA);
     }
 
     #[inline]
@@ -226,7 +226,7 @@ mod tests {
             WORLD_ADDRESS, NAMESPACE, "NAME", "DESCRIPTION", "TORII_URL", "IMAGE_URI", OWNER,
         );
         game.add(100);
-        assert_eq!(game.total_points, 100);
+        assert_eq!(game.total_karma, 100);
     }
 
     #[test]
@@ -235,9 +235,9 @@ mod tests {
             WORLD_ADDRESS, NAMESPACE, "NAME", "DESCRIPTION", "TORII_URL", "IMAGE_URI", OWNER,
         );
         game.add(100);
-        assert_eq!(game.total_points, 100);
+        assert_eq!(game.total_karma, 100);
         game.remove(50);
-        assert_eq!(game.total_points, 50);
+        assert_eq!(game.total_karma, 50);
     }
 
     #[test]
@@ -312,7 +312,7 @@ mod tests {
         assert_eq!(game.description, "");
         assert_eq!(game.torii_url, "");
         assert_eq!(game.image_uri, "");
-        assert_eq!(game.total_points, 0);
+        assert_eq!(game.total_karma, 0);
         assert_eq!(game.whitelisted, false);
     }
 
@@ -367,8 +367,8 @@ mod tests {
 
     #[test]
     #[should_panic(expected: 'Game: cannot exceed 1000')]
-    fn test_game_assert_valid_points_exceeds_max() {
-        GameAssert::assert_valid_points(1001);
+    fn test_game_assert_valid_karma_exceeds_max() {
+        GameAssert::assert_valid_karma(1001);
     }
 
     #[test]

@@ -11,8 +11,8 @@ pub mod errors {
     pub const ACHIEVEMENT_INVALID_WORLD: felt252 = 'Achievement: invalid world';
     pub const ACHIEVEMENT_INVALID_NAMESPACE: felt252 = 'Achievement: invalid namespace';
     pub const ACHIEVEMENT_INVALID_ACHIEVEMENT: felt252 = 'Achievement: invalid id';
-    pub const ACHIEVEMENT_TOO_MUCH_POINTS: felt252 = 'Achievement: cannot exceed 100';
-    pub const ACHIEVEMENT_TOO_FEW_POINTS: felt252 = 'Achievement: must be at least 1';
+    pub const ACHIEVEMENT_TOO_MUCH_KARMA: felt252 = 'Achievement: cannot exceed 100';
+    pub const ACHIEVEMENT_TOO_FEW_KARMA: felt252 = 'Achievement: must be at least 1';
     pub const ACHIEVEMENT_NOT_WHITELISTABLE: felt252 = 'Achievement: not whitelistable';
     pub const ACHIEVEMENT_ALREADY_WHITELISTED: felt252 = 'Achievement: already listed';
 }
@@ -21,16 +21,16 @@ pub mod errors {
 impl AchievementImpl of AchievementTrait {
     #[inline]
     fn new(
-        world_address: felt252, namespace: felt252, identifier: felt252, points: u16
+        world_address: felt252, namespace: felt252, identifier: felt252, karma: u16
     ) -> Achievement {
         // [Check] Inputs
         AchievementAssert::assert_valid_world(world_address);
         AchievementAssert::assert_valid_namespace(namespace);
         AchievementAssert::assert_valid_achievement(identifier);
-        AchievementAssert::assert_valid_points(points);
+        AchievementAssert::assert_valid_karma(karma);
         // [Return] Achievement
         Achievement {
-            world_address, namespace, id: identifier, published: false, whitelisted: false, points,
+            world_address, namespace, id: identifier, published: false, whitelisted: false, karma,
         }
     }
 
@@ -64,11 +64,11 @@ impl AchievementImpl of AchievementTrait {
     }
 
     #[inline]
-    fn update(ref self: Achievement, points: u16) {
+    fn update(ref self: Achievement, karma: u16) {
         // [Check] Inputs
-        AchievementAssert::assert_valid_points(points);
+        AchievementAssert::assert_valid_karma(karma);
         // [Effect] Update Points
-        self.points = points;
+        self.karma = karma;
         // [EFfect] Reset visibility status
         self.published = false;
         self.whitelisted = false;
@@ -76,7 +76,7 @@ impl AchievementImpl of AchievementTrait {
 
     #[inline]
     fn nullify(ref self: Achievement) {
-        self.points = 0;
+        self.karma = 0;
         self.published = false;
         self.whitelisted = false;
     }
@@ -86,12 +86,12 @@ impl AchievementImpl of AchievementTrait {
 impl AchievementAssert of AssertTrait {
     #[inline]
     fn assert_does_not_exist(self: Achievement) {
-        assert(self.points == 0, errors::ACHIEVEMENT_ALREADY_EXISTS);
+        assert(self.karma == 0, errors::ACHIEVEMENT_ALREADY_EXISTS);
     }
 
     #[inline]
     fn assert_does_exist(self: Achievement) {
-        assert(self.points != 0, errors::ACHIEVEMENT_NOT_EXIST);
+        assert(self.karma != 0, errors::ACHIEVEMENT_NOT_EXIST);
     }
 
     #[inline]
@@ -110,9 +110,9 @@ impl AchievementAssert of AssertTrait {
     }
 
     #[inline]
-    fn assert_valid_points(points: u16) {
-        assert(points >= constants::MIN_ACHIEVEMENT_POINTS, errors::ACHIEVEMENT_TOO_FEW_POINTS);
-        assert(points <= constants::MAX_ACHIEVEMENT_POINTS, errors::ACHIEVEMENT_TOO_MUCH_POINTS);
+    fn assert_valid_karma(karma: u16) {
+        assert(karma >= constants::MIN_ACHIEVEMENT_KARMA, errors::ACHIEVEMENT_TOO_FEW_KARMA);
+        assert(karma <= constants::MAX_ACHIEVEMENT_KARMA, errors::ACHIEVEMENT_TOO_MUCH_KARMA);
     }
 
     #[inline]
@@ -132,27 +132,27 @@ mod tests {
     const WORLD_ADDRESS: felt252 = 'WORLD';
     const NAMESPACE: felt252 = 'NAMESPACE';
     const IDENTIFIER: felt252 = 'ID';
-    const POINTS: u16 = 42;
+    const KARMA: u16 = 42;
 
     #[test]
     fn test_achievement_new() {
-        let achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+        let achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         assert_eq!(achievement.world_address, WORLD_ADDRESS);
         assert_eq!(achievement.namespace, NAMESPACE);
         assert_eq!(achievement.id, IDENTIFIER);
-        assert_eq!(achievement.points, POINTS);
+        assert_eq!(achievement.karma, KARMA);
     }
 
     #[test]
     fn test_achievement_publish() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.publish();
         assert_eq!(achievement.published, true);
     }
 
     #[test]
     fn test_achievement_hide() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.publish();
         achievement.hide();
         assert_eq!(achievement.published, false);
@@ -160,7 +160,7 @@ mod tests {
 
     #[test]
     fn test_achievement_whitelist() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.publish();
         achievement.whitelist();
         assert_eq!(achievement.whitelisted, true);
@@ -168,7 +168,7 @@ mod tests {
 
     #[test]
     fn test_achievement_blacklist() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.publish();
         achievement.whitelist();
         achievement.blacklist();
@@ -177,23 +177,23 @@ mod tests {
 
     #[test]
     fn test_achievement_update() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
-        achievement.update(POINTS + 1);
-        assert_eq!(achievement.points, POINTS + 1);
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
+        achievement.update(KARMA + 1);
+        assert_eq!(achievement.karma, KARMA + 1);
     }
 
     #[test]
     fn test_achievement_nullify() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.nullify();
-        assert_eq!(achievement.points, 0);
+        assert_eq!(achievement.karma, 0);
         assert_eq!(achievement.whitelisted, false);
     }
 
     #[test]
     #[should_panic(expected: 'Achievement: cannot exceed 100')]
-    fn test_achievement_set_points_exceeds_max() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+    fn test_achievement_set_karma_exceeds_max() {
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.update(101);
     }
 
@@ -217,20 +217,20 @@ mod tests {
 
     #[test]
     #[should_panic(expected: 'Achievement: must be at least 1')]
-    fn test_achievement_assert_valid_points_too_few() {
-        AchievementAssert::assert_valid_points(0);
+    fn test_achievement_assert_valid_karma_too_few() {
+        AchievementAssert::assert_valid_karma(0);
     }
 
     #[test]
     #[should_panic(expected: 'Achievement: cannot exceed 100')]
-    fn test_achievement_assert_valid_points_exceeds_max() {
-        AchievementAssert::assert_valid_points(101);
+    fn test_achievement_assert_valid_karma_exceeds_max() {
+        AchievementAssert::assert_valid_karma(101);
     }
 
     #[test]
     #[should_panic(expected: 'Achievement: not whitelistable')]
     fn test_achievement_assert_is_whitelistable_not_published() {
-        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, POINTS);
+        let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.publish();
         achievement.hide();
         achievement.whitelist();
