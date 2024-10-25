@@ -61,7 +61,7 @@ fn test_achievable_create() {
 fn test_achievable_update() {
     let (world, systems, context) = spawn_game();
     clear_events(world.contract_address);
-    systems.achiever.update(IDENTIFIER, context.player_id, COUNT);
+    systems.achiever.update(context.player_id, IDENTIFIER, COUNT);
     let event = starknet::testing::pop_log::<AchievementCompletion>(world.contract_address)
         .unwrap();
     // FIXME: Cannot check keys because they are shifted due to dojo macros

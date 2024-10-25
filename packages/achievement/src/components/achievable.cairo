@@ -73,8 +73,8 @@ mod AchievableComponent {
         fn update(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
-            identifier: felt252,
             player_id: felt252,
+            identifier: felt252,
             count: u32,
         ) {
             // [Setup] Store

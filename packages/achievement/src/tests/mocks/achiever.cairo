@@ -13,7 +13,7 @@ trait IAchiever<TContractState> {
         icon: felt252,
         icon_style: felt252,
     );
-    fn update(self: @TContractState, identifier: felt252, player_id: felt252, count: u32,);
+    fn update(self: @TContractState, player_id: felt252, identifier: felt252, count: u32,);
 }
 
 #[dojo::contract]
@@ -84,8 +84,8 @@ pub mod Achiever {
                 );
         }
 
-        fn update(self: @ContractState, identifier: felt252, player_id: felt252, count: u32,) {
-            self.achievable.update(self.world(), identifier, player_id, count);
+        fn update(self: @ContractState, player_id: felt252, identifier: felt252, count: u32,) {
+            self.achievable.update(self.world(), player_id, identifier, count);
         }
     }
 }
