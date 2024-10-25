@@ -7,12 +7,9 @@ pub struct AchievementCreation {
     hidden: bool,
     points: u16,
     total: u32,
-    title: ByteArray,
-    hidden_title: ByteArray,
+    title: felt252,
     description: ByteArray,
-    hidden_description: ByteArray,
     icon: felt252,
-    icon_style: felt252,
     time: u64,
 }
 

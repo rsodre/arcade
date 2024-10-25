@@ -42,32 +42,16 @@ mod AchievableComponent {
             hidden: bool,
             points: u16,
             total: u32,
-            title: ByteArray,
-            hidden_title: ByteArray,
+            title: felt252,
             description: ByteArray,
-            hidden_description: ByteArray,
             icon: felt252,
-            icon_style: felt252,
         ) {
             // [Setup] Store
             let store: Store = StoreTrait::new(world);
 
             // [Event] Emit achievement creation
             let time: u64 = get_block_timestamp();
-            store
-                .create(
-                    identifier,
-                    hidden,
-                    points,
-                    total,
-                    title,
-                    hidden_title,
-                    description,
-                    hidden_description,
-                    icon,
-                    icon_style,
-                    time
-                );
+            store.create(identifier, hidden, points, total, title, description, icon, time);
         }
 
         fn update(

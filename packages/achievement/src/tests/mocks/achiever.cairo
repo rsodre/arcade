@@ -6,12 +6,9 @@ trait IAchiever<TContractState> {
         hidden: bool,
         points: u16,
         total: u32,
-        title: ByteArray,
-        hidden_title: ByteArray,
+        title: felt252,
         description: ByteArray,
-        hidden_description: ByteArray,
         icon: felt252,
-        icon_style: felt252,
     );
     fn update(self: @TContractState, player_id: felt252, identifier: felt252, count: u32,);
 }
@@ -60,28 +57,13 @@ pub mod Achiever {
             hidden: bool,
             points: u16,
             total: u32,
-            title: ByteArray,
-            hidden_title: ByteArray,
+            title: felt252,
             description: ByteArray,
-            hidden_description: ByteArray,
             icon: felt252,
-            icon_style: felt252,
         ) {
             self
                 .achievable
-                .create(
-                    self.world(),
-                    identifier,
-                    hidden,
-                    points,
-                    total,
-                    title,
-                    hidden_title,
-                    description,
-                    hidden_description,
-                    icon,
-                    icon_style,
-                );
+                .create(self.world(), identifier, hidden, points, total, title, description, icon,);
         }
 
         fn update(self: @ContractState, player_id: felt252, identifier: felt252, count: u32,) {
