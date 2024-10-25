@@ -4,6 +4,7 @@
 pub struct AchievementCreation {
     #[key]
     identifier: felt252,
+    quest: felt252,
     hidden: bool,
     points: u16,
     total: u32,
@@ -20,7 +21,7 @@ pub struct AchievementCompletion {
     #[key]
     player_id: felt252,
     #[key]
-    identifier: felt252,
+    quest: felt252,
     count: u32,
     time: u64,
 }

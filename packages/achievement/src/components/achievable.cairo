@@ -39,6 +39,7 @@ mod AchievableComponent {
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
             identifier: felt252,
+            quest: felt252,
             hidden: bool,
             points: u16,
             total: u32,
@@ -51,14 +52,14 @@ mod AchievableComponent {
 
             // [Event] Emit achievement creation
             let time: u64 = get_block_timestamp();
-            store.create(identifier, hidden, points, total, title, description, icon, time);
+            store.create(identifier, quest, hidden, points, total, title, description, icon, time);
         }
 
         fn update(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
             player_id: felt252,
-            identifier: felt252,
+            quest: felt252,
             count: u32,
         ) {
             // [Setup] Store
@@ -66,7 +67,7 @@ mod AchievableComponent {
 
             // [Event] Emit achievement completion
             let time: u64 = get_block_timestamp();
-            store.update(player_id, identifier, count, time);
+            store.update(player_id, quest, count, time);
         }
     }
 }

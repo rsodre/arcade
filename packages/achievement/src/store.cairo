@@ -60,6 +60,7 @@ impl StoreImpl of StoreTrait {
     fn create(
         self: Store,
         identifier: felt252,
+        quest: felt252,
         hidden: bool,
         points: u16,
         total: u32,
@@ -69,15 +70,15 @@ impl StoreImpl of StoreTrait {
         time: u64,
     ) {
         let _event: AchievementCreation = AchievementCreationTrait::new(
-            identifier, hidden, points, total, title, description, icon, time
+            identifier, quest, hidden, points, total, title, description, icon, time
         );
         emit!(self.world, (_event,));
     }
 
     #[inline]
-    fn update(self: Store, player_id: felt252, identifier: felt252, count: u32, time: u64,) {
+    fn update(self: Store, player_id: felt252, quest: felt252, count: u32, time: u64,) {
         let _event: AchievementCompletion = AchievementCompletionTrait::new(
-            player_id, identifier, count, time
+            player_id, quest, count, time
         );
         emit!(self.world, (_event,));
     }

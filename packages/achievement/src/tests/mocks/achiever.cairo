@@ -3,6 +3,7 @@ trait IAchiever<TContractState> {
     fn create(
         self: @TContractState,
         identifier: felt252,
+        quest: felt252,
         hidden: bool,
         points: u16,
         total: u32,
@@ -10,7 +11,7 @@ trait IAchiever<TContractState> {
         description: ByteArray,
         icon: felt252,
     );
-    fn update(self: @TContractState, player_id: felt252, identifier: felt252, count: u32,);
+    fn update(self: @TContractState, player_id: felt252, quest: felt252, count: u32,);
 }
 
 #[dojo::contract]
@@ -54,6 +55,7 @@ pub mod Achiever {
         fn create(
             self: @ContractState,
             identifier: felt252,
+            quest: felt252,
             hidden: bool,
             points: u16,
             total: u32,
@@ -63,11 +65,21 @@ pub mod Achiever {
         ) {
             self
                 .achievable
-                .create(self.world(), identifier, hidden, points, total, title, description, icon,);
+                .create(
+                    self.world(),
+                    identifier,
+                    quest,
+                    hidden,
+                    points,
+                    total,
+                    title,
+                    description,
+                    icon,
+                );
         }
 
-        fn update(self: @ContractState, player_id: felt252, identifier: felt252, count: u32,) {
-            self.achievable.update(self.world(), player_id, identifier, count);
+        fn update(self: @ContractState, player_id: felt252, quest: felt252, count: u32,) {
+            self.achievable.update(self.world(), player_id, quest, count);
         }
     }
 }
