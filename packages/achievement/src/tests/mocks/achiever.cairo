@@ -10,10 +10,10 @@ trait IAchiever<TContractState> {
         hidden_title: ByteArray,
         description: ByteArray,
         hidden_description: ByteArray,
-        image_uri: ByteArray,
         icon: felt252,
+        icon_style: felt252,
     );
-    fn update(self: @TContractState, identifier: felt252, player_id: felt252, progress: u32,);
+    fn update(self: @TContractState, identifier: felt252, player_id: felt252, count: u32,);
 }
 
 #[dojo::contract]
@@ -64,8 +64,8 @@ pub mod Achiever {
             hidden_title: ByteArray,
             description: ByteArray,
             hidden_description: ByteArray,
-            image_uri: ByteArray,
             icon: felt252,
+            icon_style: felt252,
         ) {
             self
                 .achievable
@@ -79,13 +79,13 @@ pub mod Achiever {
                     hidden_title,
                     description,
                     hidden_description,
-                    image_uri,
-                    icon
+                    icon,
+                    icon_style,
                 );
         }
 
-        fn update(self: @ContractState, identifier: felt252, player_id: felt252, progress: u32,) {
-            self.achievable.update(self.world(), identifier, player_id, progress);
+        fn update(self: @ContractState, identifier: felt252, player_id: felt252, count: u32,) {
+            self.achievable.update(self.world(), identifier, player_id, count);
         }
     }
 }

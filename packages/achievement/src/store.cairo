@@ -59,7 +59,6 @@ impl StoreImpl of StoreTrait {
     #[inline]
     fn create(
         self: Store,
-        namespace: felt252,
         identifier: felt252,
         hidden: bool,
         points: u16,
@@ -68,12 +67,11 @@ impl StoreImpl of StoreTrait {
         hidden_title: ByteArray,
         description: ByteArray,
         hidden_description: ByteArray,
-        image_uri: ByteArray,
         icon: felt252,
+        icon_style: felt252,
         time: u64,
     ) {
         let _event: AchievementCreation = AchievementCreationTrait::new(
-            namespace,
             identifier,
             hidden,
             points,
@@ -82,24 +80,17 @@ impl StoreImpl of StoreTrait {
             hidden_title,
             description,
             hidden_description,
-            image_uri,
             icon,
+            icon_style,
             time
         );
         emit!(self.world, (_event,));
     }
 
     #[inline]
-    fn update(
-        self: Store,
-        namespace: felt252,
-        identifier: felt252,
-        player_id: felt252,
-        progress: u32,
-        time: u64,
-    ) {
+    fn update(self: Store, player_id: felt252, identifier: felt252, count: u32, time: u64,) {
         let _event: AchievementCompletion = AchievementCompletionTrait::new(
-            namespace, identifier, player_id, progress, time
+            player_id, identifier, count, time
         );
         emit!(self.world, (_event,));
     }

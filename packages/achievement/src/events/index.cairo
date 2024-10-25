@@ -3,8 +3,6 @@
 #[dojo::event]
 pub struct AchievementCreation {
     #[key]
-    namespace: felt252,
-    #[key]
     identifier: felt252,
     hidden: bool,
     points: u16,
@@ -13,8 +11,8 @@ pub struct AchievementCreation {
     hidden_title: ByteArray,
     description: ByteArray,
     hidden_description: ByteArray,
-    image_uri: ByteArray,
     icon: felt252,
+    icon_style: felt252,
     time: u64,
 }
 
@@ -23,11 +21,9 @@ pub struct AchievementCreation {
 #[dojo::event]
 pub struct AchievementCompletion {
     #[key]
-    namespace: felt252,
+    player_id: felt252,
     #[key]
     identifier: felt252,
-    #[key]
-    player_id: felt252,
-    progress: u32,
+    count: u32,
     time: u64,
 }
