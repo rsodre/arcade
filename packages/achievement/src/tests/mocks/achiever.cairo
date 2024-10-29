@@ -8,6 +8,7 @@ trait IAchiever<TContractState> {
         self: @TContractState,
         id: felt252,
         hidden: bool,
+        page_count: u8,
         points: u16,
         group: felt252,
         icon: felt252,
@@ -62,6 +63,7 @@ pub mod Achiever {
             self: @ContractState,
             id: felt252,
             hidden: bool,
+            page_count: u8,
             points: u16,
             group: felt252,
             icon: felt252,
@@ -73,7 +75,17 @@ pub mod Achiever {
             self
                 .achievable
                 .create(
-                    self.world(), id, hidden, points, group, icon, title, description, tasks, data
+                    self.world(),
+                    id,
+                    hidden,
+                    page_count,
+                    points,
+                    group,
+                    icon,
+                    title,
+                    description,
+                    tasks,
+                    data
                 );
         }
 

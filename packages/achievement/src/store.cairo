@@ -62,6 +62,7 @@ impl StoreImpl of StoreTrait {
         self: Store,
         id: felt252,
         hidden: bool,
+        page_count: u8,
         points: u16,
         group: felt252,
         icon: felt252,
@@ -71,7 +72,7 @@ impl StoreImpl of StoreTrait {
         data: ByteArray,
     ) {
         let _event: Trophy = TrophyTrait::new(
-            id, hidden, points, group, icon, title, description, tasks, data
+            id, hidden, page_count, points, group, icon, title, description, tasks, data
         );
         emit!(self.world, (_event,));
     }

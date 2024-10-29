@@ -21,6 +21,8 @@ use achievement::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER
 const TROPHY_ID: felt252 = 'TROPHY';
 const TASK_ID: felt252 = 'TASK';
 const HIDDEN: bool = false;
+const PAGE_COUNT: u8 = 1;
+const PAGE: u8 = 1;
 const POINTS: u16 = 10;
 const TOTAL: u32 = 100;
 const COUNT: u32 = 1;
@@ -33,10 +35,12 @@ const TITLE: felt252 = 'Title';
 fn test_achievable_create() {
     let (world, systems, _context) = spawn_game();
     clear_events(world.contract_address);
-    let tasks = array![TaskTrait::new(TASK_ID, TOTAL, "Description")].span();
+    let tasks = array![TaskTrait::new(TASK_ID, PAGE, TOTAL, "Description")].span();
     systems
         .achiever
-        .create(TROPHY_ID, HIDDEN, POINTS, GROUP, ICON, TITLE, "Description", tasks, "");
+        .create(
+            TROPHY_ID, HIDDEN, PAGE_COUNT, POINTS, GROUP, ICON, TITLE, "Description", tasks, ""
+        );
     let event = starknet::testing::pop_log::<Trophy>(world.contract_address).unwrap();
     // FIXME: Cannot check keys because they are shifted due to dojo macros
     assert_eq!(event.hidden, HIDDEN);

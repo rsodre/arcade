@@ -11,6 +11,7 @@ pub mod errors {
     pub const TROPHY_INVALID_TITLE: felt252 = 'Trophy: invalid title';
     pub const TROPHY_INVALID_DESCRIPTION: felt252 = 'Trophy: invalid desc.';
     pub const TROPHY_INVALID_TASKS: felt252 = 'Trophy: invalid tasks.';
+    pub const TROPHY_INVALID_PAGE_COUNT: felt252 = 'Trophy: invalid page count';
 }
 
 // Implementations
@@ -21,6 +22,7 @@ impl TrophyImpl of TrophyTrait {
     fn new(
         id: felt252,
         hidden: bool,
+        page_count: u8,
         points: u16,
         group: felt252,
         icon: felt252,
@@ -32,10 +34,11 @@ impl TrophyImpl of TrophyTrait {
         // [Check] Inputs
         // [Info] We don't check points here, leave free the game to decide
         TrophyAssert::assert_valid_id(id);
+        TrophyAssert::assert_valid_page_count(page_count);
         TrophyAssert::assert_valid_title(title);
         TrophyAssert::assert_valid_description(@description);
         // [Return] Trophy
-        Trophy { id, hidden, points, group, icon, title, description, tasks, data }
+        Trophy { id, hidden, page_count, points, group, icon, title, description, tasks, data }
     }
 }
 
@@ -44,6 +47,11 @@ impl TrophyAssert of AssertTrait {
     #[inline]
     fn assert_valid_id(id: felt252) {
         assert(id != 0, errors::TROPHY_INVALID_ID);
+    }
+
+    #[inline]
+    fn assert_valid_page_count(page_count: u8) {
+        assert(page_count > 0, errors::TROPHY_INVALID_PAGE_COUNT);
     }
 
     #[inline]
@@ -72,6 +80,8 @@ mod tests {
     // Constants
 
     const ID: felt252 = 'TROPHY';
+    const PAGE_COUNT: u8 = 1;
+    const PAGE: u8 = 1;
     const GROUP: felt252 = 'GROUP';
     const HIDDEN: bool = false;
     const POINTS: u16 = 100;
@@ -82,12 +92,13 @@ mod tests {
 
     #[test]
     fn test_achievement_creation_new() {
-        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, TOTAL, "TASK DESCRIPTION"),];
+        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, PAGE, TOTAL, "TASK DESCRIPTION"),];
         let achievement = TrophyTrait::new(
-            ID, HIDDEN, POINTS, GROUP, ICON, TITLE, "DESCRIPTION", tasks.span(), "DATA"
+            ID, HIDDEN, PAGE_COUNT, POINTS, GROUP, ICON, TITLE, "DESCRIPTION", tasks.span(), "DATA"
         );
         assert_eq!(achievement.id, ID);
         assert_eq!(achievement.hidden, HIDDEN);
+        assert_eq!(achievement.page_count, PAGE_COUNT);
         assert_eq!(achievement.points, POINTS);
         assert_eq!(achievement.group, GROUP);
         assert_eq!(achievement.icon, ICON);
@@ -100,22 +111,35 @@ mod tests {
     #[test]
     #[should_panic(expected: ('Trophy: invalid id',))]
     fn test_achievement_creation_new_invalid_id() {
-        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, TOTAL, "TASK DESCRIPTION"),];
-        TrophyTrait::new(0, HIDDEN, POINTS, GROUP, ICON, TITLE, "DESCRIPTION", tasks.span(), "");
+        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, PAGE, TOTAL, "TASK DESCRIPTION"),];
+        TrophyTrait::new(
+            0, HIDDEN, PAGE_COUNT, POINTS, GROUP, ICON, TITLE, "DESCRIPTION", tasks.span(), ""
+        );
+    }
+
+    #[test]
+    #[should_panic(expected: ('Trophy: invalid page count',))]
+    fn test_achievement_creation_new_invalid_page_count() {
+        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, PAGE, TOTAL, "TASK DESCRIPTION"),];
+        TrophyTrait::new(
+            ID, HIDDEN, 0, POINTS, GROUP, ICON, TITLE, "DESCRIPTION", tasks.span(), ""
+        );
     }
 
     #[test]
     #[should_panic(expected: ('Trophy: invalid title',))]
     fn test_achievement_creation_new_invalid_title() {
-        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, TOTAL, "TASK DESCRIPTION"),];
-        TrophyTrait::new(ID, HIDDEN, POINTS, GROUP, ICON, 0, "DESCRIPTION", tasks.span(), "");
+        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, PAGE, TOTAL, "TASK DESCRIPTION"),];
+        TrophyTrait::new(
+            ID, HIDDEN, PAGE_COUNT, POINTS, GROUP, ICON, 0, "DESCRIPTION", tasks.span(), ""
+        );
     }
 
     #[test]
     #[should_panic(expected: ('Trophy: invalid desc.',))]
     fn test_achievement_creation_new_invalid_description() {
-        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, TOTAL, "TASK DESCRIPTION"),];
-        TrophyTrait::new(ID, HIDDEN, POINTS, GROUP, ICON, TITLE, "", tasks.span(), "");
+        let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, PAGE, TOTAL, "TASK DESCRIPTION"),];
+        TrophyTrait::new(ID, HIDDEN, PAGE_COUNT, POINTS, GROUP, ICON, TITLE, "", tasks.span(), "");
     }
 }
 
