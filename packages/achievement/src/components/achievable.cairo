@@ -14,6 +14,7 @@ mod AchievableComponent {
 
     // Internal imports
 
+    use achievement::events::task::Task;
     use achievement::store::{Store, StoreTrait};
 
     // Errors
@@ -38,28 +39,28 @@ mod AchievableComponent {
         fn create(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
-            identifier: felt252,
-            quest: felt252,
+            id: felt252,
             hidden: bool,
             points: u16,
-            total: u32,
+            group: felt252,
+            icon: felt252,
             title: felt252,
             description: ByteArray,
-            icon: felt252,
+            tasks: Span<Task>,
+            data: ByteArray,
         ) {
             // [Setup] Store
             let store: Store = StoreTrait::new(world);
 
             // [Event] Emit achievement creation
-            let time: u64 = get_block_timestamp();
-            store.create(identifier, quest, hidden, points, total, title, description, icon, time);
+            store.create(id, hidden, points, group, icon, title, description, tasks, data);
         }
 
         fn update(
             self: @ComponentState<TContractState>,
             world: IWorldDispatcher,
             player_id: felt252,
-            quest: felt252,
+            task_id: felt252,
             count: u32,
         ) {
             // [Setup] Store
@@ -67,7 +68,7 @@ mod AchievableComponent {
 
             // [Event] Emit achievement completion
             let time: u64 = get_block_timestamp();
-            store.update(player_id, quest, count, time);
+            store.update(player_id, task_id, count, time);
         }
     }
 }

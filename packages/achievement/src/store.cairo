@@ -15,8 +15,9 @@ use achievement::models::achievement::Achievement;
 
 // Events imports
 
-use achievement::events::creation::{AchievementCreation, AchievementCreationTrait};
-use achievement::events::completion::{AchievementCompletion, AchievementCompletionTrait};
+use achievement::events::trophy::{Trophy, TrophyTrait};
+use achievement::events::task::{Task, TaskTrait};
+use achievement::events::progress::{Progress, ProgressTrait};
 
 // Structs
 
@@ -59,27 +60,25 @@ impl StoreImpl of StoreTrait {
     #[inline]
     fn create(
         self: Store,
-        identifier: felt252,
-        quest: felt252,
+        id: felt252,
         hidden: bool,
         points: u16,
-        total: u32,
+        group: felt252,
+        icon: felt252,
         title: felt252,
         description: ByteArray,
-        icon: felt252,
-        time: u64,
+        tasks: Span<Task>,
+        data: ByteArray,
     ) {
-        let _event: AchievementCreation = AchievementCreationTrait::new(
-            identifier, quest, hidden, points, total, title, description, icon, time
+        let _event: Trophy = TrophyTrait::new(
+            id, hidden, points, group, icon, title, description, tasks, data
         );
         emit!(self.world, (_event,));
     }
 
     #[inline]
-    fn update(self: Store, player_id: felt252, quest: felt252, count: u32, time: u64,) {
-        let _event: AchievementCompletion = AchievementCompletionTrait::new(
-            player_id, quest, count, time
-        );
+    fn update(self: Store, player_id: felt252, task_id: felt252, count: u32, time: u64,) {
+        let _event: Progress = ProgressTrait::new(player_id, task_id, count, time);
         emit!(self.world, (_event,));
     }
 }

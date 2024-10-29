@@ -1,27 +1,37 @@
-#[derive(Introspect, Clone, Drop, Serde)]
+#[derive(Clone, Drop, Serde)]
 #[dojo::model]
 #[dojo::event]
-pub struct AchievementCreation {
+pub struct Trophy {
     #[key]
-    identifier: felt252,
-    quest: felt252,
+    id: felt252,
     hidden: bool,
     points: u16,
-    total: u32,
+    group: felt252,
+    icon: felt252,
     title: felt252,
     description: ByteArray,
-    icon: felt252,
-    time: u64,
+    tasks: Span<Task>,
+    data: ByteArray,
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(Clone, Drop, Serde)]
 #[dojo::model]
 #[dojo::event]
-pub struct AchievementCompletion {
+pub struct Task {
+    #[key]
+    id: felt252,
+    total: u32,
+    description: ByteArray,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+#[dojo::event]
+pub struct Progress {
     #[key]
     player_id: felt252,
     #[key]
-    quest: felt252,
+    task_id: felt252,
     count: u32,
     time: u64,
 }

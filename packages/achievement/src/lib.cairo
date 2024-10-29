@@ -9,8 +9,9 @@ mod models {
 
 mod events {
     mod index;
-    mod creation;
-    mod completion;
+    mod trophy;
+    mod task;
+    mod progress;
 }
 
 mod components {
