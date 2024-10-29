@@ -41,7 +41,7 @@ mod AchievableComponent {
             world: IWorldDispatcher,
             id: felt252,
             hidden: bool,
-            page_count: u8,
+            index: u8,
             points: u16,
             group: felt252,
             icon: felt252,
@@ -54,10 +54,7 @@ mod AchievableComponent {
             let store: Store = StoreTrait::new(world);
 
             // [Event] Emit achievement creation
-            store
-                .create(
-                    id, hidden, page_count, points, group, icon, title, description, tasks, data
-                );
+            store.create(id, hidden, index, points, group, icon, title, description, tasks, data);
         }
 
         fn update(

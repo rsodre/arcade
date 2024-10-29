@@ -5,7 +5,7 @@ pub struct Trophy {
     #[key]
     id: felt252,
     hidden: bool,
-    page_count: u8,
+    index: u8,
     points: u16,
     group: felt252,
     icon: felt252,
@@ -21,7 +21,6 @@ pub struct Trophy {
 pub struct Task {
     #[key]
     id: felt252,
-    page: u8,
     total: u32,
     description: ByteArray,
 }
