@@ -1,3 +1,5 @@
+/// Models
+
 #[derive(Clone, Drop, Serde)]
 #[dojo::model]
 pub struct Game {
@@ -15,7 +17,7 @@ pub struct Game {
     owner: felt252,
 }
 
-#[derive(IntrospectPacked, Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde)]
 #[dojo::model]
 pub struct Achievement {
     #[key]

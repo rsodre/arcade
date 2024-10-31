@@ -8,10 +8,14 @@ use starknet::ContractAddress;
 use starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
 use starknet::testing;
 
+// Dojo imports
+
+use dojo::world::world::Event;
+
 // Internal imports
 
+use achievement::types::task::{Task, TaskTrait};
 use achievement::events::trophy::{Trophy, TrophyTrait};
-use achievement::events::task::{Task, TaskTrait};
 use achievement::events::progress::{Progress, ProgressTrait};
 use achievement::tests::mocks::achiever::{Achiever, IAchieverDispatcher, IAchieverDispatcherTrait};
 use achievement::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
@@ -32,34 +36,52 @@ const TITLE: felt252 = 'Title';
 
 #[test]
 fn test_achievable_create() {
+    spawn_game();
     let (world, systems, _context) = spawn_game();
-    clear_events(world.contract_address);
+    clear_events(world.dispatcher.contract_address);
     let tasks = array![TaskTrait::new(TASK_ID, TOTAL, "Description")].span();
     systems
         .achiever
         .create(TROPHY_ID, HIDDEN, INDEX, POINTS, GROUP, ICON, TITLE, "Description", tasks, "");
-    let event = starknet::testing::pop_log::<Trophy>(world.contract_address).unwrap();
-    // FIXME: Cannot check keys because they are shifted due to dojo macros
-    assert_eq!(event.hidden, HIDDEN);
-    assert_eq!(event.index, INDEX);
-    assert_eq!(event.points, POINTS);
-    assert_eq!(event.group, GROUP);
-    assert_eq!(event.title, TITLE);
-    assert_eq!(event.description, "Description");
-    assert_eq!(event.icon, ICON);
-    assert_eq!(event.tasks.len(), 1);
-    assert_eq!(event.tasks[0].id, @TASK_ID);
-    assert_eq!(event.tasks[0].total, @TOTAL);
-    assert_eq!(event.tasks[0].description, @"Description");
+    let contract_event = starknet::testing::pop_log::<Event>(world.dispatcher.contract_address)
+        .unwrap();
+    match contract_event {
+        Event::EventEmitted(event) => {
+            assert_eq!(*event.keys.at(0), TROPHY_ID);
+            assert_eq!(*event.values.at(0), 0);
+            assert_eq!(*event.values.at(1), INDEX.into());
+            assert_eq!(*event.values.at(2), POINTS.into());
+            assert_eq!(*event.values.at(3), GROUP.into());
+            assert_eq!(*event.values.at(4), ICON.into());
+            assert_eq!(*event.values.at(5), TITLE.into());
+            assert_eq!(*event.values.at(6), 0);
+            assert_eq!(*event.values.at(7), 'Description');
+            assert_eq!(*event.values.at(8), 11);
+            assert_eq!(*event.values.at(9), 1);
+            assert_eq!(*event.values.at(10), TASK_ID);
+            assert_eq!(*event.values.at(11), TOTAL.into());
+            assert_eq!(*event.values.at(12), 0);
+            assert_eq!(*event.values.at(13), 'Description');
+            assert_eq!(*event.values.at(14), 11);
+        },
+        _ => {},
+    }
 }
-
 #[test]
 fn test_achievable_update() {
     let (world, systems, context) = spawn_game();
-    clear_events(world.contract_address);
+    clear_events(world.dispatcher.contract_address);
     systems.achiever.update(context.player_id, TASK_ID, COUNT);
-    let event = starknet::testing::pop_log::<Progress>(world.contract_address).unwrap();
-    // FIXME: Cannot check keys because they are shifted due to dojo macros
-    assert_eq!(event.count, COUNT);
-    assert_eq!(event.time, 0);
+    let contract_event = starknet::testing::pop_log::<Event>(world.dispatcher.contract_address)
+        .unwrap();
+    match contract_event {
+        Event::EventEmitted(event) => {
+            assert_eq!(*event.keys.at(0), context.player_id);
+            assert_eq!(*event.keys.at(1), TASK_ID);
+            assert_eq!(*event.values.at(0), COUNT.into());
+            assert_eq!(*event.values.at(1), 0);
+        },
+        _ => {},
+    }
 }
+

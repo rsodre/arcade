@@ -11,12 +11,13 @@ mod setup {
 
     // Dojo imports
 
-    use dojo::world::{IWorldDispatcherTrait, IWorldDispatcher};
-    use dojo::utils::test::{spawn_test_world};
+    use dojo::world::{WorldStorage, WorldStorageTrait};
+    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait};
 
     // Internal imports
 
-    use achievement::models::index;
+    use achievement::models::{index as models};
+    use achievement::events::{index as events};
     use achievement::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
     use achievement::tests::mocks::controller::{Controller, IController, IControllerDispatcher};
     use achievement::tests::mocks::registrer::{Registrer, IRegistrer, IRegistrerDispatcher};
@@ -54,28 +55,44 @@ mod setup {
     }
 
     #[inline]
-    fn spawn_game() -> (IWorldDispatcher, Systems, Context) {
+    fn setup_namespace() -> NamespaceDef {
+        NamespaceDef {
+            namespace: "namespace", resources: [
+                TestResource::Model(models::m_Game::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(models::m_Achievement::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Event(events::e_Trophy::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Event(events::e_Progress::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Contract(
+                    ContractDefTrait::new(Achiever::TEST_CLASS_HASH, "Achiever")
+                        .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())
+                ),
+                TestResource::Contract(
+                    ContractDefTrait::new(Controller::TEST_CLASS_HASH, "Controller")
+                        .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())
+                ),
+                TestResource::Contract(
+                    ContractDefTrait::new(Registrer::TEST_CLASS_HASH, "Registrer")
+                        .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())
+                ),
+            ].span()
+        }
+    }
+
+    #[inline]
+    fn spawn_game() -> (WorldStorage, Systems, Context) {
         // [Setup] World
         set_contract_address(OWNER());
-        let models = array![index::game::TEST_CLASS_HASH, index::achievement::TEST_CLASS_HASH,];
-        let world = spawn_test_world(array!["achievement"].span(), models.span());
-
+        let namespace_def = setup_namespace();
+        let world = spawn_test_world([namespace_def].span());
         // [Setup] Systems
-        let achiever_address = world
-            .deploy_contract('achiever', Achiever::TEST_CLASS_HASH.try_into().unwrap());
-        let controller_address = world
-            .deploy_contract('controller', Controller::TEST_CLASS_HASH.try_into().unwrap());
-        let registrer_address = world
-            .deploy_contract('registrer', Registrer::TEST_CLASS_HASH.try_into().unwrap());
+        let (achiever_address, _) = world.dns(@"Achiever").unwrap();
+        let (controller_address, _) = world.dns(@"Controller").unwrap();
+        let (registrer_address, _) = world.dns(@"Registrer").unwrap();
         let systems = Systems {
             achiever: IAchieverDispatcher { contract_address: achiever_address },
             controller: IControllerDispatcher { contract_address: controller_address },
             registrer: IRegistrerDispatcher { contract_address: registrer_address },
         };
-        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), achiever_address);
-        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), controller_address);
-        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), registrer_address);
-        world.grant_writer(dojo::utils::bytearray_hash(@"achievement"), OWNER());
 
         // [Setup] Context
         let context = Context { player_id: PLAYER().into() };
