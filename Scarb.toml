@@ -1,7 +1,7 @@
 [workspace]
 members = ["packages/achievement"]
-description = "Dojo quest library"
-homepage = "https://github.com/cartridge-gg/quest/"
+description = "Dojo achievement library"
+homepage = "https://github.com/cartridge-gg/bushido/"
 cairo-version = "2.8.4"
 
 [workspace.package]
