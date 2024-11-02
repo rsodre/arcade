@@ -14,11 +14,13 @@ use dojo::world::world::Event;
 
 // Internal imports
 
-use achievement::types::task::{Task, TaskTrait};
-use achievement::events::trophy::{Trophy, TrophyTrait};
-use achievement::events::progress::{Progress, ProgressTrait};
-use achievement::tests::mocks::achiever::{Achiever, IAchieverDispatcher, IAchieverDispatcherTrait};
-use achievement::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
+use bushido_trophy::types::task::{Task, TaskTrait};
+use bushido_trophy::events::trophy::{Trophy, TrophyTrait};
+use bushido_trophy::events::progress::{Progress, ProgressTrait};
+use bushido_trophy::tests::mocks::achiever::{
+    Achiever, IAchieverDispatcher, IAchieverDispatcherTrait
+};
+use bushido_trophy::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
 
 // Constants
 

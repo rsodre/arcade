@@ -1,6 +1,6 @@
 // Internal imports
 
-use achievement::types::index::Task;
+use bushido_trophy::types::index::Task;
 
 // Errors
 

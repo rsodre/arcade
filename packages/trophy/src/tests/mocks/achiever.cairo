@@ -1,6 +1,6 @@
 // Internal imports
 
-use achievement::types::task::Task;
+use bushido_trophy::types::task::Task;
 
 #[starknet::interface]
 trait IAchiever<TContractState> {
@@ -33,8 +33,8 @@ pub mod Achiever {
 
     // Internal imports
 
-    use achievement::types::task::Task;
-    use achievement::components::achievable::AchievableComponent;
+    use bushido_trophy::types::task::Task;
+    use bushido_trophy::components::achievable::AchievableComponent;
 
     // Local imports
 

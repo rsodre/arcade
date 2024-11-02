@@ -1,6 +1,6 @@
 // Internal imports
 
-use achievement::events::index::Progress;
+use bushido_trophy::events::index::Progress;
 
 // Errors
 

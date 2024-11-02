@@ -2,7 +2,7 @@
 version = 1
 
 [[package]]
-name = "achievement"
+name = "bushido_registry"
 version = "0.0.0"
 dependencies = [
  "dojo",
@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "bushido_registry"
+name = "bushido_trophy"
 version = "0.0.0"
 dependencies = [
  "dojo",

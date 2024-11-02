@@ -1,8 +1,7 @@
 // Internal imports
 
-use achievement::events::index::Trophy;
-use achievement::types::task::{Task, TaskTrait};
-use achievement::constants;
+use bushido_trophy::events::index::Trophy;
+use bushido_trophy::types::task::{Task, TaskTrait};
 
 // Errors
 

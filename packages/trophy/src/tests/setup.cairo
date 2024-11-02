@@ -16,8 +16,8 @@ mod setup {
 
     // Internal imports
 
-    use achievement::events::{index as events};
-    use achievement::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
+    use bushido_trophy::events::{index as events};
+    use bushido_trophy::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
 
     // Constant
 

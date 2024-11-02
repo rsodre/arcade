@@ -1,5 +1,5 @@
 [package]
-name = "achievement"
+name = "bushido_trophy"
 version.workspace = true
 
 [dependencies]

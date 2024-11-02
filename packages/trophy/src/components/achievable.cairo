@@ -14,8 +14,8 @@ mod AchievableComponent {
 
     // Internal imports
 
-    use achievement::types::task::Task;
-    use achievement::store::{Store, StoreTrait};
+    use bushido_trophy::types::task::Task;
+    use bushido_trophy::store::{Store, StoreTrait};
 
     // Errors
 
