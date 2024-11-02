@@ -12,7 +12,7 @@ pub mod Controller {
 
     // Internal imports
 
-    use achievement::components::controllable::ControllableComponent;
+    use bushido_registry::components::controllable::ControllableComponent;
 
     // Local imports
 

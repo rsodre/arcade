@@ -7,12 +7,7 @@ use starknet::SyscallResultTrait;
 // Dojo imports
 
 use dojo::world::WorldStorage;
-use dojo::model::ModelStorage;
 use dojo::event::EventStorage;
-// Models imports
-
-use achievement::models::game::Game;
-use achievement::models::achievement::Achievement;
 
 // Events imports
 
@@ -37,28 +32,6 @@ impl StoreImpl of StoreTrait {
     #[inline]
     fn new(world: WorldStorage) -> Store {
         Store { world: world }
-    }
-
-    #[inline]
-    fn get_game(self: Store, world_address: felt252, namespace: felt252) -> Game {
-        self.world.read_model((world_address, namespace))
-    }
-
-    #[inline]
-    fn get_achievement(
-        self: Store, world_address: felt252, namespace: felt252, id: felt252
-    ) -> Achievement {
-        self.world.read_model((world_address, namespace, id))
-    }
-
-    #[inline]
-    fn set_game(ref self: Store, game: Game) {
-        self.world.write_model(@game);
-    }
-
-    #[inline]
-    fn set_achievement(ref self: Store, achievement: Achievement) {
-        self.world.write_model(@achievement);
     }
 
     #[inline]

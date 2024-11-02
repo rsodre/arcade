@@ -64,7 +64,7 @@ pub mod Registrer {
 
     // Internal imports
 
-    use achievement::components::registrable::RegistrableComponent;
+    use bushido_registry::components::registrable::RegistrableComponent;
 
     // Local imports
 

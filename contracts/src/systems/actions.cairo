@@ -74,8 +74,8 @@ mod Actions {
 
     // Component imports
 
-    use achievement::components::controllable::ControllableComponent;
-    use achievement::components::registrable::RegistrableComponent;
+    use bushido_registry::components::controllable::ControllableComponent;
+    use bushido_registry::components::registrable::RegistrableComponent;
 
     // Local imports
 

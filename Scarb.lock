@@ -10,6 +10,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "bushido_registry"
+version = "0.0.0"
+dependencies = [
+ "dojo",
+ "dojo_cairo_test",
+]
+
+[[package]]
 name = "dojo"
 version = "1.0.0-rc.0"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.0.0-rc.0#f4199aec570a395278b8c8748bc46e2f6be3d0c7"

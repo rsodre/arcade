@@ -16,8 +16,11 @@ mod setup {
 
     // Internal imports
 
-    use achievement::events::{index as events};
-    use achievement::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
+    use bushido_registry::models::{index as models};
+    use bushido_registry::tests::mocks::controller::{
+        Controller, IController, IControllerDispatcher
+    };
+    use bushido_registry::tests::mocks::registrer::{Registrer, IRegistrer, IRegistrerDispatcher};
 
     // Constant
 
@@ -31,7 +34,8 @@ mod setup {
 
     #[derive(Copy, Drop)]
     struct Systems {
-        achiever: IAchieverDispatcher,
+        controller: IControllerDispatcher,
+        registrer: IRegistrerDispatcher,
     }
 
     #[derive(Copy, Drop)]
@@ -53,10 +57,14 @@ mod setup {
     fn setup_namespace() -> NamespaceDef {
         NamespaceDef {
             namespace: "namespace", resources: [
-                TestResource::Event(events::e_Trophy::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Event(events::e_Progress::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(models::m_Game::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(models::m_Achievement::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Contract(
-                    ContractDefTrait::new(Achiever::TEST_CLASS_HASH, "Achiever")
+                    ContractDefTrait::new(Controller::TEST_CLASS_HASH, "Controller")
+                        .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())
+                ),
+                TestResource::Contract(
+                    ContractDefTrait::new(Registrer::TEST_CLASS_HASH, "Registrer")
                         .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())
                 ),
             ].span()
@@ -70,9 +78,11 @@ mod setup {
         let namespace_def = setup_namespace();
         let world = spawn_test_world([namespace_def].span());
         // [Setup] Systems
-        let (achiever_address, _) = world.dns(@"Achiever").unwrap();
+        let (controller_address, _) = world.dns(@"Controller").unwrap();
+        let (registrer_address, _) = world.dns(@"Registrer").unwrap();
         let systems = Systems {
-            achiever: IAchieverDispatcher { contract_address: achiever_address },
+            controller: IControllerDispatcher { contract_address: controller_address },
+            registrer: IRegistrerDispatcher { contract_address: registrer_address },
         };
 
         // [Setup] Context

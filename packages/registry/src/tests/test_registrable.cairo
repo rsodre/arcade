@@ -10,13 +10,13 @@ use starknet::testing;
 
 // Internal imports
 
-use achievement::store::{Store, StoreTrait};
-use achievement::models::game::{Game, GameTrait};
-use achievement::models::achievement::{Achievement, AchievementTrait};
-use achievement::tests::mocks::registrer::{
+use bushido_registry::store::{Store, StoreTrait};
+use bushido_registry::models::game::{Game, GameTrait};
+use bushido_registry::models::achievement::{Achievement, AchievementTrait};
+use bushido_registry::tests::mocks::registrer::{
     Registrer, IRegistrerDispatcher, IRegistrerDispatcherTrait
 };
-use achievement::tests::setup::setup::{spawn_game, Systems, Context, PLAYER};
+use bushido_registry::tests::setup::setup::{spawn_game, Systems, Context, PLAYER};
 
 // Constants
 

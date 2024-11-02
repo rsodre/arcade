@@ -10,8 +10,8 @@ mod ControllableComponent {
 
     // Internal imports
 
-    use achievement::store::{Store, StoreTrait};
-    use achievement::models::game::Game;
+    use bushido_registry::store::{Store, StoreTrait};
+    use bushido_registry::models::game::Game;
 
     // Storage
 
