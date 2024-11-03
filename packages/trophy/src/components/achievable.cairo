@@ -57,7 +57,7 @@ mod AchievableComponent {
             store.create(id, hidden, index, points, group, icon, title, description, tasks, data);
         }
 
-        fn update(
+        fn progress(
             self: @ComponentState<TContractState>,
             world: WorldStorage,
             player_id: felt252,
@@ -69,7 +69,7 @@ mod AchievableComponent {
 
             // [Event] Emit achievement completion
             let time: u64 = get_block_timestamp();
-            store.update(player_id, task_id, count, time);
+            store.progress(player_id, task_id, count, time);
         }
     }
 }

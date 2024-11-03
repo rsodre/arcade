@@ -15,8 +15,8 @@ use dojo::world::world::Event;
 // Internal imports
 
 use bushido_trophy::types::task::{Task, TaskTrait};
-use bushido_trophy::events::trophy::{Trophy, TrophyTrait};
-use bushido_trophy::events::progress::{Progress, ProgressTrait};
+use bushido_trophy::events::trophy::{TrophyCreation, TrophyTrait};
+use bushido_trophy::events::progress::{TrophyProgression, ProgressTrait};
 use bushido_trophy::tests::mocks::achiever::{
     Achiever, IAchieverDispatcher, IAchieverDispatcherTrait
 };
@@ -70,10 +70,10 @@ fn test_achievable_create() {
     }
 }
 #[test]
-fn test_achievable_update() {
+fn test_achievable_progress() {
     let (world, systems, context) = spawn_game();
     clear_events(world.dispatcher.contract_address);
-    systems.achiever.update(context.player_id, TASK_ID, COUNT);
+    systems.achiever.progress(context.player_id, TASK_ID, COUNT);
     let contract_event = starknet::testing::pop_log::<Event>(world.dispatcher.contract_address)
         .unwrap();
     match contract_event {

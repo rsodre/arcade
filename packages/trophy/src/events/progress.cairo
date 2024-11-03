@@ -1,6 +1,6 @@
 // Internal imports
 
-use bushido_trophy::events::index::Progress;
+use bushido_trophy::events::index::TrophyProgression;
 
 // Errors
 
@@ -13,11 +13,11 @@ pub mod errors {
 #[generate_trait]
 impl ProgressImpl of ProgressTrait {
     #[inline]
-    fn new(player_id: felt252, task_id: felt252, count: u32, time: u64,) -> Progress {
+    fn new(player_id: felt252, task_id: felt252, count: u32, time: u64,) -> TrophyProgression {
         // [Check] Inputs
         ProgressAssert::assert_valid_id(task_id);
         // [Return] Progress
-        Progress { player_id, task_id, count, time }
+        TrophyProgression { player_id, task_id, count, time }
     }
 }
 

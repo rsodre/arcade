@@ -53,8 +53,10 @@ mod setup {
     fn setup_namespace() -> NamespaceDef {
         NamespaceDef {
             namespace: "namespace", resources: [
-                TestResource::Event(events::e_Trophy::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Event(events::e_Progress::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Event(events::e_TrophyCreation::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Event(
+                    events::e_TrophyProgression::TEST_CLASS_HASH.try_into().unwrap()
+                ),
                 TestResource::Contract(
                     ContractDefTrait::new(Achiever::TEST_CLASS_HASH, "Achiever")
                         .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())

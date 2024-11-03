@@ -11,8 +11,8 @@ use dojo::event::EventStorage;
 
 // Events imports
 
-use bushido_trophy::events::trophy::{Trophy, TrophyTrait};
-use bushido_trophy::events::progress::{Progress, ProgressTrait};
+use bushido_trophy::events::trophy::{TrophyCreation, TrophyTrait};
+use bushido_trophy::events::progress::{TrophyProgression, ProgressTrait};
 
 // Internal imports
 
@@ -48,15 +48,15 @@ impl StoreImpl of StoreTrait {
         tasks: Span<Task>,
         data: ByteArray,
     ) {
-        let event: Trophy = TrophyTrait::new(
+        let event: TrophyCreation = TrophyTrait::new(
             id, hidden, index, points, group, icon, title, description, tasks, data
         );
         self.world.emit_event(@event);
     }
 
     #[inline]
-    fn update(mut self: Store, player_id: felt252, task_id: felt252, count: u32, time: u64,) {
-        let event: Progress = ProgressTrait::new(player_id, task_id, count, time);
+    fn progress(mut self: Store, player_id: felt252, task_id: felt252, count: u32, time: u64,) {
+        let event: TrophyProgression = ProgressTrait::new(player_id, task_id, count, time);
         self.world.emit_event(@event);
     }
 }

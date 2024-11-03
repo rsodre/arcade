@@ -1,15 +1,15 @@
 // Internal imports
 
-use bushido_trophy::events::index::Trophy;
+use bushido_trophy::events::index::TrophyCreation;
 use bushido_trophy::types::task::{Task, TaskTrait};
 
 // Errors
 
 pub mod errors {
-    pub const TROPHY_INVALID_ID: felt252 = 'Trophy: invalid id';
-    pub const TROPHY_INVALID_TITLE: felt252 = 'Trophy: invalid title';
-    pub const TROPHY_INVALID_DESCRIPTION: felt252 = 'Trophy: invalid desc.';
-    pub const TROPHY_INVALID_TASKS: felt252 = 'Trophy: invalid tasks.';
+    pub const TROPHY_INVALID_ID: felt252 = 'TrophyCreation: invalid id';
+    pub const TROPHY_INVALID_TITLE: felt252 = 'TrophyCreation: invalid title';
+    pub const TROPHY_INVALID_DESCRIPTION: felt252 = 'TrophyCreation: invalid desc.';
+    pub const TROPHY_INVALID_TASKS: felt252 = 'TrophyCreation: invalid tasks.';
 }
 
 // Implementations
@@ -28,14 +28,14 @@ impl TrophyImpl of TrophyTrait {
         description: ByteArray,
         tasks: Span<Task>,
         data: ByteArray,
-    ) -> Trophy {
+    ) -> TrophyCreation {
         // [Check] Inputs
         // [Info] We don't check points here, leave free the game to decide
         TrophyAssert::assert_valid_id(id);
         TrophyAssert::assert_valid_title(title);
         TrophyAssert::assert_valid_description(@description);
-        // [Return] Trophy
-        Trophy { id, hidden, index, points, group, icon, title, description, tasks, data }
+        // [Return] TrophyCreation
+        TrophyCreation { id, hidden, index, points, group, icon, title, description, tasks, data }
     }
 }
 
@@ -100,7 +100,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected: ('Trophy: invalid id',))]
+    #[should_panic(expected: ('TrophyCreation: invalid id',))]
     fn test_achievement_creation_new_invalid_id() {
         let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, TOTAL, "TASK DESCRIPTION"),];
         TrophyTrait::new(
@@ -109,7 +109,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected: ('Trophy: invalid title',))]
+    #[should_panic(expected: ('TrophyCreation: invalid title',))]
     fn test_achievement_creation_new_invalid_title() {
         let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, TOTAL, "TASK DESCRIPTION"),];
         TrophyTrait::new(
@@ -118,7 +118,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected: ('Trophy: invalid desc.',))]
+    #[should_panic(expected: ('TrophyCreation: invalid desc.',))]
     fn test_achievement_creation_new_invalid_description() {
         let tasks: Array<Task> = array![TaskTrait::new(TASK_ID, TOTAL, "TASK DESCRIPTION"),];
         TrophyTrait::new(ID, HIDDEN, INDEX, POINTS, GROUP, ICON, TITLE, "", tasks.span(), "");

@@ -17,7 +17,7 @@ trait IAchiever<TContractState> {
         tasks: Span<Task>,
         data: ByteArray,
     );
-    fn update(self: @TContractState, player_id: felt252, task_id: felt252, count: u32,);
+    fn progress(self: @TContractState, player_id: felt252, task_id: felt252, count: u32,);
 }
 
 #[dojo::contract]
@@ -90,8 +90,8 @@ pub mod Achiever {
                 );
         }
 
-        fn update(self: @ContractState, player_id: felt252, task_id: felt252, count: u32,) {
-            self.achievable.update(self.world_storage(), player_id, task_id, count);
+        fn progress(self: @ContractState, player_id: felt252, task_id: felt252, count: u32,) {
+            self.achievable.progress(self.world_storage(), player_id, task_id, count);
         }
     }
 
