@@ -12,6 +12,8 @@ pub struct TrophyCreation {
     hidden: bool,
     index: u8,
     points: u16,
+    start: u64,
+    end: u64,
     group: felt252,
     icon: felt252,
     title: felt252,

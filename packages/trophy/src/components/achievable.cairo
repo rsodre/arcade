@@ -43,6 +43,8 @@ mod AchievableComponent {
             hidden: bool,
             index: u8,
             points: u16,
+            start: u64,
+            end: u64,
             group: felt252,
             icon: felt252,
             title: felt252,
@@ -54,7 +56,21 @@ mod AchievableComponent {
             let store: Store = StoreTrait::new(world);
 
             // [Event] Emit achievement creation
-            store.create(id, hidden, index, points, group, icon, title, description, tasks, data);
+            store
+                .create(
+                    id,
+                    hidden,
+                    index,
+                    points,
+                    start,
+                    end,
+                    group,
+                    icon,
+                    title,
+                    description,
+                    tasks,
+                    data
+                );
         }
 
         fn progress(
