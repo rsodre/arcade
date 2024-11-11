@@ -12,7 +12,10 @@ mod setup {
     // Dojo imports
 
     use dojo::world::{WorldStorage, WorldStorageTrait};
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait};
+    use dojo_cairo_test::{
+        spawn_test_world, NamespaceDef, ContractDef, TestResource, ContractDefTrait,
+        WorldStorageTestTrait
+    };
 
     // Internal imports
 
@@ -57,18 +60,21 @@ mod setup {
     fn setup_namespace() -> NamespaceDef {
         NamespaceDef {
             namespace: "namespace", resources: [
-                TestResource::Model(models::m_Game::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(models::m_Achievement::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Contract(
-                    ContractDefTrait::new(Controller::TEST_CLASS_HASH, "Controller")
-                        .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())
-                ),
-                TestResource::Contract(
-                    ContractDefTrait::new(Registrer::TEST_CLASS_HASH, "Registrer")
-                        .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span())
-                ),
+                TestResource::Model(models::m_Game::TEST_CLASS_HASH),
+                TestResource::Model(models::m_Achievement::TEST_CLASS_HASH),
+                TestResource::Contract(Controller::TEST_CLASS_HASH),
+                TestResource::Contract(Registrer::TEST_CLASS_HASH),
             ].span()
         }
+    }
+
+    fn setup_contracts() -> Span<ContractDef> {
+        [
+            ContractDefTrait::new(@"namespace", @"Controller")
+                .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span()),
+            ContractDefTrait::new(@"namespace", @"Registrer")
+                .with_writer_of([dojo::utils::bytearray_hash(@"namespace")].span()),
+        ].span()
     }
 
     #[inline]
@@ -77,6 +83,7 @@ mod setup {
         set_contract_address(OWNER());
         let namespace_def = setup_namespace();
         let world = spawn_test_world([namespace_def].span());
+        world.sync_perms_and_inits(setup_contracts());
         // [Setup] Systems
         let (controller_address, _) = world.dns(@"Controller").unwrap();
         let (registrer_address, _) = world.dns(@"Registrer").unwrap();
