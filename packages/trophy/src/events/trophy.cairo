@@ -1,7 +1,7 @@
 // Internal imports
 
-use bushido_trophy::events::index::TrophyCreation;
-use bushido_trophy::types::task::{Task, TaskTrait};
+use arcade_trophy::events::index::TrophyCreation;
+use arcade_trophy::types::task::{Task, TaskTrait};
 
 // Errors
 

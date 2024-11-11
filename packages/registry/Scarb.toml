@@ -1,5 +1,5 @@
 [package]
-name = "bushido_registry"
+name = "arcade_registry"
 version.workspace = true
 
 [dependencies]

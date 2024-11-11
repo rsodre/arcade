@@ -1,6 +1,6 @@
 // Internal imports
 
-use bushido_trophy::events::index::TrophyProgression;
+use arcade_trophy::events::index::TrophyProgression;
 
 // Errors
 

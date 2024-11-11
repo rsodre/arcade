@@ -11,7 +11,7 @@ dev = "sozo clean && sozo build --typescript && sozo migrate plan && sozo migrat
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0" }
-bushido_registry = { path = ".." }
+arcade_registry = { path = ".." }
 starknet = "2.8.4"
 cairo_test = "2.8.4"
 
@@ -21,8 +21,8 @@ dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0" }
 [[target.starknet-contract]]
 build-external-contracts = [
     "dojo::world::world_contract::world",
-    "bushido_registry::models::index::m_Game",
-    "bushido_registry::models::index::m_Achievement",
+    "arcade_registry::models::index::m_Game",
+    "arcade_registry::models::index::m_Achievement",
 ]
 
 [profile.slot]

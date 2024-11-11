@@ -19,8 +19,8 @@ mod setup {
 
     // Internal imports
 
-    use bushido_trophy::events::{index as events};
-    use bushido_trophy::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
+    use arcade_trophy::events::{index as events};
+    use arcade_trophy::tests::mocks::achiever::{Achiever, IAchiever, IAchieverDispatcher};
 
     // Constant
 

@@ -11,12 +11,12 @@ use dojo::event::EventStorage;
 
 // Events imports
 
-use bushido_trophy::events::trophy::{TrophyCreation, TrophyTrait};
-use bushido_trophy::events::progress::{TrophyProgression, ProgressTrait};
+use arcade_trophy::events::trophy::{TrophyCreation, TrophyTrait};
+use arcade_trophy::events::progress::{TrophyProgression, ProgressTrait};
 
 // Internal imports
 
-use bushido_trophy::types::task::{Task, TaskTrait};
+use arcade_trophy::types::task::{Task, TaskTrait};
 
 // Structs
 

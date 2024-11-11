@@ -1,5 +1,5 @@
 [package]
-name = "bushido_trophy"
+name = "arcade_trophy"
 version.workspace = true
 
 [dependencies]

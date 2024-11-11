@@ -10,8 +10,8 @@ use dojo::world::WorldStorage;
 use dojo::model::ModelStorage;
 // Models imports
 
-use bushido_registry::models::game::Game;
-use bushido_registry::models::achievement::Achievement;
+use arcade_registry::models::game::Game;
+use arcade_registry::models::achievement::Achievement;
 
 // Structs
 

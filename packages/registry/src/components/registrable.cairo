@@ -6,9 +6,9 @@ mod RegistrableComponent {
 
     // Internal imports
 
-    use bushido_registry::store::{Store, StoreTrait};
-    use bushido_registry::models::game::{Game, GameTrait, GameAssert};
-    use bushido_registry::models::achievement::{Achievement, AchievementTrait, AchievementAssert};
+    use arcade_registry::store::{Store, StoreTrait};
+    use arcade_registry::models::game::{Game, GameTrait, GameAssert};
+    use arcade_registry::models::achievement::{Achievement, AchievementTrait, AchievementAssert};
 
     // Storage
 

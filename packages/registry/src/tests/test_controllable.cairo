@@ -10,13 +10,13 @@ use starknet::testing;
 
 // Internal imports
 
-use bushido_registry::store::{Store, StoreTrait};
-use bushido_registry::models::game::{Game, GameTrait};
-use bushido_registry::models::achievement::{Achievement, AchievementTrait};
-use bushido_registry::tests::mocks::controller::{
+use arcade_registry::store::{Store, StoreTrait};
+use arcade_registry::models::game::{Game, GameTrait};
+use arcade_registry::models::achievement::{Achievement, AchievementTrait};
+use arcade_registry::tests::mocks::controller::{
     Controller, IControllerDispatcher, IControllerDispatcherTrait
 };
-use bushido_registry::tests::setup::setup::{spawn_game, Systems, Context, OWNER, PLAYER};
+use arcade_registry::tests::setup::setup::{spawn_game, Systems, Context, OWNER, PLAYER};
 
 // Constants
 

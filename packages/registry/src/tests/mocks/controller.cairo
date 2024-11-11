@@ -12,7 +12,7 @@ pub mod Controller {
 
     // Internal imports
 
-    use bushido_registry::components::controllable::ControllableComponent;
+    use arcade_registry::components::controllable::ControllableComponent;
 
     // Local imports
 

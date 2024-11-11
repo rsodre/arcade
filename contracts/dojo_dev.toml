@@ -2,7 +2,7 @@
 name = "Cartridge World"
 description = "Cartridge World Achievements"
 website = "https://github.com/dojoengine/dojo-starter"
-seed = "bushido"
+seed = "arcade"
 
 [world.socials]
 x = "https://x.com/ohayo_dojo"

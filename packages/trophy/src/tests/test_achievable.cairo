@@ -14,13 +14,13 @@ use dojo::world::world::Event;
 
 // Internal imports
 
-use bushido_trophy::types::task::{Task, TaskTrait};
-use bushido_trophy::events::trophy::{TrophyCreation, TrophyTrait};
-use bushido_trophy::events::progress::{TrophyProgression, ProgressTrait};
-use bushido_trophy::tests::mocks::achiever::{
+use arcade_trophy::types::task::{Task, TaskTrait};
+use arcade_trophy::events::trophy::{TrophyCreation, TrophyTrait};
+use arcade_trophy::events::progress::{TrophyProgression, ProgressTrait};
+use arcade_trophy::tests::mocks::achiever::{
     Achiever, IAchieverDispatcher, IAchieverDispatcherTrait
 };
-use bushido_trophy::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
+use arcade_trophy::tests::setup::setup::{spawn_game, clear_events, Systems, PLAYER};
 
 // Constants
 

@@ -1,6 +1,6 @@
 // Internal imports
 
-use bushido_trophy::types::index::Task;
+use arcade_trophy::types::index::Task;
 
 // Errors
 

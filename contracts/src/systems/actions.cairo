@@ -74,8 +74,8 @@ mod Actions {
 
     // Component imports
 
-    use bushido_registry::components::controllable::ControllableComponent;
-    use bushido_registry::components::registrable::RegistrableComponent;
+    use arcade_registry::components::controllable::ControllableComponent;
+    use arcade_registry::components::registrable::RegistrableComponent;
 
     // Local imports
 

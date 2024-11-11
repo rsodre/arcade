@@ -2,7 +2,7 @@
 
 // Internal imports
 
-use bushido_trophy::types::task::Task;
+use arcade_trophy::types::task::Task;
 
 #[derive(Clone, Drop, Serde)]
 #[dojo::event(historical: true)]

@@ -1,7 +1,7 @@
 // Intenral imports
 
-use bushido_registry::models::index::Achievement;
-use bushido_registry::constants;
+use arcade_registry::models::index::Achievement;
+use arcade_registry::constants;
 
 // Errors
 

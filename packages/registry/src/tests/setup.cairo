@@ -19,11 +19,9 @@ mod setup {
 
     // Internal imports
 
-    use bushido_registry::models::{index as models};
-    use bushido_registry::tests::mocks::controller::{
-        Controller, IController, IControllerDispatcher
-    };
-    use bushido_registry::tests::mocks::registrer::{Registrer, IRegistrer, IRegistrerDispatcher};
+    use arcade_registry::models::{index as models};
+    use arcade_registry::tests::mocks::controller::{Controller, IController, IControllerDispatcher};
+    use arcade_registry::tests::mocks::registrer::{Registrer, IRegistrer, IRegistrerDispatcher};
 
     // Constant
 
