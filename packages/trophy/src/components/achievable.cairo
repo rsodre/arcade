@@ -36,6 +36,29 @@ mod AchievableComponent {
     impl InternalImpl<
         TContractState, +HasComponent<TContractState>
     > of InternalTrait<TContractState> {
+        /// Create an achievement
+        ///
+        /// # Arguments
+        ///
+        /// * `self`: The component state.
+        /// * `world`: The world storage.
+        /// * `id`: The achievement identifier, it should be unique.
+        /// * `hidden`: Speicify if you want the achievement to be hidden in the controller UI.
+        /// * `index`: The achievement index which is the page in which the achievement will be
+        /// displayed within the group.
+        /// * `points`: The achievement points to reward the player.
+        /// * `start`: The achievement start timestamp, it should be used for ephemeral
+        /// achievements, `0` for everlasting achievements.
+        /// * `end`: The achievement end timestamp, it should be used for ephemeral achievements,
+        /// `0` for everlasting achievements.
+        /// * `group`: The achievement group, it should be used to group achievements together (see
+        /// also `index` to define multiple pages).
+        /// * `icon`: The achievement icon, it should be a
+        /// [FontAwesome](https://fontawesome.com/icons) icon name (e.g. `fa-trophy`).
+        /// * `title`: The achievement title.
+        /// * `description`: The achievement global description.
+        /// * `tasks`: The achievement tasks (see also `Task` type).
+        /// * `data`: The achievement data, not used yet but could have a future use.
         fn create(
             self: @ComponentState<TContractState>,
             world: WorldStorage,
@@ -73,6 +96,15 @@ mod AchievableComponent {
                 );
         }
 
+        /// Progress on an achievement
+        ///
+        /// # Arguments
+        ///
+        /// * `self`: The component state.
+        /// * `world`: The world storage.
+        /// * `player_id`: The player identifier.
+        /// * `task_id`: The task identifier.
+        /// * `count`: The progression count to add.
         fn progress(
             self: @ComponentState<TContractState>,
             world: WorldStorage,
