@@ -44,17 +44,12 @@ mod AchievableComponent {
         /// * `world`: The world storage.
         /// * `id`: The achievement identifier, it should be unique.
         /// * `hidden`: Speicify if you want the achievement to be hidden in the controller UI.
-        /// * `index`: The achievement index which is the page in which the achievement will be
-        /// displayed within the group.
+        /// * `index`: The achievement index which the page of the achievement group page.
         /// * `points`: The achievement points to reward the player.
-        /// * `start`: The achievement start timestamp, it should be used for ephemeral
-        /// achievements, `0` for everlasting achievements.
-        /// * `end`: The achievement end timestamp, it should be used for ephemeral achievements,
-        /// `0` for everlasting achievements.
-        /// * `group`: The achievement group, it should be used to group achievements together (see
-        /// also `index` to define multiple pages).
-        /// * `icon`: The achievement icon, it should be a
-        /// [FontAwesome](https://fontawesome.com/icons) icon name (e.g. `fa-trophy`).
+        /// * `start`: The achievement start timestamp, `0` for everlasting achievements.
+        /// * `end`: The achievement end timestamp, `0` for everlasting achievements.
+        /// * `group`: The achievement group, it should be used to group achievements together.
+        /// * `icon`: The achievement icon, it should be a FontAwesome icon name (e.g. `fa-trophy`).
         /// * `title`: The achievement title.
         /// * `description`: The achievement global description.
         /// * `tasks`: The achievement tasks (see also `Task` type).
