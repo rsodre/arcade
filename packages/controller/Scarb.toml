@@ -1,5 +1,5 @@
 [package]
-name = "registry"
+name = "controller"
 version.workspace = true
 
 [dependencies]
