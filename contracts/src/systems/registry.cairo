@@ -313,7 +313,7 @@ mod Registry {
             let caller: felt252 = starknet::get_caller_address().into();
             self.trackable.remove(world, caller, world_address, namespace, identifier);
         }
-        
+
         fn pin(self: @ContractState, achievement_id: felt252) {
             let world: WorldStorage = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
