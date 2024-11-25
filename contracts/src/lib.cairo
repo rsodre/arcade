@@ -1,7 +1,6 @@
 mod constants;
 
 mod systems {
-    mod pinner;
     mod registry;
     mod slot;
     mod society;

@@ -2,6 +2,8 @@
 
 #[starknet::interface]
 trait IRegistry<TContractState> {
+    fn pin(self: @TContractState, achievement_id: felt252);
+    fn unpin(self: @TContractState, achievement_id: felt252);
     fn register_game(
         self: @TContractState,
         world_address: felt252,
@@ -79,6 +81,7 @@ mod Registry {
 
     // Component imports
 
+    use achievement::components::pinnable::PinnableComponent;
     use registry::components::initializable::InitializableComponent;
     use registry::components::registerable::RegisterableComponent;
     use registry::components::trackable::TrackableComponent;
@@ -99,6 +102,8 @@ mod Registry {
     impl RegisterableImpl = RegisterableComponent::InternalImpl<ContractState>;
     component!(path: TrackableComponent, storage: trackable, event: TrackableEvent);
     impl TrackableImpl = TrackableComponent::InternalImpl<ContractState>;
+    component!(path: PinnableComponent, storage: pinnable, event: PinnableEvent);
+    impl PinnableInternalImpl = PinnableComponent::InternalImpl<ContractState>;
 
     // Storage
 
@@ -110,6 +115,8 @@ mod Registry {
         registerable: RegisterableComponent::Storage,
         #[substorage(v0)]
         trackable: TrackableComponent::Storage,
+        #[substorage(v0)]
+        pinnable: PinnableComponent::Storage,
     }
 
     // Events
@@ -123,6 +130,8 @@ mod Registry {
         RegisterableEvent: RegisterableComponent::Event,
         #[flat]
         TrackableEvent: TrackableComponent::Event,
+        #[flat]
+        PinnableEvent: PinnableComponent::Event,
     }
 
     // Constructor
@@ -303,6 +312,18 @@ mod Registry {
             let world = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
             self.trackable.remove(world, caller, world_address, namespace, identifier);
+        }
+        
+        fn pin(self: @ContractState, achievement_id: felt252) {
+            let world: WorldStorage = self.world_storage();
+            let caller: felt252 = starknet::get_caller_address().into();
+            self.pinnable.pin(world, caller, achievement_id);
+        }
+
+        fn unpin(self: @ContractState, achievement_id: felt252) {
+            let world: WorldStorage = self.world_storage();
+            let caller: felt252 = starknet::get_caller_address().into();
+            self.pinnable.unpin(world, caller, achievement_id);
         }
     }
 

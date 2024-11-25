@@ -29,7 +29,6 @@ mod setup {
     // Internal imports
 
     use arcade::constants::NAMESPACE;
-    use arcade::systems::pinner::{Pinner, IPinnerDispatcher};
     use arcade::systems::registry::{Registry, IRegistryDispatcher};
     use arcade::systems::slot::{Slot, ISlotDispatcher};
     use arcade::systems::society::{Society, ISocietyDispatcher};
@@ -47,7 +46,6 @@ mod setup {
 
     #[derive(Copy, Drop)]
     struct Systems {
-        pinner: IPinnerDispatcher,
         registry: IRegistryDispatcher,
         slot: ISlotDispatcher,
         society: ISocietyDispatcher,
@@ -78,7 +76,6 @@ mod setup {
                 TestResource::Model(society_models::m_Member::TEST_CLASS_HASH),
                 TestResource::Event(society_events::e_Follow::TEST_CLASS_HASH),
                 TestResource::Event(achievement_events::e_TrophyPinning::TEST_CLASS_HASH),
-                TestResource::Contract(Pinner::TEST_CLASS_HASH),
                 TestResource::Contract(Registry::TEST_CLASS_HASH),
                 TestResource::Contract(Slot::TEST_CLASS_HASH),
                 TestResource::Contract(Society::TEST_CLASS_HASH),
@@ -89,8 +86,6 @@ mod setup {
 
     fn setup_contracts() -> Span<ContractDef> {
         [
-            ContractDefTrait::new(@NAMESPACE(), @"Pinner")
-                .with_writer_of([dojo::utils::bytearray_hash(@NAMESPACE())].span()),
             ContractDefTrait::new(@NAMESPACE(), @"Registry")
                 .with_writer_of([dojo::utils::bytearray_hash(@NAMESPACE())].span())
                 .with_init_calldata(array![OWNER().into()].span()),
@@ -112,13 +107,11 @@ mod setup {
         let world = spawn_test_world([namespace_def].span());
         world.sync_perms_and_inits(setup_contracts());
         // [Setup] Systems
-        let (pinner_address, _) = world.dns(@"Pinner").unwrap();
         let (registry_address, _) = world.dns(@"Registry").unwrap();
         let (slot_address, _) = world.dns(@"Slot").unwrap();
         let (society_address, _) = world.dns(@"Society").unwrap();
         let (wallet_address, _) = world.dns(@"Wallet").unwrap();
         let systems = Systems {
-            pinner: IPinnerDispatcher { contract_address: pinner_address },
             registry: IRegistryDispatcher { contract_address: registry_address },
             slot: ISlotDispatcher { contract_address: slot_address },
             society: ISocietyDispatcher { contract_address: society_address },
