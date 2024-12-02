@@ -1,6 +1,6 @@
 [package]
 cairo-version = "2.8.4"
-name = "game_center"
+name = "arcade"
 version = "0.0.0"
 
 [cairo]
@@ -11,7 +11,11 @@ dev = "sozo clean && sozo build --typescript && sozo migrate plan && sozo migrat
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.3" }
-arcade_registry = { path = ".." }
+achievement = { path = ".." }
+controller = { path = ".." }
+provider = { path = ".." }
+registry = { path = ".." }
+society = { path = ".." }
 starknet = "2.8.4"
 cairo_test = "2.8.4"
 
@@ -21,8 +25,21 @@ dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.3" }
 [[target.starknet-contract]]
 build-external-contracts = [
     "dojo::world::world_contract::world",
-    "arcade_registry::models::index::m_Game",
-    "arcade_registry::models::index::m_Achievement",
+    "achievement::events::index::e_TrophyPinning",
+    "controller::models::index::m_Account",
+    "controller::models::index::m_Controller",
+    "controller::models::index::m_Signer",
+    "provider::models::index::m_Deployment",
+    "provider::models::index::m_Factory",
+    "provider::models::index::m_Team",
+    "provider::models::index::m_Teammate",
+    "registry::models::index::m_Access",
+    "registry::models::index::m_Achievement",
+    "registry::models::index::m_Game",
+    "society::models::index::m_Alliance",
+    "society::models::index::m_Guild",
+    "society::models::index::m_Member",
+    "society::events::index::e_Follow",
 ]
 
 [profile.slot]

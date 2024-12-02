@@ -2,7 +2,7 @@
 version = 1
 
 [[package]]
-name = "arcade_registry"
+name = "achievement"
 version = "0.0.0"
 dependencies = [
  "dojo",
@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "arcade_trophy"
+name = "controller"
 version = "0.0.0"
 dependencies = [
  "dojo",
@@ -37,3 +37,28 @@ dependencies = [
 name = "dojo_plugin"
 version = "2.8.4"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.0.3#c65c25788d900325fa5e6e9d464da633cfabc468"
+
+[[package]]
+name = "provider"
+version = "0.0.0"
+dependencies = [
+ "dojo",
+ "dojo_cairo_test",
+]
+
+[[package]]
+name = "registry"
+version = "0.0.0"
+dependencies = [
+ "dojo",
+ "dojo_cairo_test",
+]
+
+[[package]]
+name = "society"
+version = "0.0.0"
+dependencies = [
+ "dojo",
+ "dojo_cairo_test",
+ "registry",
+]

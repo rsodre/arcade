@@ -1,5 +1,11 @@
 [workspace]
-members = ["packages/trophy", "packages/registry"]
+members = [
+    "packages/controller",
+    "packages/provider",
+    "packages/registry",
+    "packages/society",
+    "packages/achievement",
+]
 description = "Dojo achievement library"
 homepage = "https://github.com/cartridge-gg/arcade/"
 cairo-version = "2.8.4"

@@ -1,0 +1,10 @@
+[package]
+name = "society"
+version.workspace = true
+
+[dependencies]
+registry = { path = "../registry" }
+dojo.workspace = true
+
+[dev-dependencies]
+dojo_cairo_test.workspace = true
