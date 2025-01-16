@@ -1,11 +1,13 @@
 import { NAMESPACE } from "../../constants";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity, QueryBuilder, SDK, StandardizedQueryResult } from "@dojoengine/sdk";
+import { ParsedEntity } from "@dojoengine/sdk";
 import { Metadata, Socials } from "../../classes";
 
 const MODEL_NAME = "Guild";
 
 export class GuildModel {
+  type = MODEL_NAME;
+
   constructor(
     public id: number,
     public open: boolean,
@@ -31,75 +33,27 @@ export class GuildModel {
     const socials = Socials.from(model.socials);
     return new GuildModel(id, open, free, guildCount, metadata, socials);
   }
+
+  static isType(model: GuildModel) {
+    return model.type === MODEL_NAME;
+  }
 }
 
 export const Guild = {
-  sdk: undefined as SDK<SchemaType> | undefined,
-  unsubscribe: undefined as (() => void) | undefined,
-
-  init: (sdk: SDK<SchemaType>) => {
-    Guild.sdk = sdk;
+  parse: (entity: ParsedEntity<SchemaType>) => {
+    return GuildModel.from(entity.models[NAMESPACE][MODEL_NAME]);
   },
 
-  fetch: async (callback: (models: GuildModel[]) => void) => {
-    if (!Guild.sdk) return;
-
-    const wrappedCallback = ({
-      data,
-      error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
-      const models = (data as ParsedEntity<SchemaType>[]).map((entity) =>
-        GuildModel.from(entity.models[NAMESPACE][MODEL_NAME]),
-      );
-      callback(models);
-    };
-
-    const query = new QueryBuilder<SchemaType>()
-      .namespace(NAMESPACE, (namespace) => namespace.entity(MODEL_NAME, (entity) => entity.neq("id", "0x0")))
-      .build();
-
-    await Guild.sdk.getEntities({ query, callback: wrappedCallback });
+  getModelName: () => {
+    return MODEL_NAME;
   },
 
-  sub: async (callback: (event: GuildModel) => void) => {
-    if (!Guild.sdk) return;
-
-    const wrappedCallback = ({
-      data,
-      error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
-      if (error) {
-        console.error("Error subscribing to entities:", error);
-        return;
-      }
-      if (!data || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
-      const entity = (data as ParsedEntity<SchemaType>[])[0];
-      callback(GuildModel.from(entity.models[NAMESPACE][MODEL_NAME]));
-    };
-
-    const query = new QueryBuilder<SchemaType>()
-      .namespace(NAMESPACE, (namespace) => namespace.entity(MODEL_NAME, (entity) => entity.neq("id", "0x0")))
-      .build();
-
-    const subscription = await Guild.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
-    Guild.unsubscribe = () => subscription.cancel();
+  getQueryNamespace: () => {
+    return (namespace: any) => namespace.entity(MODEL_NAME, Guild.getQueryEntity());
   },
 
-  unsub: () => {
-    if (!Guild.unsubscribe) return;
-    Guild.unsubscribe();
-    Guild.unsubscribe = undefined;
+  getQueryEntity: () => {
+    return (entity: any) => entity.neq("id", "0x0");
   },
 
   getMethods: () => [

@@ -4,19 +4,15 @@ import { NAMESPACE } from "../../constants";
 import { getContractByName } from "../../provider/helpers";
 import { Game } from "./game";
 import { Achievement } from "./achievement";
+import { DefaultRegistryOptions, RegistryOptions } from "./options";
 
 const CONTRACT_NAME = "Registry";
 const CONTRACT_TAG = `${NAMESPACE}-${CONTRACT_NAME}`;
 const CONTRACT_DESCRIPTION = "Registry contract for games and achievements";
 
-export type RegistryOptions = {
-  game?: boolean;
-  achievement?: boolean;
-};
-
 export const getRegistryPolicies = (
   chainId: constants.StarknetChainId,
-  options: RegistryOptions = { game: true, achievement: true },
+  options: RegistryOptions = DefaultRegistryOptions,
 ) => {
   const config = configs[chainId];
   const address: string = getContractByName(config.manifest, CONTRACT_TAG);

@@ -1,11 +1,13 @@
 import { NAMESPACE } from "../../constants";
 import { addAddressPadding } from "starknet";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity, QueryBuilder, SDK, StandardizedQueryResult } from "@dojoengine/sdk";
+import { ParsedEntity } from "@dojoengine/sdk";
 
 const MODEL_NAME = "TrophyPinning";
 
 export class PinEvent {
+  type = MODEL_NAME;
+
   constructor(
     public playerId: string,
     public achievementId: string,
@@ -22,75 +24,23 @@ export class PinEvent {
     const time = Number(model.time);
     return new PinEvent(playerId, achievementId, time);
   }
+
+  static isType(model: PinEvent) {
+    return model.type === MODEL_NAME;
+  }
 }
 
 export const Pin = {
-  sdk: undefined as SDK<SchemaType> | undefined,
-  unsubscribe: undefined as (() => void) | undefined,
-
-  init: (sdk: SDK<SchemaType>) => {
-    Pin.sdk = sdk;
+  parse: (entity: ParsedEntity<SchemaType>) => {
+    return PinEvent.from(entity.models[NAMESPACE][MODEL_NAME]);
   },
 
-  fetch: async (callback: (models: PinEvent[]) => void) => {
-    if (!Pin.sdk) return;
-
-    const wrappedCallback = ({
-      data,
-      error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
-      const models = (data as ParsedEntity<SchemaType>[]).map((entity) =>
-        PinEvent.from(entity.models[NAMESPACE][MODEL_NAME]),
-      );
-      callback(models);
-    };
-
-    const query = new QueryBuilder<SchemaType>()
-      .namespace(NAMESPACE, (namespace) => namespace.entity(MODEL_NAME, (entity) => entity.neq("player_id", "0x0")))
-      .build();
-
-    await Pin.sdk.getEventMessages({ query, callback: wrappedCallback });
+  getModelName: () => {
+    return MODEL_NAME;
   },
 
-  sub: async (callback: (event: PinEvent) => void) => {
-    if (!Pin.sdk) return;
-
-    const wrappedCallback = ({
-      data,
-      error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
-      if (error) {
-        console.error("Error subscribing to entities:", error);
-        return;
-      }
-      if (!data || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
-      const entity = (data as ParsedEntity<SchemaType>[])[0];
-      callback(PinEvent.from(entity.models[NAMESPACE][MODEL_NAME]));
-    };
-
-    const query = new QueryBuilder<SchemaType>()
-      .namespace(NAMESPACE, (namespace) => namespace.entity(MODEL_NAME, (entity) => entity.neq("player_id", "0x0")))
-      .build();
-
-    const subscription = await Pin.sdk.subscribeEventQuery({ query, callback: wrappedCallback });
-    Pin.unsubscribe = () => subscription.cancel();
-  },
-
-  unsub: () => {
-    if (!Pin.unsubscribe) return;
-    Pin.unsubscribe();
-    Pin.unsubscribe = undefined;
+  getQueryEntity: () => {
+    return (entity: any) => entity.neq("player_id", "0x0");
   },
 
   getMethods: () => [
