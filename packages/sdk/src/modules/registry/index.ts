@@ -78,7 +78,7 @@ export const Registry = {
         console.error("Error subscribing to entities:", error);
         return;
       }
-      if (!data || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
+      if (!data || data.length === 0 || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
       if (entity.models[NAMESPACE][Achievement.getModelName()]) {
         callback([Achievement.parse(entity)]);

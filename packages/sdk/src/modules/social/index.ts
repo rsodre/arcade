@@ -114,7 +114,7 @@ export const Social = {
       callback(events);
     };
     const query = Social.getEventQuery(options);
-    await Social.sdk.getEventMessages({ query, callback: wrappedCallback });
+    await Social.sdk.getEventMessages({ query, historical: false, callback: wrappedCallback });;
   },
 
   subEntities: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {
@@ -131,7 +131,7 @@ export const Social = {
         console.error("Error subscribing to entities:", error);
         return;
       }
-      if (!data || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
+      if (!data || data.length === 0 || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
       if (entity.models[NAMESPACE][Alliance.getModelName()]) {
         callback([Alliance.parse(entity)]);
@@ -164,7 +164,7 @@ export const Social = {
         console.error("Error subscribing to entities:", error);
         return;
       }
-      if (!data || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
+      if (!data || data.length === 0 || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
       if (entity.models[NAMESPACE][Pin.getModelName()]) {
         callback([Pin.parse(entity)]);
