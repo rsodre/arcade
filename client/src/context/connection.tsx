@@ -15,7 +15,7 @@ import {
 import { Call, constants, getChecksumAddress, RpcProvider } from "starknet";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-type ConnectionContextType = {
+export type ConnectionContextType = {
   origin: string;
   parent: ParentMethods;
   provider: RpcProvider;
