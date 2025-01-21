@@ -22,6 +22,7 @@ use registry::tests::setup::setup::{spawn, Systems, Context, PLAYER, OWNER};
 const WORLD_ADDRESS: felt252 = 'WORLD';
 const NAMEPSACE: felt252 = 'NAMESPACE';
 const PROJECT: felt252 = 'PROJECT';
+const PRESET: felt252 = 'PRESET';
 
 // Helpers
 
@@ -33,6 +34,7 @@ fn register(systems: @Systems) {
             WORLD_ADDRESS,
             NAMEPSACE,
             PROJECT,
+            PRESET,
             Option::None,
             Option::None,
             Option::None,
