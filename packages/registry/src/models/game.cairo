@@ -79,6 +79,7 @@ impl GameImpl of GameTrait {
     #[inline]
     fn update(ref self: Game, preset: felt252, metadata: Metadata, socials: Socials) {
         // [Effect] Update Game
+        self.preset = preset;
         self.metadata = metadata.jsonify();
         self.socials = socials.jsonify();
         // [Effect] Reset visibility status
