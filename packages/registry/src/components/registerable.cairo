@@ -35,6 +35,7 @@ mod RegisterableComponent {
             world_address: felt252,
             namespace: felt252,
             project: felt252,
+            preset: felt252,
             color: Option<felt252>,
             name: Option<ByteArray>,
             description: Option<ByteArray>,
@@ -57,7 +58,7 @@ mod RegisterableComponent {
             let metadata = MetadataTrait::new(color, name, description, image, banner);
             let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
             let game = GameTrait::new(
-                world_address, namespace, project, metadata, socials, caller_id
+                world_address, namespace, project, preset, metadata, socials, caller_id
             );
 
             // [Effect] Store game
@@ -70,6 +71,7 @@ mod RegisterableComponent {
             caller_id: felt252,
             world_address: felt252,
             namespace: felt252,
+            preset: felt252,
             color: Option<felt252>,
             name: Option<ByteArray>,
             description: Option<ByteArray>,
@@ -94,7 +96,7 @@ mod RegisterableComponent {
             // [Effect] Update game
             let metadata = MetadataTrait::new(color, name, description, image, banner);
             let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
-            game.update(metadata, socials);
+            game.update(preset, metadata, socials);
 
             // [Effect] Update game
             store.set_game(@game);

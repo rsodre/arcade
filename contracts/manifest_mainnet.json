@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x45575a88cc5cef1e444c77ce60b7b4c9e73a01cbbe20926d5a4c72a94011410",
-    "address": "0x385b375729599785931a46a17cf3101288e97d9c1fbdcca58fb5dbcb45c89ca",
-    "seed": "arcade",
+    "address": "0x389e47f34690ea699218305cc28cc910028533d61d27773e1db20e0b78e7b65",
+    "seed": "Arcade",
     "name": "Cartridge World",
     "entrypoints": [
       "uuid",
@@ -1252,8 +1252,8 @@
   },
   "contracts": [
     {
-      "address": "0x3af383ca009f2066f44ec9c6e760072b58142468bdf2b2b87053e4ee0012ed2",
-      "class_hash": "0xaf5d998b4a58c533dece64bafc58e17915318454776611ae5b1684b775248f",
+      "address": "0xc46f7e578f31c3fa6bb669164f04d696427818ba69f177ddc152f31ed5f119",
+      "class_hash": "0x5e1763655cb615aa7e6296c0ee1350198266ccf335c191d7cc0cb3b2c203341",
       "abi": [
         {
           "type": "impl",
@@ -1328,30 +1328,6 @@
           "items": [
             {
               "type": "function",
-              "name": "pin",
-              "inputs": [
-                {
-                  "name": "achievement_id",
-                  "type": "core::felt252"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "external"
-            },
-            {
-              "type": "function",
-              "name": "unpin",
-              "inputs": [
-                {
-                  "name": "achievement_id",
-                  "type": "core::felt252"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "external"
-            },
-            {
-              "type": "function",
               "name": "register_game",
               "inputs": [
                 {
@@ -1364,6 +1340,10 @@
                 },
                 {
                   "name": "project",
+                  "type": "core::felt252"
+                },
+                {
+                  "name": "preset",
                   "type": "core::felt252"
                 },
                 {
@@ -1420,6 +1400,10 @@
                 },
                 {
                   "name": "namespace",
+                  "type": "core::felt252"
+                },
+                {
+                  "name": "preset",
                   "type": "core::felt252"
                 },
                 {
@@ -1806,12 +1790,6 @@
         },
         {
           "type": "event",
-          "name": "achievement::components::pinnable::PinnableComponent::Event",
-          "kind": "enum",
-          "variants": []
-        },
-        {
-          "type": "event",
           "name": "arcade::systems::registry::Registry::Event",
           "kind": "enum",
           "variants": [
@@ -1839,24 +1817,17 @@
               "name": "TrackableEvent",
               "type": "registry::components::trackable::TrackableComponent::Event",
               "kind": "flat"
-            },
-            {
-              "name": "PinnableEvent",
-              "type": "achievement::components::pinnable::PinnableComponent::Event",
-              "kind": "flat"
             }
           ]
         }
       ],
       "init_calldata": [
-        "0x059b1a0c489b635d7c7f43594d187362ddd2dcea6c82db4eef2579fd185b3753"
+        "0x041aad5a7493b75f240f418cb5f052d1a68981af21e813ed0a35e96d3e83123b"
       ],
       "tag": "ARCADE-Registry",
       "selector": "0x54d3bcd441104e039ceaec4a413e72de393b65f79d1df74dc3346dc7f861173",
       "systems": [
         "dojo_init",
-        "pin",
-        "unpin",
         "register_game",
         "update_game",
         "publish_game",
@@ -1875,7 +1846,7 @@
       ]
     },
     {
-      "address": "0x73576c09ed2112c95cd9c7a3aa6de2f0094edfe0acc569c2f79cb56147885ea",
+      "address": "0x76c0c3d2c504f9fedc98b238ca010916d62f8ed563bbcf9b5dd8bef927fd8aa",
       "class_hash": "0x2d7bba9a10d280fc47fef76ad11406f6fcc0bec0a173e3e169c4b05a111bb83",
       "abi": [
         {
@@ -2161,8 +2132,8 @@
       ]
     },
     {
-      "address": "0x259a19cf745d528e85492524d3d8c4721b1357fdad7538d7be22e88208fd89b",
-      "class_hash": "0x3fdbf2e7742eac51ec9bca06796e01d2e0dd9bbfdf26978df76fab130dba9d9",
+      "address": "0x4d776373427434a22f7d60d0f7fe0e336fd830edf4294acec33d9f2e1275327",
+      "class_hash": "0x7c1d38f9d0fd0327e7a693a8280b0ef66e3d5b1ccf3d5ccc19d22ccd3af7bdd",
       "abi": [
         {
           "type": "impl",
@@ -2237,6 +2208,30 @@
           "type": "interface",
           "name": "arcade::systems::social::ISocial",
           "items": [
+            {
+              "type": "function",
+              "name": "pin",
+              "inputs": [
+                {
+                  "name": "achievement_id",
+                  "type": "core::felt252"
+                }
+              ],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "unpin",
+              "inputs": [
+                {
+                  "name": "achievement_id",
+                  "type": "core::felt252"
+                }
+              ],
+              "outputs": [],
+              "state_mutability": "external"
+            },
             {
               "type": "function",
               "name": "follow",
@@ -2644,6 +2639,12 @@
         },
         {
           "type": "event",
+          "name": "achievement::components::pinnable::PinnableComponent::Event",
+          "kind": "enum",
+          "variants": []
+        },
+        {
+          "type": "event",
           "name": "social::components::allianceable::AllianceableComponent::Event",
           "kind": "enum",
           "variants": []
@@ -2676,6 +2677,11 @@
               "kind": "nested"
             },
             {
+              "name": "PinnableEvent",
+              "type": "achievement::components::pinnable::PinnableComponent::Event",
+              "kind": "flat"
+            },
+            {
               "name": "AllianceableEvent",
               "type": "social::components::allianceable::AllianceableComponent::Event",
               "kind": "flat"
@@ -2697,6 +2703,8 @@
       "tag": "ARCADE-Social",
       "selector": "0x28532a65d3bfdb030133a56031e467c489058fee53a3bd903adc719735aa6c5",
       "systems": [
+        "pin",
+        "unpin",
         "follow",
         "unfollow",
         "create_alliance",
@@ -2723,7 +2731,7 @@
       ]
     },
     {
-      "address": "0x764c8b778e11a48cd6c6f626eaa1b515c272a3ee3c52de2b13bd10969afec38",
+      "address": "0x4486181df39da00d44b9cfb743962a473e3e955bb85390c570ffcd6cdeb6c47",
       "class_hash": "0x580ba5d9a580a061630f436f0565dc5bb048f5daee84d79741fda5ce765c2f",
       "abi": [
         {
@@ -2965,7 +2973,7 @@
     },
     {
       "members": [],
-      "class_hash": "0x2fd5d2cccf18fcf8c974292188bd6fef67c7c0ea20029e3c408e78d786b0a2e",
+      "class_hash": "0x5876a589e9560234a646049af8ad29933dfee9f97ac5f12648b60d572f0fac5",
       "tag": "ARCADE-Game",
       "selector": "0x6143bc86ed1a08df992c568392c454a92ef7e7b5ba08e9bf75643cf5cfc8b14"
     },

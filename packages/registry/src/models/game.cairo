@@ -29,6 +29,7 @@ impl GameImpl of GameTrait {
         world_address: felt252,
         namespace: felt252,
         project: felt252,
+        preset: felt252,
         metadata: Metadata,
         socials: Socials,
         owner: felt252,
@@ -48,6 +49,7 @@ impl GameImpl of GameTrait {
             whitelisted: false,
             karma: 0,
             priority: 0,
+            preset: preset,
             socials: socials.jsonify(),
             metadata: metadata.jsonify(),
             owner: owner,
@@ -75,7 +77,7 @@ impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn update(ref self: Game, metadata: Metadata, socials: Socials) {
+    fn update(ref self: Game, preset: felt252, metadata: Metadata, socials: Socials) {
         // [Effect] Update Game
         self.metadata = metadata.jsonify();
         self.socials = socials.jsonify();
@@ -187,8 +189,8 @@ mod tests {
     const WORLD_ADDRESS: felt252 = 'WORLD';
     const NAMESPACE: felt252 = 'NAMESPACE';
     const PROJECT: felt252 = 'PROJECT';
+    const PRESET: felt252 = 'PRESET';
     const OWNER: felt252 = 'OWNER';
-
     #[test]
     fn test_game_new() {
         let metadata = core::Default::default();
@@ -197,6 +199,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: metadata.clone(),
             socials: socials.clone(),
             owner: OWNER,
@@ -209,6 +212,7 @@ mod tests {
         assert_eq!(game.whitelisted, false);
         assert_eq!(game.karma, 0);
         assert_eq!(game.priority, 0);
+        assert_eq!(game.preset, PRESET);
         assert_eq!(game.socials, socials.clone().jsonify());
         assert_eq!(game.metadata, metadata.clone().jsonify());
         assert_eq!(game.owner, OWNER);
@@ -220,6 +224,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -234,6 +239,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -250,17 +256,20 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
         );
+        let preset = 'SETPRE';
         let metadata = MetadataTrait::new(
             Option::Some('123456'), Option::None, Option::None, Option::None, Option::None
         );
         let socials = SocialsTrait::new(
             Option::Some("discord"), Option::None, Option::None, Option::None, Option::None
         );
-        game.update(metadata.clone(), socials.clone());
+        game.update(preset, metadata.clone(), socials.clone());
+        assert_eq!(game.preset, preset);
         assert_eq!(game.metadata, metadata.clone().jsonify());
         assert_eq!(game.socials, socials.clone().jsonify());
     }
@@ -271,6 +280,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -285,6 +295,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -300,6 +311,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -315,6 +327,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -331,6 +344,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -348,6 +362,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -362,6 +377,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -407,6 +423,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,
@@ -423,6 +440,7 @@ mod tests {
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
             project: PROJECT,
+            preset: PRESET,
             metadata: core::Default::default(),
             socials: core::Default::default(),
             owner: OWNER,

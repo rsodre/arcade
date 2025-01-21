@@ -21,6 +21,7 @@ pub struct Game {
     whitelisted: bool,
     priority: u8,
     karma: u16,
+    preset: felt252,
     metadata: ByteArray,
     socials: ByteArray,
     owner: felt252,

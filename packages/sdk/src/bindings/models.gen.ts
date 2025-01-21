@@ -147,6 +147,7 @@ export interface Game {
   world_address: BigNumberish;
   namespace: BigNumberish;
   project: BigNumberish;
+  preset: BigNumberish;
   active: boolean;
   published: boolean;
   whitelisted: boolean;
@@ -160,6 +161,7 @@ export interface Game {
 // Type definition for `registry::models::index::GameValue` struct
 export interface GameValue {
   project: BigNumberish;
+  preset: BigNumberish;
   active: boolean;
   published: boolean;
   whitelisted: boolean;
@@ -396,6 +398,7 @@ export const schema: SchemaType = {
         "world_address",
         "namespace",
         "project",
+        "preset",
         "active",
         "published",
         "whitelisted",
@@ -408,6 +411,7 @@ export const schema: SchemaType = {
       world_address: 0,
       namespace: 0,
       project: 0,
+      preset: 0,
       active: false,
       published: false,
       whitelisted: false,
@@ -420,6 +424,7 @@ export const schema: SchemaType = {
     GameValue: {
       fieldOrder: [
         "project",
+        "preset",
         "active",
         "published",
         "whitelisted",
@@ -430,6 +435,7 @@ export const schema: SchemaType = {
         "owner",
       ],
       project: 0,
+      preset: 0,
       active: false,
       published: false,
       whitelisted: false,
