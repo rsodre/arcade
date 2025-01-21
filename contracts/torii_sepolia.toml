@@ -1,6 +1,6 @@
 # db_dir = "./torii-db"
 rpc = "https://api.cartridge.gg/x/starknet/sepolia"
-world = "0x385b375729599785931a46a17cf3101288e97d9c1fbdcca58fb5dbcb45c89ca"
+world_address = "0x389e47f34690ea699218305cc28cc910028533d61d27773e1db20e0b78e7b65"
 
 [indexing]
 events_chunk_size = 1024
@@ -13,4 +13,4 @@ contracts = []
 
 [events]
 raw = true
-historical = ["ARCADE-TrophyCreation", "ARCADE-TrophyProgression"]
+historical = ["ARCADE-TrophyProgression"]
