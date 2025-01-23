@@ -5,6 +5,7 @@ import {
   CardTitle,
   CardListContent,
   CardListItem,
+  ScrollArea,
 } from "@cartridge/ui-next";
 import { Balance, ERC20Metadata, useCountervalue } from "@cartridge/utils";
 import { TokenPair } from "@cartridge/utils/api/cartridge";
@@ -14,6 +15,7 @@ import { useMemo } from "react";
 import { CoinsIcon } from "@cartridge/ui-next";
 import ControllerConnector from "@cartridge/connector/controller";
 import { useAccount } from "@starknet-react/core";
+import { ERC20_ADDRESSES } from "@/constants";
 
 export const Inventory = () => {
   return (
@@ -24,23 +26,14 @@ export const Inventory = () => {
 };
 
 export const Tokens = () => {
-  const tokenAddresses = useMemo(
-    () => [
-      "0x061c54ec0285bc41ca6823c9a6758cb3555cb1d2479f3758dadd0f6f6a94c6bd",
-      "0x019c92fa87f4d5e3be25c3dd6a284f30282a07e87cd782f5fd387b82c8142017",
-      "0x027ef4670397069d7d5442cb7945b27338692de0d8896bdb15e6400cf5249f94",
-      "0x044e6bcc627e6201ce09f781d1aae44ea4c21c2fdef299e34fce55bef2d02210",
-    ],
-    [],
-  );
-  const erc20 = useTokens(undefined, tokenAddresses);
+  const erc20 = useTokens(undefined, ERC20_ADDRESSES);
 
   const tokens = useMemo(
     () =>
       erc20.data
         .filter(
           (token) =>
-            !tokenAddresses.includes(token.meta.address) ||
+            !ERC20_ADDRESSES.includes(token.meta.address) ||
             token.balance.value > 0n,
         )
         .map((t) => ({
@@ -56,10 +49,12 @@ export const Tokens = () => {
         <CardTitle>Tokens</CardTitle>
       </CardHeader>
 
-      <CardListContent>
-        {tokens.map((token) => (
-          <TokenCardContent token={token} key={token.meta.address} />
-        ))}
+      <CardListContent className="h-[175px]">
+        <ScrollArea>
+          {tokens.map((token) => (
+            <TokenCardContent token={token} key={token.meta.address} />
+          ))}
+        </ScrollArea>
       </CardListContent>
     </Card>
   );
@@ -88,7 +83,7 @@ function TokenCardContent({
 
   return (
     <CardListItem
-      icon={token.meta.logoUrl ?? <CoinsIcon variant="line" />}
+      icon={<TokenIcon logoUrl={token.meta.logoUrl} />}
       className="hover:opacity-80"
       onClick={handleClick}
     >
@@ -105,3 +100,15 @@ function TokenCardContent({
     </CardListItem>
   );
 }
+
+const TokenIcon = ({ logoUrl }: { logoUrl: string | undefined }) => {
+  return (
+    <div className="h-7 w-7 p-0.5 flex items-center justify-center rounded-full overflow-hidden bg-quaternary">
+      {logoUrl ? (
+        <img src={logoUrl} alt="token" />
+      ) : (
+        <CoinsIcon variant="line" />
+      )}
+    </div>
+  );
+};

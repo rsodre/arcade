@@ -80,7 +80,7 @@ export const Game = ({
       <div className="flex items-center gap-x-2">
         <div
           className={cn(
-            "h-8 w-8 flex items-center justify-center rounded-lg",
+            "h-8 w-8 flex items-center justify-center rounded-md",
             active ? "bg-quinary" : "bg-quaternary",
           )}
         >

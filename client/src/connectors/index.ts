@@ -6,12 +6,13 @@ import {
   ProviderOptions,
 } from "@cartridge/controller";
 import { getSocialPolicies, getRegistryPolicies } from "@bal7hazar/arcade-sdk";
+import { ERC20_ADDRESSES } from "@/constants";
 
-const chainId = constants.StarknetChainId.SN_SEPOLIA;
+const chainId = constants.StarknetChainId.SN_MAIN;
 
 const provider: ProviderOptions = {
   defaultChainId: chainId,
-  chains: [{ rpcUrl: import.meta.env.VITE_RPC_SEPOLIA }],
+  chains: [{ rpcUrl: import.meta.env.VITE_RPC_URL }],
 };
 
 const keychain: KeychainOptions = {
@@ -27,9 +28,7 @@ const profile: ProfileOptions = {
   slot: "ryomainnet",
   namespace: "dopewars",
   tokens: {
-    erc20: [
-      "0x0124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49",
-    ],
+    erc20: ERC20_ADDRESSES,
   },
 };
 

@@ -43,7 +43,7 @@ const initialState: ConnectionContextType = {
     openPurchaseCredits: () => {},
     openExecute: async () => false,
   },
-  provider: new RpcProvider({ nodeUrl: import.meta.env.VITE_RPC_SEPOLIA }),
+  provider: new RpcProvider({ nodeUrl: import.meta.env.VITE_RPC_URL }),
   chainId: "",
   erc20: [],
   isVisible: !isIframe(),

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3002 --host",
+    "dev": "vite --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write ./src index.html",
@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@bal7hazar/arcade-sdk": "0.0.72",
+    "@bal7hazar/arcade-sdk": "0.0.73",
     "@cartridge/connector": "0.6.0",
     "@cartridge/controller": "0.6.0",
     "@cartridge/penpal": "^6.2.3",
