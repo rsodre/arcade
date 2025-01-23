@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle } from "@cartridge/ui-next";
 import { CollectionImage } from "./image";
 import { useCollections } from "@/hooks/collection";
@@ -15,12 +14,7 @@ export const Collections = () => {
       return (
         <div className="grid grid-cols-2 gap-4 place-items-center select-none">
           {collections.map((collection) => (
-            <Link
-              className="w-full aspect-square group select-none"
-              draggable={false}
-              to={`./collection/${collection.address}`}
-              key={collection.address}
-            >
+            <div className="w-full aspect-square group select-none">
               <Card className="w-full h-full">
                 <CardHeader className="flex flex-row gap-1 group-hover:opacity-70 items-center justify-between">
                   <CardTitle className="truncate">{collection.name}</CardTitle>
@@ -31,10 +25,10 @@ export const Collections = () => {
 
                 <CollectionImage imageUrl={collection.imageUrl || undefined} />
               </Card>
-            </Link>
+            </div>
           ))}
         </div>
       );
     }
   }
-}
+};
