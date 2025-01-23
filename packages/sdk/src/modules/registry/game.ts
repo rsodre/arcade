@@ -13,6 +13,7 @@ export class GameModel {
     public worldAddress: string,
     public namespace: string,
     public project: string,
+    public preset: string,
     public active: boolean,
     public published: boolean,
     public whitelisted: boolean,
@@ -25,6 +26,7 @@ export class GameModel {
     this.worldAddress = worldAddress;
     this.namespace = namespace;
     this.project = project;
+    this.preset = preset;
     this.active = active;
     this.published = published;
     this.whitelisted = whitelisted;
@@ -39,6 +41,7 @@ export class GameModel {
     const worldAddress = addAddressPadding(model.world_address);
     const namespace = shortString.decodeShortString(`0x${BigInt(model.namespace).toString(16)}`);
     const project = shortString.decodeShortString(`0x${BigInt(model.project).toString(16)}`);
+    const preset = shortString.decodeShortString(`0x${BigInt(model.preset).toString(16)}`);
     const active = !!model.active;
     const published = !!model.published;
     const whitelisted = !!model.whitelisted;
@@ -51,6 +54,7 @@ export class GameModel {
       worldAddress,
       namespace,
       project,
+      preset,
       active,
       published,
       whitelisted,

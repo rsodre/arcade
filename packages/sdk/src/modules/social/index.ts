@@ -114,7 +114,7 @@ export const Social = {
       callback(events);
     };
     const query = Social.getEventQuery(options);
-    await Social.sdk.getEventMessages({ query, historical: false, callback: wrappedCallback });;
+    await Social.sdk.getEventMessages({ query, historical: false, callback: wrappedCallback });
   },
 
   subEntities: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {

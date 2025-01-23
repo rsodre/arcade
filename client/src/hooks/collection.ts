@@ -1,10 +1,10 @@
-import { useIndexerAPI } from "@cartridge/utils";
 import { useAccount } from "./account";
 import {
   Erc721__Token,
   useErc721BalancesQuery,
 } from "@cartridge/utils/api/indexer";
 import { useMemo } from "react";
+import { useProject } from "./project";
 
 export type Collection = {
   address: string;
@@ -24,7 +24,7 @@ export type Asset = {
 
 export function useCollection({ tokenIds = [] }: { tokenIds?: string[] }) {
   const { address } = useAccount();
-  const { isReady, indexerUrl } = useIndexerAPI();
+  const { isReady, indexerUrl } = useProject();
   const { status, data } = useErc721BalancesQuery(
     { address },
     { enabled: isReady && !!address },
@@ -82,7 +82,7 @@ export function useCollection({ tokenIds = [] }: { tokenIds?: string[] }) {
 
 export function useCollections() {
   const { address } = useAccount();
-  const { isReady, indexerUrl } = useIndexerAPI();
+  const { isReady, indexerUrl } = useProject();
   const { status, data } = useErc721BalancesQuery(
     { address },
     { enabled: isReady && !!address },

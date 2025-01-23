@@ -25,8 +25,9 @@ const keychain: KeychainOptions = {
 };
 
 const profile: ProfileOptions = {
-  slot: "ryomainnet",
-  namespace: "dopewars",
+  preset: "cartridge",
+  slot: "arcade",
+  namespace: "ARCADE",
   tokens: {
     erc20: ERC20_ADDRESSES,
   },

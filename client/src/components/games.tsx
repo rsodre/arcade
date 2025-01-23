@@ -1,36 +1,36 @@
 import { JoystickIcon, ScrollArea, SparklesIcon, cn } from "@cartridge/ui-next";
-import { data } from "../data";
 import { useCallback, useState } from "react";
 import { useTheme } from "@/hooks/context";
 import {
   ControllerTheme,
   controllerConfigs as configs,
 } from "@cartridge/controller";
+import { useArcade } from "@/hooks/arcade";
 
 export const Games = () => {
   const [selected, setSelected] = useState(0);
+  const { games } = useArcade();
 
   return (
     <div className="flex flex-col gap-y-px w-[324px] rounded-lg pb-8 grow overflow-y-auto h-[661px]">
       <Game
         index={0}
-        game={{
-          id: "all",
-          icon: "",
-          name: "All",
-          slot: "",
-          namespace: "",
-          points: data.games.reduce((acc, game) => acc + game.points, 0),
-        }}
+        preset="default"
+        name="All"
+        icon=""
+        points={Object.values(games).reduce((acc, game) => acc + game.karma, 0)}
         active={selected === 0}
         setSelected={setSelected}
       />
       <ScrollArea className="overflow-auto">
-        {data.games.map((game, index) => (
+        {Object.values(games).map((game, index) => (
           <Game
-            key={game.id}
+            key={`${game.worldAddress}-${game.namespace}`}
             index={index + 1}
-            game={game}
+            preset={game.preset ?? "default"}
+            name={game.metadata.name}
+            icon={game.metadata.image}
+            points={game.karma}
             active={selected === index + 1}
             setSelected={setSelected}
           />
@@ -42,12 +42,18 @@ export const Games = () => {
 
 export const Game = ({
   index,
-  game,
+  preset,
+  name,
+  icon,
+  points,
   active,
   setSelected,
 }: {
   index: number;
-  game: (typeof data.games)[number];
+  preset: string;
+  name: string;
+  icon: string;
+  points: number;
   active: boolean;
   setSelected: (index: number) => void;
 }) => {
@@ -55,15 +61,15 @@ export const Game = ({
 
   const handleClick = useCallback(() => {
     setSelected(index);
-    const preset = configs[game.id.toLowerCase()].theme;
-    if (!preset || !preset.colors) {
+    const config = configs[preset.toLowerCase()].theme;
+    if (!config || !config.colors) {
       return resetTheme();
     }
     const newTheme: ControllerTheme = {
       ...theme,
       colors: {
         ...theme.colors,
-        primary: preset.colors.primary,
+        primary: config.colors.primary,
       },
     };
     setTheme(newTheme);
@@ -84,11 +90,11 @@ export const Game = ({
             active ? "bg-quinary" : "bg-quaternary",
           )}
         >
-          <GameIcon name={game.name} icon={game.icon} />
+          <GameIcon name={name} icon={icon} />
         </div>
-        <p className="text-sm">{game.name}</p>
+        <p className="text-sm">{name}</p>
       </div>
-      <GamePoints points={game.points} />
+      <GamePoints points={points} />
     </div>
   );
 };

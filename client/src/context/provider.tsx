@@ -8,6 +8,7 @@ import { CartridgeAPIProvider } from "@cartridge/utils/api/cartridge";
 import { IndexerAPIProvider } from "@cartridge/utils/api/indexer";
 import { DataProvider } from "./data";
 import { StarknetProvider } from "./starknet";
+import { ProjectProvider } from "./project";
 
 export function Provider({ children }: PropsWithChildren) {
   const queryClient = new QueryClient();
@@ -23,7 +24,9 @@ export function Provider({ children }: PropsWithChildren) {
               <ArcadeProvider>
                 <ConnectionProvider>
                   <ThemeProvider defaultScheme="system">
-                    <DataProvider>{children}</DataProvider>
+                    <ProjectProvider>
+                      <DataProvider>{children}</DataProvider>
+                    </ProjectProvider>
                   </ThemeProvider>
                 </ConnectionProvider>
               </ArcadeProvider>
