@@ -95,7 +95,7 @@ function TokenCardContent({
 
 const TokenIcon = ({ logoUrl }: { logoUrl: string | undefined }) => {
   return (
-    <div className="h-7 w-7 p-0.5 flex items-center justify-center rounded-full overflow-hidden bg-quaternary">
+    <div className="h-7 w-7 border-2 border-quaternary flex items-center justify-center rounded-full overflow-hidden">
       {logoUrl ? (
         <img src={logoUrl} alt="token" />
       ) : (
