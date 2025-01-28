@@ -5,8 +5,24 @@ import { Games } from "@/components/games";
 import { User } from "@/components/user";
 import { Navigation } from "@/components/navigation";
 import { SceneLayout } from "@/components/scenes/layout";
+import { useArcade } from "@/hooks/arcade";
+import { useEffect } from "react";
+import { useAchievements } from "@/hooks/achievements";
 
 export function App() {
+  const { games } = useArcade();
+  const { projects, setProjects } = useAchievements();
+
+  useEffect(() => {
+    if (projects.length === Object.values(games).length) return;
+    setProjects(
+      Object.values(games).map((game) => ({
+        namespace: game.namespace,
+        project: game.project,
+      })),
+    );
+  }, [games, projects, setProjects]);
+
   return (
     <SceneLayout>
       <div className="w-full bg-background h-[calc(100vh-3.5rem)]">

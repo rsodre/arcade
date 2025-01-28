@@ -1,6 +1,6 @@
 import { JoystickIcon, ScrollArea, SparklesIcon, cn } from "@cartridge/ui-next";
 import { useCallback, useMemo, useState } from "react";
-import { useData, useTheme } from "@/hooks/context";
+import { useTheme } from "@/hooks/context";
 import {
   ControllerTheme,
   controllerConfigs as configs,
@@ -8,25 +8,22 @@ import {
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { useAccount } from "@/hooks/account";
+import { useAchievements } from "@/hooks/achievements";
 
 export const Games = () => {
   const [selected, setSelected] = useState(0);
   const { games } = useArcade();
   const { address } = useAccount();
-  const {
-    trophies: { players },
-  } = useData();
+  const { players } = useAchievements();
 
-  const points = useMemo(() => {
-    return (
-      players.find(
-        (player) => BigInt(player.address || 0) === BigInt(address || 0),
-      )?.earnings || 0
+  const sortedGames = useMemo(() => {
+    return Object.values(games).sort((a, b) =>
+      a.metadata.name.localeCompare(b.metadata.name),
     );
-  }, [address, players]);
+  }, [games]);
 
   return (
-    <div className="flex flex-col gap-y-px w-[324px] rounded-lg pb-8 grow overflow-y-auto h-[661px]">
+    <div className="flex flex-col gap-y-px w-[324px] rounded-lg grow overflow-y-auto max-h-[661px]">
       <Game
         index={0}
         project="arcade"
@@ -34,12 +31,12 @@ export const Games = () => {
         preset="default"
         name="All"
         icon=""
-        points={Object.values(games).reduce((acc, game) => acc + game.karma, 0)}
+        points={sortedGames.reduce((acc, game) => acc + game.karma, 0)}
         active={selected === 0}
         setSelected={setSelected}
       />
       <ScrollArea className="overflow-auto">
-        {Object.values(games).map((game, index) => (
+        {sortedGames.map((game, index) => (
           <Game
             key={`${game.worldAddress}-${game.namespace}`}
             index={index + 1}
@@ -48,7 +45,12 @@ export const Games = () => {
             preset={game.preset ?? "default"}
             name={game.metadata.name}
             icon={game.metadata.image}
-            points={points}
+            points={
+              players[game.project]?.find(
+                (player) =>
+                  BigInt(player.address || 0) === BigInt(address || 0),
+              )?.earnings || 0
+            }
             active={selected === index + 1}
             setSelected={setSelected}
           />
@@ -86,7 +88,7 @@ export const Game = ({
     setSelected(index);
     setProject(project);
     setNamespace(namespace);
-    const config = configs[preset.toLowerCase()].theme;
+    const config = configs[preset.toLowerCase()]?.theme;
     if (!config || !config.colors) {
       return resetTheme();
     }

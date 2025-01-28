@@ -6,7 +6,7 @@ import { ConnectionProvider } from "./connection";
 import { BrowserRouter } from "react-router-dom";
 import { CartridgeAPIProvider } from "@cartridge/utils/api/cartridge";
 import { IndexerAPIProvider } from "@cartridge/utils/api/indexer";
-import { DataProvider } from "./data";
+import { AchievementProvider } from "./achievement";
 import { StarknetProvider } from "./starknet";
 import { ProjectProvider } from "./project";
 
@@ -25,7 +25,7 @@ export function Provider({ children }: PropsWithChildren) {
                 <ConnectionProvider>
                   <ThemeProvider defaultScheme="system">
                     <ProjectProvider>
-                      <DataProvider>{children}</DataProvider>
+                      <AchievementProvider>{children}</AchievementProvider>
                     </ProjectProvider>
                   </ThemeProvider>
                 </ConnectionProvider>

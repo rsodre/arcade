@@ -1,33 +1,52 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Project, useProgressionsQuery } from "@cartridge/utils/api/cartridge";
 import { Progress, RawProgress, getSelectorFromTag } from "@/models";
+import { TrophiesProps } from "./trophies";
 
 interface Response {
-  items: { achievements: RawProgress[] }[];
+  items: { meta: { project: string }; achievements: RawProgress[] }[];
 }
 
 export function useProgressions({
-  namespace,
-  name,
-  project,
+  props,
   parser,
 }: {
-  namespace: string;
-  name: string;
-  project: string;
+  props: TrophiesProps[];
   parser: (node: RawProgress) => Progress;
 }) {
   const [rawProgressions, setRawProgressions] = useState<{
-    [key: string]: Progress;
+    [key: string]: { [key: string]: Progress };
   }>({});
-  const [progressions, setProgressions] = useState<{ [key: string]: Progress }>(
-    {},
-  );
+  const [progressions, setProgressions] = useState<{
+    [key: string]: { [key: string]: Progress };
+  }>({});
 
   // Fetch achievement creations from raw events
-  const projects: Project[] = useMemo(
-    () => [{ model: getSelectorFromTag(namespace, name), namespace, project }],
-    [namespace, name, project],
+  const projects: Project[] = useMemo(() => {
+    return props.map(({ namespace, name, project }) => ({
+      model: getSelectorFromTag(namespace, name),
+      namespace,
+      project,
+    }));
+  }, [props]);
+
+  const onSuccess = useCallback(
+    ({ playerAchievements }: { playerAchievements: Response }) => {
+      const progressions: { [key: string]: { [key: string]: Progress } } = {};
+      if (!playerAchievements.items) return;
+      playerAchievements.items.forEach((item) => {
+        const project = item.meta.project;
+        const achievements = item.achievements
+          .map(parser)
+          .reduce((acc: { [key: string]: Progress }, achievement: Progress) => {
+            acc[achievement.key] = achievement;
+            return acc;
+          }, {});
+        progressions[project] = achievements;
+      });
+      setRawProgressions(progressions);
+    },
+    [parser, setRawProgressions],
   );
 
   const { refetch: fetchProgressions, isFetching } = useProgressionsQuery(
@@ -35,30 +54,23 @@ export function useProgressions({
       projects,
     },
     {
-      enabled: !!namespace && !!project,
-      queryKey: ["progressions", namespace, name, project],
+      enabled: props.length > 0,
+      queryKey: ["progressions", props],
       refetchInterval: 600_000, // Refetch every 10 minutes
-      onSuccess: ({ playerAchievements }: { playerAchievements: Response }) => {
-        const progressions = playerAchievements.items[0].achievements
-          .map(parser)
-          .reduce((acc: { [key: string]: Progress }, achievement: Progress) => {
-            acc[achievement.key] = achievement;
-            return acc;
-          }, {});
-        setRawProgressions(progressions);
-      },
+      onSuccess,
+      onError: onSuccess,
     },
   );
 
   useEffect(() => {
-    if (!namespace || !project) return;
+    if (props.length === 0) return;
     try {
       fetchProgressions();
     } catch (error) {
       // Could happen if the indexer is down or wrong url
       console.error(error);
     }
-  }, [namespace, project, fetchProgressions]);
+  }, [props, fetchProgressions]);
 
   useEffect(() => {
     if (isFetching) return;

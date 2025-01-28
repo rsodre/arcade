@@ -1,6 +1,6 @@
 import { JoystickIcon, ScrollArea, WedgeIcon, cn } from "@cartridge/ui-next";
 import { Trophy } from "./trophy";
-import { Item } from "@/hooks/achievements";
+import { Item } from "@/helpers/achievements";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 
