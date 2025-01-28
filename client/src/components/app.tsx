@@ -14,12 +14,18 @@ export function App() {
   const { projects, setProjects } = useAchievements();
 
   useEffect(() => {
-    if (projects.length === Object.values(games).length) return;
+    if (
+      projects.length ===
+      Object.values(games).filter((game) => game.namespace !== "zkube").length
+    )
+      return;
     setProjects(
-      Object.values(games).map((game) => ({
-        namespace: game.namespace,
-        project: game.project,
-      })),
+      Object.values(games)
+        .filter((game) => game.namespace !== "zkube")
+        .map((game) => ({
+          namespace: game.namespace,
+          project: game.project,
+        })),
     );
   }, [games, projects, setProjects]);
 

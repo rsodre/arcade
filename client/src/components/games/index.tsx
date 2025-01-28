@@ -9,6 +9,7 @@ import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { useAccount } from "@/hooks/account";
 import { useAchievements } from "@/hooks/achievements";
+import { GLOBAL } from "@/helpers/achievements";
 
 export const Games = () => {
   const [selected, setSelected] = useState(0);
@@ -26,7 +27,7 @@ export const Games = () => {
     <div className="flex flex-col gap-y-px w-[324px] rounded-lg grow overflow-y-auto max-h-[661px]">
       <Game
         index={0}
-        project="arcade"
+        project={GLOBAL}
         namespace=""
         preset="default"
         name="All"

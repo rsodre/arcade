@@ -1,5 +1,7 @@
 import { Progress, Trophy, Task } from "@/models";
 
+export const GLOBAL = "arcade";
+
 export interface Progressions {
   [game: string]: { [key: string]: Progress };
 }
@@ -28,6 +30,10 @@ export interface AchievementStats {
 
 export interface AchievementPlayers {
   [game: string]: Player[];
+}
+
+export interface AchievementGlobals {
+  [key: string]: Player;
 }
 
 export interface Player {
@@ -82,9 +88,8 @@ export const AchievementHelper = {
           (task: Task) => (detaultTasks[task.id] = { completion: false }),
         );
         data[game][playerId] = data[game][playerId] || {};
-        data[game][playerId][achievementId] = data[game][playerId][
-          achievementId
-        ] || { detaultTasks };
+        data[game][playerId][achievementId] =
+          data[game][playerId][achievementId] || detaultTasks;
         data[game][playerId][achievementId][taskId] = {
           completion: total >= taskTotal,
           timestamp,
@@ -98,13 +103,17 @@ export const AchievementHelper = {
   computePlayers(
     data: AchievementData,
     trophies: Trophies,
-  ): { stats: AchievementStats; players: AchievementPlayers } {
+  ): {
+    stats: AchievementStats;
+    players: AchievementPlayers;
+    globals: Player[];
+  } {
     const stats: AchievementStats = {};
     const players: AchievementPlayers = {};
+    const globals: AchievementGlobals = {};
     Object.keys(data).forEach((game) => {
       stats[game] = {};
-      const gamePlayers: Player[] = [];
-      Object.keys(data[game]).forEach((playerId) => {
+      const gamePlayers = Object.keys(data[game]).map((playerId) => {
         const player = data[game][playerId];
         const completeds: string[] = [];
         let timestamp = 0;
@@ -125,18 +134,39 @@ export const AchievementHelper = {
           }
           return acc + (completion ? trophies[game][achievementId].earning : 0);
         }, 0);
-        gamePlayers.push({
+        // Feed the global leaderboard
+        if (!globals[playerId]) {
+          globals[playerId] = {
+            address: playerId,
+            earnings,
+            timestamp,
+            completeds,
+          };
+        } else {
+          globals[playerId].earnings += earnings;
+          globals[playerId].timestamp = Math.max(
+            globals[playerId].timestamp,
+            timestamp,
+          );
+        }
+        return {
           address: playerId,
           earnings,
           timestamp: timestamp,
           completeds,
-        });
+        };
       });
-      players[game] = gamePlayers
+      players[game] = Object.values(gamePlayers)
         .sort((a, b) => a.timestamp - b.timestamp) // Oldest to newest
         .sort((a, b) => b.earnings - a.earnings); // Highest to lowest
     });
-    return { stats, players };
+    return {
+      stats,
+      players,
+      globals: Object.values(globals)
+        .sort((a, b) => a.timestamp - b.timestamp)
+        .sort((a, b) => b.earnings - a.earnings),
+    };
   },
 
   computeAchievements(

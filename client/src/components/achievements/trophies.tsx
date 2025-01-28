@@ -49,16 +49,9 @@ export function Trophies({
   return (
     <ScrollArea className="h-[600px]">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col px-2 gap-1">
-          <div className="flex items-center gap-3">
-            <Logo
-              imageUrl={game?.metadata?.image || ""}
-              name={game?.metadata?.name || ""}
-            />
-            <Title name={game?.metadata?.name || ""} />
-          </div>
-          <Total completed={completed} total={total} />
-        </div>
+        {!!game && (
+          <TrophiesHeader game={game} completed={completed} total={total} />
+        )}
         <div className="flex flex-col gap-3">
           {Object.entries(groups)
             .filter(([group]) => group !== HIDDEN_GROUP)
@@ -87,6 +80,29 @@ export function Trophies({
         </div>
       </div>
     </ScrollArea>
+  );
+}
+
+export function TrophiesHeader({
+  game,
+  completed,
+  total,
+}: {
+  game: GameModel;
+  completed: number;
+  total: number;
+}) {
+  return (
+    <div className="flex flex-col px-2 gap-1">
+      <div className="flex items-center gap-3">
+        <Logo
+          imageUrl={game?.metadata?.image || ""}
+          name={game?.metadata?.name || ""}
+        />
+        <Title name={game?.metadata?.name || ""} />
+      </div>
+      <Total completed={completed} total={total} />
+    </div>
   );
 }
 

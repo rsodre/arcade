@@ -6,6 +6,7 @@ export function useAchievements(accountAddress?: string) {
   const {
     achievements,
     players,
+    globals,
     isLoading,
     projects,
     setAddress,
@@ -22,5 +23,5 @@ export function useAchievements(accountAddress?: string) {
     setAddress(currentAddress);
   }, [currentAddress]);
 
-  return { achievements, players, isLoading, projects, setProjects };
+  return { achievements, players, globals, isLoading, projects, setProjects };
 }

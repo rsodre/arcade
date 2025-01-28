@@ -18,6 +18,7 @@ export interface AchievementsProps {
 type AchievementContextType = {
   achievements: { [game: string]: Item[] };
   players: { [game: string]: Player[] };
+  globals: Player[];
   isLoading: boolean;
   projects: AchievementsProps[];
   setAddress: (address: string | undefined) => void;
@@ -27,6 +28,7 @@ type AchievementContextType = {
 const initialState: AchievementContextType = {
   achievements: {},
   players: {},
+  globals: [],
   isLoading: false,
   projects: [],
   setAddress: () => {},
@@ -42,6 +44,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
     {},
   );
   const [players, setPlayers] = useState<{ [game: string]: Player[] }>({});
+  const [globals, setGlobals] = useState<Player[]>([]);
   const [address, setAddress] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -72,8 +75,12 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       progressions,
       trophies,
     );
-    const { stats, players } = AchievementHelper.computePlayers(data, trophies);
+    const { stats, players, globals } = AchievementHelper.computePlayers(
+      data,
+      trophies,
+    );
     setPlayers(players);
+    setGlobals(globals);
     const achievements = AchievementHelper.computeAchievements(
       data,
       trophies,
@@ -91,6 +98,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       value={{
         achievements,
         players,
+        globals,
         isLoading,
         projects,
         setAddress,

@@ -37,6 +37,7 @@ export function useTrophies({
 
   const onSuccess = useCallback(
     ({ achievements }: { achievements: Response }) => {
+      if (!achievements.items) return;
       const trophies: { [key: string]: { [key: string]: Trophy } } = {};
       achievements.items.forEach((item) => {
         const project = item.meta.project;
