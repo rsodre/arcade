@@ -1,12 +1,12 @@
 import { Spinner } from "@cartridge/ui-next";
 import { TrophiesTab, LeaderboardTab } from "./tab";
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { TrophiesHeader } from "./trophies";
 import { Leaderboard } from "./leaderboard";
 import { useArcade } from "@/hooks/arcade";
 import { useAccount } from "@starknet-react/core";
-import { useAchievements } from "@/hooks/achievements";
+import { useAchievements, usePlayerStats } from "@/hooks/achievements";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { Item } from "@/helpers/achievements";
 
@@ -15,61 +15,36 @@ export function Home() {
   const { achievements, globals, isLoading } = useAchievements();
   const { games } = useArcade();
 
-  const { address } = useParams<{ address: string }>();
+  const [searchParams] = useSearchParams();
+  const address = useMemo(() => {
+    return searchParams.get("address") || self || "0x0";
+  }, [searchParams, self]);
 
   const [activeTab, setActiveTab] = useState<"trophies" | "leaderboard">(
     "trophies",
   );
 
-  const { completed, total } = useMemo(() => {
-    let completed = 0;
-    let total = 0;
-    Object.values(achievements).forEach((gameAchievements) => {
-      completed += gameAchievements.filter((item) => item.completed).length;
-      total += gameAchievements.length;
-    });
-    return { completed, total };
-  }, [achievements]);
-
-  const { rank, earnings } = useMemo(() => {
-    const rank =
-      globals.findIndex(
-        (player) =>
-          BigInt(player.address || 0) === BigInt(address || self || 0),
-      ) + 1;
-    const earnings =
-      globals.find(
-        (player) =>
-          BigInt(player.address || 0) === BigInt(address || self || 0),
-      )?.earnings || 0;
-    return { rank, earnings };
-  }, [address, self, globals]);
-
-  const isSelf = useMemo(() => {
-    return !address || address === self;
-  }, [address, self]);
+  const { completed, total, rank, earnings } = usePlayerStats(address);
 
   return (
     <div className="w-3/4">
       {Object.values(achievements).length ? (
         <div className="pb-4 select-none flex flex-col gap-y-6">
-          {isSelf && (
-            <div className="flex justify-between gap-x-3 gap-y-4">
-              <TrophiesTab
-                active={activeTab === "trophies"}
-                completed={completed}
-                total={total}
-                onClick={() => setActiveTab("trophies")}
-              />
-              <LeaderboardTab
-                active={activeTab === "leaderboard"}
-                rank={rank}
-                earnings={earnings}
-                onClick={() => setActiveTab("leaderboard")}
-              />
-            </div>
-          )}
-          {(!isSelf || activeTab === "trophies") &&
+          <div className="flex justify-between gap-x-4 gap-y-4">
+            <TrophiesTab
+              active={activeTab === "trophies"}
+              completed={completed}
+              total={total}
+              onClick={() => setActiveTab("trophies")}
+            />
+            <LeaderboardTab
+              active={activeTab === "leaderboard"}
+              rank={rank}
+              earnings={earnings}
+              onClick={() => setActiveTab("leaderboard")}
+            />
+          </div>
+          {activeTab === "trophies" &&
             Object.values(games)
               .sort((a, b) => a.project.localeCompare(b.project))
               .map((game) => (
@@ -79,7 +54,7 @@ export function Home() {
                   achievements={achievements[game?.project || ""] || []}
                 />
               ))}
-          {isSelf && activeTab === "leaderboard" && (
+          {activeTab === "leaderboard" && (
             <Leaderboard
               players={globals}
               address={self || ""}
@@ -118,5 +93,12 @@ function GameRow({
     return { completed, total };
   }, [achievements]);
 
-  return <TrophiesHeader game={game} completed={completed} total={total} />;
+  return (
+    <TrophiesHeader
+      game={game}
+      completed={completed}
+      total={total}
+      color={game.metadata?.color}
+    />
+  );
 }

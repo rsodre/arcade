@@ -1,28 +1,22 @@
-import ControllerConnector from "@cartridge/connector/controller";
+import { useUsername } from "@/hooks/account";
 import { CopyAddress, SpaceInvaderIcon } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export function User() {
-  const { account, connector } = useAccount();
-  const [name, setName] = useState<string>("");
+  const { account } = useAccount();
+  const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    async function fetch() {
-      try {
-        const name = await (connector as ControllerConnector)?.username();
-        if (!name) return;
-        setName(name);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetch();
-  }, [connector]);
+  const address = useMemo(() => {
+    return searchParams.get("address") || account?.address || "0x0";
+  }, [searchParams, account]);
+
+  const { username } = useUsername({ address });
 
   return (
     <div
-      className="h-16 flex gap-2 sticky top-16 bg-background justify-between items-center select-none"
+      className="h-16 sticky top-16 bg-background justify-between items-center select-none"
       draggable={false}
     >
       <div className="flex min-w-0 gap-4 items-center">
@@ -30,11 +24,11 @@ export function User() {
           <SpaceInvaderIcon size="xl" variant="solid" />
         </div>
 
-        <div className="flex flex-col overflow-hidden">
-          <div className="text-lg font-semibold truncate h-6 flex items-center">
-            {name}
+        <div className="flex flex-col gap-2 overflow-hidden">
+          <div className="text-2xl/6 font-semibold truncate h-6 flex items-center">
+            {username}
           </div>
-          <CopyAddress address={account?.address ?? ""} size="xs" />
+          <CopyAddress address={address ?? ""} size="xs" />
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ export function useProgressions({
 
   const onSuccess = useCallback(
     ({ playerAchievements }: { playerAchievements: Response }) => {
-      if (!playerAchievements.items) return;
+      if (!playerAchievements?.items) return;
       const progressions: { [key: string]: { [key: string]: Progress } } = {};
       playerAchievements.items.forEach((item) => {
         const project = item.meta.project;

@@ -1,21 +1,23 @@
 import { Spinner } from "@cartridge/ui-next";
 import { TrophiesTab, LeaderboardTab } from "./tab";
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Trophies } from "./trophies";
 import { Leaderboard } from "./leaderboard";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
-import { addAddressPadding } from "starknet";
 import { useAccount } from "@starknet-react/core";
-import { useAchievements } from "@/hooks/achievements";
+import { useAchievements, usePlayerGameStats } from "@/hooks/achievements";
 
 export function Achievements({ game }: { game: GameModel }) {
   const { address: self } = useAccount();
   const { achievements, players, isLoading } = useAchievements();
   const { pins } = useArcade();
 
-  const { address } = useParams<{ address: string }>();
+  const [searchParams] = useSearchParams();
+  const address = useMemo(() => {
+    return searchParams.get("address") || self || "0x0";
+  }, [searchParams, self]);
 
   const [activeTab, setActiveTab] = useState<"trophies" | "leaderboard">(
     "trophies",
@@ -30,33 +32,13 @@ export function Achievements({ game }: { game: GameModel }) {
     [players, game],
   );
 
-  const { pinneds, completed, total } = useMemo(() => {
-    const ids = pins[addAddressPadding(address || self || "0x0")] || [];
-    const pinneds = gameAchievements
-      .filter((item) => ids.includes(item.id))
-      .sort((a, b) => parseFloat(a.percentage) - parseFloat(b.percentage))
-      .slice(0, 3); // There is a front-end limit of 3 pinneds
-    const completed = gameAchievements.filter((item) => item.completed).length;
-    const total = gameAchievements.length;
-    return { pinneds, completed, total };
-  }, [pins, address, self, gameAchievements]);
-
-  const { rank, earnings } = useMemo(() => {
-    const rank =
-      gamePlayers.findIndex(
-        (player) =>
-          BigInt(player.address || 0) === BigInt(address || self || 0),
-      ) + 1;
-    const earnings =
-      gamePlayers.find(
-        (player) =>
-          BigInt(player.address || 0) === BigInt(address || self || 0),
-      )?.earnings || 0;
-    return { rank, earnings };
-  }, [address, self, gamePlayers]);
+  const { pinneds, completed, total, rank, earnings } = usePlayerGameStats(
+    game.project,
+    address,
+  );
 
   const isSelf = useMemo(() => {
-    return !address || address === self;
+    return address === self;
   }, [address, self]);
 
   return (
@@ -64,7 +46,7 @@ export function Achievements({ game }: { game: GameModel }) {
       {gameAchievements.length ? (
         <div className="pb-4 select-none flex flex-col gap-y-6">
           {isSelf && (
-            <div className="flex justify-between gap-x-3 gap-y-4">
+            <div className="flex justify-between gap-x-4 gap-y-4">
               <TrophiesTab
                 active={activeTab === "trophies"}
                 completed={completed}

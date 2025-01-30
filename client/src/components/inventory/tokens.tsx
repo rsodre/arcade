@@ -41,13 +41,14 @@ export const Tokens = () => {
         <CardTitle>Tokens</CardTitle>
       </CardHeader>
 
-      <CardListContent className="h-[175px]">
-        <ScrollArea>
+      <ScrollArea>
+        {/* Empiric, the max height of the CardListContent is 4 rows */}
+        <CardListContent className="max-h-[179px]">
           {tokens.map((token) => (
             <TokenCardContent token={token} key={token.meta.address} />
           ))}
-        </ScrollArea>
-      </CardListContent>
+        </CardListContent>
+      </ScrollArea>
     </Card>
   );
 };

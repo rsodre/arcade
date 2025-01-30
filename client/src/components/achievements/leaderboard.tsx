@@ -6,7 +6,7 @@ import {
   StateIconProps,
 } from "@cartridge/ui-next";
 import { Link, useLocation } from "react-router-dom";
-import { Item, Player } from "@/hooks/achievements";
+import { Item, Player } from "@/helpers/achievements";
 import { useUsername } from "@/hooks/account";
 import { useMemo } from "react";
 import { addAddressPadding } from "starknet";
@@ -64,7 +64,7 @@ function Row({
 
   const path = useMemo(() => {
     if (self) return location.pathname;
-    return [...location.pathname.split("/"), address].join("/");
+    return location.pathname.replace(/\/$/, "") + `?address=${address}`;
   }, [location.pathname, address, self]);
 
   const trophies = useMemo(() => {

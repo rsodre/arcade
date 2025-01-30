@@ -87,10 +87,12 @@ export function TrophiesHeader({
   game,
   completed,
   total,
+  color,
 }: {
   game: GameModel;
   completed: number;
   total: number;
+  color?: string;
 }) {
   return (
     <div className="flex flex-col px-2 gap-1">
@@ -101,7 +103,7 @@ export function TrophiesHeader({
         />
         <Title name={game?.metadata?.name || ""} />
       </div>
-      <Total completed={completed} total={total} />
+      <Total completed={completed} total={total} color={color} />
     </div>
   );
 }
@@ -124,13 +126,24 @@ function Title({ name }: { name: string }) {
   return <p className="text-sm">{name}</p>;
 }
 
-function Total({ completed, total }: { completed: number; total: number }) {
+function Total({
+  completed,
+  total,
+  color,
+}: {
+  completed: number;
+  total: number;
+  color?: string;
+}) {
   return (
     <div className="h-8 py-2 flex items-center justify-between gap-4 rounded-md overflow-hidden">
       <div className="h-4 grow flex flex-col justify-center items-start bg-quaternary rounded-xl p-1">
         <div
-          style={{ width: `${Math.floor((100 * completed) / total)}%` }}
-          className={cn("grow bg-primary rounded-xl")}
+          style={{
+            width: `${Math.floor((100 * completed) / total)}%`,
+            backgroundColor: color,
+          }}
+          className={cn("grow rounded-xl", !color && "bg-primary")}
         />
       </div>
       <p className="text-xs text-muted-foreground">

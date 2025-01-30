@@ -9,7 +9,7 @@ starkli invoke \
         str:"dopewars" \
         str:"ryomainnet" \
         str:"dope-wars" \
-        str:"#FF00FF" \
+        str:"#11ED83" \
         0 str:"Dope Wars" 0x9 \
         3 str:"Dope Wars is an onchain adaptat" str:"ion of the classic arbitrage ga" str:"me Drug Wars, built by Cartridg" str:"e in partnership with Dope DAO." 0x1f \
         2 str:"https://github.com/cartridge-gg" str:"/presets/blob/main/configs/dope" str:"-wars/icon.png?raw=true" 0x17 \
@@ -22,9 +22,9 @@ starkli invoke \
     / 0xc46f7e578f31c3fa6bb669164f04d696427818ba69f177ddc152f31ed5f119 register_game \
         0x6a9e4c6f0799160ea8ddc43ff982a5f83d7f633e9732ce42701de1288ff705f \
         str:"s0_eternum" \
+        str:"eternum-prod" \
         str:"eternum" \
-        str:"eternum" \
-        str:"#FF00FF" \
+        str:"#dc8b07" \
         0 str:"Eternum" 0x7 \
         0 str:"Rule the Hex." 0xd \
         2 str:"https://github.com/cartridge-gg" str:"/presets/blob/main/configs/eter" str:"num/icon.gif?raw=true" 0x15 \
@@ -52,7 +52,7 @@ starkli invoke \
     / 0xc46f7e578f31c3fa6bb669164f04d696427818ba69f177ddc152f31ed5f119 register_game \
         0x030d5d5c610dd736faea146b20b850af64e34ca6e5c5a66462f76f32f48dd997 \
         str:"zkube" \
-        str:"zkube-mainnet" \
+        str:"zkube-mainnet-2" \
         str:"zkube" \
         str:"#5bc3e6" \
         0 str:"zKube" 0x5 \

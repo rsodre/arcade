@@ -9,7 +9,7 @@ starkli invoke \
         str:"s0_eternum" \
         str:"eternum-prod" \
         str:"eternum" \
-        str:"#FF00FF" \
+        str:"#dc8b07" \
         0 str:"Eternum" 0x7 \
         0 str:"Rule the Hex." 0xd \
         2 str:"https://github.com/cartridge-gg" str:"/presets/blob/main/configs/eter" str:"num/icon.gif?raw=true" 0x15 \
