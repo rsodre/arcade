@@ -5,8 +5,8 @@ on:
   pull_request:
 
 env:
-  DOJO_VERSION: v1.0.12
-  SCARB_VERSION: 2.8.4
+  DOJO_VERSION: v1.1.2
+  SCARB_VERSION: 2.9.2
   WORKING_DIRECTORY: ./packages
 
 jobs:
@@ -41,6 +41,9 @@ jobs:
     name: Test package
     steps:
       - uses: actions/checkout@v4
+      - uses: software-mansion/setup-scarb@v1
+        with:
+          scarb-version: ${{ env.SCARB_VERSION }}
       - uses: ./.github/actions/setup
       - name: Test
         working-directory: ${{ env.WORKING_DIRECTORY }}

@@ -1,29 +1,24 @@
 #[starknet::component]
-mod ControllableComponent {
-    // Dojo imports
-
-    use dojo::world::WorldStorage;
-
+pub mod ControllableComponent {
     // Internal imports
 
-    use controller::store::{Store, StoreTrait};
-    use controller::models::account::{Account, AccountTrait, AccountAssert};
-    use controller::models::controller::{Controller, ControllerTrait, ControllerAssert};
-    use controller::models::signer::{Signer, SignerTrait, SignerAssert};
+    use controller::models::account::AccountAssert;
+    use controller::models::controller::ControllerAssert;
+    use controller::models::signer::SignerAssert;
 
     // Storage
 
     #[storage]
-    struct Storage {}
+    pub struct Storage {}
 
     // Events
 
     #[event]
     #[derive(Drop, starknet::Event)]
-    enum Event {}
+    pub enum Event {}
 
     #[generate_trait]
-    impl InternalImpl<
-        TContractState, +HasComponent<TContractState>
+    pub impl InternalImpl<
+        TContractState, +HasComponent<TContractState>,
     > of InternalTrait<TContractState> {}
 }
