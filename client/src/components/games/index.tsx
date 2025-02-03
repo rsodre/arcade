@@ -84,12 +84,19 @@ export const Game = ({
   const { earnings: totalEarnings } = usePlayerStats();
   const { earnings: gameEarnings } = usePlayerGameStats(project);
   const { theme, setTheme, resetTheme } = useTheme();
-  const { setProject, setNamespace } = useProject();
+  const {
+    project: currentProject,
+    namespace: currentNamespace,
+    setProject,
+    setNamespace,
+  } = useProject();
 
   const handleClick = useCallback(() => {
     setSelected(index);
-    setProject(project);
-    setNamespace(namespace);
+    if (currentProject !== project || currentNamespace !== namespace) {
+      setProject(project);
+      setNamespace(namespace);
+    }
     const config = configs[preset.toLowerCase()]?.theme;
     if (!config || !config.colors) {
       return resetTheme();
@@ -102,7 +109,17 @@ export const Game = ({
       },
     };
     setTheme(newTheme);
-  }, [index, project, namespace, theme, setSelected, setTheme, setProject]);
+  }, [
+    index,
+    project,
+    namespace,
+    currentProject,
+    currentNamespace,
+    theme,
+    setSelected,
+    setTheme,
+    setProject,
+  ]);
 
   return (
     <CardContent
@@ -131,7 +148,10 @@ export const Game = ({
         <p className="text-sm">{name}</p>
       </div>
       <div className="z-20">
-        <GamePoints points={gameEarnings || totalEarnings} active={active} />
+        <GamePoints
+          points={project ? gameEarnings : totalEarnings}
+          active={active}
+        />
       </div>
     </CardContent>
   );

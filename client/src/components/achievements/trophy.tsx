@@ -90,7 +90,9 @@ export function Trophy({
         )}
       </div>
       <div className="flex flex-col gap-y-px">
-        <Track enabled={enabled && completed} id={id} pins={pins} />
+        {!softview && completed && (
+          <Track enabled={enabled} id={id} pins={pins} />
+        )}
         {completed && !softview && !!game && (
           <Share
             title={title}
