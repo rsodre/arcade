@@ -1,18 +1,31 @@
 import { useIndexerAPI } from "@cartridge/utils";
 import {
   useAccountNameQuery,
+  useAccountNamesQuery,
   useAddressByUsernameQuery,
 } from "@cartridge/utils/api/cartridge";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useMatch, useParams } from "react-router-dom";
 import { useStarkAddress } from "./starknetid";
 import { useWallet } from "./wallet";
 import { constants, getChecksumAddress } from "starknet";
 
 export function useUsername({ address }: { address: string }) {
-  const { data } = useAccountNameQuery({ address }, { enabled: !!address });
+  const { data } = useAccountNameQuery({ address });
 
   return { username: data?.accounts?.edges?.[0]?.node?.username ?? "" };
+}
+
+export function useUsernames({ addresses }: { addresses: string[] }) {
+  const { data } = useAccountNamesQuery({ addresses });
+
+  return {
+    usernames:
+      data?.accounts?.edges?.map((edge) => ({
+        username: edge?.node?.username,
+        address: edge?.node?.controllers?.edges?.[0]?.node?.address,
+      })) ?? [],
+  };
 }
 
 export function useAddress({ username }: { username: string }) {
@@ -27,6 +40,15 @@ export function useAddress({ username }: { username: string }) {
     isFetching,
   };
 }
+
+export type UseAccountInfoResponse = {
+  name: string;
+  address: string;
+  wallet: string | null;
+  isFetching: boolean;
+  error: string;
+  warning: string;
+};
 
 export function useAccountInfo({ nameOrAddress }: { nameOrAddress: string }) {
   const [starkName, setStarkName] = useState("");
@@ -120,14 +142,7 @@ export function useAccountInfo({ nameOrAddress }: { nameOrAddress: string }) {
       return "Please input a valid Starknet address";
     }
     return "";
-  }, [
-    starkError,
-    controllerError,
-    address,
-    walletError,
-    controllerName,
-    starkName,
-  ]);
+  }, [starkError, controllerError, address, controllerName, starkName]);
 
   const warning = useMemo(() => {
     return walletError;
@@ -146,13 +161,21 @@ export function useAccountInfo({ nameOrAddress }: { nameOrAddress: string }) {
   };
 }
 
-export function useAccount() {
+export type UseAccountResponse = {
+  username: string;
+  address: string;
+};
+
+export function useAccount(): UseAccountResponse {
+  // To be used in top level provider (Above Route component)
+  // Ref: https://stackoverflow.com/a/75462921
+  const match = useMatch("/account/:username/*");
+
   const params = useParams<{
-    username: string;
     project?: string;
   }>();
   const { setIndexerUrl, isReady } = useIndexerAPI();
-  const username = params.username ?? "";
+  const username = match?.params.username ?? "";
   const { data } = useAddressByUsernameQuery(
     { username },
     { enabled: isReady && !!username },
@@ -174,7 +197,7 @@ export function useAccount() {
 
   const address = useMemo(
     () =>
-      import.meta.env.VITE_MOCKED_ACCOUNT_ADDRESS ??
+      (import.meta.env.VITE_MOCKED_ACCOUNT_ADDRESS as string) ??
       data?.account?.controllers.edges?.[0]?.node?.address ??
       "",
     [data],

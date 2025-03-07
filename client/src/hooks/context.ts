@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ThemeContext, ConnectionContext, AchievementContext } from "@/context";
+import { ThemeContext, ConnectionContext } from "@/context";
 
 export function useTheme() {
   return useContext(ThemeContext);
@@ -7,8 +7,4 @@ export function useTheme() {
 
 export function useConnection() {
   return useContext(ConnectionContext);
-}
-
-export function useAchievement() {
-  return useContext(AchievementContext);
 }

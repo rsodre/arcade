@@ -1,12 +1,7 @@
-import {
-  defaultTheme,
-  controllerConfigs,
-  ControllerTheme,
-} from "@cartridge/presets";
+import { defaultTheme, ControllerTheme } from "@cartridge/presets";
 import { useThemeEffect } from "@cartridge/ui-next";
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useConnection } from "@/hooks/context";
 
 type ColorScheme = "dark" | "light" | "system";
 
@@ -22,14 +17,20 @@ export type ThemeProviderContextType = {
   theme: ControllerTheme;
   setTheme: (theme: ControllerTheme) => void;
   resetTheme: () => void;
+  cover: string | undefined;
+  setCover: (cover: string | undefined) => void;
+  resetCover: () => void;
 };
 
 export const initialState: ThemeProviderContextType = {
-  colorScheme: "system",
+  colorScheme: "dark",
   setColorScheme: () => null,
   theme: defaultTheme,
   setTheme: () => null,
   resetTheme: () => null,
+  cover: undefined,
+  setCover: () => null,
+  resetCover: () => null,
 };
 
 export const ThemeContext =
@@ -37,7 +38,7 @@ export const ThemeContext =
 
 export function ThemeProvider({
   children,
-  defaultScheme = "system",
+  defaultScheme = "dark",
   storageKey = "vite-ui-colorScheme",
   ...props
 }: ThemeProviderProps) {
@@ -69,29 +70,18 @@ export function ThemeProvider({
   );
   const [theme, setTheme] = useState<ControllerTheme>(initialState.theme);
   const resetTheme = () => setTheme(initialState.theme);
-  const themeParam = searchParams.get("theme");
-  const presetParam = searchParams.get("preset");
-  const { origin } = useConnection();
+  const [cover, setCover] = useState<string | undefined>(undefined);
+  const resetCover = () => setCover(undefined);
 
-  useEffect(() => {
-    // Handle theme from URL param
-    if (themeParam) {
-      const decodedPreset = decodeURIComponent(themeParam);
-      try {
-        const parsedTheme = JSON.parse(decodedPreset) as ControllerTheme;
-        setTheme(parsedTheme);
-      } catch {
-        setTheme(controllerConfigs[decodedPreset].theme || defaultTheme);
-      }
-    }
-
-    // Handle theme from preset param
-    if (presetParam && presetParam in controllerConfigs) {
-      setTheme(controllerConfigs[presetParam].theme || defaultTheme);
-    }
-  }, [themeParam, presetParam, origin]);
-
-  useThemeEffect({ theme, assetUrl: import.meta.env.VITE_KEYCHAIN_URL });
+  useThemeEffect({
+    theme: theme.colors
+      ? theme
+      : {
+          ...defaultTheme,
+          colors: { ...defaultTheme.colors, primary: "#fbcb4a" },
+        },
+    assetUrl: import.meta.env.VITE_KEYCHAIN_URL,
+  });
 
   const value = {
     colorScheme,
@@ -99,6 +89,9 @@ export function ThemeProvider({
     theme,
     setTheme,
     resetTheme,
+    cover,
+    setCover,
+    resetCover,
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Project, useAchievementsQuery } from "@cartridge/utils/api/cartridge";
 import { RawTrophy, Trophy, getSelectorFromTag } from "@/models";
 
@@ -19,9 +19,6 @@ export function useTrophies({
   props: TrophiesProps[];
   parser: (node: RawTrophy) => Trophy;
 }) {
-  const [rawTrophies, setRawTrophies] = useState<{
-    [key: string]: { [key: string]: Trophy };
-  }>({});
   const [trophies, setTrophies] = useState<{
     [key: string]: { [key: string]: Trophy };
   }>({});
@@ -38,7 +35,7 @@ export function useTrophies({
   const onSuccess = useCallback(
     ({ achievements }: { achievements: Response }) => {
       if (!achievements?.items) return;
-      const trophies: { [key: string]: { [key: string]: Trophy } } = {};
+      const raws: { [key: string]: { [key: string]: Trophy } } = {};
       achievements.items.forEach((item) => {
         const project = item.meta.project;
         const achievements = item.achievements
@@ -47,14 +44,31 @@ export function useTrophies({
             acc[achievement.key] = achievement;
             return acc;
           }, {});
-        trophies[project] = achievements;
+        raws[project] = achievements;
       });
-      setRawTrophies(trophies);
+      const trophies: { [game: string]: { [id: string]: Trophy } } = {};
+      Object.keys(raws).forEach((game) => {
+        trophies[game] = {};
+        Object.values(raws[game]).forEach((trophy) => {
+          if (Object.keys(trophies[game] || {}).includes(trophy.id)) {
+            trophy.tasks.forEach((task) => {
+              if (
+                !trophies[game][trophy.id].tasks.find((t) => t.id === task.id)
+              ) {
+                trophies[game][trophy.id].tasks.push(task);
+              }
+            });
+          } else {
+            trophies[game][trophy.id] = trophy;
+          }
+        });
+      });
+      setTrophies(trophies);
     },
-    [parser, setRawTrophies],
+    [parser, setTrophies],
   );
 
-  const { refetch: fetchAchievements, isFetching } = useAchievementsQuery(
+  useAchievementsQuery(
     {
       projects,
     },
@@ -65,39 +79,6 @@ export function useTrophies({
       onSuccess,
     },
   );
-
-  useEffect(() => {
-    if (props.length === 0) return;
-    try {
-      fetchAchievements();
-    } catch (error) {
-      // Could happen if the indexer is down or wrong url
-      console.error(error);
-    }
-  }, [props, fetchAchievements]);
-
-  useEffect(() => {
-    if (isFetching) return;
-    // Merge trophies
-    const trophies: { [game: string]: { [id: string]: Trophy } } = {};
-    Object.keys(rawTrophies).forEach((game) => {
-      trophies[game] = {};
-      Object.values(rawTrophies[game]).forEach((trophy) => {
-        if (Object.keys(trophies[game] || {}).includes(trophy.id)) {
-          trophy.tasks.forEach((task) => {
-            if (
-              !trophies[game][trophy.id].tasks.find((t) => t.id === task.id)
-            ) {
-              trophies[game][trophy.id].tasks.push(task);
-            }
-          });
-        } else {
-          trophies[game][trophy.id] = trophy;
-        }
-      });
-    });
-    setTrophies(trophies);
-  }, [rawTrophies, isFetching, setTrophies]);
 
   return { trophies };
 }

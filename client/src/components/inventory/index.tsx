@@ -3,7 +3,7 @@ import { Tokens } from "./tokens";
 
 export const Inventory = () => {
   return (
-    <div className="w-3/4">
+    <div className="w-full">
       <Tokens />
       <Collections />
     </div>

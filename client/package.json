@@ -12,13 +12,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@bal7hazar/arcade-sdk": "0.0.74",
-    "@cartridge/connector": "0.6.0",
-    "@cartridge/controller": "0.6.0",
+    "@bal7hazar/arcade-sdk": "0.0.76",
+    "@cartridge/connector": "0.7.4",
+    "@cartridge/controller": "0.7.4",
     "@cartridge/penpal": "^6.2.3",
     "@cartridge/presets": "0.5.4",
-    "@cartridge/ui-next": "0.6.0",
-    "@cartridge/utils": "0.6.0",
+    "@cartridge/ui-next": "0.7.4",
+    "@cartridge/utils": "0.7.4",
     "@hookform/resolvers": "^3.9.1",
     "@starknet-react/chains": "^3.1.2",
     "@starknet-react/core": "^3.7.1",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@types/lodash": "^4.17.13",
-    "@types/node": "^20.6.0",
+    "@types/node": "^20.7.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react-swc": "^3.5.0",

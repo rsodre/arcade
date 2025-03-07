@@ -5,7 +5,6 @@ import {
   CardTitle,
   CardListContent,
   CardListItem,
-  ScrollArea,
 } from "@cartridge/ui-next";
 import { Balance, ERC20Metadata, useCountervalue } from "@cartridge/utils";
 import { TokenPair } from "@cartridge/utils/api/cartridge";
@@ -41,14 +40,12 @@ export const Tokens = () => {
         <CardTitle>Tokens</CardTitle>
       </CardHeader>
 
-      <ScrollArea>
-        {/* Empiric, the max height of the CardListContent is 4 rows */}
-        <CardListContent className="max-h-[179px]">
-          {tokens.map((token) => (
-            <TokenCardContent token={token} key={token.meta.address} />
-          ))}
-        </CardListContent>
-      </ScrollArea>
+      {/* Empiric, the max height of the CardListContent is 4 rows */}
+      <CardListContent className="max-h-[179px]">
+        {tokens.map((token) => (
+          <TokenCardContent token={token} key={token.meta.address} />
+        ))}
+      </CardListContent>
     </Card>
   );
 };

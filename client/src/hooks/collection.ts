@@ -26,7 +26,7 @@ export function useCollection({ tokenIds = [] }: { tokenIds?: string[] }) {
   const { address } = useAccount();
   const { isReady, indexerUrl } = useProject();
   const { status, data } = useErc721BalancesQuery(
-    { address },
+    { address, limit: 1000, offset: 0 },
     { enabled: isReady && !!address },
   );
 
@@ -84,7 +84,7 @@ export function useCollections() {
   const { address } = useAccount();
   const { isReady, indexerUrl } = useProject();
   const { status, data } = useErc721BalancesQuery(
-    { address },
+    { address, limit: 1000, offset: 0 },
     { enabled: isReady && !!address },
   );
 

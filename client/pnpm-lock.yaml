@@ -8,14 +8,14 @@ importers:
   .:
     dependencies:
       "@bal7hazar/arcade-sdk":
-        specifier: 0.0.74
-        version: 0.0.74(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
+        specifier: 0.0.76
+        version: 0.0.76(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
       "@cartridge/connector":
-        specifier: 0.6.0
-        version: 0.6.0(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(starknet@6.11.0)
+        specifier: 0.7.4
+        version: 0.7.4(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)
       "@cartridge/controller":
-        specifier: 0.6.0
-        version: 0.6.0(starknet@6.11.0)
+        specifier: 0.7.4
+        version: 0.7.4(open@10.1.0)(starknet@6.11.0)
       "@cartridge/penpal":
         specifier: ^6.2.3
         version: 6.2.3
@@ -23,11 +23,11 @@ importers:
         specifier: 0.5.4
         version: 0.5.4
       "@cartridge/ui-next":
-        specifier: 0.6.0
-        version: 0.6.0(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(tailwindcss@3.4.17)(typescript@5.7.3)
+        specifier: 0.7.4
+        version: 0.7.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)
       "@cartridge/utils":
-        specifier: 0.6.0
-        version: 0.6.0(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
+        specifier: 0.7.4
+        version: 0.7.4(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
       "@hookform/resolvers":
         specifier: ^3.9.1
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
@@ -87,7 +87,7 @@ importers:
         specifier: ^4.17.13
         version: 4.17.14
       "@types/node":
-        specifier: ^20.6.0
+        specifier: ^20.7.4
         version: 20.17.14
       "@types/react":
         specifier: ^18.3.12
@@ -156,32 +156,33 @@ packages:
       }
     engines: { node: ">=6.9.0" }
 
-  "@bal7hazar/arcade-sdk@0.0.74":
+  "@bal7hazar/arcade-sdk@0.0.76":
     resolution:
       {
-        integrity: sha512-QJ5xh3ApmVl47Lz0T4PxyONeq5BEcaNh3CA/rEHo2+MKxOj2DnaiYWtDXdoB43kTpWQyCZELwJ/zk04JtX0H9g==,
+        integrity: sha512-ONDUL9il92f3P+7pDDEKKJEwK7sDA9StdcnSjXO5DR7bmrjnboedh6XfzWtXZvnP7/WHraAlTb+Lt/7sk9tcog==,
       }
 
-  "@cartridge/account-wasm@0.6.0":
+  "@cartridge/account-wasm@0.7.4":
     resolution:
       {
-        integrity: sha512-ruI1L+GVDRsS8jJ6GNpcODFd1JaQV2j6BAHYJqx1iO0LGaC9/gCIHM+mDk/IKgHTjX/57+epkfcCBOhL8Eit1Q==,
+        integrity: sha512-2zuxamHerYI6UnzmfshMhfYlLvjdAxWxZSPBcMfch/M+p8FP1DGJs+Ybkhk52tp8RD3vevVJxMjGD2DtVwGIlg==,
       }
 
-  "@cartridge/connector@0.6.0":
+  "@cartridge/connector@0.7.4":
     resolution:
       {
-        integrity: sha512-WwaJCSNevXRwzc/BWg5MB3Y5qhVbv3l5n8+Ph7yPAGsOIVM6cN/Wm7nJyhGuDH0J0V2h/2qVkRetV82p0L3LEw==,
+        integrity: sha512-v3TnI+nMt20/gXruAKn8uKgdylR2in7mvPmZB594ygy7q9WmeJOoxZAEqfjW5y/bvUAMZHG+qjVvOCehRrK5tQ==,
       }
     peerDependencies:
       "@starknet-react/core": ^3.7
 
-  "@cartridge/controller@0.6.0":
+  "@cartridge/controller@0.7.4":
     resolution:
       {
-        integrity: sha512-s8yUzVCgLmkdjFFzq0xRe5PO5AGtp+znUoZQ9KtGDA98EdzVf9mmzKBngzQAbEljBXV6+w+qdZ5eE6sM2ulngw==,
+        integrity: sha512-GxfiwcFyqAyj/dxcmPCMXbi/FFK8pIR9zcGqiFHRy5AtFu50qOTZqwyyIZea8QbSjGwDmHg9X5kyw4dmqS01kg==,
       }
     peerDependencies:
+      open: ^10.1.0
       starknet: ^6.21.0
 
   "@cartridge/penpal@6.2.3":
@@ -190,22 +191,34 @@ packages:
         integrity: sha512-K8h9VqBfFPXcAFQNnvgBnejF/dp7249pS4jXu3NhNYR6JqMQxtcrDqfnPmJvbF4ECEBs+8Z2UiwlRQiKt5nNsg==,
       }
 
+  "@cartridge/penpal@6.2.4":
+    resolution:
+      {
+        integrity: sha512-tdpOnSJJBFMlgLZ1+z9Ho5e6cG5EgMAb1Cmmh1lGT2tmplogU/XPMjLE6CwvKAPDoe6a38iMnbH+ySTAWWIOKA==,
+      }
+
   "@cartridge/presets@0.5.4":
     resolution:
       {
         integrity: sha512-kC2tcZ+dBv6NoQOnlWrb+WroulVWYVjQy7PP5v1+Q07LjJujzjNlyXG1pPU1BpJCGDbE16/qlbUujhYbBvnVgQ==,
       }
 
-  "@cartridge/ui-next@0.6.0":
+  "@cartridge/ui-next@0.7.4":
     resolution:
       {
-        integrity: sha512-QVQDZWaeTtuE0oDNT2kWuRAwYpl3gJexdffMmXz+LgHqPCjYpJ1vQbzXf4dOIRS1txC7rnrDk5U+AFuGeToP9A==,
+        integrity: sha512-dpDdn6/5S/W8ZhP+67I7reTO1PGEGp3275Op17KHxLz0x6bI4dNlDPi2VC85mWGzrI3q2Aq6aDsKTbFkktjsWQ==,
       }
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      sonner: ^1.4.41
+      starknet: ^6.21.0
+      viem: ^2.21.32
 
-  "@cartridge/utils@0.6.0":
+  "@cartridge/utils@0.7.4":
     resolution:
       {
-        integrity: sha512-C591NPuHR5rbNGuDDv4WeFBZjSlqckm/omulagKBPX4TOvRbqGD1XC6kLq2ZD4cjFSX33oOk3zjS065HTbS3vg==,
+        integrity: sha512-vn/9CYfjMmYpfUgxwcx/jh9aI4fVVrZHaq9pwYYX2I9h8hZsvkTY2fYTm5OgHtKhHnjdHSHf5FtJVzL1dCiMbQ==,
       }
 
   "@cbor-extract/cbor-extract-darwin-arm64@2.2.0":
@@ -1116,14 +1129,6 @@ packages:
         optional: true
       "@types/react-dom":
         optional: true
-
-  "@radix-ui/react-icons@1.3.2":
-    resolution:
-      {
-        integrity: sha512-fyQIhGDhzfc9pK2kH6Pl9c4BDJGfMkPqkyIgYDthyNYoNg3wVhoJMMh19WS4Up/1KMPFVpNsT2q3WmXn2N1m6g==,
-      }
-    peerDependencies:
-      react: ^16.x || ^17.x || ^18.x || ^19.0.0 || ^19.0.0-rc
 
   "@radix-ui/react-id@1.1.0":
     resolution:
@@ -2122,20 +2127,6 @@ packages:
       }
     hasBin: true
 
-  abitype@0.9.8:
-    resolution:
-      {
-        integrity: sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==,
-      }
-    peerDependencies:
-      typescript: ">=5.0.4"
-      zod: ^3 >=3.19.1
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-      zod:
-        optional: true
-
   abitype@1.0.0:
     resolution:
       {
@@ -2340,6 +2331,13 @@ packages:
     engines: { node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7 }
     hasBin: true
 
+  bundle-name@4.1.0:
+    resolution:
+      {
+        integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==,
+      }
+    engines: { node: ">=18" }
+
   callsites@3.1.0:
     resolution:
       {
@@ -2502,18 +2500,32 @@ packages:
       supports-color:
         optional: true
 
-  decode-uri-component@0.2.2:
-    resolution:
-      {
-        integrity: sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==,
-      }
-    engines: { node: ">=0.10" }
-
   deep-is@0.1.4:
     resolution:
       {
         integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==,
       }
+
+  default-browser-id@5.0.0:
+    resolution:
+      {
+        integrity: sha512-A6p/pu/6fyBcA1TRz/GqWYPViplrftcW2gZC9q79ngNCKAeR/X3gcEdXQHl4KNXV+3wgIJ1CPkJQ3IHM6lcsyA==,
+      }
+    engines: { node: ">=18" }
+
+  default-browser@5.2.1:
+    resolution:
+      {
+        integrity: sha512-WY/3TUME0x3KPYdRRxEJJvXRHV4PyPoUsxtZa78lwItwRQRHhd2U9xOscaT/YTf8uCXIAjeJOFBVEh/7FtD8Xg==,
+      }
+    engines: { node: ">=18" }
+
+  define-lazy-prop@3.0.0:
+    resolution:
+      {
+        integrity: sha512-N+MeXYoqr3pOgn8xfyRPREN7gHakLYjhsHhWGT3fWAiL4IkAt0iDw14QiiEm2bE30c5XX5q0FtAA3CK5f9/BUg==,
+      }
+    engines: { node: ">=12" }
 
   delayed-stream@1.0.0:
     resolution:
@@ -2769,13 +2781,6 @@ packages:
       }
     engines: { node: ">=8" }
 
-  filter-obj@1.1.0:
-    resolution:
-      {
-        integrity: sha512-8rXg1ZnX7xzy2NGDVkBVaAy+lSlPNwad13BtgSlLuxfIslyt5Vg64U7tFcCt4WS1R0hvtnQybT/IyCkGZ3DpXQ==,
-      }
-    engines: { node: ">=0.10.0" }
-
   find-up@5.0.0:
     resolution:
       {
@@ -2997,6 +3002,14 @@ packages:
       }
     engines: { node: ">= 0.4" }
 
+  is-docker@3.0.0:
+    resolution:
+      {
+        integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    hasBin: true
+
   is-extglob@2.1.1:
     resolution:
       {
@@ -3018,12 +3031,27 @@ packages:
       }
     engines: { node: ">=0.10.0" }
 
+  is-inside-container@1.0.0:
+    resolution:
+      {
+        integrity: sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA==,
+      }
+    engines: { node: ">=14.16" }
+    hasBin: true
+
   is-number@7.0.0:
     resolution:
       {
         integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==,
       }
     engines: { node: ">=0.12.0" }
+
+  is-wsl@3.1.0:
+    resolution:
+      {
+        integrity: sha512-UcVfVfaK4Sc4m7X3dUSoHoozQGBEFeDC+zVo06t98xe8CzHSZZBekNXH+tu0NalHolcJ/QAGqS46Hef7QXBIMw==,
+      }
+    engines: { node: ">=16" }
 
   isexe@2.0.0:
     resolution:
@@ -3173,14 +3201,6 @@ packages:
         integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==,
       }
 
-  lucide-react@0.364.0:
-    resolution:
-      {
-        integrity: sha512-eHfdbJExWtTaZ0tBMGtI7PA/MbqV5wt+o4/yitDce17tadH/75Gq3Tq8jSteb3LhLr0eay/j5YUuN4yXjnI3aw==,
-      }
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0
-
   match-sorter@6.3.4:
     resolution:
       {
@@ -3279,15 +3299,6 @@ packages:
         integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==,
       }
 
-  next-themes@0.3.0:
-    resolution:
-      {
-        integrity: sha512-/QHIrsYpd6Kfk7xakK4svpDI5mmXP0gfvCoJdGpZQ2TOrQZmsW0QxjaiLn8wbIKjtm4BTSqLoix4lxYYOnLJ/w==,
-      }
-    peerDependencies:
-      react: ^16.8 || ^17 || ^18
-      react-dom: ^16.8 || ^17 || ^18
-
   node-fetch@2.7.0:
     resolution:
       {
@@ -3352,6 +3363,13 @@ packages:
       {
         integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==,
       }
+
+  open@10.1.0:
+    resolution:
+      {
+        integrity: sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==,
+      }
+    engines: { node: ">=18" }
 
   optionator@0.9.4:
     resolution:
@@ -3527,6 +3545,12 @@ packages:
       }
     engines: { node: ^10 || ^12 || >=14 }
 
+  posthog-js-lite@3.2.1:
+    resolution:
+      {
+        integrity: sha512-F+S+T9XiQr2rOkD0UFTr8yu8qScm4aM2lR5PmyknxxqlkC5gpRKS+Hi8cq5CYda7Q3BODh0h7pdW1P2XfZjEag==,
+      }
+
   prelude-ls@1.2.1:
     resolution:
       {
@@ -3556,13 +3580,6 @@ packages:
     resolution:
       {
         integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==,
-      }
-    engines: { node: ">=6" }
-
-  query-string@7.1.3:
-    resolution:
-      {
-        integrity: sha512-hh2WYhq4fi8+b+/2Kg9CEge4fDPvHS534aOOvOZeQ3+Vf2mCFsaFBYj0i+iXcAq6I9Vzp5fjMFBlONvayDC1qg==,
       }
     engines: { node: ">=6" }
 
@@ -3757,6 +3774,13 @@ packages:
     engines: { node: ">=18.0.0", npm: ">=8.0.0" }
     hasBin: true
 
+  run-applescript@7.0.0:
+    resolution:
+      {
+        integrity: sha512-9by4Ij99JUr/MCFBUkDKLWK3G9HVXmabKz9U5MlIAIuvuzkiOicRYs8XJLxX+xahD+mLiiCYDqF9dKAgtzKP1A==,
+      }
+    engines: { node: ">=18" }
+
   run-parallel@1.2.0:
     resolution:
       {
@@ -3826,13 +3850,6 @@ packages:
       }
     engines: { node: ">=0.10.0" }
 
-  split-on-first@1.1.0:
-    resolution:
-      {
-        integrity: sha512-43ZssAJaMusuKWL8sKUBQXHWOpq8d6CfN/u1p4gUzfJkM05C8rxTmYrkIPTXapZpORA6LkkzcUulJ8FqA7Uudw==,
-      }
-    engines: { node: ">=6" }
-
   starknet@6.11.0:
     resolution:
       {
@@ -3845,12 +3862,11 @@ packages:
         integrity: sha512-xUSlqyE+J/S5un3TyQY0Kehilh1u7ewPaut87eOxTDS1r90SU0QvQ3JEECp5LbW/sqsaMhfb+tGTBGrKzXg7bg==,
       }
 
-  strict-uri-encode@2.0.0:
+  starknet@6.23.1:
     resolution:
       {
-        integrity: sha512-QwiXZgpRcKkhTj2Scnn++4PKtWsH0kpzZ62L2R6c/LUVYv7hVnZqcg2+sMuT6R7Jusu1vviK/MFsu6kNJfWlEQ==,
+        integrity: sha512-vQV9luXpmwZZs9RVZaRwm2iD8T0PYx1AzgZeQsCvD89tR0HwUF0paty27ZzuJrdPe0CmAs/ipAYFCE55jbj0RQ==,
       }
-    engines: { node: ">=4" }
 
   string-width@4.2.3:
     resolution:
@@ -4159,17 +4175,6 @@ packages:
       react: ^16.8 || ^17.0 || ^18.0
       react-dom: ^16.8 || ^17.0 || ^18.0
 
-  viem@1.21.4:
-    resolution:
-      {
-        integrity: sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==,
-      }
-    peerDependencies:
-      typescript: ">=5.0.4"
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-
   viem@2.22.9:
     resolution:
       {
@@ -4405,13 +4410,13 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  "@bal7hazar/arcade-sdk@0.0.74(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)":
+  "@bal7hazar/arcade-sdk@0.0.76(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)":
     dependencies:
       "@dojoengine/core": 1.0.10(typescript@5.7.3)
-      "@dojoengine/sdk": 1.0.10(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.21.0)(typescript@5.7.3)
+      "@dojoengine/sdk": 1.0.10(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.23.1)(typescript@5.7.3)
       "@dojoengine/torii-client": 1.0.10
       eventemitter3: 5.0.1
-      starknet: 6.21.0
+      starknet: 6.23.1
     transitivePeerDependencies:
       - "@tanstack/react-query"
       - "@types/react"
@@ -4423,37 +4428,39 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  "@cartridge/account-wasm@0.6.0": {}
+  "@cartridge/account-wasm@0.7.4": {}
 
-  "@cartridge/connector@0.6.0(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(starknet@6.11.0)":
+  "@cartridge/connector@0.7.4(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)":
     dependencies:
-      "@cartridge/controller": 0.6.0(starknet@6.11.0)
+      "@cartridge/controller": 0.7.4(open@10.1.0)(starknet@6.11.0)
       "@starknet-react/core": 3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3)
     transitivePeerDependencies:
+      - open
       - starknet
 
-  "@cartridge/controller@0.6.0(starknet@6.11.0)":
+  "@cartridge/controller@0.7.4(open@10.1.0)(starknet@6.11.0)":
     dependencies:
-      "@cartridge/account-wasm": 0.6.0
-      "@cartridge/penpal": 6.2.3
+      "@cartridge/account-wasm": 0.7.4
+      "@cartridge/penpal": 6.2.4
       "@starknet-io/types-js": 0.7.10
       "@telegram-apps/sdk": 2.11.3
       base64url: 3.0.1
       cbor-x: 1.6.0
       fast-deep-equal: 3.1.3
-      query-string: 7.1.3
+      open: 10.1.0
       starknet: 6.11.0
 
   "@cartridge/penpal@6.2.3": {}
+
+  "@cartridge/penpal@6.2.4": {}
 
   "@cartridge/presets@0.5.4":
     dependencies:
       "@starknet-io/types-js": 0.7.7
 
-  "@cartridge/ui-next@0.6.0(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(tailwindcss@3.4.17)(typescript@5.7.3)":
+  "@cartridge/ui-next@0.7.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)":
     dependencies:
-      "@cartridge/utils": 0.6.0(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
-      "@hookform/resolvers": 3.10.0(react-hook-form@7.54.2(react@18.3.1))
+      "@cartridge/utils": 0.7.4(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
       "@radix-ui/react-accordion": 1.2.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-alert-dialog": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-aspect-ratio": 1.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4461,7 +4468,6 @@ snapshots:
       "@radix-ui/react-dialog": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-dropdown-menu": 2.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-hover-card": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      "@radix-ui/react-icons": 1.3.2(react@18.3.1)
       "@radix-ui/react-label": 2.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-menubar": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-popover": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4480,18 +4486,14 @@ snapshots:
       class-variance-authority: 0.7.1
       clsx: 1.2.1
       cmdk: 1.0.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      lucide-react: 0.364.0(react@18.3.1)
-      next-themes: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-hook-form: 7.54.2(react@18.3.1)
       sonner: 1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      starknet: 6.21.0
+      starknet: 6.11.0
       tailwind-merge: 2.6.0
       tailwindcss-animate: 1.0.7(tailwindcss@3.4.17)
       vaul: 0.9.9(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      viem: 1.21.4(typescript@5.7.3)(zod@3.24.1)
-      zod: 3.24.1
+      viem: 2.22.9(typescript@5.7.3)(zod@3.24.1)
     transitivePeerDependencies:
       - "@types/react"
       - "@types/react-dom"
@@ -4501,14 +4503,16 @@ snapshots:
       - tailwindcss
       - typescript
       - utf-8-validate
+      - zod
 
-  "@cartridge/utils@0.6.0(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)":
+  "@cartridge/utils@0.7.4(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)":
     dependencies:
+      posthog-js-lite: 3.2.1
       react: 18.3.1
       react-query: 3.39.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       starknet: 6.21.0
       swr: 2.3.0(react@18.3.1)
-      viem: 1.21.4(typescript@5.7.3)(zod@3.24.1)
+      viem: 2.22.9(typescript@5.7.3)(zod@3.24.1)
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -4559,7 +4563,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  "@dojoengine/sdk@1.0.10(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.21.0)(typescript@5.7.3)":
+  "@dojoengine/sdk@1.0.10(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.23.1)(typescript@5.7.3)":
     dependencies:
       "@dojoengine/core": 1.0.10(typescript@5.7.3)
       "@dojoengine/torii-client": 1.0.10
@@ -4569,7 +4573,7 @@ snapshots:
       immer: 10.1.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      starknet: 6.21.0
+      starknet: 6.23.1
       zustand: 4.5.6(@types/react@18.3.18)(immer@10.1.1)(react@18.3.1)
     transitivePeerDependencies:
       - bufferutil
@@ -5075,10 +5079,6 @@ snapshots:
       "@types/react": 18.3.18
       "@types/react-dom": 18.3.5(@types/react@18.3.18)
 
-  "@radix-ui/react-icons@1.3.2(react@18.3.1)":
-    dependencies:
-      react: 18.3.1
-
   "@radix-ui/react-id@1.1.0(@types/react@18.3.18)(react@18.3.1)":
     dependencies:
       "@radix-ui/react-use-layout-effect": 1.1.0(@types/react@18.3.18)(react@18.3.1)
@@ -5540,7 +5540,7 @@ snapshots:
   "@scure/bip32@1.3.2":
     dependencies:
       "@noble/curves": 1.2.0
-      "@noble/hashes": 1.3.2
+      "@noble/hashes": 1.3.3
       "@scure/base": 1.1.9
 
   "@scure/bip32@1.6.0":
@@ -5551,7 +5551,7 @@ snapshots:
 
   "@scure/bip39@1.2.1":
     dependencies:
-      "@noble/hashes": 1.3.2
+      "@noble/hashes": 1.3.3
       "@scure/base": 1.1.9
 
   "@scure/bip39@1.5.0":
@@ -5567,7 +5567,7 @@ snapshots:
   "@scure/starknet@1.1.0":
     dependencies:
       "@noble/curves": 1.7.0
-      "@noble/hashes": 1.6.0
+      "@noble/hashes": 1.6.1
 
   "@starknet-io/types-js@0.7.10": {}
 
@@ -5795,11 +5795,6 @@ snapshots:
       fs-extra: 10.1.0
       yargs: 17.7.2
 
-  abitype@0.9.8(typescript@5.7.3)(zod@3.24.1):
-    optionalDependencies:
-      typescript: 5.7.3
-      zod: 3.24.1
-
   abitype@1.0.0(typescript@5.7.3)(zod@3.24.1):
     optionalDependencies:
       typescript: 5.7.3
@@ -5911,6 +5906,10 @@ snapshots:
       node-releases: 2.0.19
       update-browserslist-db: 1.1.2(browserslist@4.24.4)
 
+  bundle-name@4.1.0:
+    dependencies:
+      run-applescript: 7.0.0
+
   callsites@3.1.0: {}
 
   camelcase-css@2.0.1: {}
@@ -6011,9 +6010,16 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  decode-uri-component@0.2.2: {}
-
   deep-is@0.1.4: {}
+
+  default-browser-id@5.0.0: {}
+
+  default-browser@5.2.1:
+    dependencies:
+      bundle-name: 4.1.0
+      default-browser-id: 5.0.0
+
+  define-lazy-prop@3.0.0: {}
 
   delayed-stream@1.0.0: {}
 
@@ -6186,8 +6192,6 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
-  filter-obj@1.1.0: {}
-
   find-up@5.0.0:
     dependencies:
       locate-path: 6.0.0
@@ -6304,6 +6308,8 @@ snapshots:
     dependencies:
       hasown: 2.0.2
 
+  is-docker@3.0.0: {}
+
   is-extglob@2.1.1: {}
 
   is-fullwidth-code-point@3.0.0: {}
@@ -6312,7 +6318,15 @@ snapshots:
     dependencies:
       is-extglob: 2.1.1
 
+  is-inside-container@1.0.0:
+    dependencies:
+      is-docker: 3.0.0
+
   is-number@7.0.0: {}
+
+  is-wsl@3.1.0:
+    dependencies:
+      is-inside-container: 1.0.0
 
   isexe@2.0.0: {}
 
@@ -6388,10 +6402,6 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lucide-react@0.364.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-
   match-sorter@6.3.4:
     dependencies:
       "@babel/runtime": 7.26.0
@@ -6440,11 +6450,6 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
-  next-themes@0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
   node-fetch@2.7.0:
     dependencies:
       whatwg-url: 5.0.0
@@ -6469,6 +6474,13 @@ snapshots:
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
+
+  open@10.1.0:
+    dependencies:
+      default-browser: 5.2.1
+      define-lazy-prop: 3.0.0
+      is-inside-container: 1.0.0
+      is-wsl: 3.1.0
 
   optionator@0.9.4:
     dependencies:
@@ -6567,6 +6579,8 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  posthog-js-lite@3.2.1: {}
+
   prelude-ls@1.2.1: {}
 
   proxy-deep@3.1.1: {}
@@ -6578,13 +6592,6 @@ snapshots:
       punycode: 2.3.1
 
   punycode@2.3.1: {}
-
-  query-string@7.1.3:
-    dependencies:
-      decode-uri-component: 0.2.2
-      filter-obj: 1.1.0
-      split-on-first: 1.1.0
-      strict-uri-encode: 2.0.0
 
   querystringify@2.2.0: {}
 
@@ -6711,6 +6718,8 @@ snapshots:
       "@rollup/rollup-win32-x64-msvc": 4.30.1
       fsevents: 2.3.3
 
+  run-applescript@7.0.0: {}
+
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
@@ -6741,8 +6750,6 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   source-map-js@1.2.1: {}
-
-  split-on-first@1.1.0: {}
 
   starknet@6.11.0:
     dependencies:
@@ -6778,7 +6785,21 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  strict-uri-encode@2.0.0: {}
+  starknet@6.23.1:
+    dependencies:
+      "@noble/curves": 1.7.0
+      "@noble/hashes": 1.6.0
+      "@scure/base": 1.2.1
+      "@scure/starknet": 1.1.0
+      abi-wan-kanabi: 2.2.4
+      fetch-cookie: 3.0.1
+      isomorphic-fetch: 3.0.0
+      lossless-json: 4.0.2
+      pako: 2.1.0
+      starknet-types-07: "@starknet-io/types-js@0.7.10"
+      ts-mixer: 6.0.4
+    transitivePeerDependencies:
+      - encoding
 
   string-width@4.2.3:
     dependencies:
@@ -6975,23 +6996,6 @@ snapshots:
     transitivePeerDependencies:
       - "@types/react"
       - "@types/react-dom"
-
-  viem@1.21.4(typescript@5.7.3)(zod@3.24.1):
-    dependencies:
-      "@adraffy/ens-normalize": 1.10.0
-      "@noble/curves": 1.2.0
-      "@noble/hashes": 1.3.2
-      "@scure/bip32": 1.3.2
-      "@scure/bip39": 1.2.1
-      abitype: 0.9.8(typescript@5.7.3)(zod@3.24.1)
-      isows: 1.0.3(ws@8.13.0)
-      ws: 8.13.0
-    optionalDependencies:
-      typescript: 5.7.3
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - zod
 
   viem@2.22.9(typescript@5.7.3)(zod@3.24.1):
     dependencies:

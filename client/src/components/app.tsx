@@ -1,15 +1,15 @@
-import { Outlet, Route, Routes } from "react-router-dom";
 import { InventoryScene } from "./scenes/inventory";
 import { AchievementScene } from "./scenes/achievement";
 import { Games } from "@/components/games";
-import { User } from "@/components/user";
-import { Navigation } from "@/components/navigation";
 import { SceneLayout } from "@/components/scenes/layout";
 import { useArcade } from "@/hooks/arcade";
 import { useEffect } from "react";
 import { useAchievements } from "@/hooks/achievements";
+import { ArcadeTabs, TabsContent } from "@cartridge/ui-next";
+import { useAccount } from "@starknet-react/core";
 
 export function App() {
+  const { isConnected } = useAccount();
   const { games } = useArcade();
   const { projects, setProjects } = useAchievements();
 
@@ -25,32 +25,48 @@ export function App() {
 
   return (
     <SceneLayout>
-      <div className="w-full bg-background h-[calc(100vh-3.5rem)]">
-        <div className="w-[1048px] flex flex-col items-stretch m-auto gap-y-8">
-          <div className="flex justify-between items-center pt-8">
-            <User />
-            <Navigation />
-          </div>
-          <div className="flex justify-center gap-8">
-            <Games />
-            <Router />
+      <div
+        className="w-full bg-background-100 overflow-y-scroll"
+        style={{ scrollbarWidth: "none" }}
+      >
+        <div className="w-[1048px] flex flex-col items-stretch m-auto gap-y-8 h-full overflow-clip">
+          <div className="flex pt-8 h-full">
+            <ArcadeTabs
+              discover
+              inventory={isConnected}
+              achievements={isConnected}
+              guilds={isConnected}
+              activity={isConnected}
+              className="flex flex-col w-full"
+            >
+              <div
+                className="flex justify-center pt-8 gap-8 w-full grow overflow-y-scroll"
+                style={{ scrollbarWidth: "none" }}
+              >
+                <Games />
+                <TabsContent className="p-0 mt-0 grow w-full" value="discover">
+                  <InventoryScene />
+                </TabsContent>
+                <TabsContent className="p-0 mt-0 grow w-full" value="inventory">
+                  <InventoryScene />
+                </TabsContent>
+                <TabsContent
+                  className="p-0 mt-0 grow w-full"
+                  value="achievements"
+                >
+                  <AchievementScene />
+                </TabsContent>
+                <TabsContent className="p-0 mt-0 grow w-full" value="guilds">
+                  <InventoryScene />
+                </TabsContent>
+                <TabsContent className="p-0 mt-0 grow w-full" value="activity">
+                  <InventoryScene />
+                </TabsContent>
+              </div>
+            </ArcadeTabs>
           </div>
         </div>
       </div>
     </SceneLayout>
   );
 }
-
-const Router = () => {
-  return (
-    <Routes>
-      <Route element={<Outlet />}>
-        <Route path="/" element={<InventoryScene />} />
-        <Route path="/inventory" element={<InventoryScene />} />
-        <Route path="/achievements" element={<AchievementScene />} />
-        <Route path="/activity" element={<InventoryScene />} />
-      </Route>
-      <Route path="*" element={<div>Page not found</div>} />
-    </Routes>
-  );
-};
