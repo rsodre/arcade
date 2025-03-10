@@ -46,6 +46,7 @@ export function useAchievements(accountAddress?: string) {
   const {
     achievements,
     players,
+    usernames,
     globals,
     isLoading,
     projects,
@@ -63,7 +64,15 @@ export function useAchievements(accountAddress?: string) {
     setAddress(currentAddress);
   }, [currentAddress]);
 
-  return { achievements, players, globals, isLoading, projects, setProjects };
+  return {
+    achievements,
+    players,
+    usernames,
+    globals,
+    isLoading,
+    projects,
+    setProjects,
+  };
 }
 
 export function usePlayerStats(accountAddress?: string) {

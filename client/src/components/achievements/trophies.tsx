@@ -1,4 +1,4 @@
-import { AchievementCard, AchievementSummary } from "@cartridge/ui-next";
+import { AchievementCard } from "@cartridge/ui-next";
 import { Item } from "@/hooks/achievements";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GameModel } from "@bal7hazar/arcade-sdk";
@@ -12,14 +12,12 @@ const HIDDEN_GROUP = "Hidden";
 
 export function Trophies({
   achievements,
-  pinneds,
   softview,
   enabled,
   game,
   pins,
 }: {
   achievements: Item[];
-  pinneds: Item[];
   softview: boolean;
   enabled: boolean;
   game: GameModel | undefined;
@@ -50,63 +48,34 @@ export function Trophies({
     return self || "";
   }, [self]);
 
-  const summaryProps = useMemo(() => {
-    return {
-      achievements: achievements.map((achievement) => {
-        return {
-          id: achievement.id,
-          content: {
-            points: achievement.earning,
-            difficulty: parseFloat(achievement.percentage),
-            hidden: achievement.hidden,
-            icon: achievement.icon,
-            tasks: achievement.tasks,
-            timestamp: achievement.timestamp,
-          },
-          pin: {
-            pinned: pinneds.some((pinneds) => pinneds.id === achievement.id),
-          },
-        };
-      }),
-      metadata: {
-        name: game?.metadata.name || "Game",
-        logo: game?.metadata.image,
-      },
-      socials: { ...game?.socials },
-    };
-  }, [achievements, game, pinneds]);
-
   return (
     <div className="flex flex-col gap-4">
-      <AchievementSummary {...summaryProps} variant="faded" />
-      <div className="flex flex-col gap-4">
-        {Object.entries(groups)
-          .filter(([group]) => group !== HIDDEN_GROUP)
-          .map(([group, items]) => (
-            <Group
-              key={group}
-              address={address}
-              group={group}
-              items={items}
-              softview={softview}
-              enabled={enabled}
-              game={game}
-              pins={pins}
-            />
-          ))}
-        <Group
-          key={HIDDEN_GROUP}
-          address={address}
-          group={HIDDEN_GROUP}
-          items={(groups[HIDDEN_GROUP] || []).sort(
-            (a, b) => a.earning - b.earning,
-          )}
-          softview={softview}
-          enabled={enabled}
-          game={game}
-          pins={pins}
-        />
-      </div>
+      {Object.entries(groups)
+        .filter(([group]) => group !== HIDDEN_GROUP)
+        .map(([group, items]) => (
+          <Group
+            key={group}
+            address={address}
+            group={group}
+            items={items}
+            softview={softview}
+            enabled={enabled}
+            game={game}
+            pins={pins}
+          />
+        ))}
+      <Group
+        key={HIDDEN_GROUP}
+        address={address}
+        group={HIDDEN_GROUP}
+        items={(groups[HIDDEN_GROUP] || []).sort(
+          (a, b) => a.earning - b.earning,
+        )}
+        softview={softview}
+        enabled={enabled}
+        game={game}
+        pins={pins}
+      />
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useMemo } from "react";
-import { Home } from "@/components/achievements/home";
 
 export const AchievementScene = () => {
   const { games } = useArcade();
@@ -17,7 +16,7 @@ export const AchievementScene = () => {
   }, [games, project, namespace]);
 
   if (!game) {
-    return <Home />;
+    return <Achievements />;
   }
 
   return <Achievements game={game} />;

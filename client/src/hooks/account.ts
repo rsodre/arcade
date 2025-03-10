@@ -11,13 +11,26 @@ import { useWallet } from "./wallet";
 import { constants, getChecksumAddress } from "starknet";
 
 export function useUsername({ address }: { address: string }) {
-  const { data } = useAccountNameQuery({ address });
+  const { data } = useAccountNameQuery(
+    { address },
+    {
+      enabled: false,
+      queryKey: ["username", address],
+      refetchOnWindowFocus: false,
+    },
+  );
 
   return { username: data?.accounts?.edges?.[0]?.node?.username ?? "" };
 }
 
 export function useUsernames({ addresses }: { addresses: string[] }) {
-  const { data } = useAccountNamesQuery({ addresses });
+  const { data } = useAccountNamesQuery(
+    { addresses },
+    {
+      queryKey: ["usernames", addresses],
+      refetchOnWindowFocus: false,
+    },
+  );
 
   return {
     usernames:

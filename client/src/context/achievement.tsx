@@ -9,6 +9,7 @@ import {
   Item,
   Player,
 } from "@/helpers/achievements";
+import { useUsernames } from "@/hooks/account";
 
 export interface AchievementsProps {
   namespace: string;
@@ -18,6 +19,7 @@ export interface AchievementsProps {
 type AchievementContextType = {
   achievements: { [game: string]: Item[] };
   players: { [game: string]: Player[] };
+  usernames: { [key: string]: string };
   globals: Player[];
   isLoading: boolean;
   projects: AchievementsProps[];
@@ -28,6 +30,7 @@ type AchievementContextType = {
 const initialState: AchievementContextType = {
   achievements: {},
   players: {},
+  usernames: {},
   globals: [],
   isLoading: false,
   projects: [],
@@ -93,11 +96,31 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, [address, trophies, progressions]);
 
+  const addresses = useMemo(() => {
+    const addresses = Object.values(players).flatMap((gamePlayers) =>
+      gamePlayers.map((player) => player.address),
+    );
+    const uniqueAddresses = [...new Set(addresses)];
+    return uniqueAddresses;
+  }, [players]);
+
+  const { usernames } = useUsernames({ addresses });
+  const usernamesData = useMemo(() => {
+    const data: { [key: string]: string } = {};
+    addresses.forEach((address) => {
+      data[address] =
+        usernames.find((username) => username.address === address)?.username ||
+        address.slice(0, 9);
+    });
+    return data;
+  }, [usernames, addresses]);
+
   return (
     <AchievementContext.Provider
       value={{
         achievements,
         players,
+        usernames: usernamesData,
         globals,
         isLoading,
         projects,

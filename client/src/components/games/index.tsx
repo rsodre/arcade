@@ -1,5 +1,5 @@
 import { ArcadeGameSelect, CardListContent, cn } from "@cartridge/ui-next";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTheme } from "@/hooks/context";
 import {
   ControllerTheme,
@@ -12,12 +12,6 @@ import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 export const Games = () => {
   const [selected, setSelected] = useState(0);
   const { games } = useArcade();
-
-  const sortedGames = useMemo(() => {
-    return Object.values(games).sort((a, b) =>
-      a.metadata.name.localeCompare(b.metadata.name),
-    );
-  }, [games]);
 
   return (
     <div
@@ -40,12 +34,12 @@ export const Games = () => {
         className="p-0 pb-6 grow overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
-        {sortedGames.map((game, index) => (
+        {games.map((game, index) => (
           <Game
             key={`${game.worldAddress}-${game.namespace}`}
             index={index + 1}
             first={false}
-            last={index === sortedGames.length - 1}
+            last={index === games.length - 1}
             project={game.project}
             namespace={game.namespace}
             preset={game.preset ?? "default"}

@@ -30,7 +30,7 @@ interface ArcadeContextType {
   chainId: string;
   provider: ExternalProvider;
   pins: { [playerId: string]: string[] };
-  games: { [gameId: string]: GameModel };
+  games: GameModel[];
 }
 
 /**
@@ -131,13 +131,19 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [initialized, handleGameModels]);
 
+  const sortedGames = useMemo(() => {
+    return Object.values(games).sort((a, b) =>
+      a.metadata.name.localeCompare(b.metadata.name),
+    );
+  }, [games]);
+
   return (
     <ArcadeContext.Provider
       value={{
         chainId: CHAIN_ID,
         provider,
         pins,
-        games,
+        games: sortedGames,
       }}
     >
       {children}

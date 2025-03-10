@@ -73,9 +73,10 @@ export function useTrophies({
       projects,
     },
     {
-      enabled: props.length > 0,
-      queryKey: ["achievements", props],
+      enabled: projects.length > 0,
+      queryKey: ["achievements", projects],
       refetchInterval: 600_000, // Refetch every 10 minutes
+      refetchOnWindowFocus: false,
       onSuccess,
     },
   );

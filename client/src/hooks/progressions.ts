@@ -51,9 +51,10 @@ export function useProgressions({
       projects,
     },
     {
-      enabled: props.length > 0,
-      queryKey: ["progressions", props],
+      enabled: projects.length > 0,
+      queryKey: ["progressions", projects],
       refetchInterval: 600_000, // Refetch every 10 minutes
+      refetchOnWindowFocus: false,
       onSuccess,
       onError: onSuccess,
     },

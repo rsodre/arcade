@@ -16,7 +16,7 @@ export function App() {
   useEffect(() => {
     if (projects.length === Object.values(games).length) return;
     setProjects(
-      Object.values(games).map((game) => ({
+      games.map((game) => ({
         namespace: game.namespace,
         project: game.project,
       })),
