@@ -295,6 +295,7 @@ var Registry = class {
       worldAddress,
       namespace,
       project,
+      preset,
       color,
       name,
       description,
@@ -314,6 +315,7 @@ var Registry = class {
         worldAddress,
         namespace,
         project,
+        preset,
         color,
         name,
         description,
@@ -331,6 +333,8 @@ var Registry = class {
     const {
       worldAddress,
       namespace,
+      project,
+      preset,
       color,
       name,
       description,
@@ -349,6 +353,8 @@ var Registry = class {
       calldata: [
         worldAddress,
         namespace,
+        project,
+        preset,
         color,
         name,
         description,
@@ -6700,7 +6706,7 @@ function setupWorld(provider) {
       console.error(error);
     }
   };
-  const Registry_updateGame = async (snAccount, worldAddress, namespace, preset, color, name, description, image, banner, discord, telegram, twitter, youtube, website) => {
+  const Registry_updateGame = async (snAccount, worldAddress, namespace, project, preset, color, name, description, image, banner, discord, telegram, twitter, youtube, website) => {
     try {
       return await provider.execute(
         snAccount,
@@ -6710,6 +6716,7 @@ function setupWorld(provider) {
           calldata: [
             worldAddress,
             namespace,
+            project,
             preset,
             color,
             name,

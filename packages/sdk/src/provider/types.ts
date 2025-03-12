@@ -156,6 +156,7 @@ export interface RegistryRegisterGameProps {
   worldAddress: BigNumberish;
   namespace: BigNumberish;
   project: BigNumberish;
+  preset: BigNumberish;
   color: BigNumberish;
   name: ByteArray;
   description: ByteArray;
@@ -171,6 +172,8 @@ export interface RegistryRegisterGameProps {
 export interface RegistryUpdateGameProps {
   worldAddress: BigNumberish;
   namespace: BigNumberish;
+  project: BigNumberish;
+  preset: BigNumberish;
   color: BigNumberish;
   name: ByteArray;
   description: ByteArray;

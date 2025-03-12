@@ -23,6 +23,7 @@ export class Registry {
       worldAddress,
       namespace,
       project,
+      preset,
       color,
       name,
       description,
@@ -43,6 +44,7 @@ export class Registry {
         worldAddress,
         namespace,
         project,
+        preset,
         color,
         name,
         description,
@@ -61,6 +63,8 @@ export class Registry {
     const {
       worldAddress,
       namespace,
+      project,
+      preset,
       color,
       name,
       description,
@@ -80,6 +84,8 @@ export class Registry {
       calldata: [
         worldAddress,
         namespace,
+        project,
+        preset,
         color,
         name,
         description,

@@ -53,6 +53,7 @@ export function setupWorld(provider: DojoProvider) {
     snAccount: Account | AccountInterface,
     worldAddress: BigNumberish,
     namespace: BigNumberish,
+    project: BigNumberish,
     preset: BigNumberish,
     color: BigNumberish,
     name: ByteArray,
@@ -74,6 +75,7 @@ export function setupWorld(provider: DojoProvider) {
           calldata: [
             worldAddress,
             namespace,
+            project,
             preset,
             color,
             name,

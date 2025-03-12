@@ -128,6 +128,7 @@ interface RegistryRegisterGameProps {
     worldAddress: BigNumberish;
     namespace: BigNumberish;
     project: BigNumberish;
+    preset: BigNumberish;
     color: BigNumberish;
     name: ByteArray;
     description: ByteArray;
@@ -142,6 +143,8 @@ interface RegistryRegisterGameProps {
 interface RegistryUpdateGameProps {
     worldAddress: BigNumberish;
     namespace: BigNumberish;
+    project: BigNumberish;
+    preset: BigNumberish;
     color: BigNumberish;
     name: ByteArray;
     description: ByteArray;
@@ -919,7 +922,7 @@ declare function setupWorld(provider: DojoProvider): {
         registerGame: (snAccount: Account$1 | AccountInterface, worldAddress: BigNumberish, namespace: BigNumberish, project: BigNumberish, preset: BigNumberish, color: BigNumberish, name: ByteArray, description: ByteArray, image: ByteArray, banner: ByteArray, discord: ByteArray, telegram: ByteArray, twitter: ByteArray, youtube: ByteArray, website: ByteArray) => Promise<{
             transaction_hash: string;
         } | undefined>;
-        updateGame: (snAccount: Account$1 | AccountInterface, worldAddress: BigNumberish, namespace: BigNumberish, preset: BigNumberish, color: BigNumberish, name: ByteArray, description: ByteArray, image: ByteArray, banner: ByteArray, discord: ByteArray, telegram: ByteArray, twitter: ByteArray, youtube: ByteArray, website: ByteArray) => Promise<{
+        updateGame: (snAccount: Account$1 | AccountInterface, worldAddress: BigNumberish, namespace: BigNumberish, project: BigNumberish, preset: BigNumberish, color: BigNumberish, name: ByteArray, description: ByteArray, image: ByteArray, banner: ByteArray, discord: ByteArray, telegram: ByteArray, twitter: ByteArray, youtube: ByteArray, website: ByteArray) => Promise<{
             transaction_hash: string;
         } | undefined>;
         publishGame: (snAccount: Account$1 | AccountInterface, worldAddress: BigNumberish, namespace: BigNumberish) => Promise<{

@@ -23145,6 +23145,7 @@ ${indent}}` : "}";
         worldAddress,
         namespace,
         project,
+        preset,
         color,
         name,
         description,
@@ -23164,6 +23165,7 @@ ${indent}}` : "}";
           worldAddress,
           namespace,
           project,
+          preset,
           color,
           name,
           description,
@@ -23181,6 +23183,8 @@ ${indent}}` : "}";
       const {
         worldAddress,
         namespace,
+        project,
+        preset,
         color,
         name,
         description,
@@ -23199,6 +23203,8 @@ ${indent}}` : "}";
         calldata: [
           worldAddress,
           namespace,
+          project,
+          preset,
           color,
           name,
           description,
@@ -29546,7 +29552,7 @@ ${indent}}` : "}";
         console.error(error2);
       }
     };
-    const Registry_updateGame = async (snAccount, worldAddress, namespace, preset, color, name, description, image, banner, discord, telegram, twitter, youtube, website) => {
+    const Registry_updateGame = async (snAccount, worldAddress, namespace, project, preset, color, name, description, image, banner, discord, telegram, twitter, youtube, website) => {
       try {
         return await provider.execute(
           snAccount,
@@ -29556,6 +29562,7 @@ ${indent}}` : "}";
             calldata: [
               worldAddress,
               namespace,
+              project,
               preset,
               color,
               name,
