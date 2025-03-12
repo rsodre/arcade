@@ -46,6 +46,7 @@ export function useAchievements(accountAddress?: string) {
   const {
     achievements,
     players,
+    events,
     usernames,
     globals,
     isLoading,
@@ -67,6 +68,7 @@ export function useAchievements(accountAddress?: string) {
   return {
     achievements,
     players,
+    events,
     usernames,
     globals,
     isLoading,

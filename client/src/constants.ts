@@ -1,21 +1,25 @@
-// Constants required to query the achievement events
+export const PLACEHOLDER =
+  "https://static.cartridge.gg/presets/cartridge/cover-dark.png";
 
+// Constants required to query the achievement events
 export const TROPHY: string = "TrophyCreation";
 export const PROGRESS: string = "TrophyProgression";
 export const ERC20_ADDRESSES: string[] = [
+  "0x0124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49", // LORDS
+  "0x01bfe97d729138fc7c2d93c77d6d1d8a24708d5060608017d9b384adf38f04c7", // FLIP
+  "0x00e5f10eddc01699dc899a30dbc3c9858148fa4aa0a47c0ffd85f887ffc4653e", // NUMS
+  "0x0410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113", // PAPER
   // "0x03fe2b97c1fd336e750087d68b9b867997fd64a2661ff3ca5a7c771641e8e7ac",
   // "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
   // "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8",
   // "0x05574eb6b8789a91466f902c380d978e472db68170ff82a5b650b95a58ddf4ad",
   // "0x042b8f0484674ca266ac5d08e4ac6a3fe65bd3129795def2dca5c34ecc5f96d2",
   // "0x0319111a5037cbec2b3e638cc34a3474e2d2608299f3e62866e9cc683208c610",
-  // "0x0410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113",
   // "0x049210ffc442172463f3177147c1aeaa36c51d152c1b0630f2364c300d4f48ee",
   // "0x075afe6402ad5a5c20dd25e10ec3b3986acaa647b77e4ae24b0cbc9a54a27a87",
   // "0x00c530f2c0aa4c16a0806365b0898499fba372e5df7a7172dc6fe9ba777e8007",
   // "0x51c4b1fe3bf6774b87ad0b15ef5d1472759076e42944fff9b9f641ff13e5bbe",
   // "0x498edfaf50ca5855666a700c25dd629d577eb9afccdf3b5977aec79aee55ada",
-  // "0x0124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49",
   // "0x0695b08ecdfdd828c2e6267da62f59e6d7543e690ef56a484df25c8566b332a5",
   // "0x00ac965f9e67164723c16735a9da8dbc9eb8e43b1bd0323591e87c056badf606",
   // "0x067e4ac00a241be06ba6afc11fa2715ec7da0c42c05a67ef6ecfcfeda725aaa8",

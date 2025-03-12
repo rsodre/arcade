@@ -36,6 +36,19 @@ export interface AchievementGlobals {
   [key: string]: Player;
 }
 
+export interface AchievementEvents {
+  [game: string]: Event[];
+}
+
+export interface Event {
+  player: string;
+  achievement: {
+    title: string;
+    icon: string;
+  };
+  timestamp: number;
+}
+
 export interface Player {
   address: string;
   earnings: number;
@@ -106,13 +119,16 @@ export const AchievementHelper = {
   ): {
     stats: AchievementStats;
     players: AchievementPlayers;
+    events: AchievementEvents;
     globals: Player[];
   } {
     const stats: AchievementStats = {};
     const players: AchievementPlayers = {};
     const globals: AchievementGlobals = {};
+    const events: AchievementEvents = {};
     Object.keys(data).forEach((game) => {
       stats[game] = {};
+      events[game] = [];
       const gamePlayers = Object.keys(data[game]).map((playerId) => {
         const player = data[game][playerId];
         const completeds: string[] = [];
@@ -122,15 +138,27 @@ export const AchievementHelper = {
             (task) => task.completion,
           );
           if (completion) {
+            // Update player game stats
             completeds.push(achievementId);
             stats[game][achievementId] = stats[game][achievementId] || 0;
             stats[game][achievementId] += 1;
-            timestamp = Math.max(
-              timestamp,
+            // Update player game timestamp
+            const completionTimestamp = Math.max(
               ...Object.values(player[achievementId]).map(
                 (task) => task.timestamp,
               ),
             );
+            timestamp = Math.max(timestamp, completionTimestamp);
+            // Add completion event timestamp to events
+            const event: Event = {
+              player: playerId,
+              achievement: {
+                title: trophies[game][achievementId].title,
+                icon: trophies[game][achievementId].icon,
+              },
+              timestamp: completionTimestamp,
+            };
+            events[game].push(event);
           }
           return acc + (completion ? trophies[game][achievementId].earning : 0);
         }, 0);
@@ -159,10 +187,12 @@ export const AchievementHelper = {
       players[game] = Object.values(gamePlayers)
         .sort((a, b) => a.timestamp - b.timestamp) // Oldest to newest
         .sort((a, b) => b.earnings - a.earnings); // Highest to lowest
+      events[game] = events[game].sort((a, b) => b.timestamp - a.timestamp); // Newest to oldest
     });
     return {
       stats,
       players,
+      events,
       globals: Object.values(globals)
         .sort((a, b) => a.timestamp - b.timestamp)
         .sort((a, b) => b.earnings - a.earnings),

@@ -10,7 +10,7 @@ import { Balance, ERC20Metadata, useCountervalue } from "@cartridge/utils";
 import { TokenPair } from "@cartridge/utils/api/cartridge";
 import { formatEther } from "viem";
 import { formatBalance } from "@/helpers";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { CoinsIcon } from "@cartridge/ui-next";
 import ControllerConnector from "@cartridge/connector/controller";
 import { useAccount } from "@starknet-react/core";
@@ -41,7 +41,10 @@ export const Tokens = () => {
       </CardHeader>
 
       {/* Empiric, the max height of the CardListContent is 4 rows */}
-      <CardListContent className="max-h-[179px]">
+      <CardListContent
+        className="max-h-[179px] overflow-y-scroll"
+        style={{ scrollbarWidth: "none" }}
+      >
         {tokens.map((token) => (
           <TokenCardContent token={token} key={token.meta.address} />
         ))}
@@ -62,14 +65,15 @@ function TokenCardContent({
     pair: `${token.meta.symbol}_USDC` as TokenPair,
   });
 
-  const handleClick = async () => {
+  const handleClick = useCallback(async () => {
     const controller = (connector as ControllerConnector)?.controller;
     if (!controller) {
       console.error("Connector not initialized");
       return;
     }
-    controller.openProfile("inventory");
-  };
+    const path = `inventory/token/${token.meta.address}/send`;
+    controller.openProfileTo(path);
+  }, [token.meta.address, connector]);
 
   return (
     <CardListItem

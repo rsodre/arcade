@@ -8,6 +8,7 @@ import {
   AchievementData,
   Item,
   Player,
+  Event,
 } from "@/helpers/achievements";
 import { useUsernames } from "@/hooks/account";
 
@@ -19,6 +20,7 @@ export interface AchievementsProps {
 type AchievementContextType = {
   achievements: { [game: string]: Item[] };
   players: { [game: string]: Player[] };
+  events: { [game: string]: Event[] };
   usernames: { [key: string]: string };
   globals: Player[];
   isLoading: boolean;
@@ -30,6 +32,7 @@ type AchievementContextType = {
 const initialState: AchievementContextType = {
   achievements: {},
   players: {},
+  events: {},
   usernames: {},
   globals: [],
   isLoading: false,
@@ -47,6 +50,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
     {},
   );
   const [players, setPlayers] = useState<{ [game: string]: Player[] }>({});
+  const [events, setEvents] = useState<{ [game: string]: Event[] }>({});
   const [globals, setGlobals] = useState<Player[]>([]);
   const [address, setAddress] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(true);
@@ -72,17 +76,21 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
 
   // Compute achievements and players
   useEffect(() => {
-    if (!Object.values(trophies).length || !address) return;
+    if (
+      !Object.values(trophies).length ||
+      !Object.values(progressions).length ||
+      !address
+    )
+      return;
     // Compute players and achievement stats
     const data: AchievementData = AchievementHelper.extract(
       progressions,
       trophies,
     );
-    const { stats, players, globals } = AchievementHelper.computePlayers(
-      data,
-      trophies,
-    );
+    const { stats, players, events, globals } =
+      AchievementHelper.computePlayers(data, trophies);
     setPlayers(players);
+    setEvents(events);
     setGlobals(globals);
     const achievements = AchievementHelper.computeAchievements(
       data,
@@ -120,6 +128,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       value={{
         achievements,
         players,
+        events,
         usernames: usernamesData,
         globals,
         isLoading,

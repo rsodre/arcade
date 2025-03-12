@@ -1,4 +1,10 @@
-import { ArcadeGameSelect, CardListContent, cn } from "@cartridge/ui-next";
+import {
+  ArcadeGameSelect,
+  Button,
+  CardListContent,
+  cn,
+  GearIcon,
+} from "@cartridge/ui-next";
 import { useCallback, useState } from "react";
 import { useTheme } from "@/hooks/context";
 import {
@@ -8,6 +14,7 @@ import {
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
+import { Register } from "./register";
 
 export const Games = () => {
   const [selected, setSelected] = useState(0);
@@ -15,13 +22,12 @@ export const Games = () => {
 
   return (
     <div
-      className="flex flex-col gap-y-px min-w-[324px] grow overflow-clip"
+      className="flex flex-col gap-y-px min-w-[324px] h-full overflow-clip pb-6"
       style={{ scrollbarWidth: "none" }}
     >
       <Game
         index={0}
         first={true}
-        last={false}
         project=""
         namespace=""
         preset="default"
@@ -31,7 +37,7 @@ export const Games = () => {
         setSelected={setSelected}
       />
       <CardListContent
-        className="p-0 pb-6 grow overflow-y-scroll"
+        className="p-0 overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
         {games.map((game, index) => (
@@ -39,7 +45,6 @@ export const Games = () => {
             key={`${game.worldAddress}-${game.namespace}`}
             index={index + 1}
             first={false}
-            last={index === games.length - 1}
             project={game.project}
             namespace={game.namespace}
             preset={game.preset ?? "default"}
@@ -51,6 +56,7 @@ export const Games = () => {
           />
         ))}
       </CardListContent>
+      <Register />
     </div>
   );
 };
@@ -58,7 +64,6 @@ export const Games = () => {
 export const Game = ({
   index,
   first,
-  last,
   project,
   namespace,
   preset,
@@ -70,7 +75,6 @@ export const Game = ({
 }: {
   index: number;
   first: boolean;
-  last: boolean;
   project: string;
   namespace: string;
   preset: string;
@@ -126,13 +130,7 @@ export const Game = ({
   ]);
 
   return (
-    <div
-      className={cn(
-        first && "rounded-t overflow-clip",
-        last && "rounded-b overflow-clip",
-      )}
-      onClick={handleClick}
-    >
+    <div className={cn("flex gap-px", first && "rounded-t overflow-clip")}>
       <ArcadeGameSelect
         name={name}
         logo={icon}
@@ -140,7 +138,15 @@ export const Game = ({
         points={project ? gameEarnings : totalEarnings}
         active={active}
         onClick={handleClick}
+        className="grow"
       />
+      <Button
+        variant="secondary"
+        size="icon"
+        className="w-7 h-full rounded-none"
+      >
+        <GearIcon size="xs" />
+      </Button>
     </div>
   );
 };

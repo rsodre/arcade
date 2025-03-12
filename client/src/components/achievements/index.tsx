@@ -10,7 +10,7 @@ import {
   AchievementSummary,
 } from "@cartridge/ui-next";
 import { useUsername } from "@/hooks/account";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Trophies } from "./trophies";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
@@ -18,11 +18,12 @@ import { addAddressPadding } from "starknet";
 import { useAchievements, usePlayerStats } from "@/hooks/achievements";
 import { useAccount } from "@starknet-react/core";
 import { Item } from "@/helpers/achievements";
-
-const PLACEHOLDER =
-  "https://static.cartridge.gg/presets/cartridge/cover-dark.png";
+import { PLACEHOLDER } from "@/constants";
 
 export function Achievements({ game }: { game?: GameModel }) {
+  const [tab, setTab] = useState<"achievements" | "leaderboard">(
+    "achievements",
+  );
   const { address: self } = useAccount();
   const { achievements, globals, players, usernames, isLoading } =
     useAchievements();
@@ -153,6 +154,10 @@ export function Achievements({ game }: { game?: GameModel }) {
     <LayoutContent className="gap-y-6 select-none h-full overflow-clip">
       {isSelf ? (
         <AchievementTabs
+          value={tab}
+          onValueChange={(value) =>
+            setTab(value as "achievements" | "leaderboard")
+          }
           count={!game ? gamesCompleted : count}
           total={!game ? gamesTotal : total}
           rank={!game ? gamesRank : gameRank}
@@ -308,5 +313,5 @@ export function GameRow({
     };
   }, [gameAchievements, game, pinneds]);
 
-  return <AchievementSummary {...summaryProps} variant={variant} />;
+  return <AchievementSummary {...summaryProps} variant={variant} active />;
 }

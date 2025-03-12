@@ -8,14 +8,14 @@ importers:
   .:
     dependencies:
       "@bal7hazar/arcade-sdk":
-        specifier: 0.0.76
-        version: 0.0.76(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
+        specifier: 0.0.79
+        version: 0.0.79(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
       "@cartridge/connector":
-        specifier: 0.7.4
-        version: 0.7.4(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)
+        specifier: 0.7.5
+        version: 0.7.5(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)
       "@cartridge/controller":
-        specifier: 0.7.4
-        version: 0.7.4(open@10.1.0)(starknet@6.11.0)
+        specifier: 0.7.5
+        version: 0.7.5(open@10.1.0)(starknet@6.11.0)
       "@cartridge/penpal":
         specifier: ^6.2.3
         version: 6.2.3
@@ -23,26 +23,41 @@ importers:
         specifier: 0.5.4
         version: 0.5.4
       "@cartridge/ui-next":
-        specifier: 0.7.4
-        version: 0.7.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)
+        specifier: 0.7.5
+        version: 0.7.5(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)
       "@cartridge/utils":
-        specifier: 0.7.4
-        version: 0.7.4(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
+        specifier: 0.7.5
+        version: 0.7.5(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
       "@hookform/resolvers":
-        specifier: ^3.9.1
+        specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
+      "@radix-ui/react-label":
+        specifier: ^2.1.2
+        version: 2.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@radix-ui/react-slot":
+        specifier: ^1.1.2
+        version: 1.1.2(@types/react@18.3.18)(react@18.3.1)
       "@starknet-react/chains":
         specifier: ^3.1.2
         version: 3.1.2
       "@starknet-react/core":
         specifier: ^3.7.1
         version: 3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3)
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       compare-versions:
         specifier: ^6.1.1
         version: 6.1.1
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
+      lucide-react:
+        specifier: ^0.479.0
+        version: 0.479.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -50,7 +65,7 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       react-hook-form:
-        specifier: ^7.53.2
+        specifier: ^7.54.2
         version: 7.54.2(react@18.3.1)
       react-query:
         specifier: ^3.39.2
@@ -64,6 +79,12 @@ importers:
       starknet:
         specifier: ^6.11.0
         version: 6.11.0
+      tailwind-merge:
+        specifier: ^3.0.2
+        version: 3.0.2
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.17)
       viem:
         specifier: ^2.22.9
         version: 2.22.9(typescript@5.7.3)(zod@3.24.1)
@@ -77,7 +98,7 @@ importers:
         specifier: ^3.3.0
         version: 3.4.1(vite@5.4.11(@types/node@20.17.14))
       zod:
-        specifier: ^3.23.8
+        specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
       "@eslint/js":
@@ -156,30 +177,30 @@ packages:
       }
     engines: { node: ">=6.9.0" }
 
-  "@bal7hazar/arcade-sdk@0.0.76":
+  "@bal7hazar/arcade-sdk@0.0.79":
     resolution:
       {
-        integrity: sha512-ONDUL9il92f3P+7pDDEKKJEwK7sDA9StdcnSjXO5DR7bmrjnboedh6XfzWtXZvnP7/WHraAlTb+Lt/7sk9tcog==,
+        integrity: sha512-fO4iy6/FvGHsHKCrKD/0WCEPwQ23GG9QeObIwVvXPI2Iclpj/FpOpxNtPolAyjgdp1Cqw08CVs/rJA0d+F+cMQ==,
       }
 
-  "@cartridge/account-wasm@0.7.4":
+  "@cartridge/account-wasm@0.7.5":
     resolution:
       {
-        integrity: sha512-2zuxamHerYI6UnzmfshMhfYlLvjdAxWxZSPBcMfch/M+p8FP1DGJs+Ybkhk52tp8RD3vevVJxMjGD2DtVwGIlg==,
+        integrity: sha512-+horkKCYzGp5cEYNfGScIQ1GA5+znVf8yTkh9N0zk12bXs06MokmiwA4i9so9hHISyLlWnSpbQixgHa/oXpKkw==,
       }
 
-  "@cartridge/connector@0.7.4":
+  "@cartridge/connector@0.7.5":
     resolution:
       {
-        integrity: sha512-v3TnI+nMt20/gXruAKn8uKgdylR2in7mvPmZB594ygy7q9WmeJOoxZAEqfjW5y/bvUAMZHG+qjVvOCehRrK5tQ==,
+        integrity: sha512-dnoomucDC+k+KWxTefVaJcvfqk/4IXir6huOZMYwaMo8kOyibeftB7MTzmIZtXtOJBvh+s+jQ/87F1CGMmUF3A==,
       }
     peerDependencies:
       "@starknet-react/core": ^3.7
 
-  "@cartridge/controller@0.7.4":
+  "@cartridge/controller@0.7.5":
     resolution:
       {
-        integrity: sha512-GxfiwcFyqAyj/dxcmPCMXbi/FFK8pIR9zcGqiFHRy5AtFu50qOTZqwyyIZea8QbSjGwDmHg9X5kyw4dmqS01kg==,
+        integrity: sha512-cK2NyDu2/vNpuRy977VAQKyTntXaSSXHdz6xVeWbNGUd3xLoDbXHeEYQM3DmRcw8t7co03aywZYzxlxQ/glgig==,
       }
     peerDependencies:
       open: ^10.1.0
@@ -203,10 +224,10 @@ packages:
         integrity: sha512-kC2tcZ+dBv6NoQOnlWrb+WroulVWYVjQy7PP5v1+Q07LjJujzjNlyXG1pPU1BpJCGDbE16/qlbUujhYbBvnVgQ==,
       }
 
-  "@cartridge/ui-next@0.7.4":
+  "@cartridge/ui-next@0.7.5":
     resolution:
       {
-        integrity: sha512-dpDdn6/5S/W8ZhP+67I7reTO1PGEGp3275Op17KHxLz0x6bI4dNlDPi2VC85mWGzrI3q2Aq6aDsKTbFkktjsWQ==,
+        integrity: sha512-575zbVSPy5Me/i9qH5UeCvICv+J1E+VcgUO4HLg288sSbVpc6UGRFLhBsGz26UDYfHgp0w/uU40pZeuC1hcQjQ==,
       }
     peerDependencies:
       react: ^18.2.0
@@ -215,10 +236,10 @@ packages:
       starknet: ^6.21.0
       viem: ^2.21.32
 
-  "@cartridge/utils@0.7.4":
+  "@cartridge/utils@0.7.5":
     resolution:
       {
-        integrity: sha512-vn/9CYfjMmYpfUgxwcx/jh9aI4fVVrZHaq9pwYYX2I9h8hZsvkTY2fYTm5OgHtKhHnjdHSHf5FtJVzL1dCiMbQ==,
+        integrity: sha512-gy+cvHzltl5LkHi7ivCuVFOMJaakfzG4pNSleXlUgIYq8Z95uRRgFjRSHysi6xyDc1Co6Nm1MVTgreVMgF3ygQ==,
       }
 
   "@cbor-extract/cbor-extract-darwin-arm64@2.2.0":
@@ -1142,10 +1163,10 @@ packages:
       "@types/react":
         optional: true
 
-  "@radix-ui/react-label@2.1.1":
+  "@radix-ui/react-label@2.1.2":
     resolution:
       {
-        integrity: sha512-UUw5E4e/2+4kFMH7+YxORXGWggtY6sM8WIwh5RZchhLuUg2H1hc98Py+pr8HMz6rdaYrK2t296ZEjYLOCO5uUw==,
+        integrity: sha512-zo1uGMTaNlHehDyFQcDZXRJhUPDuukcnHz0/jnrup0JA6qL+AFpAnty+7VKa9esuU5xTblAZzTGYJKSKaBxBhw==,
       }
     peerDependencies:
       "@types/react": "*"
@@ -1270,6 +1291,22 @@ packages:
       "@types/react-dom":
         optional: true
 
+  "@radix-ui/react-primitive@2.0.2":
+    resolution:
+      {
+        integrity: sha512-Ec/0d38EIuvDF+GZjcMU/Ze6MxntVJYO/fRlCPhCaVUyPY9WTalHJw54tp9sXeJo3tlShWpy41vQRgLRGOuz+w==,
+      }
+    peerDependencies:
+      "@types/react": "*"
+      "@types/react-dom": "*"
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      "@types/react":
+        optional: true
+      "@types/react-dom":
+        optional: true
+
   "@radix-ui/react-progress@1.1.1":
     resolution:
       {
@@ -1370,6 +1407,18 @@ packages:
     resolution:
       {
         integrity: sha512-RApLLOcINYJA+dMVbOju7MYv1Mb2EBp2nH4HdDzXTSyaR5optlm6Otrz1euW3HbdOR8UmmFK06TD+A9frYWv+g==,
+      }
+    peerDependencies:
+      "@types/react": "*"
+      react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    peerDependenciesMeta:
+      "@types/react":
+        optional: true
+
+  "@radix-ui/react-slot@1.1.2":
+    resolution:
+      {
+        integrity: sha512-YAKxaiGsSQJ38VzKH86/BPRC4rh+b1Jpa+JneA5LRE7skmLPNAyeG8kPJj/oo4STLvlrs8vkf/iYyc3A5stYCQ==,
       }
     peerDependencies:
       "@types/react": "*"
@@ -3201,6 +3250,14 @@ packages:
         integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==,
       }
 
+  lucide-react@0.479.0:
+    resolution:
+      {
+        integrity: sha512-aBhNnveRhorBOK7uA4gDjgaf+YlHMdMhQ/3cupk6exM10hWlEU+2QtWYOfhXhjAsmdb6LeKR+NZnow4UxRRiTQ==,
+      }
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   match-sorter@6.3.4:
     resolution:
       {
@@ -3939,6 +3996,12 @@ packages:
         integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==,
       }
 
+  tailwind-merge@3.0.2:
+    resolution:
+      {
+        integrity: sha512-l7z+OYZ7mu3DTqrL88RiKrKIqO3NcpEO8V/Od04bNpvk0kiIFndGEoqfuzvj4yuhRkHKjRkII2z+KS2HfPcSxw==,
+      }
+
   tailwindcss-animate@1.0.7:
     resolution:
       {
@@ -4410,7 +4473,7 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  "@bal7hazar/arcade-sdk@0.0.76(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)":
+  "@bal7hazar/arcade-sdk@0.0.79(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)":
     dependencies:
       "@dojoengine/core": 1.0.10(typescript@5.7.3)
       "@dojoengine/sdk": 1.0.10(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.23.1)(typescript@5.7.3)
@@ -4428,19 +4491,19 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  "@cartridge/account-wasm@0.7.4": {}
+  "@cartridge/account-wasm@0.7.5": {}
 
-  "@cartridge/connector@0.7.4(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)":
+  "@cartridge/connector@0.7.5(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)":
     dependencies:
-      "@cartridge/controller": 0.7.4(open@10.1.0)(starknet@6.11.0)
+      "@cartridge/controller": 0.7.5(open@10.1.0)(starknet@6.11.0)
       "@starknet-react/core": 3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3)
     transitivePeerDependencies:
       - open
       - starknet
 
-  "@cartridge/controller@0.7.4(open@10.1.0)(starknet@6.11.0)":
+  "@cartridge/controller@0.7.5(open@10.1.0)(starknet@6.11.0)":
     dependencies:
-      "@cartridge/account-wasm": 0.7.4
+      "@cartridge/account-wasm": 0.7.5
       "@cartridge/penpal": 6.2.4
       "@starknet-io/types-js": 0.7.10
       "@telegram-apps/sdk": 2.11.3
@@ -4458,9 +4521,9 @@ snapshots:
     dependencies:
       "@starknet-io/types-js": 0.7.7
 
-  "@cartridge/ui-next@0.7.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)":
+  "@cartridge/ui-next@0.7.5(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)":
     dependencies:
-      "@cartridge/utils": 0.7.4(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
+      "@cartridge/utils": 0.7.5(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
       "@radix-ui/react-accordion": 1.2.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-alert-dialog": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-aspect-ratio": 1.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4468,7 +4531,7 @@ snapshots:
       "@radix-ui/react-dialog": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-dropdown-menu": 2.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-hover-card": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      "@radix-ui/react-label": 2.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@radix-ui/react-label": 2.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-menubar": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-popover": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-progress": 1.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4476,7 +4539,7 @@ snapshots:
       "@radix-ui/react-scroll-area": 1.2.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-select": 2.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-separator": 1.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      "@radix-ui/react-slot": 1.1.1(@types/react@18.3.18)(react@18.3.1)
+      "@radix-ui/react-slot": 1.1.2(@types/react@18.3.18)(react@18.3.1)
       "@radix-ui/react-switch": 1.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-tabs": 1.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-toast": 1.2.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4505,12 +4568,12 @@ snapshots:
       - utf-8-validate
       - zod
 
-  "@cartridge/utils@0.7.4(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)":
+  "@cartridge/utils@0.7.5(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)":
     dependencies:
       posthog-js-lite: 3.2.1
       react: 18.3.1
       react-query: 3.39.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      starknet: 6.21.0
+      starknet: 6.23.1
       swr: 2.3.0(react@18.3.1)
       viem: 2.22.9(typescript@5.7.3)(zod@3.24.1)
     transitivePeerDependencies:
@@ -5086,9 +5149,9 @@ snapshots:
     optionalDependencies:
       "@types/react": 18.3.18
 
-  "@radix-ui/react-label@2.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+  "@radix-ui/react-label@2.1.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
     dependencies:
-      "@radix-ui/react-primitive": 2.0.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@radix-ui/react-primitive": 2.0.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     optionalDependencies:
@@ -5209,6 +5272,15 @@ snapshots:
       "@types/react": 18.3.18
       "@types/react-dom": 18.3.5(@types/react@18.3.18)
 
+  "@radix-ui/react-primitive@2.0.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
+    dependencies:
+      "@radix-ui/react-slot": 1.1.2(@types/react@18.3.18)(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    optionalDependencies:
+      "@types/react": 18.3.18
+      "@types/react-dom": 18.3.5(@types/react@18.3.18)
+
   "@radix-ui/react-progress@1.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)":
     dependencies:
       "@radix-ui/react-context": 1.1.1(@types/react@18.3.18)(react@18.3.1)
@@ -5310,6 +5382,13 @@ snapshots:
       "@types/react-dom": 18.3.5(@types/react@18.3.18)
 
   "@radix-ui/react-slot@1.1.1(@types/react@18.3.18)(react@18.3.1)":
+    dependencies:
+      "@radix-ui/react-compose-refs": 1.1.1(@types/react@18.3.18)(react@18.3.1)
+      react: 18.3.1
+    optionalDependencies:
+      "@types/react": 18.3.18
+
+  "@radix-ui/react-slot@1.1.2(@types/react@18.3.18)(react@18.3.1)":
     dependencies:
       "@radix-ui/react-compose-refs": 1.1.1(@types/react@18.3.18)(react@18.3.1)
       react: 18.3.1
@@ -5972,7 +6051,7 @@ snapshots:
     dependencies:
       "@radix-ui/react-dialog": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-id": 1.1.0(@types/react@18.3.18)(react@18.3.1)
-      "@radix-ui/react-primitive": 2.0.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      "@radix-ui/react-primitive": 2.0.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       use-sync-external-store: 1.4.0(react@18.3.1)
@@ -6401,6 +6480,10 @@ snapshots:
   lossless-json@4.0.2: {}
 
   lru-cache@10.4.3: {}
+
+  lucide-react@0.479.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   match-sorter@6.3.4:
     dependencies:
@@ -6846,6 +6929,8 @@ snapshots:
       use-sync-external-store: 1.4.0(react@18.3.1)
 
   tailwind-merge@2.6.0: {}
+
+  tailwind-merge@3.0.2: {}
 
   tailwindcss-animate@1.0.7(tailwindcss@3.4.17):
     dependencies:

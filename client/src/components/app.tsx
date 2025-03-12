@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useAchievements } from "@/hooks/achievements";
 import { ArcadeTabs, TabsContent } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
+import { DiscoverScene } from "./scenes/discover";
 
 export function App() {
   const { isConnected } = useAccount();
@@ -45,7 +46,7 @@ export function App() {
               >
                 <Games />
                 <TabsContent className="p-0 mt-0 grow w-full" value="discover">
-                  <InventoryScene />
+                  <DiscoverScene />
                 </TabsContent>
                 <TabsContent className="p-0 mt-0 grow w-full" value="inventory">
                   <InventoryScene />
