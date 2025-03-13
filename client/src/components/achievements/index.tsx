@@ -17,7 +17,7 @@ import { addAddressPadding } from "starknet";
 import { useAchievements, usePlayerStats } from "@/hooks/achievements";
 import { useAccount } from "@starknet-react/core";
 import { Item } from "@/helpers/achievements";
-import banner from "/public/banner.svg";
+import banner from "@/assets/banner.svg";
 import { AchievementsError, AchievementsLoading } from "../errors";
 export function Achievements({ game }: { game?: GameModel }) {
   const [tab, setTab] = useState<"achievements" | "leaderboard">(

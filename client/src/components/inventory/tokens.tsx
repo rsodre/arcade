@@ -1,20 +1,15 @@
 import { useTokens } from "@/hooks/token";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardListContent,
-  CardListItem,
-} from "@cartridge/ui-next";
+import { TokenCard } from "@cartridge/ui-next";
 import { Balance, ERC20Metadata, useCountervalue } from "@cartridge/utils";
 import { TokenPair } from "@cartridge/utils/api/cartridge";
 import { formatEther } from "viem";
 import { formatBalance } from "@/helpers";
 import { useCallback, useMemo } from "react";
-import { CoinsIcon } from "@cartridge/ui-next";
 import ControllerConnector from "@cartridge/connector/controller";
 import { useAccount } from "@starknet-react/core";
 import { ERC20_ADDRESSES } from "@/constants";
+
+import placeholder from "@/assets/placeholder.svg";
 
 export const Tokens = () => {
   const erc20 = useTokens(undefined, ERC20_ADDRESSES);
@@ -35,21 +30,14 @@ export const Tokens = () => {
   );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Tokens</CardTitle>
-      </CardHeader>
-
-      {/* Empiric, the max height of the CardListContent is 4 rows */}
-      <CardListContent
-        className="max-h-[179px] overflow-y-scroll"
-        style={{ scrollbarWidth: "none" }}
-      >
-        {tokens.map((token) => (
-          <TokenCardContent token={token} key={token.meta.address} />
-        ))}
-      </CardListContent>
-    </Card>
+    <div
+      className="rounded overflow-y-scroll w-full flex flex-col gap-y-px h-[259px]"
+      style={{ scrollbarWidth: "none" }}
+    >
+      {tokens.map((token) => (
+        <TokenCardContent key={token.meta.address} token={token} />
+      ))}
+    </div>
   );
 };
 
@@ -76,33 +64,12 @@ function TokenCardContent({
   }, [token.meta.address, connector]);
 
   return (
-    <CardListItem
-      icon={<TokenIcon logoUrl={token.meta.logoUrl} />}
-      className="hover:opacity-80"
+    <TokenCard
+      image={token.meta.logoUrl || placeholder}
+      title={token.meta.name}
+      amount={`${formatBalance(token.balance.formatted, ["~"])} ${token.meta.symbol}`}
+      value={countervalue ? formatBalance(countervalue.formatted, ["~"]) : ""}
       onClick={handleClick}
-    >
-      <div className="flex items-center gap-2">
-        {formatBalance(token.balance.formatted, ["~"])}
-        <span className="text-muted-foreground">{token.meta.symbol}</span>
-      </div>
-
-      {countervalue && (
-        <div className="text-muted-foreground">
-          {formatBalance(countervalue.formatted, ["~"])}
-        </div>
-      )}
-    </CardListItem>
+    />
   );
 }
-
-const TokenIcon = ({ logoUrl }: { logoUrl: string | undefined }) => {
-  return (
-    <div className="h-7 w-7 border-2 border-quaternary flex items-center justify-center rounded-full overflow-hidden">
-      {logoUrl ? (
-        <img src={logoUrl} alt="token" />
-      ) : (
-        <CoinsIcon variant="line" />
-      )}
-    </div>
-  );
-};

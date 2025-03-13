@@ -1,5 +1,5 @@
 import { Header } from "@/components/header";
-import banner from "/public/banner.svg";
+import banner from "@/assets/banner.svg";
 
 export const SceneLayout = ({ children }: { children: React.ReactNode }) => {
   return (

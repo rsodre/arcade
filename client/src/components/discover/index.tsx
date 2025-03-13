@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
-import banner from "/public/banner.svg";
+import banner from "@/assets/banner.svg";
 import { DiscoverError, DiscoverLoading } from "../errors";
 
 interface Event {

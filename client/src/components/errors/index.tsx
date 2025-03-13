@@ -5,7 +5,7 @@ import {
   EmptyStateIcon,
   EmptyStateInventoryIcon,
 } from "@cartridge/ui-next";
-import banner from "/public/banner.svg";
+import banner from "@/assets/banner.svg";
 import { useEffect, useState } from "react";
 
 export function Error({
