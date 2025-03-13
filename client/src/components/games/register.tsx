@@ -126,7 +126,7 @@ export function Register({ game }: { game?: GameModel }) {
   // });
 
   const onDelete = useCallback(() => {
-    if (!game) return;
+    if (!game || !account) return;
     const process = async () => {
       setLoading(true);
       try {
@@ -148,6 +148,7 @@ export function Register({ game }: { game?: GameModel }) {
 
   const onSubmit = useCallback(
     (values: z.infer<typeof formSchema>) => {
+      if (!account) return;
       const process = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
         try {
@@ -190,7 +191,10 @@ export function Register({ game }: { game?: GameModel }) {
     <Sheet open={close} onOpenChange={setClose}>
       <SheetTrigger asChild>
         {!game ? (
-          <Button className="normal-case font-sans select-none min-h-12 flex justify-center items-center p-2 gap-x-2 rounded-b cursor-pointer text-sm font-medium text-foreground-300 bg-background-200 hover:bg-background-300">
+          <Button
+            className="normal-case font-sans select-none min-h-12 flex justify-center items-center p-2 gap-x-2 rounded-b cursor-pointer text-sm font-medium text-foreground-300 bg-background-200 hover:bg-background-300"
+            disabled={!account}
+          >
             <PlusIcon size="sm" variant="line" />
             Register Game
           </Button>
@@ -199,6 +203,7 @@ export function Register({ game }: { game?: GameModel }) {
             variant="secondary"
             size="icon"
             className="w-7 h-full rounded-none"
+            disabled={!account}
           >
             <GearIcon size="xs" />
           </Button>
