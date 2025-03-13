@@ -1,6 +1,3 @@
-export const PLACEHOLDER =
-  "https://static.cartridge.gg/presets/cartridge/cover-dark.png";
-
 // Constants required to query the achievement events
 export const TROPHY: string = "TrophyCreation";
 export const PROGRESS: string = "TrophyProgression";

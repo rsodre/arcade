@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
-import { PLACEHOLDER } from "@/constants";
+import banner from "/public/banner.svg";
 import { DiscoverError, DiscoverLoading } from "../errors";
 
 interface Event {
@@ -49,7 +49,11 @@ export function Discover({ game }: { game?: GameModel }) {
       >
         <div className="flex flex-col gap-y-6">
           {filteredGames.map((item, index) => (
-            <GameRow key={index} game={item} events={gameEvents[index]} />
+            <GameRow
+              key={`${index}-${item.project}`}
+              game={item}
+              events={gameEvents[index]}
+            />
           ))}
         </div>
       </div>
@@ -69,7 +73,7 @@ export function GameRow({
       metadata: {
         name: game.metadata.name,
         logo: game.metadata.image,
-        cover: game.metadata.banner ?? PLACEHOLDER,
+        cover: game.metadata.banner ?? banner,
       },
       socials: game.socials,
     };
