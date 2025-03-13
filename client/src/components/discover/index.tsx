@@ -1,13 +1,10 @@
-import {
-  LayoutContent,
-  LayoutContentLoader,
-  ArcadeDiscoveryGroup,
-} from "@cartridge/ui-next";
+import { LayoutContent, ArcadeDiscoveryGroup } from "@cartridge/ui-next";
 import { useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
 import { PLACEHOLDER } from "@/constants";
+import { DiscoverError, DiscoverLoading } from "../errors";
 
 interface Event {
   name: string;
@@ -16,7 +13,7 @@ interface Event {
 }
 
 export function Discover({ game }: { game?: GameModel }) {
-  const { events, usernames, isLoading } = useAchievements();
+  const { events, usernames, isLoading, isError } = useAchievements();
   const { games } = useArcade();
 
   const filteredGames = useMemo(() => {
@@ -40,7 +37,9 @@ export function Discover({ game }: { game?: GameModel }) {
     });
   }, [events, filteredGames, usernames]);
 
-  if (isLoading) return <LayoutContentLoader />;
+  if (isError) return <DiscoverError />;
+
+  if (isLoading) return <DiscoverLoading />;
 
   return (
     <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">

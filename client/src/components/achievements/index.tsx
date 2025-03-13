@@ -1,7 +1,6 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
   LayoutContent,
-  LayoutContentLoader,
   AchievementTabs,
   TabsContent,
   AchievementLeaderboard,
@@ -18,14 +17,14 @@ import { addAddressPadding } from "starknet";
 import { useAchievements, usePlayerStats } from "@/hooks/achievements";
 import { useAccount } from "@starknet-react/core";
 import { Item } from "@/helpers/achievements";
-import { PLACEHOLDER } from "@/constants";
-
+import banner from "/public/banner.svg";
+import { AchievementsError, AchievementsLoading } from "../errors";
 export function Achievements({ game }: { game?: GameModel }) {
   const [tab, setTab] = useState<"achievements" | "leaderboard">(
     "achievements",
   );
   const { address: self } = useAccount();
-  const { achievements, globals, players, usernames, isLoading } =
+  const { achievements, globals, players, usernames, isLoading, isError } =
     useAchievements();
   const { pins, games } = useArcade();
 
@@ -137,7 +136,9 @@ export function Achievements({ game }: { game?: GameModel }) {
     return !game ? games : [game];
   }, [games, game]);
 
-  if (isLoading) return <LayoutContentLoader />;
+  if (isError) return <AchievementsError />;
+
+  if (isLoading) return <AchievementsLoading />;
 
   if (
     (!!game && gameAchievements.length === 0) ||
@@ -307,7 +308,7 @@ export function GameRow({
       metadata: {
         name: game?.metadata.name || "Game",
         logo: game?.metadata.image,
-        cover: PLACEHOLDER,
+        cover: banner,
       },
       socials: { ...game?.socials },
     };

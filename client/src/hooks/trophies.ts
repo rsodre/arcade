@@ -68,7 +68,7 @@ export function useTrophies({
     [parser, setTrophies],
   );
 
-  useAchievementsQuery(
+  const { isLoading, isError } = useAchievementsQuery(
     {
       projects,
     },
@@ -81,5 +81,5 @@ export function useTrophies({
     },
   );
 
-  return { trophies };
+  return { trophies, isLoading, isError };
 }

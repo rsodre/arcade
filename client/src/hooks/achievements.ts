@@ -50,6 +50,7 @@ export function useAchievements(accountAddress?: string) {
     usernames,
     globals,
     isLoading,
+    isError,
     projects,
     setAddress,
     setProjects,
@@ -72,6 +73,7 @@ export function useAchievements(accountAddress?: string) {
     usernames,
     globals,
     isLoading,
+    isError,
     projects,
     setProjects,
   };

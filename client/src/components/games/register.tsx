@@ -1,6 +1,7 @@
 import { useArcade } from "@/hooks/arcade";
 import {
   Button,
+  GearIcon,
   Input,
   PlusIcon,
   Separator,
@@ -9,10 +10,11 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  TrashIcon,
 } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
 import { useCallback, useState } from "react";
-import { byteArray } from "starknet";
+import { AllowArray, byteArray, Call } from "starknet";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, UseFormReturn } from "react-hook-form";
@@ -24,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { GameModel } from "@bal7hazar/arcade-sdk";
 
 const formSchema = z.object({
   worldAddress: z
@@ -73,27 +76,7 @@ const formSchema = z.object({
   }),
 });
 
-// starkli invoke \
-//     --rpc https://api.cartridge.gg/x/starknet/mainnet \
-//     --account ./account_mainnet.json \
-//     --keystore ./keystore_mainnet.json \
-//     0xc46f7e578f31c3fa6bb669164f04d696427818ba69f177ddc152f31ed5f119 register_game \
-//         0x05f2358c005acf2a63616a32b76a01d632463b84609954ff846998f898a49778 \
-//         str:"nums" \
-//         str:"nums-appchain" \
-//         str:"nums" \
-//         str:"#9E84E9" \
-//         0 str:"Nums" 0x4 \
-//         6 str:"Number Challenge is a fully onc" str:"hain game built using Dojo Engi" str:"ne on Starknet that blends stra" str:"tegy and chance. The goal is to" str:" place 20 randomly generated nu" str:"mbers into slots in ascending o" str:"rder to win significant prizes." 0x1f \
-//         2 str:"https://github.com/cartridge-gg" str:"/presets/blob/main/configs/nums" str:"/icon.png?raw=true" 0x12 \
-//         2 str:"https://github.com/cartridge-gg" str:"/presets/blob/main/configs/nums" str:"/cover.png?raw=true" 0x13 \
-//         0 str:"https://discord.gg/pwB3qD5k" 0x1b \
-//         0 0 0 \
-//         0 str:"https://x.com/numsgg" 0x14 \
-//         0 0 0 \
-//         0 str:"https://nums.gg/" 0x10
-
-export function Register() {
+export function Register({ game }: { game?: GameModel }) {
   const { account } = useAccount();
   const { provider } = useArcade();
   const [loading, setLoading] = useState(false);
@@ -101,55 +84,75 @@ export function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      worldAddress:
-        "0x05f2358c005acf2a63616a32b76a01d632463b84609954ff846998f898a49778",
-      namespace: "nums",
-      project: "nums-mainnet-appchain",
-      preset: "nums",
-      color: "#9E84E9",
-      name: "Nums",
-      description:
-        "Number Challenge is a fully onchain game built using Dojo Engine on Starknet that blends strategy and chance. The goal is to place 20 randomly generated numbers into slots in ascending order to win.",
-      image:
-        "https://github.com/cartridge-gg/presets/blob/main/configs/nums/icon.png?raw=true",
-      banner:
-        "https://github.com/cartridge-gg/presets/blob/main/configs/nums/cover.png?raw=true",
-      discord: "https://discord.gg/pwB3qD5k",
-      telegram: "",
-      twitter: "https://x.com/numsgg",
-      youtube: "",
-      website: "https://nums.gg/",
+      worldAddress: game?.worldAddress || "",
+      namespace: game?.namespace || "",
+      project: game?.project || "",
+      preset: game?.preset || "",
+      color: game?.metadata.color || "",
+      name: game?.metadata.name || "",
+      description: game?.metadata.description || "",
+      image: game?.metadata.image || "",
+      banner: game?.metadata.banner || "",
+      discord: game?.socials.discord || "",
+      telegram: game?.socials.telegram || "",
+      twitter: game?.socials.twitter || "",
+      youtube: game?.socials.youtube || "",
+      website: game?.socials.website || "",
     },
   });
-  // const form = useForm<z.infer<typeof formSchema>>({
-  //   resolver: zodResolver(formSchema),
-  //   defaultValues: {
-  //     worldAddress: "",
-  //     namespace: "",
-  //     project: "",
-  //     preset: "",
-  //     color: "",
-  //     name: "",
-  //     description: "",
-  //     image: "",
-  //     banner: "",
-  //     discord: "",
-  //     telegram: "",
-  //     twitter: "",
-  //     youtube: "",
-  //     website: "",
-  //   },
-  // })
+
+  //   const form = useForm<z.infer<typeof formSchema>>({
+  //     resolver: zodResolver(formSchema),
+  //     defaultValues: {
+  //       worldAddress:
+  //         "0x05f2358c005acf2a63616a32b76a01d632463b84609954ff846998f898a49778",
+  //       namespace: "nums",
+  //       project: "nums-mainnet-appchain",
+  //       preset: "nums",
+  //       color: "#9E84E9",
+  //       name: "Nums",
+  //       description:
+  //         "Number Challenge is a fully onchain game built using Dojo Engine on Starknet that blends strategy and chance. The goal is to place 20 randomly generated numbers into slots in ascending order to win.",
+  //       image:
+  //         "https://github.com/cartridge-gg/presets/blob/main/configs/nums/icon.png?raw=true",
+  //       banner:
+  //         "https://github.com/cartridge-gg/presets/blob/main/configs/nums/cover.png?raw=true",
+  //       discord: "https://discord.gg/pwB3qD5k",
+  //       telegram: "",
+  //       twitter: "https://x.com/numsgg",
+  //       youtube: "",
+  //       website: "https://nums.gg/",
+  //     },
+  // });
+
+  const onDelete = useCallback(() => {
+    if (!game) return;
+    const process = async () => {
+      setLoading(true);
+      try {
+        const args = {
+          worldAddress: game.worldAddress,
+          namespace: game.namespace,
+        };
+        const calls = provider.registry.remove_game(args);
+        await account?.execute(calls);
+        setClose(true);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    process();
+  }, [provider, account, game, setClose]);
 
   const onSubmit = useCallback(
     (values: z.infer<typeof formSchema>) => {
       const process = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
-        console.log({
-          description: byteArray.byteArrayFromString(values.description),
-        });
         try {
-          const calls = provider.registry.register_game({
+          let calls: AllowArray<Call> = [];
+          const args = {
             worldAddress: values.worldAddress,
             namespace: values.namespace,
             project: values.project,
@@ -164,7 +167,12 @@ export function Register() {
             twitter: byteArray.byteArrayFromString(values.twitter),
             youtube: byteArray.byteArrayFromString(values.youtube),
             website: byteArray.byteArrayFromString(values.website),
-          });
+          };
+          if (!game) {
+            calls = provider.registry.register_game(args);
+          } else {
+            calls = provider.registry.update_game(args);
+          }
           await account?.execute(calls);
           setClose(true);
         } catch (error) {
@@ -181,14 +189,26 @@ export function Register() {
   return (
     <Sheet open={close} onOpenChange={setClose}>
       <SheetTrigger asChild>
-        <Button className="normal-case font-sans select-none min-h-12 flex justify-center items-center p-2 gap-x-2 rounded-b cursor-pointer text-sm font-medium text-foreground-300 bg-background-200 hover:bg-background-300">
-          <PlusIcon size="sm" variant="line" />
-          Register Game
-        </Button>
+        {!game ? (
+          <Button className="normal-case font-sans select-none min-h-12 flex justify-center items-center p-2 gap-x-2 rounded-b cursor-pointer text-sm font-medium text-foreground-300 bg-background-200 hover:bg-background-300">
+            <PlusIcon size="sm" variant="line" />
+            Register Game
+          </Button>
+        ) : (
+          <Button
+            variant="secondary"
+            size="icon"
+            className="w-7 h-full rounded-none"
+          >
+            <GearIcon size="xs" />
+          </Button>
+        )}
       </SheetTrigger>
       <SheetContent className="border-background-300 overflow-clip flex flex-col">
         <SheetHeader>
-          <SheetTitle className="select-none">Register a new Game</SheetTitle>
+          <SheetTitle className="select-none">
+            {game ? "Update a Game" : "Register a new Game"}
+          </SheetTitle>
         </SheetHeader>
 
         <Form {...form}>
@@ -204,12 +224,14 @@ export function Register() {
                 label="World Address *"
                 placeholder="0x..."
                 form={form}
+                disabled={!!game}
               />
               <Field
                 name="namespace"
                 label="Namespace*"
                 placeholder="dojo_starter"
                 form={form}
+                disabled={!!game}
               />
               <Field
                 name="project"
@@ -290,9 +312,16 @@ export function Register() {
                 form={form}
               />
             </div>
-            <Button className="mt-4" type="submit" isLoading={loading}>
-              Submit
-            </Button>
+            <div className="flex gap-2 mt-4">
+              {game && (
+                <Button variant="secondary" size="icon" onClick={onDelete}>
+                  <TrashIcon size="xs" />
+                </Button>
+              )}
+              <Button className="grow" type="submit" isLoading={loading}>
+                {game ? "Update" : "Register"}
+              </Button>
+            </div>
           </form>
         </Form>
       </SheetContent>
@@ -325,11 +354,13 @@ export const Field = ({
   label,
   placeholder,
   form,
+  disabled,
 }: {
   name: string;
   label: string;
   placeholder: string;
   form: UseFormReturn<z.infer<typeof formSchema>>;
+  disabled?: boolean;
 }) => {
   return (
     <FormField
@@ -357,7 +388,7 @@ export const Field = ({
             {label}
           </FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            <Input placeholder={placeholder} {...field} disabled={disabled} />
           </FormControl>
           <FormMessage />
         </FormItem>

@@ -1,11 +1,5 @@
-import {
-  ArcadeGameSelect,
-  Button,
-  CardListContent,
-  cn,
-  GearIcon,
-} from "@cartridge/ui-next";
-import { useCallback, useState } from "react";
+import { ArcadeGameSelect, CardListContent, cn } from "@cartridge/ui-next";
+import { useCallback, useMemo, useState } from "react";
 import { useTheme } from "@/hooks/context";
 import {
   ControllerTheme,
@@ -15,9 +9,12 @@ import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { Register } from "./register";
+import { GameModel } from "@bal7hazar/arcade-sdk";
+import { useAccount } from "@starknet-react/core";
 
 export const Games = () => {
   const [selected, setSelected] = useState(0);
+  const { address } = useAccount();
   const { games } = useArcade();
 
   return (
@@ -52,6 +49,8 @@ export const Games = () => {
             icon={game.metadata.image}
             cover={game.metadata.banner}
             active={selected === index + 1}
+            game={game}
+            address={address}
             setSelected={setSelected}
           />
         ))}
@@ -71,6 +70,8 @@ export const Game = ({
   icon,
   cover,
   active,
+  game,
+  address,
   setSelected,
 }: {
   index: number;
@@ -82,6 +83,8 @@ export const Game = ({
   icon: string;
   cover?: string;
   active: boolean;
+  game?: GameModel;
+  address?: string;
   setSelected: (index: number) => void;
 }) => {
   const { earnings: totalEarnings } = usePlayerStats();
@@ -128,6 +131,9 @@ export const Game = ({
     setProject,
     setCover,
   ]);
+  const isOwner = useMemo(() => {
+    return BigInt(game?.owner || "0x0") === BigInt(address || "0x0");
+  }, [game, address]);
 
   return (
     <div className={cn("flex gap-px", first && "rounded-t overflow-clip")}>
@@ -140,13 +146,7 @@ export const Game = ({
         onClick={handleClick}
         className="grow"
       />
-      <Button
-        variant="secondary"
-        size="icon"
-        className="w-7 h-full rounded-none"
-      >
-        <GearIcon size="xs" />
-      </Button>
+      {isOwner && !!game && <Register game={game} />}
     </div>
   );
 };

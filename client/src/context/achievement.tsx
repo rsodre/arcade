@@ -24,6 +24,7 @@ type AchievementContextType = {
   usernames: { [key: string]: string };
   globals: Player[];
   isLoading: boolean;
+  isError: boolean;
   projects: AchievementsProps[];
   setAddress: (address: string | undefined) => void;
   setProjects: (projects: AchievementsProps[]) => void;
@@ -36,6 +37,7 @@ const initialState: AchievementContextType = {
   usernames: {},
   globals: [],
   isLoading: false,
+  isError: false,
   projects: [],
   setAddress: () => {},
   setProjects: () => {},
@@ -53,7 +55,6 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
   const [events, setEvents] = useState<{ [game: string]: Event[] }>({});
   const [globals, setGlobals] = useState<Player[]>([]);
   const [address, setAddress] = useState<string | undefined>();
-  const [isLoading, setIsLoading] = useState(true);
 
   const trophiesProps = useMemo(
     () => projects.map((prop) => ({ ...prop, name: TROPHY })),
@@ -64,12 +65,20 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
     [projects],
   );
 
-  const { trophies } = useTrophies({
+  const {
+    trophies,
+    isLoading: trophiesLoading,
+    isError: trophiesError,
+  } = useTrophies({
     props: trophiesProps,
     parser: Trophy.parse,
   });
 
-  const { progressions } = useProgressions({
+  const {
+    progressions,
+    isLoading: progressionsLoading,
+    isError: progressionsError,
+  } = useProgressions({
     props: progressProps,
     parser: Progress.parse,
   });
@@ -100,8 +109,6 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
       address,
     );
     setAchievements(achievements);
-    // Update loading state
-    setIsLoading(false);
   }, [address, trophies, progressions]);
 
   const addresses = useMemo(() => {
@@ -131,7 +138,11 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
         events,
         usernames: usernamesData,
         globals,
-        isLoading,
+        isLoading:
+          !trophiesError &&
+          !progressionsError &&
+          (trophiesLoading || progressionsLoading),
+        isError: trophiesError || progressionsError,
         projects,
         setAddress,
         setProjects,

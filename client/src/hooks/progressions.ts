@@ -46,7 +46,7 @@ export function useProgressions({
     [parser, setProgressions],
   );
 
-  useProgressionsQuery(
+  const { isLoading, isError } = useProgressionsQuery(
     {
       projects,
     },
@@ -60,5 +60,5 @@ export function useProgressions({
     },
   );
 
-  return { progressions };
+  return { progressions, isLoading, isError };
 }
