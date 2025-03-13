@@ -82,13 +82,9 @@ export function GameRow({
   return (
     <div className="rounded-lg overflow-hidden">
       <ArcadeDiscoveryGroup
-        className={
-          game.metadata.color
-            ? `data-[theme=true]:text-[${game.metadata.color}]`
-            : ""
-        }
         game={gameData}
         events={events}
+        color={game.metadata.color}
       />
     </div>
   );

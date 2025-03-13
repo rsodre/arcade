@@ -11,11 +11,11 @@ importers:
         specifier: 0.0.79
         version: 0.0.79(@tanstack/react-query@5.64.1(react@18.3.1))(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.3)
       "@cartridge/connector":
-        specifier: 0.7.5
-        version: 0.7.5(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)
+        specifier: 0.7.6
+        version: 0.7.6(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)
       "@cartridge/controller":
-        specifier: 0.7.5
-        version: 0.7.5(open@10.1.0)(starknet@6.11.0)
+        specifier: 0.7.6
+        version: 0.7.6(open@10.1.0)(starknet@6.11.0)
       "@cartridge/penpal":
         specifier: ^6.2.3
         version: 6.2.3
@@ -23,11 +23,11 @@ importers:
         specifier: 0.5.4
         version: 0.5.4
       "@cartridge/ui-next":
-        specifier: 0.7.5
-        version: 0.7.5(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)
+        specifier: 0.7.6
+        version: 0.7.6(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)
       "@cartridge/utils":
-        specifier: 0.7.5
-        version: 0.7.5(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
+        specifier: 0.7.6
+        version: 0.7.6(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
       "@hookform/resolvers":
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.54.2(react@18.3.1))
@@ -183,24 +183,24 @@ packages:
         integrity: sha512-fO4iy6/FvGHsHKCrKD/0WCEPwQ23GG9QeObIwVvXPI2Iclpj/FpOpxNtPolAyjgdp1Cqw08CVs/rJA0d+F+cMQ==,
       }
 
-  "@cartridge/account-wasm@0.7.5":
+  "@cartridge/account-wasm@0.7.6":
     resolution:
       {
-        integrity: sha512-+horkKCYzGp5cEYNfGScIQ1GA5+znVf8yTkh9N0zk12bXs06MokmiwA4i9so9hHISyLlWnSpbQixgHa/oXpKkw==,
+        integrity: sha512-uulPdfiPesJ5pSg7wZPOH+0ppTQ87Zv16oFipimwlQbZ+uoDX9FoAWNIHQrfCQfOnl43IHTLwYEa1Bo92p5eKQ==,
       }
 
-  "@cartridge/connector@0.7.5":
+  "@cartridge/connector@0.7.6":
     resolution:
       {
-        integrity: sha512-dnoomucDC+k+KWxTefVaJcvfqk/4IXir6huOZMYwaMo8kOyibeftB7MTzmIZtXtOJBvh+s+jQ/87F1CGMmUF3A==,
+        integrity: sha512-yo7JxSQUi0ukg83db3MO00WdwUaMiIQvx/mi+UK4kTgIdlNvZcqzprz9kta3h/p3dzWIMxkd9zi8P4TAGKK4Sw==,
       }
     peerDependencies:
       "@starknet-react/core": ^3.7
 
-  "@cartridge/controller@0.7.5":
+  "@cartridge/controller@0.7.6":
     resolution:
       {
-        integrity: sha512-cK2NyDu2/vNpuRy977VAQKyTntXaSSXHdz6xVeWbNGUd3xLoDbXHeEYQM3DmRcw8t7co03aywZYzxlxQ/glgig==,
+        integrity: sha512-izpepJGDlSndZmutTTulThDbT2ccpNhb7TGj7guT5XKdxQzjrwvKQNIeQqmZd7n3TTWcfp8+Z2F3fw8aRyruPw==,
       }
     peerDependencies:
       open: ^10.1.0
@@ -224,10 +224,10 @@ packages:
         integrity: sha512-kC2tcZ+dBv6NoQOnlWrb+WroulVWYVjQy7PP5v1+Q07LjJujzjNlyXG1pPU1BpJCGDbE16/qlbUujhYbBvnVgQ==,
       }
 
-  "@cartridge/ui-next@0.7.5":
+  "@cartridge/ui-next@0.7.6":
     resolution:
       {
-        integrity: sha512-575zbVSPy5Me/i9qH5UeCvICv+J1E+VcgUO4HLg288sSbVpc6UGRFLhBsGz26UDYfHgp0w/uU40pZeuC1hcQjQ==,
+        integrity: sha512-T9QUF7gfmb/KCDVqn7Rh2orgWrLx6K3HnlG1VqBC4FztPnPWb0pDmACDtjm8E9ctTCfkd7MazgpbtwjJZSduMA==,
       }
     peerDependencies:
       react: ^18.2.0
@@ -236,10 +236,10 @@ packages:
       starknet: ^6.21.0
       viem: ^2.21.32
 
-  "@cartridge/utils@0.7.5":
+  "@cartridge/utils@0.7.6":
     resolution:
       {
-        integrity: sha512-gy+cvHzltl5LkHi7ivCuVFOMJaakfzG4pNSleXlUgIYq8Z95uRRgFjRSHysi6xyDc1Co6Nm1MVTgreVMgF3ygQ==,
+        integrity: sha512-JrUF4LpEHuW9BaS7jc8jxw4uANs/1abA5BqaOsAOa/PTI1HuXVcjvwa6rdl9QegohWWIREgd+gu5JQ8HLlyaLw==,
       }
 
   "@cbor-extract/cbor-extract-darwin-arm64@2.2.0":
@@ -4491,19 +4491,19 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  "@cartridge/account-wasm@0.7.5": {}
+  "@cartridge/account-wasm@0.7.6": {}
 
-  "@cartridge/connector@0.7.5(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)":
+  "@cartridge/connector@0.7.6(@starknet-react/core@3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3))(open@10.1.0)(starknet@6.11.0)":
     dependencies:
-      "@cartridge/controller": 0.7.5(open@10.1.0)(starknet@6.11.0)
+      "@cartridge/controller": 0.7.6(open@10.1.0)(starknet@6.11.0)
       "@starknet-react/core": 3.7.1(get-starknet-core@4.0.0)(react@18.3.1)(starknet@6.11.0)(typescript@5.7.3)
     transitivePeerDependencies:
       - open
       - starknet
 
-  "@cartridge/controller@0.7.5(open@10.1.0)(starknet@6.11.0)":
+  "@cartridge/controller@0.7.6(open@10.1.0)(starknet@6.11.0)":
     dependencies:
-      "@cartridge/account-wasm": 0.7.5
+      "@cartridge/account-wasm": 0.7.6
       "@cartridge/penpal": 6.2.4
       "@starknet-io/types-js": 0.7.10
       "@telegram-apps/sdk": 2.11.3
@@ -4521,9 +4521,9 @@ snapshots:
     dependencies:
       "@starknet-io/types-js": 0.7.7
 
-  "@cartridge/ui-next@0.7.5(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)":
+  "@cartridge/ui-next@0.7.6(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.11.0)(tailwindcss@3.4.17)(typescript@5.7.3)(viem@2.22.9(typescript@5.7.3)(zod@3.24.1))(zod@3.24.1)":
     dependencies:
-      "@cartridge/utils": 0.7.5(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
+      "@cartridge/utils": 0.7.6(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)
       "@radix-ui/react-accordion": 1.2.2(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-alert-dialog": 1.1.4(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       "@radix-ui/react-aspect-ratio": 1.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4568,7 +4568,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  "@cartridge/utils@0.7.5(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)":
+  "@cartridge/utils@0.7.6(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(zod@3.24.1)":
     dependencies:
       posthog-js-lite: 3.2.1
       react: 18.3.1

@@ -314,5 +314,12 @@ export function GameRow({
     };
   }, [gameAchievements, game, pinneds]);
 
-  return <AchievementSummary {...summaryProps} variant={variant} active />;
+  return (
+    <AchievementSummary
+      {...summaryProps}
+      variant={variant}
+      active
+      color={game.metadata.color}
+    />
+  );
 }
