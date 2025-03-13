@@ -8,6 +8,8 @@ import { useAchievements } from "@/hooks/achievements";
 import { ArcadeTabs, TabsContent } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
 import { DiscoverScene } from "./scenes/discover";
+import { GuildsScene } from "./scenes/guild";
+import { ActivityScene } from "./scenes/activity";
 
 export function App() {
   const { isConnected } = useAccount();
@@ -58,10 +60,10 @@ export function App() {
                   <AchievementScene />
                 </TabsContent>
                 <TabsContent className="p-0 mt-0 grow w-full" value="guilds">
-                  <InventoryScene />
+                  <GuildsScene />
                 </TabsContent>
                 <TabsContent className="p-0 mt-0 grow w-full" value="activity">
-                  <InventoryScene />
+                  <ActivityScene />
                 </TabsContent>
               </div>
             </ArcadeTabs>

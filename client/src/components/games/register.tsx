@@ -50,41 +50,27 @@ const formSchema = z.object({
     .min(2, { message: "Name is required" })
     .max(31, { message: "Invalid Name" }),
   description: z.string().min(2, { message: "Description is required" }),
-  image: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Image URL",
-    }),
-  banner: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Banner URL",
-    }),
-  discord: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Discord URL",
-    }),
-  telegram: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Telegram URL",
-    }),
-  twitter: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Twitter URL",
-    }),
-  youtube: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Youtube URL",
-    }),
-  website: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Website URL",
-    }),
+  image: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Image URL",
+  }),
+  banner: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Banner URL",
+  }),
+  discord: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Discord URL",
+  }),
+  telegram: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Telegram URL",
+  }),
+  twitter: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Twitter URL",
+  }),
+  youtube: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Youtube URL",
+  }),
+  website: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Website URL",
+  }),
 });
 
 // starkli invoke \

@@ -151,7 +151,7 @@ export function Achievements({ game }: { game?: GameModel }) {
   }
 
   return (
-    <LayoutContent className="gap-y-6 select-none h-full overflow-clip">
+    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">
       {isSelf ? (
         <AchievementTabs
           value={tab}

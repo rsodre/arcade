@@ -1,6 +1,5 @@
 import { Header } from "@/components/header";
-const PLACEHOLDER =
-  "https://static.cartridge.gg/presets/cartridge/cover-dark.png";
+import banner from "/public/banner.svg";
 
 export const SceneLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -8,7 +7,7 @@ export const SceneLayout = ({ children }: { children: React.ReactNode }) => {
       className="flex flex-col items-center gap-y-px select-none h-screen overflow-clip"
       style={{ scrollbarWidth: "none" }}
     >
-      <Header cover={PLACEHOLDER} />
+      <Header cover={banner} />
       {children}
     </div>
   );

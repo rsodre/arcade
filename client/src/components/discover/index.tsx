@@ -43,7 +43,7 @@ export function Discover({ game }: { game?: GameModel }) {
   if (isLoading) return <LayoutContentLoader />;
 
   return (
-    <LayoutContent className="gap-y-6 select-none h-full overflow-clip">
+    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">
       <div
         className="p-0 mt-0 pb-6 overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
