@@ -1,7 +1,7 @@
 import { NAMESPACE } from "../../constants";
 import { addAddressPadding } from "starknet";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity } from "@dojoengine/sdk";
+import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 
 const MODEL_NAME = "Follow";
 
@@ -39,8 +39,8 @@ export const Follow = {
     return MODEL_NAME;
   },
 
-  getQueryEntity: () => {
-    return (entity: any) => entity.neq("follower", "0x0");
+  getClause: () => {
+    return MemberClause(`${NAMESPACE}-${Follow.getModelName()}`, "follower", "Neq", "0x0");
   },
 
   getMethods: () => [

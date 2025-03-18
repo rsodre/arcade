@@ -2,7 +2,7 @@ import { initSDK } from "..";
 import { constants } from "starknet";
 import { Game, GameModel } from "./game";
 import { Achievement, AchievementModel } from "./achievement";
-import { ParsedEntity, QueryBuilder, SDK, StandardizedQueryResult } from "@dojoengine/sdk";
+import { OrComposeClause, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { RegistryOptions, DefaultRegistryOptions } from "./options";
@@ -24,33 +24,19 @@ export const Registry = {
   },
 
   getEntityQuery: (options: RegistryOptions = DefaultRegistryOptions) => {
-    return new QueryBuilder<SchemaType>()
-      .namespace(NAMESPACE, (namespace) => {
-        let query: ReturnType<typeof namespace.entity> | ReturnType<typeof namespace.namespace> = namespace;
-        if (options.game) query = query.entity(Game.getModelName(), Game.getQueryEntity());
-        if (options.achievement) query = query.entity(Achievement.getModelName(), Achievement.getQueryEntity());
-        return query;
-      })
-      .build();
+    const clauses = [];
+    if (options.game) clauses.push(Game.getClause());
+    if (options.achievement) clauses.push(Achievement.getClause());
+    return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
   },
 
   fetchEntities: async (callback: (models: RegistryModel[]) => void, options: RegistryOptions) => {
     if (!Registry.sdk) return;
 
-    const wrappedCallback = ({
-      data,
-      error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
+    const wrappedCallback = (entities?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[]) => {
+      if (!entities) return;
       const models: RegistryModel[] = [];
-      (data as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
+      (entities as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
         if (entity.models[NAMESPACE][Achievement.getModelName()]) {
           models.push(Achievement.parse(entity));
         }
@@ -61,7 +47,12 @@ export const Registry = {
       callback(models);
     };
     const query = Registry.getEntityQuery(options);
-    await Registry.sdk.getEntities({ query, callback: wrappedCallback });
+    try {
+      const entities = await Registry.sdk.getEntities({ query });
+      wrappedCallback(entities);
+    } catch (error) {
+      console.error("Error fetching entities:", error);
+    }
   },
 
   subEntities: async (callback: (models: RegistryModel[]) => void, options: RegistryOptions) => {
@@ -90,7 +81,7 @@ export const Registry = {
 
     const query = Registry.getEntityQuery(options);
 
-    const subscription = await Registry.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
+    const [_, subscription] = await Registry.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
     Registry.unsubEntities = () => subscription.cancel();
   },
 

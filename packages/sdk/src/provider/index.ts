@@ -80,9 +80,8 @@ export class ArcadeProvider extends DojoEmitterProvider {
    * @param toriiUrl - The URL of the Torii client
    * @returns A Torii client
    */
-  async getToriiClient(rpcUrl: string, toriiUrl: string): Promise<torii.ToriiClient> {
+  async getToriiClient(toriiUrl: string): Promise<torii.ToriiClient> {
     const toriiClient = await torii.createClient({
-      rpcUrl: rpcUrl,
       toriiUrl: toriiUrl,
       relayUrl: "",
       worldAddress: this.manifest.world.address,

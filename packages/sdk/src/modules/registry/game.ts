@@ -1,7 +1,7 @@
 import { NAMESPACE } from "../../constants";
 import { shortString, addAddressPadding } from "starknet";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity } from "@dojoengine/sdk";
+import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 import { Metadata, Socials } from "../../classes";
 
 const MODEL_NAME = "Game";
@@ -80,8 +80,8 @@ export const Game = {
     return MODEL_NAME;
   },
 
-  getQueryEntity: () => {
-    return (entity: any) => entity.neq("world_address", "0x0");
+  getClause: () => {
+    return MemberClause(`${NAMESPACE}-${Game.getModelName()}`, "world_address", "Neq", "0x0");
   },
 
   getMethods: () => [

@@ -1,7 +1,7 @@
 import { NAMESPACE } from "../../constants";
 import { addAddressPadding } from "starknet";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity } from "@dojoengine/sdk";
+import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 
 const MODEL_NAME = "TrophyPinning";
 
@@ -39,8 +39,8 @@ export const Pin = {
     return MODEL_NAME;
   },
 
-  getQueryEntity: () => {
-    return (entity: any) => entity.neq("player_id", "0x0");
+  getClause: () => {
+    return MemberClause(`${NAMESPACE}-${Pin.getModelName()}`, "player_id", "Neq", "0x0");
   },
 
   getMethods: () => [

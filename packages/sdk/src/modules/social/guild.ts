@@ -1,6 +1,6 @@
 import { NAMESPACE } from "../../constants";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity } from "@dojoengine/sdk";
+import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 import { Metadata, Socials } from "../../classes";
 
 const MODEL_NAME = "Guild";
@@ -48,12 +48,8 @@ export const Guild = {
     return MODEL_NAME;
   },
 
-  getQueryNamespace: () => {
-    return (namespace: any) => namespace.entity(MODEL_NAME, Guild.getQueryEntity());
-  },
-
-  getQueryEntity: () => {
-    return (entity: any) => entity.neq("id", "0x0");
+  getClause: () => {
+    return MemberClause(`${NAMESPACE}-${Guild.getModelName()}`, "id", "Neq", "0");
   },
 
   getMethods: () => [

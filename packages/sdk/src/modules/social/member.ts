@@ -1,6 +1,6 @@
 import { NAMESPACE } from "../../constants";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity } from "@dojoengine/sdk";
+import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 import { addAddressPadding } from "starknet";
 
 const MODEL_NAME = "Member";
@@ -42,8 +42,8 @@ export const Member = {
     return MODEL_NAME;
   },
 
-  getQueryEntity: () => {
-    return (entity: any) => entity.neq("id", "0x0");
+  getClause: () => {
+    return MemberClause(`${NAMESPACE}-${Member.getModelName()}`, "id", "Neq", "0x0");
   },
 
   getMethods: () => [],

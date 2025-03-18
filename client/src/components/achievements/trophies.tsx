@@ -2,7 +2,6 @@ import { AchievementCard } from "@cartridge/ui-next";
 import { Item } from "@/hooks/achievements";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GameModel } from "@bal7hazar/arcade-sdk";
-import { useConnection } from "@/hooks/context";
 import { useArcade } from "@/hooks/arcade";
 import { addAddressPadding } from "starknet";
 import { toast } from "sonner";
@@ -97,8 +96,8 @@ function Group({
   game: GameModel | undefined;
   pins: { [playerId: string]: string[] };
 }) {
-  const { parent } = useConnection();
-  const { chainId, provider } = useArcade();
+  const { account } = useAccount();
+  const { provider } = useArcade();
 
   const handlePin = useCallback(
     (
@@ -106,17 +105,16 @@ function Group({
       achievementId: string,
       setLoading: (loading: boolean) => void,
     ) => {
-      if (!enabled && !pinned) return;
+      if (!account || (!enabled && !pinned)) return;
       const process = async () => {
         setLoading(true);
         try {
           const calls = pinned
             ? provider.social.unpin({ achievementId })
             : provider.social.pin({ achievementId });
-          const res = await parent.openExecute(
-            Array.isArray(calls) ? calls : [calls],
-            chainId,
-          );
+          console.log("calls", calls);
+          const res = await account.execute(calls);
+          console.log("res", res);
           if (res) {
             toast.success(
               `Trophy ${pinned ? "unpinned" : "pinned"} successfully`,
@@ -131,7 +129,7 @@ function Group({
       };
       process();
     },
-    [enabled],
+    [enabled, account],
   );
 
   const achievements = useMemo(() => {

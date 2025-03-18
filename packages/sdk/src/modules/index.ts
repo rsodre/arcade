@@ -2,7 +2,7 @@ export * from "./registry";
 export * from "./social";
 import { init } from "@dojoengine/sdk";
 import { configs } from "../configs";
-import { SchemaType, schema } from "../bindings/models.gen";
+import { SchemaType } from "../bindings/models.gen";
 import { constants, shortString } from "starknet";
 
 export const initSDK = async (chainId: constants.StarknetChainId) => {
@@ -10,7 +10,6 @@ export const initSDK = async (chainId: constants.StarknetChainId) => {
   return init<SchemaType>(
     {
       client: {
-        rpcUrl: config.rpcUrl,
         toriiUrl: config.toriiUrl,
         relayUrl: config.relayUrl,
         worldAddress: config.manifest.world.address,
@@ -22,6 +21,5 @@ export const initSDK = async (chainId: constants.StarknetChainId) => {
         revision: "1",
       },
     },
-    schema,
   );
 };

@@ -5,7 +5,7 @@ import { Follow, FollowEvent } from "./follow";
 import { Guild, GuildModel } from "./guild";
 import { Alliance, AllianceModel } from "./alliance";
 import { Member, MemberModel } from "./member";
-import { ParsedEntity, QueryBuilder, SDK, StandardizedQueryResult } from "@dojoengine/sdk";
+import { OrComposeClause, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { SocialOptions, DefaultSocialOptions } from "./options";
@@ -32,45 +32,29 @@ export const Social = {
   },
 
   getEntityQuery: (options: SocialOptions = DefaultSocialOptions) => {
-    return new QueryBuilder<SchemaType>()
-      .namespace(NAMESPACE, (namespace) => {
-        let query: ReturnType<typeof namespace.entity> | ReturnType<typeof namespace.namespace> = namespace;
-        if (options.alliance) query = query.entity(Alliance.getModelName(), Alliance.getQueryEntity());
-        if (options.guild) query = query.entity(Guild.getModelName(), Guild.getQueryEntity());
-        if (options.member) query = query.entity(Member.getModelName(), Member.getQueryEntity());
-        return query;
-      })
-      .build();
+    const clauses = [];
+    if (options.alliance) clauses.push(Alliance.getClause());
+    if (options.guild) clauses.push(Guild.getClause());
+    if (options.member) clauses.push(Member.getClause());
+    return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
   },
 
   getEventQuery: (options: SocialOptions = DefaultSocialOptions) => {
-    return new QueryBuilder<SchemaType>()
-      .namespace(NAMESPACE, (namespace) => {
-        let query: ReturnType<typeof namespace.entity> | ReturnType<typeof namespace.namespace> = namespace;
-        if (options.pin) query = query.entity(Pin.getModelName(), Pin.getQueryEntity());
-        if (options.follow) query = query.entity(Follow.getModelName(), Follow.getQueryEntity());
-        return query;
-      })
-      .build();
+    const clauses = [];
+    if (options.pin) clauses.push(Pin.getClause());
+    if (options.follow) clauses.push(Follow.getClause());
+    return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
   },
 
   fetchEntities: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {
     if (!Social.sdk) return;
 
-    const wrappedCallback = ({
-      data,
-      error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
+    const wrappedCallback = (
+      entities: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[]
+    ) => {
+      if (!entities) return;
       const models: SocialModel[] = [];
-      (data as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
+      (entities as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
         if (entity.models[NAMESPACE][Alliance.getModelName()]) {
           models.push(Alliance.parse(entity));
         }
@@ -84,26 +68,22 @@ export const Social = {
       callback(models);
     };
     const query = Social.getEntityQuery(options);
-    await Social.sdk.getEntities({ query, callback: wrappedCallback });
+    try {
+      const entities = await Social.sdk.getEntities({ query });
+      wrappedCallback(entities);
+    } catch (error) {
+      console.error("Error fetching entities:", error);
+    }
   },
 
   fetchEvents: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {
     if (!Social.sdk) return;
-
-    const wrappedCallback = ({
-      data,
-      error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
+    const wrappedCallback = (
+      entities: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[]
+    ) => {
+      if (!entities) return;
       const events: SocialModel[] = [];
-      (data as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
+      (entities as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
         if (entity.models[NAMESPACE][Pin.getModelName()]) {
           events.push(Pin.parse(entity));
         }
@@ -114,7 +94,12 @@ export const Social = {
       callback(events);
     };
     const query = Social.getEventQuery(options);
-    await Social.sdk.getEventMessages({ query, historical: false, callback: wrappedCallback });
+    try {
+      const events = await Social.sdk.getEventMessages({ query, historical: false });
+      wrappedCallback(events);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
   },
 
   subEntities: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {
@@ -146,7 +131,7 @@ export const Social = {
 
     const query = Social.getEntityQuery(options);
 
-    const subscription = await Social.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
+    const [_, subscription] = await Social.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
     Social.unsubEntities = () => subscription.cancel();
   },
 
@@ -176,7 +161,7 @@ export const Social = {
 
     const query = Social.getEventQuery(options);
 
-    const subscription = await Social.sdk.subscribeEventQuery({ query, callback: wrappedCallback });
+    const [_, subscription] = await Social.sdk.subscribeEventQuery({ query, callback: wrappedCallback });
     Social.unsubEvents = () => subscription.cancel();
   },
 

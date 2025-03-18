@@ -1,7 +1,6 @@
 import { useTokens } from "@/hooks/token";
 import { TokenCard } from "@cartridge/ui-next";
 import { Balance, ERC20Metadata, useCountervalue } from "@cartridge/utils";
-import { TokenPair } from "@cartridge/utils/api/cartridge";
 import { formatEther } from "viem";
 import { formatBalance } from "@/helpers";
 import { useCallback, useMemo } from "react";
@@ -29,13 +28,30 @@ export const Tokens = () => {
     [erc20.data],
   );
 
+  const tokenData = useMemo(
+    () =>
+      tokens.map((token) => ({
+        balance: formatEther(token.balance.value || 0n),
+        address: token.meta.address,
+      })),
+    [tokens],
+  );
+
+  const { countervalues } = useCountervalue({
+    tokens: tokenData,
+  });
+
   return (
     <div
       className="rounded overflow-y-scroll w-full flex flex-col gap-y-px h-[259px]"
       style={{ scrollbarWidth: "none" }}
     >
       {tokens.map((token) => (
-        <TokenCardContent key={token.meta.address} token={token} />
+        <TokenCardContent
+          key={token.meta.address}
+          token={token}
+          values={countervalues}
+        />
       ))}
     </div>
   );
@@ -43,15 +59,24 @@ export const Tokens = () => {
 
 function TokenCardContent({
   token,
+  values,
 }: {
   token: { balance: Balance; meta: ERC20Metadata };
+  values: ReturnType<typeof useCountervalue>["countervalues"];
 }) {
   const { connector } = useAccount();
 
-  const { countervalue } = useCountervalue({
-    balance: formatEther(token.balance.value || 0n),
-    pair: `${token.meta.symbol}_USDC` as TokenPair,
-  });
+  const value = useMemo(
+    () => values.find((v) => v?.address === token.meta.address),
+    [values, token.meta.address],
+  );
+
+  const change = useMemo(() => {
+    if (!value) {
+      return 0;
+    }
+    return value.current.value - value.period.value;
+  }, [value]);
 
   const handleClick = useCallback(async () => {
     const controller = (connector as ControllerConnector)?.controller;
@@ -68,7 +93,14 @@ function TokenCardContent({
       image={token.meta.logoUrl || placeholder}
       title={token.meta.name}
       amount={`${formatBalance(token.balance.formatted, ["~"])} ${token.meta.symbol}`}
-      value={countervalue ? formatBalance(countervalue.formatted, ["~"]) : ""}
+      value={value ? formatBalance(value.current.formatted, ["~"]) : ""}
+      change={
+        !change
+          ? undefined
+          : change > 0
+            ? `+$${change.toFixed(2)}`
+            : `-$${(-change).toFixed(2)}`
+      }
       onClick={handleClick}
     />
   );

@@ -1,6 +1,6 @@
 import { NAMESPACE } from "../../constants";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity } from "@dojoengine/sdk";
+import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 import { Metadata, Socials } from "../../classes";
 
 const MODEL_NAME = "Alliance";
@@ -48,8 +48,8 @@ export const Alliance = {
     return MODEL_NAME;
   },
 
-  getQueryEntity: () => {
-    return (entity: any) => entity.neq("id", "0x0");
+  getClause: () => {
+    return MemberClause(`${NAMESPACE}-${Alliance.getModelName()}`, "id", "Neq", "0x0");
   },
 
   getMethods: () => [

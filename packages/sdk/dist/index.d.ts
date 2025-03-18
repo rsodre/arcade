@@ -4,7 +4,7 @@ import { DojoProvider } from '@dojoengine/core';
 import * as torii from '@dojoengine/torii-client';
 import EventEmitter from 'eventemitter3';
 import * as _dojoengine_sdk from '@dojoengine/sdk';
-import { SchemaType as SchemaType$1, SDK } from '@dojoengine/sdk';
+import { SchemaType as SchemaType$1, SDK, ToriiQueryBuilder } from '@dojoengine/sdk';
 
 declare const NAMESPACE = "ARCADE";
 
@@ -306,7 +306,7 @@ declare class ArcadeProvider extends DojoEmitterProvider {
      * @param toriiUrl - The URL of the Torii client
      * @returns A Torii client
      */
-    getToriiClient(rpcUrl: string, toriiUrl: string): Promise<torii.ToriiClient>;
+    getToriiClient(toriiUrl: string): Promise<torii.ToriiClient>;
     /**
      * Wait for a transaction to complete and check for errors
      *
@@ -8780,7 +8780,7 @@ declare const Registry: {
     unsubEntities: (() => void) | undefined;
     init: (chainId: constants.StarknetChainId) => Promise<void>;
     isEntityQueryable(options: RegistryOptions): boolean | undefined;
-    getEntityQuery: (options?: RegistryOptions) => _dojoengine_sdk.SubscriptionQueryType<SchemaType>;
+    getEntityQuery: (options?: RegistryOptions) => ToriiQueryBuilder<SchemaType>;
     fetchEntities: (callback: (models: RegistryModel[]) => void, options: RegistryOptions) => Promise<void>;
     subEntities: (callback: (models: RegistryModel[]) => void, options: RegistryOptions) => Promise<void>;
     fetch: (callback: (models: RegistryModel[]) => void, options?: RegistryOptions) => Promise<void>;
@@ -8875,8 +8875,8 @@ declare const Social: {
     init: (chainId: constants.StarknetChainId) => Promise<void>;
     isEntityQueryable(options: SocialOptions): boolean | undefined;
     isEventQueryable(options: SocialOptions): boolean | undefined;
-    getEntityQuery: (options?: SocialOptions) => _dojoengine_sdk.SubscriptionQueryType<SchemaType>;
-    getEventQuery: (options?: SocialOptions) => _dojoengine_sdk.SubscriptionQueryType<SchemaType>;
+    getEntityQuery: (options?: SocialOptions) => ToriiQueryBuilder<SchemaType>;
+    getEventQuery: (options?: SocialOptions) => ToriiQueryBuilder<SchemaType>;
     fetchEntities: (callback: (models: SocialModel[]) => void, options: SocialOptions) => Promise<void>;
     fetchEvents: (callback: (models: SocialModel[]) => void, options: SocialOptions) => Promise<void>;
     subEntities: (callback: (models: SocialModel[]) => void, options: SocialOptions) => Promise<void>;

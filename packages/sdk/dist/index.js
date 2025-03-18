@@ -6684,9 +6684,8 @@ var ArcadeProvider = class extends DojoEmitterProvider {
    * @param toriiUrl - The URL of the Torii client
    * @returns A Torii client
    */
-  async getToriiClient(rpcUrl, toriiUrl) {
+  async getToriiClient(toriiUrl) {
     const toriiClient = await torii.createClient({
-      rpcUrl,
       toriiUrl,
       relayUrl: "",
       worldAddress: this.manifest.world.address
@@ -10714,6 +10713,7 @@ var manifests = {
 
 // src/modules/registry/game.ts
 var import_starknet2 = require("starknet");
+var import_sdk = require("@dojoengine/sdk");
 
 // src/classes/metadata.ts
 var Metadata = class _Metadata {
@@ -10834,8 +10834,8 @@ var Game = {
   getModelName: () => {
     return MODEL_NAME;
   },
-  getQueryEntity: () => {
-    return (entity) => entity.neq("world_address", "0x0");
+  getClause: () => {
+    return (0, import_sdk.MemberClause)(`${NAMESPACE}-${Game.getModelName()}`, "world_address", "Neq", "0x0");
   },
   getMethods: () => [
     { name: "register_game", entrypoint: "register_game", description: "Register a game." },
@@ -10850,6 +10850,7 @@ var Game = {
 
 // src/modules/registry/achievement.ts
 var import_starknet3 = require("starknet");
+var import_sdk2 = require("@dojoengine/sdk");
 var MODEL_NAME2 = "Achievement";
 var AchievementModel = class _AchievementModel {
   constructor(worldAddress, namespace, id, published, whitelisted, karma) {
@@ -10887,8 +10888,8 @@ var Achievement = {
   getModelName: () => {
     return MODEL_NAME2;
   },
-  getQueryEntity: () => {
-    return (entity) => entity.neq("world_address", "0x0");
+  getClause: () => {
+    return (0, import_sdk2.MemberClause)(`${NAMESPACE}-${Achievement.getModelName()}`, "world_address", "Neq", "0x0");
   },
   getMethods: () => [
     { name: "register_achievement", entrypoint: "register_achievement", description: "Register an achievement." },
@@ -10902,7 +10903,7 @@ var Achievement = {
 };
 
 // src/modules/registry/index.ts
-var import_sdk = require("@dojoengine/sdk");
+var import_sdk3 = require("@dojoengine/sdk");
 
 // src/modules/registry/options.ts
 var DefaultRegistryOptions = {
@@ -10939,26 +10940,17 @@ var Registry2 = {
     return options.game || options.achievement;
   },
   getEntityQuery: (options = DefaultRegistryOptions) => {
-    return new import_sdk.QueryBuilder().namespace(NAMESPACE, (namespace) => {
-      let query = namespace;
-      if (options.game) query = query.entity(Game.getModelName(), Game.getQueryEntity());
-      if (options.achievement) query = query.entity(Achievement.getModelName(), Achievement.getQueryEntity());
-      return query;
-    }).build();
+    const clauses = [];
+    if (options.game) clauses.push(Game.getClause());
+    if (options.achievement) clauses.push(Achievement.getClause());
+    return new import_sdk3.ToriiQueryBuilder().withClause((0, import_sdk3.OrComposeClause)(clauses).build()).includeHashedKeys();
   },
   fetchEntities: async (callback, options) => {
     if (!Registry2.sdk) return;
-    const wrappedCallback = ({
-      data,
-      error
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
+    const wrappedCallback = (entities) => {
+      if (!entities) return;
       const models = [];
-      data.forEach((entity) => {
+      entities.forEach((entity) => {
         if (entity.models[NAMESPACE][Achievement.getModelName()]) {
           models.push(Achievement.parse(entity));
         }
@@ -10969,7 +10961,12 @@ var Registry2 = {
       callback(models);
     };
     const query = Registry2.getEntityQuery(options);
-    await Registry2.sdk.getEntities({ query, callback: wrappedCallback });
+    try {
+      const entities = await Registry2.sdk.getEntities({ query });
+      wrappedCallback(entities);
+    } catch (error) {
+      console.error("Error fetching entities:", error);
+    }
   },
   subEntities: async (callback, options) => {
     if (!Registry2.sdk) return;
@@ -10991,7 +10988,7 @@ var Registry2 = {
       }
     };
     const query = Registry2.getEntityQuery(options);
-    const subscription = await Registry2.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
+    const [_, subscription] = await Registry2.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
     Registry2.unsubEntities = () => subscription.cancel();
   },
   fetch: async (callback, options = DefaultRegistryOptions) => {
@@ -11020,6 +11017,7 @@ var Registry2 = {
 
 // src/modules/social/pin.ts
 var import_starknet4 = require("starknet");
+var import_sdk4 = require("@dojoengine/sdk");
 var MODEL_NAME3 = "TrophyPinning";
 var PinEvent = class _PinEvent {
   constructor(playerId, achievementId, time) {
@@ -11048,8 +11046,8 @@ var Pin = {
   getModelName: () => {
     return MODEL_NAME3;
   },
-  getQueryEntity: () => {
-    return (entity) => entity.neq("player_id", "0x0");
+  getClause: () => {
+    return (0, import_sdk4.MemberClause)(`${NAMESPACE}-${Pin.getModelName()}`, "player_id", "Neq", "0x0");
   },
   getMethods: () => [
     { name: "pin", entrypoint: "pin", description: "Pin an achievement." },
@@ -11059,6 +11057,7 @@ var Pin = {
 
 // src/modules/social/follow.ts
 var import_starknet5 = require("starknet");
+var import_sdk5 = require("@dojoengine/sdk");
 var MODEL_NAME4 = "Follow";
 var FollowEvent = class _FollowEvent {
   constructor(follower, followed, time) {
@@ -11087,8 +11086,8 @@ var Follow = {
   getModelName: () => {
     return MODEL_NAME4;
   },
-  getQueryEntity: () => {
-    return (entity) => entity.neq("follower", "0x0");
+  getClause: () => {
+    return (0, import_sdk5.MemberClause)(`${NAMESPACE}-${Follow.getModelName()}`, "follower", "Neq", "0x0");
   },
   getMethods: () => [
     { name: "follow", entrypoint: "follow", description: "Follow another player." },
@@ -11097,6 +11096,7 @@ var Follow = {
 };
 
 // src/modules/social/guild.ts
+var import_sdk6 = require("@dojoengine/sdk");
 var MODEL_NAME5 = "Guild";
 var GuildModel = class _GuildModel {
   constructor(id, open, free, guildCount, metadata, socials) {
@@ -11134,11 +11134,8 @@ var Guild = {
   getModelName: () => {
     return MODEL_NAME5;
   },
-  getQueryNamespace: () => {
-    return (namespace) => namespace.entity(MODEL_NAME5, Guild.getQueryEntity());
-  },
-  getQueryEntity: () => {
-    return (entity) => entity.neq("id", "0x0");
+  getClause: () => {
+    return (0, import_sdk6.MemberClause)(`${NAMESPACE}-${Guild.getModelName()}`, "id", "Neq", "0");
   },
   getMethods: () => [
     { name: "create_guild", entrypoint: "create_guild", description: "Create a guild." },
@@ -11153,6 +11150,7 @@ var Guild = {
 };
 
 // src/modules/social/alliance.ts
+var import_sdk7 = require("@dojoengine/sdk");
 var MODEL_NAME6 = "Alliance";
 var AllianceModel = class _AllianceModel {
   constructor(id, open, free, guildCount, metadata, socials) {
@@ -11190,8 +11188,8 @@ var Alliance = {
   getModelName: () => {
     return MODEL_NAME6;
   },
-  getQueryEntity: () => {
-    return (entity) => entity.neq("id", "0x0");
+  getClause: () => {
+    return (0, import_sdk7.MemberClause)(`${NAMESPACE}-${Alliance.getModelName()}`, "id", "Neq", "0x0");
   },
   getMethods: () => [
     { name: "create_alliance", entrypoint: "create_alliance", description: "Create an alliance." },
@@ -11207,6 +11205,7 @@ var Alliance = {
 };
 
 // src/modules/social/member.ts
+var import_sdk8 = require("@dojoengine/sdk");
 var import_starknet6 = require("starknet");
 var MODEL_NAME7 = "Member";
 var MemberModel = class _MemberModel {
@@ -11239,14 +11238,14 @@ var Member = {
   getModelName: () => {
     return MODEL_NAME7;
   },
-  getQueryEntity: () => {
-    return (entity) => entity.neq("id", "0x0");
+  getClause: () => {
+    return (0, import_sdk8.MemberClause)(`${NAMESPACE}-${Member.getModelName()}`, "id", "Neq", "0x0");
   },
   getMethods: () => []
 };
 
 // src/modules/social/index.ts
-var import_sdk2 = require("@dojoengine/sdk");
+var import_sdk9 = require("@dojoengine/sdk");
 
 // src/modules/social/options.ts
 var DefaultSocialOptions = {
@@ -11296,35 +11295,24 @@ var Social2 = {
     return options.pin || options.follow;
   },
   getEntityQuery: (options = DefaultSocialOptions) => {
-    return new import_sdk2.QueryBuilder().namespace(NAMESPACE, (namespace) => {
-      let query = namespace;
-      if (options.alliance) query = query.entity(Alliance.getModelName(), Alliance.getQueryEntity());
-      if (options.guild) query = query.entity(Guild.getModelName(), Guild.getQueryEntity());
-      if (options.member) query = query.entity(Member.getModelName(), Member.getQueryEntity());
-      return query;
-    }).build();
+    const clauses = [];
+    if (options.alliance) clauses.push(Alliance.getClause());
+    if (options.guild) clauses.push(Guild.getClause());
+    if (options.member) clauses.push(Member.getClause());
+    return new import_sdk9.ToriiQueryBuilder().withClause((0, import_sdk9.OrComposeClause)(clauses).build()).includeHashedKeys();
   },
   getEventQuery: (options = DefaultSocialOptions) => {
-    return new import_sdk2.QueryBuilder().namespace(NAMESPACE, (namespace) => {
-      let query = namespace;
-      if (options.pin) query = query.entity(Pin.getModelName(), Pin.getQueryEntity());
-      if (options.follow) query = query.entity(Follow.getModelName(), Follow.getQueryEntity());
-      return query;
-    }).build();
+    const clauses = [];
+    if (options.pin) clauses.push(Pin.getClause());
+    if (options.follow) clauses.push(Follow.getClause());
+    return new import_sdk9.ToriiQueryBuilder().withClause((0, import_sdk9.OrComposeClause)(clauses).build()).includeHashedKeys();
   },
   fetchEntities: async (callback, options) => {
     if (!Social2.sdk) return;
-    const wrappedCallback = ({
-      data,
-      error
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
+    const wrappedCallback = (entities) => {
+      if (!entities) return;
       const models = [];
-      data.forEach((entity) => {
+      entities.forEach((entity) => {
         if (entity.models[NAMESPACE][Alliance.getModelName()]) {
           models.push(Alliance.parse(entity));
         }
@@ -11338,21 +11326,19 @@ var Social2 = {
       callback(models);
     };
     const query = Social2.getEntityQuery(options);
-    await Social2.sdk.getEntities({ query, callback: wrappedCallback });
+    try {
+      const entities = await Social2.sdk.getEntities({ query });
+      wrappedCallback(entities);
+    } catch (error) {
+      console.error("Error fetching entities:", error);
+    }
   },
   fetchEvents: async (callback, options) => {
     if (!Social2.sdk) return;
-    const wrappedCallback = ({
-      data,
-      error
-    }) => {
-      if (error) {
-        console.error("Error fetching entities:", error);
-        return;
-      }
-      if (!data) return;
+    const wrappedCallback = (entities) => {
+      if (!entities) return;
       const events = [];
-      data.forEach((entity) => {
+      entities.forEach((entity) => {
         if (entity.models[NAMESPACE][Pin.getModelName()]) {
           events.push(Pin.parse(entity));
         }
@@ -11363,7 +11349,12 @@ var Social2 = {
       callback(events);
     };
     const query = Social2.getEventQuery(options);
-    await Social2.sdk.getEventMessages({ query, historical: false, callback: wrappedCallback });
+    try {
+      const events = await Social2.sdk.getEventMessages({ query, historical: false });
+      wrappedCallback(events);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
   },
   subEntities: async (callback, options) => {
     if (!Social2.sdk) return;
@@ -11388,7 +11379,7 @@ var Social2 = {
       }
     };
     const query = Social2.getEntityQuery(options);
-    const subscription = await Social2.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
+    const [_, subscription] = await Social2.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
     Social2.unsubEntities = () => subscription.cancel();
   },
   subEvents: async (callback, options) => {
@@ -11411,7 +11402,7 @@ var Social2 = {
       }
     };
     const query = Social2.getEventQuery(options);
-    const subscription = await Social2.sdk.subscribeEventQuery({ query, callback: wrappedCallback });
+    const [_, subscription] = await Social2.sdk.subscribeEventQuery({ query, callback: wrappedCallback });
     Social2.unsubEvents = () => subscription.cancel();
   },
   fetch: async (callback, options = DefaultSocialOptions) => {
@@ -11449,14 +11440,13 @@ var Social2 = {
 };
 
 // src/modules/index.ts
-var import_sdk3 = require("@dojoengine/sdk");
+var import_sdk10 = require("@dojoengine/sdk");
 var import_starknet7 = require("starknet");
 var initSDK = async (chainId) => {
   const config = configs[chainId];
-  return (0, import_sdk3.init)(
+  return (0, import_sdk10.init)(
     {
       client: {
-        rpcUrl: config.rpcUrl,
         toriiUrl: config.toriiUrl,
         relayUrl: config.relayUrl,
         worldAddress: config.manifest.world.address
@@ -11467,8 +11457,7 @@ var initSDK = async (chainId) => {
         chainId: import_starknet7.shortString.decodeShortString(chainId),
         revision: "1"
       }
-    },
-    schema
+    }
   );
 };
 // Annotate the CommonJS export names for ESM import in node:

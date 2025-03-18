@@ -1,7 +1,7 @@
 import { NAMESPACE } from "../../constants";
 import { shortString, addAddressPadding } from "starknet";
 import { SchemaType } from "../../bindings";
-import { ParsedEntity } from "@dojoengine/sdk";
+import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 
 const MODEL_NAME = "Achievement";
 
@@ -48,8 +48,8 @@ export const Achievement = {
     return MODEL_NAME;
   },
 
-  getQueryEntity: () => {
-    return (entity: any) => entity.neq("world_address", "0x0");
+  getClause: () => {
+    return MemberClause(`${NAMESPACE}-${Achievement.getModelName()}`, "world_address", "Neq", "0x0");
   },
 
   getMethods: () => [
