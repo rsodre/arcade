@@ -192,7 +192,7 @@ export function Register({ game }: { game?: GameModel }) {
       <SheetTrigger asChild>
         {!game ? (
           <Button
-            className="normal-case font-sans select-none min-h-12 flex justify-center items-center p-2 gap-x-2 rounded-b cursor-pointer text-sm font-medium text-foreground-300 bg-background-200 hover:bg-background-300"
+            className="normal-case font-sans select-none min-h-12 flex justify-center items-center p-2 gap-x-2 rounded-b cursor-pointer text-sm font-medium text-foreground-300 bg-background-200 hover:bg-background-300 hover:text-foreground-200"
             disabled={!account}
           >
             <PlusIcon size="sm" variant="line" />
