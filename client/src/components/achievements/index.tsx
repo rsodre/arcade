@@ -301,7 +301,10 @@ export function GameRow({
             timestamp: achievement.timestamp,
           },
           pin: {
-            pinned: pinneds.some((pinneds) => pinneds.id === achievement.id),
+            pinned: pinneds.some(
+              (pinneds) =>
+                pinneds.id === achievement.id && achievement.completed,
+            ),
           },
         };
       }),
