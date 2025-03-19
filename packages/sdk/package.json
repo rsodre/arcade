@@ -25,7 +25,8 @@
   },
   "scripts": {
     "prepare": "npm run build && husky",
-    "build": "tsup && npm run build:esm && npm run build:iife && npm run build:dts",
+    "build:deps": "tsup && pnpm run build:esm && pnpm run build:iife && pnpm run build:dts",
+    "build": "pnpm build:deps",
     "build:esm": "tsup --clean false --format esm --platform node",
     "build:iife": "tsup --clean false --format iife --platform browser --external node:*,tough-cookie,*.wasm",
     "build:dts": "tsup --clean false --dts-only",
@@ -40,7 +41,7 @@
     "docs:version": "v=$(npm run info:version -s) && cd www && npm run version ${npm_config_version_override=$v}",
     "info:version": "npm pkg get version | xargs",
     "format": "prettier --log-level log --write \"**/*.{ts,js,md,yml,json}\"",
-    "lint": "eslint . --cache --fix --ext .ts",
+    "format:check": "prettier --log-level log --check \"**/*.{ts,js,md,yml,json}\"",
     "ts:check": "tsc --noEmit --resolveJsonModule --project tsconfig.eslint.json",
     "ts:coverage": "type-coverage --at-least 95",
     "ts:coverage:report": "typescript-coverage-report"
