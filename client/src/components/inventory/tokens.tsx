@@ -47,17 +47,13 @@ export const Tokens = () => {
       style={{ scrollbarWidth: "none" }}
     >
       {tokens.map((token) => (
-        <TokenCardContent
-          key={token.meta.address}
-          token={token}
-          values={countervalues}
-        />
+        <Item key={token.meta.address} token={token} values={countervalues} />
       ))}
     </div>
   );
 };
 
-function TokenCardContent({
+function Item({
   token,
   values,
 }: {

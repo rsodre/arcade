@@ -5,11 +5,13 @@ import { SceneLayout } from "@/components/scenes/layout";
 import { useArcade } from "@/hooks/arcade";
 import { useEffect } from "react";
 import { useAchievements } from "@/hooks/achievements";
-import { ArcadeTabs, TabsContent } from "@cartridge/ui-next";
+import { TabsContent } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
 import { DiscoverScene } from "./scenes/discover";
 import { GuildsScene } from "./scenes/guild";
 import { ActivityScene } from "./scenes/activity";
+import { ArcadeTabs } from "./modules";
+import { LeaderboardScene } from "./scenes/leaderboard";
 
 export function App() {
   const { isConnected } = useAccount();
@@ -32,21 +34,21 @@ export function App() {
         className="w-full bg-background-100 overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
-        <div className="w-[1048px] flex flex-col items-stretch m-auto gap-y-8 h-full overflow-clip">
-          <div className="flex pt-8 h-full">
+        <div className="w-[1048px] pt-8 pb-6 gap-8 flex items-stretch m-auto h-full overflow-clip">
+          <Games />
+          <div className="grow h-full flex flex-col">
             <ArcadeTabs
               discover
               inventory={isConnected}
               achievements={isConnected}
-              guilds={isConnected}
+              leaderboard={isConnected}
+              guilds={false}
               activity={isConnected}
-              className="flex flex-col w-full"
             >
               <div
                 className="flex justify-center pt-8 gap-8 w-full grow overflow-y-scroll"
                 style={{ scrollbarWidth: "none" }}
               >
-                <Games />
                 <TabsContent className="p-0 mt-0 grow w-full" value="discover">
                   <DiscoverScene />
                 </TabsContent>
@@ -58,6 +60,12 @@ export function App() {
                   value="achievements"
                 >
                   <AchievementScene />
+                </TabsContent>
+                <TabsContent
+                  className="p-0 mt-0 grow w-full"
+                  value="leaderboard"
+                >
+                  <LeaderboardScene />
                 </TabsContent>
                 <TabsContent className="p-0 mt-0 grow w-full" value="guilds">
                   <GuildsScene />

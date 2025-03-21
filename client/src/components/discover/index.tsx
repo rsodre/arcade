@@ -44,7 +44,7 @@ export function Discover({ game }: { game?: GameModel }) {
   return (
     <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">
       <div
-        className="p-0 mt-0 pb-6 overflow-y-scroll"
+        className="p-0 mt-0 overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
         <div className="flex flex-col gap-y-6">

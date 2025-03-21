@@ -1,10 +1,10 @@
-import { Inventory } from "@/components/inventory";
+import { Leaderboard } from "@/components/leaderboard";
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useMemo } from "react";
 
-export const InventoryScene = () => {
+export const LeaderboardScene = () => {
   const { games } = useArcade();
 
   const { project, namespace } = useProject();
@@ -16,7 +16,8 @@ export const InventoryScene = () => {
   }, [games, project, namespace]);
 
   if (!game) {
-    return <Inventory />;
+    return <Leaderboard />;
   }
-  return <Inventory game={game} />;
+
+  return <Leaderboard game={game} />;
 };

@@ -112,9 +112,7 @@ function Group({
           const calls = pinned
             ? provider.social.unpin({ achievementId })
             : provider.social.pin({ achievementId });
-          console.log("calls", calls);
           const res = await account.execute(calls);
-          console.log("res", res);
           if (res) {
             toast.success(
               `Trophy ${pinned ? "unpinned" : "pinned"} successfully`,
