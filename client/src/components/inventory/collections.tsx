@@ -53,11 +53,17 @@ function Item({
   const [username, setUsername] = useState<string>("");
 
   const game = useMemo(() => {
-    return games.find((game) => collection.imageUrl.includes(game.config.project));
+    return games.find((game) =>
+      collection.imageUrl.includes(game.config.project),
+    );
   }, [games, collection]);
 
   const chain: Chain = useMemo(() => {
-    return chains.find((chain) => chain.rpcUrls.default.http[0] === game?.config.rpc) || mainnet;
+    return (
+      chains.find(
+        (chain) => chain.rpcUrls.default.http[0] === game?.config.rpc,
+      ) || mainnet
+    );
   }, [chains, game]);
 
   const slot = useMemo(() => {

@@ -14,7 +14,7 @@ import {
 } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
 import { useCallback, useState } from "react";
-import { AllowArray, byteArray, Call } from "starknet";
+import { AllowArray, byteArray, Call, constants } from "starknet";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, UseFormReturn } from "react-hook-form";
@@ -27,6 +27,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { GameModel } from "@bal7hazar/arcade-sdk";
+import ControllerConnector from "@cartridge/connector/controller";
 
 const formSchema = z.object({
   worldAddress: z
@@ -36,12 +37,8 @@ const formSchema = z.object({
     .string()
     .min(2, { message: "Namespace is required" })
     .max(31, { message: "Invalid Namespace" }),
-  project: z
-    .string()
-    .min(2, { message: "Project is required" }),
-  rpc: z
-    .string()
-    .min(2, { message: "RPC is required" }),
+  project: z.string().min(2, { message: "Project is required" }),
+  rpc: z.string().min(2, { message: "RPC is required" }),
   policies: z.string().refine((val) => val.startsWith("{") || !val, {
     message: "Invalid Policies",
   }),
@@ -49,12 +46,8 @@ const formSchema = z.object({
     .string()
     .min(2, { message: "Color is required" })
     .max(31, { message: "Invalid Color" }),
-  preset: z
-    .string()
-    .min(2, { message: "Preset is required" }),
-  name: z
-    .string()
-    .min(2, { message: "Name is required" }),
+  preset: z.string().min(2, { message: "Preset is required" }),
+  name: z.string().min(2, { message: "Name is required" }),
   description: z.string().min(2, { message: "Description is required" }),
   image: z.string().refine((val) => val.startsWith("http") || !val, {
     message: "Invalid Image URL",
@@ -80,7 +73,7 @@ const formSchema = z.object({
 });
 
 export function Register({ game }: { game?: GameModel }) {
-  const { account } = useAccount();
+  const { account, connector } = useAccount();
   const { provider } = useArcade();
   const [loading, setLoading] = useState(false);
   const [close, setClose] = useState(false);
@@ -159,17 +152,27 @@ export function Register({ game }: { game?: GameModel }) {
     //   website: game?.socials.website || "https://dragark.net/",
     // },
     defaultValues: {
-      worldAddress: game?.worldAddress || "0x02ea88c9a6314a10e7d8b6e557d01d68cf72d962707086aa242bc4805071f34d",
+      worldAddress:
+        game?.worldAddress ||
+        "0x02ea88c9a6314a10e7d8b6e557d01d68cf72d962707086aa242bc4805071f34d",
       namespace: game?.namespace || "pistols",
       project: game?.config.project || "pistols-staging",
-      rpc: game?.config.rpc || "https://api.cartridge.gg/x/pistols-academy/katana",
-      policies: game?.config.policies ? JSON.stringify(game?.config.policies) : ``,
+      rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/sepolia",
+      policies: game?.config.policies
+        ? JSON.stringify(game?.config.policies)
+        : ``,
       color: game?.metadata.color || "#EF9758",
       preset: game?.metadata.preset || "pistols",
       name: game?.metadata.name || "Pistols",
-      description: game?.metadata.description || "Fully on-chain game made with Dojo by Underware.gg",
-      image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/icon.png?raw=true",
-      banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/cover.png?raw=true",
+      description:
+        game?.metadata.description ||
+        "Fully on-chain game made with Dojo by Underware.gg",
+      image:
+        game?.metadata.image ||
+        "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/icon.png?raw=true",
+      banner:
+        game?.metadata.banner ||
+        "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/cover.png?raw=true",
       discord: game?.socials.discord || "https://discord.gg/Zbap29dD",
       telegram: game?.socials.telegram || "",
       twitter: game?.socials.twitter || "https://x.com/underware_gg",
@@ -198,6 +201,8 @@ export function Register({ game }: { game?: GameModel }) {
 
   const onDelete = useCallback(() => {
     if (!game || !account) return;
+    const controller = (connector as ControllerConnector)?.controller;
+    if (!controller) return;
     const process = async () => {
       setLoading(true);
       try {
@@ -206,7 +211,8 @@ export function Register({ game }: { game?: GameModel }) {
           namespace: game.namespace,
         };
         const calls = provider.registry.remove_game(args);
-        await account?.execute(calls);
+        controller.switchStarknetChain(constants.StarknetChainId.SN_MAIN);
+        await account.execute(calls);
         setClose(true);
       } catch (error) {
         console.error(error);
@@ -215,11 +221,13 @@ export function Register({ game }: { game?: GameModel }) {
       }
     };
     process();
-  }, [provider, account, game, setClose]);
+  }, [provider, account, connector, game, setClose]);
 
   const onSubmit = useCallback(
     (values: z.infer<typeof formSchema>) => {
       if (!account) return;
+      const controller = (connector as ControllerConnector)?.controller;
+      if (!controller) return;
       const process = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
         try {
@@ -247,7 +255,8 @@ export function Register({ game }: { game?: GameModel }) {
           } else {
             calls = provider.registry.update_game(args);
           }
-          await account?.execute(calls);
+          controller.switchStarknetChain(constants.StarknetChainId.SN_MAIN);
+          await account.execute(calls);
           setClose(true);
         } catch (error) {
           console.error(error);
@@ -257,7 +266,7 @@ export function Register({ game }: { game?: GameModel }) {
       };
       process(values);
     },
-    [provider, account, setClose],
+    [provider, account, connector, setClose],
   );
 
   return (

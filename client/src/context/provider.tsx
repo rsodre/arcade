@@ -22,13 +22,13 @@ export function Provider({ children }: PropsWithChildren) {
           <QueryClientProvider client={queryClient}>
             <ArcadeProvider>
               <StarknetProvider>
-                  <ConnectionProvider>
-                    <ThemeProvider defaultScheme="system">
-                      <ProjectProvider>
-                        <AchievementProvider>{children}</AchievementProvider>
-                      </ProjectProvider>
-                    </ThemeProvider>
-                  </ConnectionProvider>
+                <ConnectionProvider>
+                  <ThemeProvider defaultScheme="system">
+                    <ProjectProvider>
+                      <AchievementProvider>{children}</AchievementProvider>
+                    </ProjectProvider>
+                  </ThemeProvider>
+                </ConnectionProvider>
               </StarknetProvider>
             </ArcadeProvider>
           </QueryClientProvider>

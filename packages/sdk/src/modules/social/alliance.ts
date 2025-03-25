@@ -9,6 +9,7 @@ export class AllianceModel {
   type = MODEL_NAME;
 
   constructor(
+    public identifier: string,
     public id: number,
     public open: boolean,
     public free: boolean,
@@ -16,6 +17,7 @@ export class AllianceModel {
     public metadata: Metadata,
     public socials: Socials,
   ) {
+    this.identifier = identifier;
     this.id = id;
     this.open = open;
     this.free = free;
@@ -24,24 +26,33 @@ export class AllianceModel {
     this.socials = socials;
   }
 
-  static from(model: any) {
+  static from(identifier: string, model: any) {
+    if (!model) return AllianceModel.default(identifier);
     const id = Number(model.id);
     const open = !!model.open;
     const free = !!model.free;
     const guildCount = Number(model.guild_count);
     const metadata = Metadata.from(model.metadata);
     const socials = Socials.from(model.socials);
-    return new AllianceModel(id, open, free, guildCount, metadata, socials);
+    return new AllianceModel(identifier, id, open, free, guildCount, metadata, socials);
+  }
+
+  static default(identifier: string) {
+    return new AllianceModel(identifier, 0, false, false, 0, new Metadata("", "", "", "", "", ""), new Socials("", "", "", "", ""));
   }
 
   static isType(model: AllianceModel) {
     return model.type === MODEL_NAME;
   }
+
+  exists() {
+    return this.id !== 0;
+  }
 }
 
 export const Alliance = {
   parse: (entity: ParsedEntity<SchemaType>) => {
-    return AllianceModel.from(entity.models[NAMESPACE][MODEL_NAME]);
+    return AllianceModel.from(entity.entityId, entity.models[NAMESPACE]?.[MODEL_NAME]);
   },
 
   getModelName: () => {

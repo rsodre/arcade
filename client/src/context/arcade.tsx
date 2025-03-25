@@ -55,20 +55,30 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     async function getChains() {
-      const chains: Chain[] = await Promise.all(Object.values(games).map(async (game) => {
-        const provider = new RpcProvider({ nodeUrl: game.config.rpc  });
-        const id = await provider.getChainId();
-        return {
-          id: BigInt(id),
-          name: shortString.decodeShortString(id),
-          network: id,
-          rpcUrls: { default: { http: [game.config.rpc] }, public: { http: [game.config.rpc] } },
-          nativeCurrency: { address: "0x0", name: "Ether", symbol: "ETH", decimals: 18 },
-        };
-      }));
+      const chains: Chain[] = await Promise.all(
+        Object.values(games).map(async (game) => {
+          const provider = new RpcProvider({ nodeUrl: game.config.rpc });
+          const id = await provider.getChainId();
+          return {
+            id: BigInt(id),
+            name: shortString.decodeShortString(id),
+            network: id,
+            rpcUrls: {
+              default: { http: [game.config.rpc] },
+              public: { http: [game.config.rpc] },
+            },
+            nativeCurrency: {
+              address: "0x0",
+              name: "Ether",
+              symbol: "ETH",
+              decimals: 18,
+            },
+          };
+        }),
+      );
       // Deduplicate chains
-      const uniques = chains.filter((chain, index) =>
-        index === chains.findIndex((t) => t.id === chain.id),
+      const uniques = chains.filter(
+        (chain, index) => index === chains.findIndex((t) => t.id === chain.id),
       );
       setChains(uniques);
     }
@@ -119,9 +129,17 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
     models.forEach((model: RegistryModel) => {
       if (!GameModel.isType(model as GameModel)) return;
       const game = model as GameModel;
+      if (!game.exists()) {
+        setGames((prevGames) => {
+          const newGames = { ...prevGames };
+          delete newGames[game.identifier];
+          return newGames;
+        });
+        return;
+      }
       setGames((prevGames) => ({
         ...prevGames,
-        [`${game.worldAddress}-${game.namespace}`]: game,
+        [game.identifier]: game,
       }));
     });
   }, []);

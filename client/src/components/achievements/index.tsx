@@ -21,7 +21,7 @@ export function Achievements({ game }: { game?: GameModel }) {
   }, [players, game]);
 
   const gameAchievements = useMemo(() => {
-    return achievements[game?.config.project  || ""] || [];
+    return achievements[game?.config.project || ""] || [];
   }, [achievements, game]);
 
   const [searchParams] = useSearchParams();
@@ -120,7 +120,7 @@ export function GameRow({
   variant: "default" | "faded";
 }) {
   const gameAchievements = useMemo(() => {
-    return achievements[game?.config.project  || ""] || [];
+    return achievements[game?.config.project || ""] || [];
   }, [achievements, game]);
 
   const { pinneds } = useMemo(() => {

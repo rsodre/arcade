@@ -132,14 +132,14 @@ export interface Achievement {
   id: BigNumberish;
   published: boolean;
   whitelisted: boolean;
-  karma: BigNumberish;
+  points: BigNumberish;
 }
 
 // Type definition for `registry::models::index::AchievementValue` struct
 export interface AchievementValue {
   published: boolean;
   whitelisted: boolean;
-  karma: BigNumberish;
+  points: BigNumberish;
 }
 
 // Type definition for `registry::models::index::Game` struct
@@ -150,7 +150,7 @@ export interface Game {
   published: boolean;
   whitelisted: boolean;
   priority: BigNumberish;
-  karma: BigNumberish;
+  points: BigNumberish;
   config: string;
   metadata: string;
   socials: string;
@@ -163,7 +163,7 @@ export interface GameValue {
   published: boolean;
   whitelisted: boolean;
   priority: BigNumberish;
-  karma: BigNumberish;
+  points: BigNumberish;
   config: string;
   metadata: string;
   socials: string;
@@ -377,19 +377,19 @@ export const schema: SchemaType = {
       role: 0,
     },
     Achievement: {
-      fieldOrder: ["world_address", "namespace", "id", "published", "whitelisted", "karma"],
+      fieldOrder: ["world_address", "namespace", "id", "published", "whitelisted", "points"],
       world_address: 0,
       namespace: 0,
       id: 0,
       published: false,
       whitelisted: false,
-      karma: 0,
+      points: 0,
     },
     AchievementValue: {
-      fieldOrder: ["published", "whitelisted", "karma"],
+      fieldOrder: ["published", "whitelisted", "points"],
       published: false,
       whitelisted: false,
-      karma: 0,
+      points: 0,
     },
     Game: {
       fieldOrder: [
@@ -399,7 +399,7 @@ export const schema: SchemaType = {
         "published",
         "whitelisted",
         "priority",
-        "karma",
+        "points",
         "config",
         "metadata",
         "socials",
@@ -411,7 +411,7 @@ export const schema: SchemaType = {
       published: false,
       whitelisted: false,
       priority: 0,
-      karma: 0,
+      points: 0,
       config: "",
       metadata: "",
       socials: "",
@@ -423,7 +423,7 @@ export const schema: SchemaType = {
         "published",
         "whitelisted",
         "priority",
-        "karma",
+        "points",
         "config",
         "metadata",
         "socials",
@@ -433,7 +433,7 @@ export const schema: SchemaType = {
       published: false,
       whitelisted: false,
       priority: 0,
-      karma: 0,
+      points: 0,
       config: "",
       metadata: "",
       socials: "",

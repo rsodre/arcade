@@ -71,18 +71,20 @@ export const Registry = {
       data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
       error?: Error | undefined;
     }) => {
-      console.log("game data", data);
       if (error) {
         console.error("Error subscribing to entities:", error);
         return;
       }
-      if (!data || data.length === 0 || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
+      if (!data || data.length === 0 || BigInt((data[0] as ParsedEntity<SchemaType>).entityId) === 0n) return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
-      if (entity.models[NAMESPACE][Achievement.getModelName()]) {
-        callback([Achievement.parse(entity)]);
+      const eraseable = !entity.models[NAMESPACE];
+      if (!!entity.models[NAMESPACE]?.[Achievement.getModelName()] || eraseable) {
+        const achievement = Achievement.parse(entity);
+        callback([achievement]);
       }
-      if (entity.models[NAMESPACE][Game.getModelName()]) {
-        callback([Game.parse(entity)]);
+      if (!!entity.models[NAMESPACE]?.[Game.getModelName()] || eraseable) {
+        const game = Game.parse(entity);
+        callback([game]);
       }
     };
 

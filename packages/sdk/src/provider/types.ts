@@ -221,14 +221,14 @@ export interface RegistryRegisterAchievementProps {
   worldAddress: BigNumberish;
   namespace: BigNumberish;
   identifier: BigNumberish;
-  karma: BigNumberish;
+  points: BigNumberish;
 }
 
 export interface RegistryUpdateAchievementProps {
   worldAddress: BigNumberish;
   namespace: BigNumberish;
   identifier: BigNumberish;
-  karma: BigNumberish;
+  points: BigNumberish;
 }
 
 export interface RegistryPublishAchievementProps {

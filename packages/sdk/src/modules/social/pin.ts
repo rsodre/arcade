@@ -9,30 +9,41 @@ export class PinEvent {
   type = MODEL_NAME;
 
   constructor(
+    public identifier: string,
     public playerId: string,
     public achievementId: string,
     public time: number,
   ) {
+    this.identifier = identifier;
     this.playerId = playerId;
     this.achievementId = achievementId;
     this.time = time;
   }
 
-  static from(model: any) {
+  static from(identifier: string, model: any) {
+    if (!model) return PinEvent.default(identifier);
     const playerId = addAddressPadding(model.player_id);
     const achievementId = `0x${BigInt(String(model.achievement_id)).toString(16)}`;
     const time = Number(model.time);
-    return new PinEvent(playerId, achievementId, time);
+    return new PinEvent(identifier, playerId, achievementId, time);
   }
 
   static isType(model: PinEvent) {
     return model.type === MODEL_NAME;
   }
+
+  static default(identifier: string) {
+    return new PinEvent(identifier, "0x0", "0x0", 0);
+  }
+
+  exists() {
+    return this.playerId !== "0x0";
+  }
 }
 
 export const Pin = {
   parse: (entity: ParsedEntity<SchemaType>) => {
-    return PinEvent.from(entity.models[NAMESPACE][MODEL_NAME]);
+    return PinEvent.from(entity.entityId, entity.models[NAMESPACE]?.[MODEL_NAME]);
   },
 
   getModelName: () => {

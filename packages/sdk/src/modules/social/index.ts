@@ -120,13 +120,14 @@ export const Social = {
       }
       if (!data || data.length === 0 || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
-      if (entity.models[NAMESPACE][Alliance.getModelName()]) {
+      const eraseable = !entity.models[NAMESPACE];
+      if (entity.models[NAMESPACE]?.[Alliance.getModelName()] || eraseable) {
         callback([Alliance.parse(entity)]);
       }
-      if (entity.models[NAMESPACE][Guild.getModelName()]) {
+      if (entity.models[NAMESPACE]?.[Guild.getModelName()] || eraseable) {
         callback([Guild.parse(entity)]);
       }
-      if (entity.models[NAMESPACE][Member.getModelName()]) {
+      if (entity.models[NAMESPACE]?.[Member.getModelName()] || eraseable) {
         callback([Member.parse(entity)]);
       }
     };
@@ -153,10 +154,10 @@ export const Social = {
       }
       if (!data || data.length === 0 || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
-      if (entity.models[NAMESPACE][Pin.getModelName()]) {
+      if (entity.models[NAMESPACE]?.[Pin.getModelName()]) {
         callback([Pin.parse(entity)]);
       }
-      if (entity.models[NAMESPACE][Follow.getModelName()]) {
+      if (entity.models[NAMESPACE]?.[Follow.getModelName()]) {
         callback([Follow.parse(entity)]);
       }
     };

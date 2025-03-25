@@ -43,9 +43,7 @@ export function useCollections({
 }): UseCollectionsResponse {
   const { address } = useAccount();
   const [offset, setOffset] = useState(0);
-  const [collections, setCollections] = useState<Collection[]>(
-    [],
-  );
+  const [collections, setCollections] = useState<Collection[]>([]);
 
   const { status } = useCollectionsQuery(
     {
@@ -73,7 +71,11 @@ export function useCollections({
         if (collections?.edges.length === LIMIT) {
           setOffset(offset + LIMIT);
         }
-        setCollections(Object.values(newCollections).sort((a, b) => a.name.localeCompare(b.name)));
+        setCollections(
+          Object.values(newCollections).sort((a, b) =>
+            a.name.localeCompare(b.name),
+          ),
+        );
       },
     },
   );

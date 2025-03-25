@@ -3,9 +3,10 @@ import { Item } from "@/hooks/achievements";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useArcade } from "@/hooks/arcade";
-import { addAddressPadding } from "starknet";
+import { addAddressPadding, constants } from "starknet";
 import { toast } from "sonner";
 import { useAccount } from "@starknet-react/core";
+import ControllerConnector from "@cartridge/connector/controller";
 
 const HIDDEN_GROUP = "Hidden";
 
@@ -96,7 +97,7 @@ function Group({
   game: GameModel | undefined;
   pins: { [playerId: string]: string[] };
 }) {
-  const { account } = useAccount();
+  const { account, connector } = useAccount();
   const { provider } = useArcade();
 
   const handlePin = useCallback(
@@ -106,12 +107,15 @@ function Group({
       setLoading: (loading: boolean) => void,
     ) => {
       if (!account || (!enabled && !pinned)) return;
+      const controller = (connector as ControllerConnector)?.controller;
+      if (!controller) return;
       const process = async () => {
         setLoading(true);
         try {
           const calls = pinned
             ? provider.social.unpin({ achievementId })
             : provider.social.pin({ achievementId });
+          controller.switchStarknetChain(constants.StarknetChainId.SN_MAIN);
           const res = await account.execute(calls);
           if (res) {
             toast.success(
@@ -127,7 +131,7 @@ function Group({
       };
       process();
     },
-    [enabled, account],
+    [enabled, account, connector],
   );
 
   const achievements = useMemo(() => {

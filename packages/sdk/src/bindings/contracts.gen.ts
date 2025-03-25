@@ -209,7 +209,7 @@ export function setupWorld(provider: DojoProvider) {
     worldAddress: BigNumberish,
     namespace: BigNumberish,
     identifier: BigNumberish,
-    karma: BigNumberish,
+    points: BigNumberish,
   ) => {
     try {
       return await provider.execute(
@@ -217,7 +217,7 @@ export function setupWorld(provider: DojoProvider) {
         {
           contractName: "Registry",
           entrypoint: "register_achievement",
-          calldata: [worldAddress, namespace, identifier, karma],
+          calldata: [worldAddress, namespace, identifier, points],
         },
         "ARCADE",
       );
@@ -231,7 +231,7 @@ export function setupWorld(provider: DojoProvider) {
     worldAddress: BigNumberish,
     namespace: BigNumberish,
     identifier: BigNumberish,
-    karma: BigNumberish,
+    points: BigNumberish,
   ) => {
     try {
       return await provider.execute(
@@ -239,7 +239,7 @@ export function setupWorld(provider: DojoProvider) {
         {
           contractName: "Registry",
           entrypoint: "update_achievement",
-          calldata: [worldAddress, namespace, identifier, karma],
+          calldata: [worldAddress, namespace, identifier, points],
         },
         "ARCADE",
       );

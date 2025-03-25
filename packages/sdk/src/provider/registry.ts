@@ -164,24 +164,24 @@ export class Registry {
   }
 
   public register_achievement(props: SystemProps.RegistryRegisterAchievementProps): AllowArray<Call> {
-    const { worldAddress, namespace, identifier, karma } = props;
+    const { worldAddress, namespace, identifier, points } = props;
     const entrypoint = "register_achievement";
 
     return {
       contractAddress: getContractByName(this.manifest, this.name),
       entrypoint,
-      calldata: [worldAddress, namespace, identifier, karma],
+      calldata: [worldAddress, namespace, identifier, points],
     };
   }
 
   public update_achievement(props: SystemProps.RegistryUpdateAchievementProps): AllowArray<Call> {
-    const { worldAddress, namespace, identifier, karma } = props;
+    const { worldAddress, namespace, identifier, points } = props;
     const entrypoint = "update_achievement";
 
     return {
       contractAddress: getContractByName(this.manifest, this.name),
       entrypoint,
-      calldata: [worldAddress, namespace, identifier, karma],
+      calldata: [worldAddress, namespace, identifier, points],
     };
   }
 

@@ -33,7 +33,7 @@ const profile: ProfileOptions = {
 
 export function StarknetProvider({ children }: PropsWithChildren) {
   const { chains } = useArcade();
-  const initialized = useRef<boolean>(false);
+  const controllerRef = useRef<ControllerConnector | null>(null);
 
   const jsonProvider = useMemo(() => {
     return jsonRpcProvider({
@@ -63,14 +63,15 @@ export function StarknetProvider({ children }: PropsWithChildren) {
   }, [chains]);
 
   const controller = useMemo(() => {
-    if (initialized.current || !provider) return null;
-    initialized.current = true;
-    return new ControllerConnector({
+    if (!provider) return null;
+    if (controllerRef.current) return controllerRef.current;
+    controllerRef.current = new ControllerConnector({
       ...provider,
       ...keychain,
       ...profile,
     });
-  }, [initialized, provider]);
+    return controllerRef.current;
+  }, [controllerRef, provider]);
 
   if (!chains.length || !controller) return null;
 
