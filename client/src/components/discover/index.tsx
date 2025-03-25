@@ -5,6 +5,7 @@ import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
 import banner from "@/assets/banner.svg";
 import { DiscoverError, DiscoverLoading } from "../errors";
+import { addAddressPadding } from "starknet";
 
 interface Event {
   name: string;
@@ -24,7 +25,7 @@ export function Discover({ game }: { game?: GameModel }) {
     return filteredGames.map((game) => {
       const data = events[game?.config.project]?.map((event) => {
         return {
-          name: usernames[event.player],
+          name: usernames[addAddressPadding(event.player)],
           achievement: event.achievement,
           timestamp: event.timestamp,
         };
@@ -42,12 +43,12 @@ export function Discover({ game }: { game?: GameModel }) {
   if (isLoading) return <DiscoverLoading />;
 
   return (
-    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">
+    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0 py-4">
       <div
         className="p-0 mt-0 overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-4">
           {filteredGames.map((item, index) => (
             <GameRow
               key={`${index}-${item.config.project}`}
@@ -81,11 +82,13 @@ export function GameRow({
 
   return (
     <div className="rounded-lg overflow-hidden">
-      <ArcadeDiscoveryGroup
-        game={gameData}
-        events={events}
-        color={game.metadata.color}
-      />
+      <div className="border border-transparent overflow-hidden rounded">
+        <ArcadeDiscoveryGroup
+          game={gameData}
+          events={events}
+          color={game.metadata.color}
+        />
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { LayoutContent, AchievementSummary } from "@cartridge/ui-next";
+import { LayoutContent } from "@cartridge/ui-next";
 import { useMemo } from "react";
 import { Trophies } from "./trophies";
 import { useArcade } from "@/hooks/arcade";
@@ -10,6 +10,7 @@ import { useAccount } from "@starknet-react/core";
 import { Item } from "@/helpers/achievements";
 import banner from "@/assets/banner.svg";
 import { AchievementsError, AchievementsLoading } from "../errors";
+import AchievementSummary from "../modules/summary";
 
 export function Achievements({ game }: { game?: GameModel }) {
   const { address: self } = useAccount();
@@ -72,11 +73,11 @@ export function Achievements({ game }: { game?: GameModel }) {
     <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">
       <div className="h-full flex flex-col justify-between gap-y-6">
         <div
-          className="p-0 mt-0 pb-6 overflow-y-scroll"
+          className="p-0 mt-0 overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-y-6">
+          <div className="flex flex-col gap-4 py-4">
+            <div className="flex flex-col gap-y-4">
               {filteredGames.map((item, index) => (
                 <GameRow
                   key={index}
@@ -84,6 +85,7 @@ export function Achievements({ game }: { game?: GameModel }) {
                   game={item}
                   achievements={achievements}
                   pins={pins}
+                  background={filteredGames.length > 1}
                   variant={!game ? "default" : "faded"}
                 />
               ))}
@@ -111,12 +113,14 @@ export function GameRow({
   game,
   achievements,
   pins,
+  background,
   variant,
 }: {
   address: string;
   game: GameModel;
   achievements: { [game: string]: Item[] };
   pins: { [playerId: string]: string[] };
+  background: boolean;
   variant: "default" | "faded";
 }) {
   const gameAchievements = useMemo(() => {
@@ -156,18 +160,20 @@ export function GameRow({
       metadata: {
         name: game?.metadata.name || "Game",
         logo: game?.metadata.image,
-        cover: banner,
+        cover: background ? game?.metadata.banner : banner,
       },
       socials: { ...game?.socials },
     };
   }, [gameAchievements, game, pinneds]);
 
   return (
-    <AchievementSummary
-      {...summaryProps}
-      variant={variant}
-      active
-      color={game.metadata.color}
-    />
+    <div className="rounded-lg overflow-hidden">
+      <AchievementSummary
+        {...summaryProps}
+        variant={variant}
+        active
+        color={game.metadata.color}
+      />
+    </div>
   );
 }

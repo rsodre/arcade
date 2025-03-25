@@ -18,7 +18,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 
 const arcadeTabsVariants = cva(
-  "flex justify-start items-end w-full p-0 border-b rounded-none",
+  "flex justify-start items-end w-full p-0 px-4 border-b rounded-none",
   {
     variants: {
       variant: {
@@ -146,7 +146,7 @@ export const ArcadeTabs = ({
     <Tabs
       defaultValue={defaultValue}
       onValueChange={setActive}
-      className="h-full flex flex-col overflow-clip"
+      className="h-full flex flex-col overflow-hidden"
     >
       <TabsList
         ref={containerRef}

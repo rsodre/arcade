@@ -43,7 +43,7 @@ export const Tokens = () => {
 
   return (
     <div
-      className="rounded overflow-y-scroll w-full flex flex-col gap-y-px h-[259px]"
+      className="rounded overflow-y-scroll w-full flex flex-col gap-y-px h-[324px]"
       style={{ scrollbarWidth: "none" }}
     >
       {tokens.map((token) => (

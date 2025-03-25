@@ -48,7 +48,9 @@ export function Leaderboard({ game }: { game?: GameModel }) {
       if (BigInt(player.address) === BigInt(address)) rank = index + 1;
       return {
         address: player.address,
-        name: usernames[player.address] || player.address.slice(0, 9),
+        name:
+          usernames[addAddressPadding(player.address)] ||
+          player.address.slice(0, 9),
         points: player.earnings,
         highlight: BigInt(player.address) === BigInt(address),
         pins: pins[addAddressPadding(player.address)]
@@ -74,7 +76,9 @@ export function Leaderboard({ game }: { game?: GameModel }) {
       if (BigInt(player.address) === BigInt(address)) rank = index + 1;
       return {
         address: player.address,
-        name: usernames[player.address] || player.address.slice(0, 9),
+        name:
+          usernames[addAddressPadding(player.address)] ||
+          player.address.slice(0, 9),
         points: player.earnings,
         highlight: BigInt(player.address) === BigInt(address),
       };
@@ -104,13 +108,13 @@ export function Leaderboard({ game }: { game?: GameModel }) {
   }
 
   return (
-    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">
+    <LayoutContent className="select-none h-full overflow-clip p-0">
       <div className="h-full flex flex-col justify-between gap-y-6">
         <div
-          className="p-0 mt-0 pb-6 overflow-y-scroll"
+          className="p-0 py-4 mt-0 overflow-y-scroll border border-transparent"
           style={{ scrollbarWidth: "none" }}
         >
-          <AchievementLeaderboard className="h-full overflow-y-scroll">
+          <AchievementLeaderboard className="h-full rounded">
             {!game
               ? gamesData.map((item, index) => (
                   <AchievementLeaderboardRow
