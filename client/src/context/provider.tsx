@@ -20,17 +20,17 @@ export function Provider({ children }: PropsWithChildren) {
       >
         <IndexerAPIProvider credentials="omit">
           <QueryClientProvider client={queryClient}>
-            <StarknetProvider>
-              <ArcadeProvider>
-                <ConnectionProvider>
-                  <ThemeProvider defaultScheme="system">
-                    <ProjectProvider>
-                      <AchievementProvider>{children}</AchievementProvider>
-                    </ProjectProvider>
-                  </ThemeProvider>
-                </ConnectionProvider>
-              </ArcadeProvider>
-            </StarknetProvider>
+            <ArcadeProvider>
+              <StarknetProvider>
+                  <ConnectionProvider>
+                    <ThemeProvider defaultScheme="system">
+                      <ProjectProvider>
+                        <AchievementProvider>{children}</AchievementProvider>
+                      </ProjectProvider>
+                    </ThemeProvider>
+                  </ConnectionProvider>
+              </StarknetProvider>
+            </ArcadeProvider>
           </QueryClientProvider>
         </IndexerAPIProvider>
       </CartridgeAPIProvider>

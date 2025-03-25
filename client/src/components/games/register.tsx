@@ -38,20 +38,23 @@ const formSchema = z.object({
     .max(31, { message: "Invalid Namespace" }),
   project: z
     .string()
-    .min(2, { message: "Project is required" })
-    .max(31, { message: "Invalid Project" }),
-  preset: z
+    .min(2, { message: "Project is required" }),
+  rpc: z
     .string()
-    .min(2, { message: "Preset is required" })
-    .max(31, { message: "Invalid Preset" }),
+    .min(2, { message: "RPC is required" }),
+  policies: z.string().refine((val) => val.startsWith("{") || !val, {
+    message: "Invalid Policies",
+  }),
   color: z
     .string()
     .min(2, { message: "Color is required" })
     .max(31, { message: "Invalid Color" }),
+  preset: z
+    .string()
+    .min(2, { message: "Preset is required" }),
   name: z
     .string()
-    .min(2, { message: "Name is required" })
-    .max(31, { message: "Invalid Name" }),
+    .min(2, { message: "Name is required" }),
   description: z.string().min(2, { message: "Description is required" }),
   image: z.string().refine((val) => val.startsWith("http") || !val, {
     message: "Invalid Image URL",
@@ -83,47 +86,115 @@ export function Register({ game }: { game?: GameModel }) {
   const [close, setClose] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    // defaultValues: {
+    //   worldAddress: game?.worldAddress || "0x6a9e4c6f0799160ea8ddc43ff982a5f83d7f633e9732ce42701de1288ff705f",
+    //   namespace: game?.namespace || "ds_v1_1_4",
+    //   project: game?.config.project || "darkshuffle-mainnet",
+    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
+    //   policies: JSON.stringify(game?.config.policies) || `{"chains":{"SN_MAIN":{"policies":{"contracts":{"0x0320f977f47f0885e376b781d9e244d9f59f10154ce844ae1815c919f0374726":{"name":"game_systems","methods":[{"entrypoint":"mint"},{"entrypoint":"start_game"}]},"0x0062cfee20a5be4b305f610a23291aa27f3fca7a5fd14bd8e2d0389556003e12":{"name":"battle_systems","methods":[{"entrypoint":"battle_actions"}]},"0x00ae7393b60ad9fd5c26851341b9a4afe61c6ae34326dee79cf5d096e9f55a36":{"name":"draft_systems","methods":[{"entrypoint":"pick_card"}]},"0x07c9a684813410b39c776c49544d8ecb2d39f0b91bd83ffec31ebc938e053e25":{"name":"map_systems","methods":[{"entrypoint":"generate_tree"},{"entrypoint":"select_node"}]}}}}}}`,
+    //   color: game?.metadata.color || "#F59100",
+    //   preset: game?.metadata.preset || "dark-shuffle",
+    //   name: game?.metadata.name || "Dark Shuffle",
+    //   description: game?.metadata.description || "A Provable Roguelike Deck-building Game on Starknet, powered by LORDS.",
+    //   image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/dark-shuffle/icon.svg?raw=true",
+    //   banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/dark-shuffle/cover.png?raw=true",
+    //   discord: game?.socials.discord || "https://discord.gg/CEXUEJF3",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "https://x.com/await_0x",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "https://darkshuffle.dev/",
+    // },
+    // defaultValues: {
+    //   worldAddress: game?.worldAddress || "0x4f3dccb47477c087ad9c76b8067b8aadded57f8df7f2d7543e6066bcb25332c",
+    //   namespace: game?.namespace || "dopewars",
+    //   project: game?.config.project || "ryomainnet",
+    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
+    //   policies: JSON.stringify(game?.config.policies) || `{"origin":"dopewars.game","chains":{"SN_MAIN":{"policies":{"contracts":{"0x051Fea4450Da9D6aeE758BDEbA88B2f665bCbf549D2C61421AA724E9AC0Ced8F":{"name":"VRF Provider","description":"Provides verifiable random functions","methods":[{"name":"Request Random","description":"Request a random number","entrypoint":"request_random"}]},"0x0410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113":{"name":"Paper Token","description":"Manages paper approvals","methods":[{"name":"Approve","description":"Approve paper usage","entrypoint":"approve"}]},"0x044a23BbfE03FFe90D3C23Fb6e5A8AD0341036C039363DfA6F3513278Aa51fCA":{"name":"Game Contract","description":"Core game mechanics","methods":[{"name":"Create Game","description":"Start a new game","entrypoint":"create_game"},{"name":"Travel","description":"Travel to a new location","entrypoint":"travel"},{"name":"Decide","description":"Make a game decision","entrypoint":"decide"},{"name":"End Game","description":"End the current game","entrypoint":"end_game"}]},"0x0412445e644070C69fEa16b964cC81Cd6dEBF6A4DBf683E2E9686a45ad088de8":{"name":"Laundromat Contract","description":"Manages game scoring and laundering","methods":[{"name":"Register Score","description":"Register a game score","entrypoint":"register_score"},{"name":"Claim","description":"Claim rewards","entrypoint":"claim"},{"name":"Launder","description":"Launder resources","entrypoint":"launder"}]}}}}},"theme":{"colors":{"primary":"#11ED83"},"cover":"cover.png","icon":"icon.png","name":"Dope Wars"}}`,
+    //   color: game?.metadata.color || "#11ED83",
+    //   preset: game?.metadata.preset || "dope-wars",
+    //   name: game?.metadata.name || "Dope Wars",
+    //   description: game?.metadata.description || "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO.",
+    //   image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/dope-wars/icon.png?raw=true",
+    //   banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/dope-wars/cover.png?raw=true",
+    //   discord: game?.socials.discord || "https://discord.gg/CEXUEJF3",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "https://x.com/TheDopeWars",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "https://dopewars.game/",
+    // },
+    // defaultValues: {
+    //   worldAddress: game?.worldAddress || "0x6a9e4c6f0799160ea8ddc43ff982a5f83d7f633e9732ce42701de1288ff705f",
+    //   namespace: game?.namespace || "s0_eternum",
+    //   project: game?.config.project || "eternum-prod",
+    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
+    //   policies: JSON.stringify(game?.config.policies) || ``,
+    //   color: game?.metadata.color || "#dc8b07",
+    //   preset: game?.metadata.preset || "eternum",
+    //   name: game?.metadata.name || "Eternum",
+    //   description: game?.metadata.description || "Rule the Hex.",
+    //   image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/eternum/icon.svg?raw=true",
+    //   banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/eternum/cover.png?raw=true",
+    //   discord: game?.socials.discord || "https://discord.gg/CEXUEJF3",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "https://x.com/RealmsEternum",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "https://eternum.realms.world/",
+    // },
+    // defaultValues: {
+    //   worldAddress: game?.worldAddress || "0x022055481479edc9542aa28bc7da760c45fbf320bce571c31c161baddc13acd9",
+    //   namespace: game?.namespace || "dragark",
+    //   project: game?.config.project || "dragark-mainnet-v9-5",
+    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
+    //   policies: JSON.stringify(game?.config.policies) || ``,
+    //   color: game?.metadata.color || "#71EB34",
+    //   preset: game?.metadata.preset || "dragark",
+    //   name: game?.metadata.name || "Dragark",
+    //   description: game?.metadata.description || "Dragark Mainnet is live now! Let's dive into the Action: Battle, Upgrade, and Mine for Dragark Stones!",
+    //   image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/icon.png?raw=true",
+    //   banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/cover.png?raw=true",
+    //   discord: game?.socials.discord || "https://discord.gg/KEChMrdk7z",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "https://x.com/playDRAGARK",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "https://dragark.net/",
+    // },
     defaultValues: {
-      worldAddress: game?.worldAddress || "",
-      namespace: game?.namespace || "",
-      project: game?.project || "",
-      preset: game?.preset || "",
-      color: game?.metadata.color || "",
-      name: game?.metadata.name || "",
-      description: game?.metadata.description || "",
-      image: game?.metadata.image || "",
-      banner: game?.metadata.banner || "",
-      discord: game?.socials.discord || "",
+      worldAddress: game?.worldAddress || "0x02ea88c9a6314a10e7d8b6e557d01d68cf72d962707086aa242bc4805071f34d",
+      namespace: game?.namespace || "pistols",
+      project: game?.config.project || "pistols-staging",
+      rpc: game?.config.rpc || "https://api.cartridge.gg/x/pistols-academy/katana",
+      policies: game?.config.policies ? JSON.stringify(game?.config.policies) : ``,
+      color: game?.metadata.color || "#EF9758",
+      preset: game?.metadata.preset || "pistols",
+      name: game?.metadata.name || "Pistols",
+      description: game?.metadata.description || "Fully on-chain game made with Dojo by Underware.gg",
+      image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/icon.png?raw=true",
+      banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/cover.png?raw=true",
+      discord: game?.socials.discord || "https://discord.gg/Zbap29dD",
       telegram: game?.socials.telegram || "",
-      twitter: game?.socials.twitter || "",
+      twitter: game?.socials.twitter || "https://x.com/underware_gg",
       youtube: game?.socials.youtube || "",
-      website: game?.socials.website || "",
+      website: game?.socials.website || "https://pistols.underware.gg/",
     },
+    // defaultValues: {
+    //   worldAddress: game?.worldAddress || "",
+    //   namespace: game?.namespace || "",
+    //   project: game?.config.project || "",
+    //   rpc: game?.config.rpc || "",
+    //   policies: JSON.stringify(game?.config.policies) || ``,
+    //   color: game?.metadata.color || "",
+    //   preset: game?.metadata.preset || "",
+    //   name: game?.metadata.name || "",
+    //   description: game?.metadata.description || "",
+    //   image: game?.metadata.image || "",
+    //   banner: game?.metadata.banner || "",
+    //   discord: game?.socials.discord || "",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "",
+    // },
   });
-
-  //   const form = useForm<z.infer<typeof formSchema>>({
-  //     resolver: zodResolver(formSchema),
-  //     defaultValues: {
-  //       worldAddress:
-  //         "0x05f2358c005acf2a63616a32b76a01d632463b84609954ff846998f898a49778",
-  //       namespace: "nums",
-  //       project: "nums-mainnet-appchain",
-  //       preset: "nums",
-  //       color: "#9E84E9",
-  //       name: "Nums",
-  //       description:
-  //         "Number Challenge is a fully onchain game built using Dojo Engine on Starknet that blends strategy and chance. The goal is to place 20 randomly generated numbers into slots in ascending order to win.",
-  //       image:
-  //         "https://github.com/cartridge-gg/presets/blob/main/configs/nums/icon.png?raw=true",
-  //       banner:
-  //         "https://github.com/cartridge-gg/presets/blob/main/configs/nums/cover.png?raw=true",
-  //       discord: "https://discord.gg/pwB3qD5k",
-  //       telegram: "",
-  //       twitter: "https://x.com/numsgg",
-  //       youtube: "",
-  //       website: "https://nums.gg/",
-  //     },
-  // });
 
   const onDelete = useCallback(() => {
     if (!game || !account) return;
@@ -156,9 +227,11 @@ export function Register({ game }: { game?: GameModel }) {
           const args = {
             worldAddress: values.worldAddress,
             namespace: values.namespace,
-            project: values.project,
-            preset: values.preset,
+            project: byteArray.byteArrayFromString(values.project),
+            rpc: byteArray.byteArrayFromString(values.rpc),
+            policies: byteArray.byteArrayFromString(values.policies),
             color: values.color,
+            preset: byteArray.byteArrayFromString(values.preset),
             name: byteArray.byteArrayFromString(values.name),
             description: byteArray.byteArrayFromString(values.description),
             image: byteArray.byteArrayFromString(values.image),
@@ -233,41 +306,56 @@ export function Register({ game }: { game?: GameModel }) {
               />
               <Field
                 name="namespace"
-                label="Namespace*"
+                label="Namespace *"
                 placeholder="dojo_starter"
                 form={form}
                 disabled={!!game}
               />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Topic label="Config" />
               <Field
                 name="project"
-                label="Project*"
+                label="Project *"
                 placeholder="dojogame"
                 form={form}
               />
               <Field
-                name="preset"
-                label="Preset*"
-                placeholder="cartridge"
+                name="rpc"
+                label="RPC *"
+                placeholder="https://rpc.dojo.com"
                 form={form}
               />
               <Field
-                name="color"
-                label="Color*"
-                placeholder="#123456"
+                name="policies"
+                label="Policies"
+                placeholder="https://policies.dojo.com"
                 form={form}
               />
             </div>
             <div className="flex flex-col gap-2">
               <Topic label="Metadata" />
               <Field
+                name="color"
+                label="Color *"
+                placeholder="#123456"
+                form={form}
+              />
+              <Field
+                name="preset"
+                label="Preset *"
+                placeholder="cartridge"
+                form={form}
+              />
+              <Field
                 name="name"
-                label="Name*"
+                label="Name *"
                 placeholder="Dojo Starter"
                 form={form}
               />
               <Field
                 name="description"
-                label="Description*"
+                label="Description *"
                 placeholder="A dojo starter game"
                 form={form}
               />

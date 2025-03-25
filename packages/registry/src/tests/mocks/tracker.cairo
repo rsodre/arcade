@@ -5,14 +5,14 @@ pub trait ITracker<TContractState> {
         world_address: felt252,
         namespace: felt252,
         identifier: felt252,
-        karma: u16,
+        points: u16,
     );
     fn update(
         self: @TContractState,
         world_address: felt252,
         namespace: felt252,
         identifier: felt252,
-        karma: u16,
+        points: u16,
     );
     fn publish(
         self: @TContractState, world_address: felt252, namespace: felt252, identifier: felt252,
@@ -76,11 +76,11 @@ pub mod Tracker {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            karma: u16,
+            points: u16,
         ) {
             let world = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
-            self.trackable.register(world, caller, world_address, namespace, identifier, karma);
+            self.trackable.register(world, caller, world_address, namespace, identifier, points);
         }
 
         fn update(
@@ -88,11 +88,11 @@ pub mod Tracker {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            karma: u16,
+            points: u16,
         ) {
             let world = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
-            self.trackable.update(world, caller, world_address, namespace, identifier, karma);
+            self.trackable.update(world, caller, world_address, namespace, identifier, points);
         }
 
         fn publish(

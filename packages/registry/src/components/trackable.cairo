@@ -34,7 +34,7 @@ pub mod TrackableComponent {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            karma: u16,
+            points: u16,
         ) {
             // [Setup] Datastore
             let mut store: Store = StoreTrait::new(world);
@@ -51,10 +51,10 @@ pub mod TrackableComponent {
             achievement.assert_does_not_exist();
 
             // [Effect] Create achievement
-            let achievement = AchievementTrait::new(world_address, namespace, identifier, karma);
+            let achievement = AchievementTrait::new(world_address, namespace, identifier, points);
 
             // [Effect] Add achievement to game
-            game.add(achievement.karma);
+            game.add(achievement.points);
 
             // [Effect] Store entities
             store.set_achievement(@achievement);
@@ -68,7 +68,7 @@ pub mod TrackableComponent {
             world_address: felt252,
             namespace: felt252,
             identifier: felt252,
-            karma: u16,
+            points: u16,
         ) {
             // [Setup] Datastore
             let mut store: Store = StoreTrait::new(world);
@@ -85,9 +85,9 @@ pub mod TrackableComponent {
             achievement.assert_does_exist();
 
             // [Effect] Update achievement and game
-            game.remove(achievement.karma);
-            achievement.update(karma);
-            game.add(achievement.karma);
+            game.remove(achievement.points);
+            achievement.update(points);
+            game.add(achievement.points);
 
             // [Effect] Update entities
             store.set_achievement(@achievement);
@@ -235,7 +235,7 @@ pub mod TrackableComponent {
             achievement.assert_does_exist();
 
             // [Effect] Remove achievement
-            game.remove(achievement.karma);
+            game.remove(achievement.points);
             achievement.nullify();
 
             // [Effect] Store entities

@@ -60,6 +60,7 @@ export interface SocialUnfollowProps {
 
 export interface SocialCreateAllianceProps {
   color: BigNumberish;
+  preset: ByteArray;
   name: ByteArray;
   description: ByteArray;
   image: ByteArray;
@@ -99,6 +100,7 @@ export interface SocialLeaveAllianceProps {}
 
 export interface SocialCreateGuildProps {
   color: BigNumberish;
+  preset: ByteArray;
   name: ByteArray;
   description: ByteArray;
   image: ByteArray;
@@ -155,9 +157,11 @@ export interface RegistryUnpinProps {
 export interface RegistryRegisterGameProps {
   worldAddress: BigNumberish;
   namespace: BigNumberish;
-  project: BigNumberish;
-  preset: BigNumberish;
+  project: ByteArray;
+  rpc: ByteArray;
+  policies: ByteArray;
   color: BigNumberish;
+  preset: ByteArray;
   name: ByteArray;
   description: ByteArray;
   image: ByteArray;
@@ -172,9 +176,11 @@ export interface RegistryRegisterGameProps {
 export interface RegistryUpdateGameProps {
   worldAddress: BigNumberish;
   namespace: BigNumberish;
-  project: BigNumberish;
-  preset: BigNumberish;
+  project: ByteArray;
+  rpc: ByteArray;
+  policies: ByteArray;
   color: BigNumberish;
+  preset: ByteArray;
   name: ByteArray;
   description: ByteArray;
   image: ByteArray;

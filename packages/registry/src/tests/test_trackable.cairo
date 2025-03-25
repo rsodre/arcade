@@ -13,8 +13,6 @@ use registry::tests::setup::setup::{spawn, Systems, PLAYER, OWNER};
 
 const WORLD_ADDRESS: felt252 = 'WORLD';
 const NAMEPSACE: felt252 = 'NAMESPACE';
-const PROJECT: felt252 = 'PROJECT';
-const PRESET: felt252 = 'PRESET';
 
 // Helpers
 
@@ -25,8 +23,10 @@ fn register(systems: @Systems) {
         .register(
             WORLD_ADDRESS,
             NAMEPSACE,
-            PROJECT,
-            PRESET,
+            "PROJECT",
+            "RPC",
+            "POLICIES",
+            Option::None,
             Option::None,
             Option::None,
             Option::None,
@@ -49,16 +49,16 @@ fn test_trackable_register_achievement() {
     register(@systems);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let karma: u16 = 10;
-    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
+    let points: u16 = 10;
+    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, points);
     // [Assert] Achievement
     let store = StoreTrait::new(world);
     let achievement = store.get_achievement(WORLD_ADDRESS, NAMEPSACE, identifier);
     assert_eq!(achievement.id, identifier);
-    assert_eq!(achievement.karma, karma);
+    assert_eq!(achievement.points, points);
     // [Assert] Game
     let game = store.get_game(WORLD_ADDRESS, NAMEPSACE);
-    assert_eq!(game.karma, karma);
+    assert_eq!(game.points, points);
 }
 
 #[test]
@@ -68,18 +68,18 @@ fn test_trackable_update_achievement() {
     register(@systems);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let karma: u16 = 10;
-    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
+    let points: u16 = 10;
+    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, points);
     // [Update] Achievement
-    let new_karma: u16 = 20;
-    systems.tracker.update(WORLD_ADDRESS, NAMEPSACE, identifier, new_karma);
+    let new_points: u16 = 20;
+    systems.tracker.update(WORLD_ADDRESS, NAMEPSACE, identifier, new_points);
     // [Assert] Achievement
     let store = StoreTrait::new(world);
     let achievement = store.get_achievement(WORLD_ADDRESS, NAMEPSACE, identifier);
-    assert_eq!(achievement.karma, new_karma);
+    assert_eq!(achievement.points, new_points);
     // [Assert] Game
     let game = store.get_game(WORLD_ADDRESS, NAMEPSACE);
-    assert_eq!(game.karma, new_karma);
+    assert_eq!(game.points, new_points);
 }
 
 #[test]
@@ -89,8 +89,8 @@ fn test_trackable_publish_achievement() {
     register(@systems);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let karma: u16 = 10;
-    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
+    let points: u16 = 10;
+    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, points);
     // [Publish] Achievement
     systems.tracker.publish(WORLD_ADDRESS, NAMEPSACE, identifier);
     // [Assert] Achievement
@@ -106,8 +106,8 @@ fn test_trackable_whitelist_achievement() {
     register(@systems);
     // [Register] Achievement
     let identifier: felt252 = 'IDENTIFIER';
-    let karma: u16 = 10;
-    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, karma);
+    let points: u16 = 10;
+    systems.tracker.register(WORLD_ADDRESS, NAMEPSACE, identifier, points);
     // [Whitelist] Achievement
     systems.tracker.publish(WORLD_ADDRESS, NAMEPSACE, identifier);
     testing::set_contract_address(OWNER());

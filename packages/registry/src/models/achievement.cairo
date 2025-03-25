@@ -21,16 +21,16 @@ pub mod errors {
 pub impl AchievementImpl of AchievementTrait {
     #[inline]
     fn new(
-        world_address: felt252, namespace: felt252, identifier: felt252, karma: u16,
+        world_address: felt252, namespace: felt252, identifier: felt252, points: u16,
     ) -> Achievement {
         // [Check] Inputs
         AchievementAssert::assert_valid_world(world_address);
         AchievementAssert::assert_valid_namespace(namespace);
         AchievementAssert::assert_valid_achievement(identifier);
-        AchievementAssert::assert_valid_karma(karma);
+        AchievementAssert::assert_valid_points(points);
         // [Return] Achievement
         Achievement {
-            world_address, namespace, id: identifier, published: false, whitelisted: false, karma,
+            world_address, namespace, id: identifier, published: false, whitelisted: false, points,
         }
     }
 
@@ -64,11 +64,11 @@ pub impl AchievementImpl of AchievementTrait {
     }
 
     #[inline]
-    fn update(ref self: Achievement, karma: u16) {
+    fn update(ref self: Achievement, points: u16) {
         // [Check] Inputs
-        AchievementAssert::assert_valid_karma(karma);
+        AchievementAssert::assert_valid_points(points);
         // [Effect] Update Points
-        self.karma = karma;
+        self.points = points;
         // [EFfect] Reset visibility status
         self.published = false;
         self.whitelisted = false;
@@ -76,7 +76,7 @@ pub impl AchievementImpl of AchievementTrait {
 
     #[inline]
     fn nullify(ref self: Achievement) {
-        self.karma = 0;
+        self.points = 0;
         self.published = false;
         self.whitelisted = false;
     }
@@ -86,12 +86,12 @@ pub impl AchievementImpl of AchievementTrait {
 pub impl AchievementAssert of AssertTrait {
     #[inline]
     fn assert_does_not_exist(self: Achievement) {
-        assert(self.karma == 0, errors::ACHIEVEMENT_ALREADY_EXISTS);
+        assert(self.points == 0, errors::ACHIEVEMENT_ALREADY_EXISTS);
     }
 
     #[inline]
     fn assert_does_exist(self: Achievement) {
-        assert(self.karma != 0, errors::ACHIEVEMENT_NOT_EXIST);
+        assert(self.points != 0, errors::ACHIEVEMENT_NOT_EXIST);
     }
 
     #[inline]
@@ -110,9 +110,9 @@ pub impl AchievementAssert of AssertTrait {
     }
 
     #[inline]
-    fn assert_valid_karma(karma: u16) {
-        assert(karma >= constants::MIN_ACHIEVEMENT_KARMA, errors::ACHIEVEMENT_TOO_FEW_KARMA);
-        assert(karma <= constants::MAX_ACHIEVEMENT_KARMA, errors::ACHIEVEMENT_TOO_MUCH_KARMA);
+    fn assert_valid_points(points: u16) {
+        assert(points >= constants::MIN_ACHIEVEMENT_KARMA, errors::ACHIEVEMENT_TOO_FEW_KARMA);
+        assert(points <= constants::MAX_ACHIEVEMENT_KARMA, errors::ACHIEVEMENT_TOO_MUCH_KARMA);
     }
 
     #[inline]
@@ -140,7 +140,7 @@ mod tests {
         assert_eq!(achievement.world_address, WORLD_ADDRESS);
         assert_eq!(achievement.namespace, NAMESPACE);
         assert_eq!(achievement.id, IDENTIFIER);
-        assert_eq!(achievement.karma, KARMA);
+        assert_eq!(achievement.points, KARMA);
     }
 
     #[test]
@@ -179,20 +179,20 @@ mod tests {
     fn test_achievement_update() {
         let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.update(KARMA + 1);
-        assert_eq!(achievement.karma, KARMA + 1);
+        assert_eq!(achievement.points, KARMA + 1);
     }
 
     #[test]
     fn test_achievement_nullify() {
         let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.nullify();
-        assert_eq!(achievement.karma, 0);
+        assert_eq!(achievement.points, 0);
         assert_eq!(achievement.whitelisted, false);
     }
 
     #[test]
     #[should_panic(expected: 'Achievement: cannot exceed 100')]
-    fn test_achievement_set_karma_exceeds_max() {
+    fn test_achievement_set_points_exceeds_max() {
         let mut achievement = AchievementTrait::new(WORLD_ADDRESS, NAMESPACE, IDENTIFIER, KARMA);
         achievement.update(101);
     }
@@ -217,14 +217,14 @@ mod tests {
 
     #[test]
     #[should_panic(expected: 'Achievement: must be at least 1')]
-    fn test_achievement_assert_valid_karma_too_few() {
-        AchievementAssert::assert_valid_karma(0);
+    fn test_achievement_assert_valid_points_too_few() {
+        AchievementAssert::assert_valid_points(0);
     }
 
     #[test]
     #[should_panic(expected: 'Achievement: cannot exceed 100')]
-    fn test_achievement_assert_valid_karma_exceeds_max() {
-        AchievementAssert::assert_valid_karma(101);
+    fn test_achievement_assert_valid_points_exceeds_max() {
+        AchievementAssert::assert_valid_points(101);
     }
 
     #[test]

@@ -146,13 +146,12 @@ export interface AchievementValue {
 export interface Game {
   world_address: BigNumberish;
   namespace: BigNumberish;
-  project: BigNumberish;
-  preset: BigNumberish;
   active: boolean;
   published: boolean;
   whitelisted: boolean;
   priority: BigNumberish;
   karma: BigNumberish;
+  config: string;
   metadata: string;
   socials: string;
   owner: BigNumberish;
@@ -160,13 +159,12 @@ export interface Game {
 
 // Type definition for `registry::models::index::GameValue` struct
 export interface GameValue {
-  project: BigNumberish;
-  preset: BigNumberish;
   active: boolean;
   published: boolean;
   whitelisted: boolean;
   priority: BigNumberish;
   karma: BigNumberish;
+  config: string;
   metadata: string;
   socials: string;
   owner: BigNumberish;
@@ -397,50 +395,46 @@ export const schema: SchemaType = {
       fieldOrder: [
         "world_address",
         "namespace",
-        "project",
-        "preset",
         "active",
         "published",
         "whitelisted",
         "priority",
         "karma",
+        "config",
         "metadata",
         "socials",
         "owner",
       ],
       world_address: 0,
       namespace: 0,
-      project: 0,
-      preset: 0,
       active: false,
       published: false,
       whitelisted: false,
       priority: 0,
       karma: 0,
+      config: "",
       metadata: "",
       socials: "",
       owner: 0,
     },
     GameValue: {
       fieldOrder: [
-        "project",
-        "preset",
         "active",
         "published",
         "whitelisted",
         "priority",
         "karma",
+        "config",
         "metadata",
         "socials",
         "owner",
       ],
-      project: 0,
-      preset: 0,
       active: false,
       published: false,
       whitelisted: false,
       priority: 0,
       karma: 0,
+      config: "",
       metadata: "",
       socials: "",
       owner: 0,

@@ -5,7 +5,7 @@ import { Follow, FollowEvent } from "./follow";
 import { Guild, GuildModel } from "./guild";
 import { Alliance, AllianceModel } from "./alliance";
 import { Member, MemberModel } from "./member";
-import { OrComposeClause, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
+import { ClauseBuilder, OrComposeClause, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { SocialOptions, DefaultSocialOptions } from "./options";
@@ -32,11 +32,17 @@ export const Social = {
   },
 
   getEntityQuery: (options: SocialOptions = DefaultSocialOptions) => {
-    const clauses = [];
-    if (options.alliance) clauses.push(Alliance.getClause());
-    if (options.guild) clauses.push(Guild.getClause());
-    if (options.member) clauses.push(Member.getClause());
-    return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
+    // const clauses = [];
+    // if (options.alliance) clauses.push(Alliance.getClause());
+    // if (options.guild) clauses.push(Guild.getClause());
+    // if (options.member) clauses.push(Member.getClause());
+    // return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
+    const keys: `${string}-${string}`[] = [];
+    if (options.alliance) keys.push(`${NAMESPACE}-${Alliance.getModelName()}`);
+    if (options.guild) keys.push(`${NAMESPACE}-${Guild.getModelName()}`);
+    if (options.member) keys.push(`${NAMESPACE}-${Member.getModelName()}`);
+    const clauses = new ClauseBuilder().keys(keys, []);
+    return new ToriiQueryBuilder<SchemaType>().withClause(clauses.build()).includeHashedKeys();
   },
 
   getEventQuery: (options: SocialOptions = DefaultSocialOptions) => {

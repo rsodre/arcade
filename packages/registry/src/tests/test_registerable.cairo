@@ -13,8 +13,6 @@ use registry::tests::setup::setup::{spawn, Systems, PLAYER, OWNER};
 
 const WORLD_ADDRESS: felt252 = 'WORLD';
 const NAMEPSACE: felt252 = 'NAMESPACE';
-const PROJECT: felt252 = 'PROJECT';
-const PRESET: felt252 = 'PRESET';
 
 // Helpers
 
@@ -25,8 +23,10 @@ fn register(systems: @Systems) {
         .register(
             WORLD_ADDRESS,
             NAMEPSACE,
-            PROJECT,
-            PRESET,
+            "PROJECT",
+            "RPC",
+            "POLICIES",
+            Option::None,
             Option::None,
             Option::None,
             Option::None,
@@ -55,10 +55,11 @@ fn test_registrable_register() {
     assert_eq!(game.namespace, NAMEPSACE);
     assert_eq!(game.published, false);
     assert_eq!(game.whitelisted, false);
-    assert_eq!(game.karma, 0);
+    assert_eq!(game.points, 0);
+    assert_eq!(game.config, "{\"project\":\"PROJECT\",\"rpc\":\"RPC\",\"policies\":\"POLICIES\"}");
     assert_eq!(
         game.metadata,
-        "{\"color\":\"\",\"name\":\"\",\"description\":\"\",\"image\":\"\",\"banner\":\"\"}",
+        "{\"color\":\"\",\"preset\":\"\",\"name\":\"\",\"description\":\"\",\"image\":\"\",\"banner\":\"\"}",
     );
     assert_eq!(
         game.socials,
@@ -79,9 +80,11 @@ fn test_registrable_update() {
         .update(
             WORLD_ADDRESS,
             NAMEPSACE,
-            PROJECT,
-            PRESET,
+            "PROJECT",
+            "RPC",
+            "POLICIES",
             color,
+            Option::None,
             Option::None,
             Option::None,
             Option::None,
@@ -97,7 +100,7 @@ fn test_registrable_update() {
     let game = store.get_game(WORLD_ADDRESS, NAMEPSACE);
     assert_eq!(
         game.metadata,
-        "{\"color\":\"#123456\",\"name\":\"\",\"description\":\"\",\"image\":\"\",\"banner\":\"\"}",
+        "{\"color\":\"#123456\",\"preset\":\"\",\"name\":\"\",\"description\":\"\",\"image\":\"\",\"banner\":\"\"}",
     );
 }
 

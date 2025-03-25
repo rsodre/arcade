@@ -15,13 +15,12 @@ pub struct Game {
     pub world_address: felt252,
     #[key]
     pub namespace: felt252,
-    pub project: felt252,
     pub active: bool,
     pub published: bool,
     pub whitelisted: bool,
     pub priority: u8,
-    pub karma: u16,
-    pub preset: felt252,
+    pub points: u16,
+    pub config: ByteArray,
     pub metadata: ByteArray,
     pub socials: ByteArray,
     pub owner: felt252,
@@ -38,5 +37,5 @@ pub struct Achievement {
     pub id: felt252,
     pub published: bool,
     pub whitelisted: bool,
-    pub karma: u16,
+    pub points: u16,
 }

@@ -18,9 +18,10 @@ import {
   SocialOptions,
   RegistryOptions,
 } from "@bal7hazar/arcade-sdk";
-import { constants } from "starknet";
+import { constants, RpcProvider, shortString } from "starknet";
+import { Chain } from "@starknet-react/chains";
 
-const CHAIN_ID = constants.StarknetChainId.SN_SEPOLIA;
+const CHAIN_ID = constants.StarknetChainId.SN_MAIN;
 
 /**
  * Interface defining the shape of the Arcade context.
@@ -31,6 +32,7 @@ interface ArcadeContextType {
   provider: ExternalProvider;
   pins: { [playerId: string]: string[] };
   games: GameModel[];
+  chains: Chain[];
 }
 
 /**
@@ -48,7 +50,30 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
   const currentValue = useContext(ArcadeContext);
   const [pins, setPins] = useState<{ [playerId: string]: string[] }>({});
   const [games, setGames] = useState<{ [gameId: string]: GameModel }>({});
+  const [chains, setChains] = useState<Chain[]>([]);
   const [initialized, setInitialized] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function getChains() {
+      const chains: Chain[] = await Promise.all(Object.values(games).map(async (game) => {
+        const provider = new RpcProvider({ nodeUrl: game.config.rpc  });
+        const id = await provider.getChainId();
+        return {
+          id: BigInt(id),
+          name: shortString.decodeShortString(id),
+          network: id,
+          rpcUrls: { default: { http: [game.config.rpc] }, public: { http: [game.config.rpc] } },
+          nativeCurrency: { address: "0x0", name: "Ether", symbol: "ETH", decimals: 18 },
+        };
+      }));
+      // Deduplicate chains
+      const uniques = chains.filter((chain, index) =>
+        index === chains.findIndex((t) => t.id === chain.id),
+      );
+      setChains(uniques);
+    }
+    getChains();
+  }, [games]);
 
   if (currentValue) {
     throw new Error("ArcadeProvider can only be used once");
@@ -144,6 +169,7 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
         provider,
         pins,
         games: sortedGames,
+        chains,
       }}
     >
       {children}

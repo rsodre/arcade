@@ -9,6 +9,7 @@ pub trait ISocial<TContractState> {
     fn create_alliance(
         ref self: TContractState,
         color: felt252,
+        preset: ByteArray,
         name: ByteArray,
         description: ByteArray,
         image: ByteArray,
@@ -30,6 +31,7 @@ pub trait ISocial<TContractState> {
     fn create_guild(
         ref self: TContractState,
         color: felt252,
+        preset: ByteArray,
         name: ByteArray,
         description: ByteArray,
         image: ByteArray,
@@ -148,6 +150,7 @@ pub mod Social {
         fn create_alliance(
             ref self: ContractState,
             color: felt252,
+            preset: ByteArray,
             name: ByteArray,
             description: ByteArray,
             image: ByteArray,
@@ -166,6 +169,7 @@ pub mod Social {
                     world,
                     caller,
                     Option::Some(color),
+                    Option::Some(preset),
                     Option::Some(name),
                     Option::Some(description),
                     Option::Some(image),
@@ -231,6 +235,7 @@ pub mod Social {
         fn create_guild(
             ref self: ContractState,
             color: felt252,
+            preset: ByteArray,
             name: ByteArray,
             description: ByteArray,
             image: ByteArray,
@@ -249,6 +254,7 @@ pub mod Social {
                     world,
                     caller,
                     Option::Some(color),
+                    Option::Some(preset),
                     Option::Some(name),
                     Option::Some(description),
                     Option::Some(image),

@@ -2,7 +2,7 @@ import { initSDK } from "..";
 import { constants } from "starknet";
 import { Game, GameModel } from "./game";
 import { Achievement, AchievementModel } from "./achievement";
-import { OrComposeClause, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
+import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { RegistryOptions, DefaultRegistryOptions } from "./options";
@@ -24,10 +24,15 @@ export const Registry = {
   },
 
   getEntityQuery: (options: RegistryOptions = DefaultRegistryOptions) => {
-    const clauses = [];
-    if (options.game) clauses.push(Game.getClause());
-    if (options.achievement) clauses.push(Achievement.getClause());
-    return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
+    // const clauses = [];
+    // if (options.game) clauses.push(Game.getClause());
+    // if (options.achievement) clauses.push(Achievement.getClause());
+    // return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
+    const keys: `${string}-${string}`[] = [];
+    if (options.game) keys.push(`${NAMESPACE}-${Game.getModelName()}`);
+    if (options.achievement) keys.push(`${NAMESPACE}-${Achievement.getModelName()}`);
+    const clauses = new ClauseBuilder().keys(keys, []);
+    return new ToriiQueryBuilder<SchemaType>().withClause(clauses.build()).includeHashedKeys();
   },
 
   fetchEntities: async (callback: (models: RegistryModel[]) => void, options: RegistryOptions) => {
@@ -59,7 +64,6 @@ export const Registry = {
 
   subEntities: async (callback: (models: RegistryModel[]) => void, options: RegistryOptions) => {
     if (!Registry.sdk) return;
-
     const wrappedCallback = ({
       data,
       error,
@@ -67,6 +71,7 @@ export const Registry = {
       data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
       error?: Error | undefined;
     }) => {
+      console.log("game data", data);
       if (error) {
         console.error("Error subscribing to entities:", error);
         return;
@@ -82,7 +87,6 @@ export const Registry = {
     };
 
     const query = Registry.getEntityQuery(options);
-
     const [_, subscription] = await Registry.sdk.subscribeEntityQuery({ query, callback: wrappedCallback });
     Registry.unsubEntities = () => subscription.cancel();
   },

@@ -10,6 +10,7 @@ import { ArcadeContext } from "../context/arcade";
  * - provider: The Arcade provider instance
  * - pins: All the existing pins
  * - games: The registered games
+ * - chains: The chains
  * @throws {Error} If used outside of a ArcadeProvider context
  */
 export const useArcade = () => {
@@ -21,7 +22,7 @@ export const useArcade = () => {
     );
   }
 
-  const { chainId, provider, pins, games } = context;
+  const { chainId, provider, pins, games, chains } = context;
 
-  return { chainId, provider, pins, games };
+  return { chainId, provider, pins, games, chains };
 };

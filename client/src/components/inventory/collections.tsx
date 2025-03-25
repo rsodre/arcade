@@ -6,13 +6,14 @@ import { GameModel } from "@bal7hazar/arcade-sdk";
 import placeholder from "@/assets/placeholder.svg";
 import { useAccount } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";
+import { Chain, mainnet } from "@starknet-react/chains";
 
 export const Collections = ({ game }: { game?: GameModel }) => {
-  const { games } = useArcade();
+  const { games, chains } = useArcade();
 
   const projects = useMemo(() => {
-    if (!game) return games.map((game) => game.project);
-    return [game.project];
+    if (!game) return games.map((game) => game.config.project);
+    return [game.config.project];
   }, [game, games]);
 
   const { collections, status } = useCollections({ projects: projects });
@@ -29,7 +30,8 @@ export const Collections = ({ game }: { game?: GameModel }) => {
             <Item
               key={collection.address}
               collection={collection}
-              projects={projects}
+              games={games}
+              chains={chains}
             />
           ))}
         </div>
@@ -40,19 +42,27 @@ export const Collections = ({ game }: { game?: GameModel }) => {
 
 function Item({
   collection,
-  projects,
+  games,
+  chains,
 }: {
   collection: Collection;
-  projects: string[];
+  games: GameModel[];
+  chains: Chain[];
 }) {
   const { connector } = useAccount();
   const [username, setUsername] = useState<string>("");
 
+  const game = useMemo(() => {
+    return games.find((game) => collection.imageUrl.includes(game.config.project));
+  }, [games, collection]);
+
+  const chain: Chain = useMemo(() => {
+    return chains.find((chain) => chain.rpcUrls.default.http[0] === game?.config.rpc) || mainnet;
+  }, [chains, game]);
+
   const slot = useMemo(() => {
-    return projects.find((project: string) =>
-      collection.imageUrl.includes(project),
-    );
-  }, [projects, collection]);
+    return game?.config.project;
+  }, [game]);
 
   useEffect(() => {
     async function fetch() {
@@ -75,12 +85,12 @@ function Item({
       return;
     }
     const path = `account/${username}/slot/${slot}/inventory/collection/${collection.address}?ps=${slot}`;
-    console.log({ path });
+    controller.switchStarknetChain(`0x${chain.id.toString(16)}`);
     controller.openProfileAt(path);
   }, [collection.address, username, connector]);
 
   return (
-    <div className="w-full aspect-square group select-none">
+    <div className="w-full group select-none">
       <CollectibleAsset
         title={collection.name}
         image={collection.imageUrl || placeholder}

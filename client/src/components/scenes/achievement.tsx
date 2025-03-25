@@ -11,7 +11,7 @@ export const AchievementScene = () => {
 
   const game: GameModel | undefined = useMemo(() => {
     return Object.values(games).find(
-      (game) => game.namespace === namespace && game.project === project,
+      (game) => game.namespace === namespace && game.config.project === project,
     );
   }, [games, project, namespace]);
 

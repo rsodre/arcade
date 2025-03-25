@@ -3,6 +3,7 @@ import { shortString, addAddressPadding } from "starknet";
 import { SchemaType } from "../../bindings";
 import { MemberClause, ParsedEntity } from "@dojoengine/sdk";
 import { Metadata, Socials } from "../../classes";
+import { Config } from "../../classes/config";
 
 const MODEL_NAME = "Game";
 
@@ -12,26 +13,24 @@ export class GameModel {
   constructor(
     public worldAddress: string,
     public namespace: string,
-    public project: string,
-    public preset: string,
     public active: boolean,
     public published: boolean,
     public whitelisted: boolean,
     public priority: number,
     public karma: number,
+    public config: Config,
     public metadata: Metadata,
     public socials: Socials,
     public owner: string,
   ) {
     this.worldAddress = worldAddress;
     this.namespace = namespace;
-    this.project = project;
-    this.preset = preset;
     this.active = active;
     this.published = published;
     this.whitelisted = whitelisted;
     this.priority = priority;
     this.karma = karma;
+    this.config = config;
     this.metadata = metadata;
     this.socials = socials;
     this.owner = owner;
@@ -40,26 +39,24 @@ export class GameModel {
   static from(model: any) {
     const worldAddress = addAddressPadding(model.world_address);
     const namespace = shortString.decodeShortString(`0x${BigInt(model.namespace).toString(16)}`);
-    const project = shortString.decodeShortString(`0x${BigInt(model.project).toString(16)}`);
-    const preset = shortString.decodeShortString(`0x${BigInt(model.preset).toString(16)}`);
     const active = !!model.active;
     const published = !!model.published;
     const whitelisted = !!model.whitelisted;
     const priority = Number(model.priority);
     const karma = Number(model.karma);
+    const config = Config.from(model.config.replace(`"{`, `{`).replace(`}"`, `}`));
     const metadata = Metadata.from(model.metadata);
     const socials = Socials.from(model.socials);
     const owner = addAddressPadding(model.owner);
     return new GameModel(
       worldAddress,
       namespace,
-      project,
-      preset,
       active,
       published,
       whitelisted,
       priority,
       karma,
+      config,
       metadata,
       socials,
       owner,

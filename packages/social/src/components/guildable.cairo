@@ -37,6 +37,7 @@ pub mod GuildableComponent {
             world: WorldStorage,
             player_id: felt252,
             color: Option<felt252>,
+            preset: Option<ByteArray>,
             name: Option<ByteArray>,
             description: Option<ByteArray>,
             image: Option<ByteArray>,
@@ -56,7 +57,7 @@ pub mod GuildableComponent {
 
             // [Effect] Create a guild
             let guild_id = world.dispatcher.uuid();
-            let metadata = MetadataTrait::new(color, name, description, image, banner);
+            let metadata = MetadataTrait::new(color, preset, name, description, image, banner);
             let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
             let mut guild = GuildTrait::new(guild_id, metadata, socials);
 

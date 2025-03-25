@@ -23,7 +23,7 @@ export function App() {
     setProjects(
       games.map((game) => ({
         namespace: game.namespace,
-        project: game.project,
+        project: game.config.project,
       })),
     );
   }, [games, projects, setProjects]);

@@ -2,6 +2,7 @@ import ControllerConnector from "@cartridge/connector/controller";
 import { Button, SpaceInvaderIcon } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
+import { constants } from "starknet";
 
 export function User() {
   const { account, connector } = useAccount();
@@ -27,7 +28,8 @@ export function User() {
       console.error("Connector not initialized");
       return;
     }
-    controller.openProfile("inventory");
+    controller.switchStarknetChain(constants.StarknetChainId.SN_MAIN);
+    controller.openProfileTo("inventory");
   }, [connector]);
 
   if (!isConnected || !account || !name) return null;

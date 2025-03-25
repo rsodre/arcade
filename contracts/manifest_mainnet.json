@@ -1,8 +1,8 @@
 {
   "world": {
-    "class_hash": "0x45575a88cc5cef1e444c77ce60b7b4c9e73a01cbbe20926d5a4c72a94011410",
-    "address": "0x389e47f34690ea699218305cc28cc910028533d61d27773e1db20e0b78e7b65",
-    "seed": "Arcade",
+    "class_hash": "0x7c9469d45a9cdbab775035afb48e1fa73fb35ab059fcb9dfb0a301aa973e783",
+    "address": "0x5fdd3d9c52a9a0a394c0a944f8813087515d70b6c8c9b9e6eb64f494e809323",
+    "seed": "Arcade-1",
     "name": "Cartridge World",
     "entrypoints": [
       "uuid",
@@ -11,6 +11,7 @@
       "register_event",
       "register_model",
       "register_contract",
+      "register_library",
       "init_contract",
       "upgrade_event",
       "upgrade_model",
@@ -78,6 +79,10 @@
           {
             "name": "Unregistered",
             "type": "()"
+          },
+          {
+            "name": "Library",
+            "type": "(core::starknet::class_hash::ClassHash, core::felt252)"
           }
         ]
       },
@@ -358,6 +363,34 @@
             "outputs": [
               {
                 "type": "core::starknet::contract_address::ContractAddress"
+              }
+            ],
+            "state_mutability": "external"
+          },
+          {
+            "type": "function",
+            "name": "register_library",
+            "inputs": [
+              {
+                "name": "namespace",
+                "type": "core::byte_array::ByteArray"
+              },
+              {
+                "name": "class_hash",
+                "type": "core::starknet::class_hash::ClassHash"
+              },
+              {
+                "name": "name",
+                "type": "core::byte_array::ByteArray"
+              },
+              {
+                "name": "version",
+                "type": "core::byte_array::ByteArray"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "core::starknet::class_hash::ClassHash"
               }
             ],
             "state_mutability": "external"
@@ -967,6 +1000,28 @@
       },
       {
         "type": "event",
+        "name": "dojo::world::world_contract::world::LibraryRegistered",
+        "kind": "struct",
+        "members": [
+          {
+            "name": "name",
+            "type": "core::byte_array::ByteArray",
+            "kind": "key"
+          },
+          {
+            "name": "namespace",
+            "type": "core::byte_array::ByteArray",
+            "kind": "key"
+          },
+          {
+            "name": "class_hash",
+            "type": "core::starknet::class_hash::ClassHash",
+            "kind": "data"
+          }
+        ]
+      },
+      {
+        "type": "event",
         "name": "dojo::world::world_contract::world::EventEmitted",
         "kind": "struct",
         "members": [
@@ -1207,6 +1262,11 @@
             "kind": "nested"
           },
           {
+            "name": "LibraryRegistered",
+            "type": "dojo::world::world_contract::world::LibraryRegistered",
+            "kind": "nested"
+          },
+          {
             "name": "EventEmitted",
             "type": "dojo::world::world_contract::world::EventEmitted",
             "kind": "nested"
@@ -1252,8 +1312,8 @@
   },
   "contracts": [
     {
-      "address": "0xc46f7e578f31c3fa6bb669164f04d696427818ba69f177ddc152f31ed5f119",
-      "class_hash": "0x1a07f7bce8ac8fd51cc09b5a9d4072023a3f001eb1f483c0879e9ee6bf5c304",
+      "address": "0x587067a7355e905e2712fbf6db3859161f94836a9a0fcbe14823f006a2cb914",
+      "class_hash": "0x363e18a927a26355864c5e2471426682cc2293a89d86fb0ed52d0abdaddc6b2",
       "abi": [
         {
           "type": "impl",
@@ -1340,15 +1400,23 @@
                 },
                 {
                   "name": "project",
-                  "type": "core::felt252"
+                  "type": "core::byte_array::ByteArray"
                 },
                 {
-                  "name": "preset",
-                  "type": "core::felt252"
+                  "name": "rpc",
+                  "type": "core::byte_array::ByteArray"
+                },
+                {
+                  "name": "policies",
+                  "type": "core::byte_array::ByteArray"
                 },
                 {
                   "name": "color",
                   "type": "core::felt252"
+                },
+                {
+                  "name": "preset",
+                  "type": "core::byte_array::ByteArray"
                 },
                 {
                   "name": "name",
@@ -1404,15 +1472,23 @@
                 },
                 {
                   "name": "project",
-                  "type": "core::felt252"
+                  "type": "core::byte_array::ByteArray"
                 },
                 {
-                  "name": "preset",
-                  "type": "core::felt252"
+                  "name": "rpc",
+                  "type": "core::byte_array::ByteArray"
+                },
+                {
+                  "name": "policies",
+                  "type": "core::byte_array::ByteArray"
                 },
                 {
                   "name": "color",
                   "type": "core::felt252"
+                },
+                {
+                  "name": "preset",
+                  "type": "core::byte_array::ByteArray"
                 },
                 {
                   "name": "name",
@@ -1551,7 +1627,7 @@
                   "type": "core::felt252"
                 },
                 {
-                  "name": "karma",
+                  "name": "points",
                   "type": "core::integer::u16"
                 }
               ],
@@ -1575,7 +1651,7 @@
                   "type": "core::felt252"
                 },
                 {
-                  "name": "karma",
+                  "name": "points",
                   "type": "core::integer::u16"
                 }
               ],
@@ -1850,8 +1926,8 @@
       ]
     },
     {
-      "address": "0x76c0c3d2c504f9fedc98b238ca010916d62f8ed563bbcf9b5dd8bef927fd8aa",
-      "class_hash": "0x2d7bba9a10d280fc47fef76ad11406f6fcc0bec0a173e3e169c4b05a111bb83",
+      "address": "0x4e7ab32cb673c426535b672ad482e17683e7744000e6803458fc1755ca348b9",
+      "class_hash": "0x97210a3866f6b45e6f5ff9595c31cebca112ef78094442c37b68ccfd9d8bae",
       "abi": [
         {
           "type": "impl",
@@ -2136,8 +2212,8 @@
       ]
     },
     {
-      "address": "0x4d776373427434a22f7d60d0f7fe0e336fd830edf4294acec33d9f2e1275327",
-      "class_hash": "0x7c1d38f9d0fd0327e7a693a8280b0ef66e3d5b1ccf3d5ccc19d22ccd3af7bdd",
+      "address": "0x4b4cd0fe256000a18a86eae684f8bd6dcdfb538dee2a8b798673347ac55e36f",
+      "class_hash": "0x4815f2e80145d37630695472078996b293c0cb1f0178203e6310ae2f28bb1a9",
       "abi": [
         {
           "type": "impl",
@@ -2269,6 +2345,10 @@
                   "type": "core::felt252"
                 },
                 {
+                  "name": "preset",
+                  "type": "core::byte_array::ByteArray"
+                },
+                {
                   "name": "name",
                   "type": "core::byte_array::ByteArray"
                 },
@@ -2396,6 +2476,10 @@
                 {
                   "name": "color",
                   "type": "core::felt252"
+                },
+                {
+                  "name": "preset",
+                  "type": "core::byte_array::ByteArray"
                 },
                 {
                   "name": "name",
@@ -2735,8 +2819,8 @@
       ]
     },
     {
-      "address": "0x4486181df39da00d44b9cfb743962a473e3e955bb85390c570ffcd6cdeb6c47",
-      "class_hash": "0x580ba5d9a580a061630f436f0565dc5bb048f5daee84d79741fda5ce765c2f",
+      "address": "0x25d70240db4710135a4c074c9a759bf7348eaf861dd60f72b19b9da1119e0ab",
+      "class_hash": "0x4813ed90256f2f72eaa9cb1bdf07715cba4ee8d35d058ca0c2e5fc9d54d186c",
       "abi": [
         {
           "type": "impl",
@@ -2932,82 +3016,83 @@
       ]
     }
   ],
+  "libraries": [],
   "models": [
     {
       "members": [],
-      "class_hash": "0x4e2a4a65e9597fae6a3db15dbf8360cbb90ac4b00803eb24715b0d3c6b62867",
+      "class_hash": "0x18c7e4564354fb43dceb7a5b27519316443f9dbbdedfc4125db0bb928c21b67",
       "tag": "ARCADE-Access",
       "selector": "0x4de83c9f22c74953e76afcef63ce27a77e04d2304133da1ec46fa2e46a0c40f"
     },
     {
       "members": [],
-      "class_hash": "0x4e923487edecb8caba2730b7eb7ada85e31c9a3ab2bc6b865cb7a7723d7d4eb",
+      "class_hash": "0x1f349aeee8ceb15330526e52e507a12a4e37316d56bab446fb691b5ce31340d",
       "tag": "ARCADE-Account",
       "selector": "0x7e96bc903044d45737e5ec7e23b596e8e7f110a1b1f80d413b53725c7bbb2f6"
     },
     {
       "members": [],
-      "class_hash": "0x509b4c7c85a5ad6ede5f70f838fe3b039e09fe9e1537e522e562a8c2fa887b4",
+      "class_hash": "0x5990f288670c21728c6fab2d9ece996862bccef9fa36d2a0b7a4344c5a2cde7",
       "tag": "ARCADE-Achievement",
       "selector": "0x4909446396e41e99e20f04d9f5d9e83ab83beea6089c76d0fef29b034de9736"
     },
     {
       "members": [],
-      "class_hash": "0x7df003249b5e6e8245535a62572e64cc5e659bbf0dfd8371a7535f2d5e35fcf",
+      "class_hash": "0x49b210c8e27101f97140896be1ba691f2c371d2977d164e50c4fb3095224aa3",
       "tag": "ARCADE-Alliance",
       "selector": "0x74a88ab0bed983c65d7e57761329312c125ef0be4ef7889f560153000132866"
     },
     {
       "members": [],
-      "class_hash": "0x8d4d1e78893b9b0e541eb5e20913057e7f70acd6e0302d9a8357c594db1015",
+      "class_hash": "0x1557370503732d4959f5d314ca50dcbbe67587454aaf20764ab5f331478723b",
       "tag": "ARCADE-Controller",
       "selector": "0x7b2fac00792560d241723d9852f29e952bb0ecc88219dd3fb86b61796dc5952"
     },
     {
       "members": [],
-      "class_hash": "0x707deea7afe8c277a3de09d5ccb124bf1f727ea61f0bcb618c5e7f2de4c2d5f",
+      "class_hash": "0x1ecdea009a31d08af232d9d019448753545a50c121728c8d386ac273eb01825",
       "tag": "ARCADE-Deployment",
       "selector": "0x5354f17394d652912bae10be363d24d155edbdb936fa275f855491253cb63a4"
     },
     {
       "members": [],
-      "class_hash": "0x46ee9af02075375a761b271a5fb5896bf34f7040f35d3f4d2793006f2db5e37",
+      "class_hash": "0x5dd9957977d07dcf6cbef0074696c46cd2ad673ce6025d252f1f51829d7cbc3",
       "tag": "ARCADE-Factory",
       "selector": "0x59995d7c14b165cb6738a67e319c6ad553a58d9c05f87f0c35190b13e1c223"
     },
     {
       "members": [],
-      "class_hash": "0x5876a589e9560234a646049af8ad29933dfee9f97ac5f12648b60d572f0fac5",
+      "class_hash": "0x7ae633db7a5dcfd4526031557f5aecea4cffc9b452358905c1b7fd9e3c14c5",
       "tag": "ARCADE-Game",
       "selector": "0x6143bc86ed1a08df992c568392c454a92ef7e7b5ba08e9bf75643cf5cfc8b14"
     },
     {
       "members": [],
-      "class_hash": "0x1185b7a812122ae5f379da16f06cd9fcd04c2772f7175d50b13540f4989c1fc",
+      "class_hash": "0x7f9d501bc6440b08bbb7082acf46dc02a8afe81bef3c4807d204f78e2b20ae7",
       "tag": "ARCADE-Guild",
       "selector": "0x95501f151f575b4fab06c5ceb7237739dd0608982727cbc226273aecf006aa"
     },
     {
       "members": [],
-      "class_hash": "0x4a047a959c45cda7b6e9abced79278c26c08413a829e15165004dc964749678",
+      "class_hash": "0x3af1d430fa945d8d795dc93a324470cee5e79e7c2e81147d69be0eb778dbb87",
       "tag": "ARCADE-Member",
       "selector": "0x7b9b4b91d2d7823ac5c041c32867f856e6393905bedb2c4b7f58d56bf13ec43"
     },
     {
       "members": [],
-      "class_hash": "0x693b5887e2b62bea0163daae7ecfc98e02aa1c32469ccb4d831de4bc19ab719",
+      "class_hash": "0x210f521172822e92eece1c9a93b3be573754d5b0de0b68aaa68e450522b24ce",
       "tag": "ARCADE-Signer",
       "selector": "0x79493096b3a4188aade984eaf8272a97748ee48111c1f7e6683a89f64406c1a"
     },
     {
       "members": [],
-      "class_hash": "0x398bdccbc7f8450bb139af04a99a0fddd8367b3bd21202095ec1df96108df98",
+      "class_hash": "0xc95969ecbba5b98202b0ff3696c99f4825e908babc05e69acd63c3b63b5f75",
       "tag": "ARCADE-Team",
       "selector": "0x56407a8963e9ebbb56d8c167c40bc0bd8ce7e38ac48c632421d5cf3dc865a01"
     },
     {
       "members": [],
-      "class_hash": "0x6fd8d97850b3e9d127a5b457bfa76d3048a74f25074ce40f929e9e6b4d356fd",
+      "class_hash": "0x555aa4cef52e861cbf8d2eb874d85d53380d271e0fe0849cd93a4db53210a4f",
       "tag": "ARCADE-Teammate",
       "selector": "0x56a4d220830ecdcb5e816e49c743a4e0f784b7bdea24737be188d1f1059308e"
     }
@@ -3015,15 +3100,16 @@
   "events": [
     {
       "members": [],
-      "class_hash": "0x1d83651f32df4a5e3a1c8ef52c8f77fc9b99463c41246839203d11a54c8e631",
+      "class_hash": "0x26ca56c52f63c71d2a95cabcf9dbb7e08657c668f412e6ed406adcef75c54f",
       "tag": "ARCADE-Follow",
       "selector": "0x38866790c8a50b1c2d43786d8d06856b7ab65ce7a59e136bc47fbae18b147f1"
     },
     {
       "members": [],
-      "class_hash": "0x40ce2ebeff98431ff013e5b8deeff73fbb562a38950c8eb391998f022ac18a5",
+      "class_hash": "0x3957927280df9daa0c9c80ccc5a2e52e2c6ad3369649ad6921aaefcbd3e3eb",
       "tag": "ARCADE-TrophyPinning",
       "selector": "0x7b9d51ffd54b6bfa69d849bf8f35fb7bb08820e792d3eeca9dd990f4905aacb"
     }
-  ]
+  ],
+  "external_contracts": []
 }

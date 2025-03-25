@@ -2,6 +2,7 @@
 
 use registry::constants;
 pub use registry::models::index::Game;
+use registry::types::config::Config;
 use registry::types::metadata::Metadata;
 use registry::types::socials::Socials;
 use registry::helpers::json::JsonifiableTrait;
@@ -28,14 +29,13 @@ pub impl GameImpl of GameTrait {
     fn new(
         world_address: felt252,
         namespace: felt252,
-        project: felt252,
-        preset: felt252,
+        config: Config,
         metadata: Metadata,
         socials: Socials,
         owner: felt252,
     ) -> Game {
         // [Check] Inputs
-        GameAssert::assert_valid_project(project);
+        GameAssert::assert_valid_config(config.clone());
         GameAssert::assert_valid_owner(owner);
         GameAssert::assert_valid_world(world_address);
         GameAssert::assert_valid_namespace(namespace);
@@ -43,13 +43,12 @@ pub impl GameImpl of GameTrait {
         Game {
             world_address: world_address,
             namespace: namespace,
-            project: project,
             active: true,
             published: false,
             whitelisted: false,
-            karma: 0,
+            points: 0,
             priority: 0,
-            preset: preset,
+            config: config.jsonify(),
             socials: socials.jsonify(),
             metadata: metadata.jsonify(),
             owner: owner,
@@ -57,32 +56,29 @@ pub impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn add(ref self: Game, karma: u16) {
+    fn add(ref self: Game, points: u16) {
         // [Check] Inputs
-        let total_karma = self.karma + karma;
-        GameAssert::assert_valid_karma(total_karma);
+        let total_points = self.points + points;
+        GameAssert::assert_valid_points(total_points);
         // [Update] Points
-        self.karma = total_karma;
+        self.points = total_points;
         // [Effect] Reset visibility status
         self.published = false;
         self.whitelisted = false;
     }
 
     #[inline]
-    fn remove(ref self: Game, karma: u16) {
-        self.karma -= karma;
+    fn remove(ref self: Game, points: u16) {
+        self.points -= points;
         // [Effect] Reset visibility status
         self.published = false;
         self.whitelisted = false;
     }
 
     #[inline]
-    fn update(
-        ref self: Game, project: felt252, preset: felt252, metadata: Metadata, socials: Socials,
-    ) {
+    fn update(ref self: Game, config: Config, metadata: Metadata, socials: Socials) {
         // [Effect] Update Game
-        self.project = project;
-        self.preset = preset;
+        self.config = config.jsonify();
         self.metadata = metadata.jsonify();
         self.socials = socials.jsonify();
         // [Effect] Reset visibility status
@@ -121,7 +117,7 @@ pub impl GameImpl of GameTrait {
     fn nullify(ref self: Game) {
         self.published = false;
         self.whitelisted = false;
-        self.project = 0;
+        self.config = Default::default();
     }
 }
 
@@ -129,17 +125,17 @@ pub impl GameImpl of GameTrait {
 pub impl GameAssert of AssertTrait {
     #[inline]
     fn assert_does_not_exist(self: @Game) {
-        assert(self.project == @0, errors::GAME_ALREADY_EXISTS);
+        assert(self.config == Default::default(), errors::GAME_ALREADY_EXISTS);
     }
 
     #[inline]
     fn assert_does_exist(self: @Game) {
-        assert(self.project != @0, errors::GAME_NOT_EXIST);
+        assert(self.config != Default::default(), errors::GAME_NOT_EXIST);
     }
 
     #[inline]
-    fn assert_valid_project(project: felt252) {
-        assert(project != 0, errors::GAME_INVALID_PROJECT);
+    fn assert_valid_config(config: Config) {
+        assert(config != Default::default(), errors::GAME_INVALID_PROJECT);
     }
 
     #[inline]
@@ -158,8 +154,8 @@ pub impl GameAssert of AssertTrait {
     }
 
     #[inline]
-    fn assert_valid_karma(karma: u16) {
-        assert(karma <= constants::MAX_GAME_KARMA, errors::GAME_INVALID_KARMA);
+    fn assert_valid_points(points: u16) {
+        assert(points <= constants::MAX_GAME_KARMA, errors::GAME_INVALID_KARMA);
     }
 
     #[inline]
@@ -177,9 +173,9 @@ pub impl GameAssert of AssertTrait {
 mod tests {
     // Internal imports
 
+    use registry::types::config::{ConfigTrait, ConfigJsonifiable};
     use registry::types::metadata::{MetadataTrait, MetadataJsonifiable};
     use registry::types::socials::{SocialsTrait, SocialsJsonifiable};
-
     // Local imports
 
     use super::{GameTrait, GameAssert};
@@ -188,31 +184,28 @@ mod tests {
 
     const WORLD_ADDRESS: felt252 = 'WORLD';
     const NAMESPACE: felt252 = 'NAMESPACE';
-    const PROJECT: felt252 = 'PROJECT';
-    const PRESET: felt252 = 'PRESET';
     const OWNER: felt252 = 'OWNER';
     #[test]
     fn test_game_new() {
         let metadata = core::traits::Default::default();
         let socials = core::traits::Default::default();
+        let config = ConfigTrait::new("PROJECT", "RPC", "POLICIES");
         let game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: config.clone(),
             metadata: metadata.clone(),
             socials: socials.clone(),
             owner: OWNER,
         );
         assert_eq!(game.world_address, WORLD_ADDRESS);
         assert_eq!(game.namespace, NAMESPACE);
-        assert_eq!(game.project, PROJECT);
         assert_eq!(game.active, true);
         assert_eq!(game.published, false);
         assert_eq!(game.whitelisted, false);
-        assert_eq!(game.karma, 0);
+        assert_eq!(game.points, 0);
         assert_eq!(game.priority, 0);
-        assert_eq!(game.preset, PRESET);
+        assert_eq!(game.config, config.jsonify());
         assert_eq!(game.socials, socials.clone().jsonify());
         assert_eq!(game.metadata, metadata.clone().jsonify());
         assert_eq!(game.owner, OWNER);
@@ -223,14 +216,13 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
         );
         game.add(100);
-        assert_eq!(game.karma, 100);
+        assert_eq!(game.points, 100);
     }
 
     #[test]
@@ -238,16 +230,15 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
         );
         game.add(100);
-        assert_eq!(game.karma, 100);
+        assert_eq!(game.points, 100);
         game.remove(50);
-        assert_eq!(game.karma, 50);
+        assert_eq!(game.points, 50);
     }
 
     #[test]
@@ -255,23 +246,28 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
         );
-        let project = 'TCEJORP';
-        let preset = 'TESERP';
+        let project = "TCEJORP";
+        let rpc = "CPR";
+        let policies = "SEICILOP";
+        let config = ConfigTrait::new(project, rpc, policies);
         let metadata = MetadataTrait::new(
-            Option::Some('123456'), Option::None, Option::None, Option::None, Option::None,
+            Option::Some('123456'),
+            Option::None,
+            Option::None,
+            Option::None,
+            Option::None,
+            Option::None,
         );
         let socials = SocialsTrait::new(
             Option::Some("discord"), Option::None, Option::None, Option::None, Option::None,
         );
-        game.update(project, preset, metadata.clone(), socials.clone());
-        assert_eq!(game.project, project);
-        assert_eq!(game.preset, preset);
+        game.update(config.clone(), metadata.clone(), socials.clone());
+        assert_eq!(game.config, config.jsonify());
         assert_eq!(game.metadata, metadata.clone().jsonify());
         assert_eq!(game.socials, socials.clone().jsonify());
     }
@@ -281,8 +277,7 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
@@ -296,8 +291,7 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
@@ -312,8 +306,7 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
@@ -328,8 +321,7 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
@@ -345,14 +337,13 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
         );
         game.nullify();
-        assert_eq!(game.project, 0);
+        assert_eq!(game.config, Default::default());
         assert_eq!(game.whitelisted, false);
         assert_eq!(game.published, false);
     }
@@ -363,8 +354,7 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
@@ -378,13 +368,12 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
         );
-        game.project = 0;
+        game.config = Default::default();
         game.assert_does_exist();
     }
 
@@ -403,7 +392,8 @@ mod tests {
     #[test]
     #[should_panic(expected: 'Game: invalid project')]
     fn test_game_assert_valid_project_zero() {
-        GameAssert::assert_valid_project(0);
+        let config = Default::default();
+        GameAssert::assert_valid_config(config);
     }
 
     #[test]
@@ -414,8 +404,8 @@ mod tests {
 
     #[test]
     #[should_panic(expected: 'Game: cannot exceed 1000')]
-    fn test_game_assert_valid_karma_exceeds_max() {
-        GameAssert::assert_valid_karma(1001);
+    fn test_game_assert_valid_points_exceeds_max() {
+        GameAssert::assert_valid_points(1001);
     }
 
     #[test]
@@ -424,8 +414,7 @@ mod tests {
         let mut game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,
@@ -441,8 +430,7 @@ mod tests {
         let game = GameTrait::new(
             world_address: WORLD_ADDRESS,
             namespace: NAMESPACE,
-            project: PROJECT,
-            preset: PRESET,
+            config: ConfigTrait::new("PROJECT", "RPC", "POLICIES"),
             metadata: core::traits::Default::default(),
             socials: core::traits::Default::default(),
             owner: OWNER,

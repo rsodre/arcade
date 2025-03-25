@@ -38,6 +38,7 @@ pub mod AllianceableComponent {
             world: WorldStorage,
             player_id: felt252,
             color: Option<felt252>,
+            preset: Option<ByteArray>,
             name: Option<ByteArray>,
             description: Option<ByteArray>,
             image: Option<ByteArray>,
@@ -61,7 +62,7 @@ pub mod AllianceableComponent {
 
             // [Effect] Create an alliance
             let alliance_id = world.dispatcher.uuid();
-            let metadata = MetadataTrait::new(color, name, description, image, banner);
+            let metadata = MetadataTrait::new(color, preset, name, description, image, banner);
             let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
             let mut alliance = AllianceTrait::new(alliance_id, metadata, socials);
 

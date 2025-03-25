@@ -9,6 +9,7 @@ pub mod RegisterableComponent {
     use registry::store::{Store, StoreTrait};
     use registry::models::access::{AccessAssert};
     use registry::models::game::{GameTrait, GameAssert};
+    use registry::types::config::{ConfigTrait};
     use registry::types::metadata::{MetadataTrait};
     use registry::types::socials::{SocialsTrait};
     use registry::types::role::Role;
@@ -34,9 +35,11 @@ pub mod RegisterableComponent {
             caller_id: felt252,
             world_address: felt252,
             namespace: felt252,
-            project: felt252,
-            preset: felt252,
+            project: ByteArray,
+            rpc: ByteArray,
+            policies: ByteArray,
             color: Option<felt252>,
+            preset: Option<ByteArray>,
             name: Option<ByteArray>,
             description: Option<ByteArray>,
             image: Option<ByteArray>,
@@ -55,10 +58,11 @@ pub mod RegisterableComponent {
             game.assert_does_not_exist();
 
             // [Effect] Create game
-            let metadata = MetadataTrait::new(color, name, description, image, banner);
+            let config = ConfigTrait::new(project, rpc, policies);
+            let metadata = MetadataTrait::new(color, preset, name, description, image, banner);
             let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
             let game = GameTrait::new(
-                world_address, namespace, project, preset, metadata, socials, caller_id,
+                world_address, namespace, config, metadata, socials, caller_id,
             );
 
             // [Effect] Store game
@@ -71,9 +75,11 @@ pub mod RegisterableComponent {
             caller_id: felt252,
             world_address: felt252,
             namespace: felt252,
-            project: felt252,
-            preset: felt252,
+            project: ByteArray,
+            rpc: ByteArray,
+            policies: ByteArray,
             color: Option<felt252>,
+            preset: Option<ByteArray>,
             name: Option<ByteArray>,
             description: Option<ByteArray>,
             image: Option<ByteArray>,
@@ -95,9 +101,10 @@ pub mod RegisterableComponent {
             game.assert_is_owner(caller_id);
 
             // [Effect] Update game
-            let metadata = MetadataTrait::new(color, name, description, image, banner);
+            let config = ConfigTrait::new(project, rpc, policies);
+            let metadata = MetadataTrait::new(color, preset, name, description, image, banner);
             let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
-            game.update(project, preset, metadata, socials);
+            game.update(config, metadata, socials);
 
             // [Effect] Update game
             store.set_game(@game);

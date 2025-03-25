@@ -42,9 +42,9 @@ export const Games = () => {
             key={`${game.worldAddress}-${game.namespace}`}
             index={index + 1}
             first={false}
-            project={game.project}
+            project={game.config.project}
             namespace={game.namespace}
-            preset={game.preset ?? "default"}
+            preset={game.metadata.preset ?? "default"}
             name={game.metadata.name}
             icon={game.metadata.image}
             cover={game.metadata.banner}

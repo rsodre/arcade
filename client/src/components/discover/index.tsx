@@ -22,7 +22,7 @@ export function Discover({ game }: { game?: GameModel }) {
 
   const gameEvents = useMemo(() => {
     return filteredGames.map((game) => {
-      const data = events[game?.project]?.map((event) => {
+      const data = events[game?.config.project]?.map((event) => {
         return {
           name: usernames[event.player],
           achievement: event.achievement,
@@ -50,7 +50,7 @@ export function Discover({ game }: { game?: GameModel }) {
         <div className="flex flex-col gap-y-6">
           {filteredGames.map((item, index) => (
             <GameRow
-              key={`${index}-${item.project}`}
+              key={`${index}-${item.config.project}`}
               game={item}
               events={gameEvents[index]}
             />
