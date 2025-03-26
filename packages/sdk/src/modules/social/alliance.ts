@@ -38,7 +38,15 @@ export class AllianceModel {
   }
 
   static default(identifier: string) {
-    return new AllianceModel(identifier, 0, false, false, 0, new Metadata("", "", "", "", "", ""), new Socials("", "", "", "", ""));
+    return new AllianceModel(
+      identifier,
+      0,
+      false,
+      false,
+      0,
+      new Metadata("", "", "", "", "", ""),
+      new Socials("", "", "", "", ""),
+    );
   }
 
   static isType(model: AllianceModel) {

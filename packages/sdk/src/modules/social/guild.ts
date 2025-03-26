@@ -42,7 +42,15 @@ export class GuildModel {
   }
 
   static default(identifier: string) {
-    return new GuildModel(identifier, 0, false, false, 0, new Metadata("", "", "", "", "", ""), new Socials("", "", "", "", ""));
+    return new GuildModel(
+      identifier,
+      0,
+      false,
+      false,
+      0,
+      new Metadata("", "", "", "", "", ""),
+      new Socials("", "", "", "", ""),
+    );
   }
 
   exists() {

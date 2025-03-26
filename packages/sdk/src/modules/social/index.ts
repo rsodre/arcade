@@ -5,7 +5,7 @@ import { Follow, FollowEvent } from "./follow";
 import { Guild, GuildModel } from "./guild";
 import { Alliance, AllianceModel } from "./alliance";
 import { Member, MemberModel } from "./member";
-import { ClauseBuilder, OrComposeClause, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
+import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { SocialOptions, DefaultSocialOptions } from "./options";
@@ -32,11 +32,6 @@ export const Social = {
   },
 
   getEntityQuery: (options: SocialOptions = DefaultSocialOptions) => {
-    // const clauses = [];
-    // if (options.alliance) clauses.push(Alliance.getClause());
-    // if (options.guild) clauses.push(Guild.getClause());
-    // if (options.member) clauses.push(Member.getClause());
-    // return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
     const keys: `${string}-${string}`[] = [];
     if (options.alliance) keys.push(`${NAMESPACE}-${Alliance.getModelName()}`);
     if (options.guild) keys.push(`${NAMESPACE}-${Guild.getModelName()}`);
@@ -46,10 +41,11 @@ export const Social = {
   },
 
   getEventQuery: (options: SocialOptions = DefaultSocialOptions) => {
-    const clauses = [];
-    if (options.pin) clauses.push(Pin.getClause());
-    if (options.follow) clauses.push(Follow.getClause());
-    return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
+    const keys: `${string}-${string}`[] = [];
+    if (options.pin) keys.push(`${NAMESPACE}-${Pin.getModelName()}`);
+    if (options.follow) keys.push(`${NAMESPACE}-${Follow.getModelName()}`);
+    const clauses = new ClauseBuilder().keys(keys, []);
+    return new ToriiQueryBuilder<SchemaType>().withClause(clauses.build()).includeHashedKeys();
   },
 
   fetchEntities: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {
@@ -149,15 +145,16 @@ export const Social = {
       error?: Error | undefined;
     }) => {
       if (error) {
-        console.error("Error subscribing to entities:", error);
+        console.error("Error subscribing to events:", error);
         return;
       }
       if (!data || data.length === 0 || (data[0] as ParsedEntity<SchemaType>).entityId === "0x0") return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
-      if (entity.models[NAMESPACE]?.[Pin.getModelName()]) {
+      const eraseable = !entity.models[NAMESPACE];
+      if (entity.models[NAMESPACE]?.[Pin.getModelName()] || eraseable) {
         callback([Pin.parse(entity)]);
       }
-      if (entity.models[NAMESPACE]?.[Follow.getModelName()]) {
+      if (entity.models[NAMESPACE]?.[Follow.getModelName()] || eraseable) {
         callback([Follow.parse(entity)]);
       }
     };

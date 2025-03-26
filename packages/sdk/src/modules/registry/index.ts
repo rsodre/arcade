@@ -24,10 +24,6 @@ export const Registry = {
   },
 
   getEntityQuery: (options: RegistryOptions = DefaultRegistryOptions) => {
-    // const clauses = [];
-    // if (options.game) clauses.push(Game.getClause());
-    // if (options.achievement) clauses.push(Achievement.getClause());
-    // return new ToriiQueryBuilder<SchemaType>().withClause(OrComposeClause(clauses).build()).includeHashedKeys();
     const keys: `${string}-${string}`[] = [];
     if (options.game) keys.push(`${NAMESPACE}-${Game.getModelName()}`);
     if (options.achievement) keys.push(`${NAMESPACE}-${Achievement.getModelName()}`);
