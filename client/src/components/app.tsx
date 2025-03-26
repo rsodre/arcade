@@ -26,7 +26,7 @@ export function App() {
   const { project, namespace } = useProject();
 
   const [searchParams] = useSearchParams();
-  const { address, isSelf } = useAddress();
+  const { address, isSelf, isZero } = useAddress();
   const { usernames, globals, projects, players, setProjects } =
     useAchievements();
 
@@ -110,7 +110,8 @@ export function App() {
             className={cn(
               "relative grow h-full flex flex-col rounded gap-2",
               "border border-background-200 bg-background-100",
-              !isSelf &&
+              isConnected &&
+                !isSelf &&
                 "brightness-110 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
             )}
           >
@@ -121,16 +122,21 @@ export function App() {
               rank={rank}
               banner={game?.metadata.banner || banner}
             />
-            <div className={cn("absolute top-4 right-4", isSelf && "hidden")}>
+            <div
+              className={cn(
+                "absolute top-4 right-4",
+                (!isConnected || isSelf) && "hidden",
+              )}
+            >
               <CloseButton handleClose={handleClose} />
             </div>
             <ArcadeTabs
               discover={!isConnected || isSelf}
-              inventory={isConnected}
-              achievements={isConnected}
-              leaderboard={isConnected}
-              guilds={isConnected}
-              activity={isConnected}
+              inventory={!isZero}
+              achievements={!isZero}
+              leaderboard
+              guilds={!isZero}
+              activity={!isZero}
               defaultValue={defaultValue}
               onDiscoverClick={() => handleClick("discover")}
               onInventoryClick={() => handleClick("inventory")}

@@ -15,9 +15,14 @@ export function useAddress() {
     return !searchParams.get("address") || address === self;
   }, [searchParams, self]);
 
+  const isZero = useMemo(() => {
+    return BigInt(address) === 0n;
+  }, [address]);
+
   return {
     self,
     address,
     isSelf,
+    isZero,
   };
 }

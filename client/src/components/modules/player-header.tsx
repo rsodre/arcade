@@ -22,6 +22,8 @@ export const PlayerHeader = ({
     };
   }, [banner]);
 
+  if (BigInt(address) === 0n) return <div />;
+
   return (
     <div
       className="p-4 pb-0 bg-top bg-cover bg-no-repeat select-none"
