@@ -51,6 +51,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
         name:
           usernames[addAddressPadding(player.address)] ||
           player.address.slice(0, 9),
+        rank: index + 1,
         points: player.earnings,
         highlight: BigInt(player.address) === BigInt(address),
         pins: pins[addAddressPadding(player.address)]
@@ -79,6 +80,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
         name:
           usernames[addAddressPadding(player.address)] ||
           player.address.slice(0, 9),
+        rank: index + 1,
         points: player.earnings,
         highlight: BigInt(player.address) === BigInt(address),
       };
@@ -118,7 +120,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
                   <AchievementLeaderboardRow
                     key={index}
                     pins={[]}
-                    rank={index + 1}
+                    rank={item.rank}
                     name={item.name}
                     points={item.points}
                     highlight={item.highlight}
@@ -129,7 +131,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
                   <AchievementLeaderboardRow
                     key={index}
                     pins={item.pins || []}
-                    rank={index + 1}
+                    rank={item.rank}
                     name={item.name}
                     points={item.points}
                     highlight={item.highlight}

@@ -61,18 +61,26 @@ export function App() {
     );
   }, [games, project, namespace]);
 
-  const points = useMemo(() => {
+  const { rank, points } = useMemo(() => {
     if (game) {
       const gamePlayers = players[game?.config.project || ""] || [];
-      return (
+      const points =
         gamePlayers.find((player) => BigInt(player.address) === BigInt(address))
-          ?.earnings || 0
-      );
+          ?.earnings || 0;
+      const rank =
+        gamePlayers.findIndex(
+          (player) => BigInt(player.address) === BigInt(address),
+        ) + 1;
+      return { rank, points };
     }
-    return (
+    const points =
       globals.find((player) => BigInt(player.address) === BigInt(address))
-        ?.earnings || 0
-    );
+        ?.earnings || 0;
+    const rank =
+      globals.findIndex(
+        (player) => BigInt(player.address) === BigInt(address),
+      ) + 1;
+    return { rank, points };
   }, [globals, address, game]);
 
   const { username } = useUsername({ address });
@@ -100,20 +108,22 @@ export function App() {
           <Games />
           <div
             className={cn(
-              "relative grow h-full flex flex-col rounded gap-2 overflow-clip",
-              "border border-background-200 bg-background-100 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
-              !isSelf && "brightness-110",
+              "relative grow h-full flex flex-col rounded gap-2",
+              "border border-background-200 bg-background-100",
+              !isSelf &&
+                "brightness-110 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
             )}
           >
-            <div className={cn("absolute top-4 right-4", isSelf && "hidden")}>
-              <CloseButton handleClose={handleClose} />
-            </div>
             <PlayerHeader
               username={name}
               address={address}
               points={points}
+              rank={rank}
               banner={game?.metadata.banner || banner}
             />
+            <div className={cn("absolute top-4 right-4", isSelf && "hidden")}>
+              <CloseButton handleClose={handleClose} />
+            </div>
             <ArcadeTabs
               discover={!isConnected || isSelf}
               inventory={isConnected}

@@ -54,6 +54,7 @@ export function Discover({ game }: { game?: GameModel }) {
               key={`${index}-${item.config.project}`}
               game={item}
               events={gameEvents[index]}
+              covered={filteredGames.length > 1}
             />
           ))}
         </div>
@@ -65,16 +66,18 @@ export function Discover({ game }: { game?: GameModel }) {
 export function GameRow({
   game,
   events,
+  covered,
 }: {
   game: GameModel;
   events: Event[];
+  covered: boolean;
 }) {
   const gameData = useMemo(() => {
     return {
       metadata: {
         name: game.metadata.name,
         logo: game.metadata.image,
-        cover: game.metadata.banner ?? banner,
+        cover: covered ? (game.metadata.banner ?? banner) : banner,
       },
       socials: game.socials,
     };

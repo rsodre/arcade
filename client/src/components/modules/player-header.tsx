@@ -10,6 +10,7 @@ export const PlayerHeader = ({
   username: string;
   address: string;
   points: number;
+  rank: number;
   banner: string;
 }) => {
   const style = useMemo(() => {
