@@ -5,7 +5,7 @@ import { SceneLayout } from "@/components/scenes/layout";
 import { useArcade } from "@/hooks/arcade";
 import { useEffect, useMemo } from "react";
 import { useAchievements } from "@/hooks/achievements";
-import { AchievementPlayerHeader, TabsContent } from "@cartridge/ui-next";
+import { TabsContent } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
 import { DiscoverScene } from "./scenes/discover";
 import { GuildsScene } from "./scenes/guild";
@@ -16,6 +16,8 @@ import { useSearchParams } from "react-router-dom";
 import { useProject } from "@/hooks/project";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useUsername } from "@/hooks/account";
+import { PlayerHeader } from "./modules/player-header";
+import banner from "@/assets/banner.svg";
 
 export function App() {
   const { address: self, isConnected } = useAccount();
@@ -68,14 +70,13 @@ export function App() {
       >
         <div className="w-[1048px] pt-8 pb-6 gap-8 flex items-stretch m-auto h-full overflow-clip">
           <Games />
-          <div className="grow h-full flex flex-col border border-background-200 rounded bg-background-100 gap-2 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]">
-            <div className="p-4 pb-0">
-              <AchievementPlayerHeader
-                username={username}
-                address={address}
-                points={points}
-              />
-            </div>
+          <div className="grow h-full flex flex-col border border-background-200 rounded bg-background-100 gap-2 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)] overflow-clip">
+            <PlayerHeader
+              username={username}
+              address={address}
+              points={points}
+              banner={game?.metadata.banner || banner}
+            />
             <ArcadeTabs
               discover
               inventory={isConnected}
