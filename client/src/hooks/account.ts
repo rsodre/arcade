@@ -5,9 +5,9 @@ import {
 
 export function useUsername({ address }: { address: string }) {
   const { data } = useAccountNameQuery(
-    { address },
+    { address: `0x${BigInt(address).toString(16)}` },
     {
-      enabled: false,
+      enabled: true,
       queryKey: ["username", address],
       refetchOnWindowFocus: false,
     },

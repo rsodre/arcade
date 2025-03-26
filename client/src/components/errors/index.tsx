@@ -108,6 +108,35 @@ export function AchievementsLoading() {
   );
 }
 
+export function LeaderboardComingSoon() {
+  return (
+    <Error
+      title="Coming soon"
+      Icon={<EmptyStateAchievementIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function LeaderboardError() {
+  return (
+    <Error
+      title="Oops! Something went wrong"
+      Icon={<EmptyStateAchievementIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function LeaderboardLoading() {
+  return (
+    <Error
+      title="Loading..."
+      Icon={
+        <EmptyStateAchievementIcon className="h-full w-full animate-pulse" />
+      }
+    />
+  );
+}
+
 export function InventoryComingSoon() {
   return (
     <Error

@@ -13,16 +13,15 @@ import { ActivityScene } from "./scenes/activity";
 import { ArcadeTabs } from "./modules";
 import { LeaderboardScene } from "./scenes/leaderboard";
 import { useSearchParams } from "react-router-dom";
-import { addAddressPadding } from "starknet";
 import { useProject } from "@/hooks/project";
 import { GameModel } from "@bal7hazar/arcade-sdk";
+import { useUsername } from "@/hooks/account";
 
 export function App() {
   const { address: self, isConnected } = useAccount();
   const { games } = useArcade();
   const { project, namespace } = useProject();
-  const { globals, usernames, projects, players, setProjects } =
-    useAchievements();
+  const { globals, projects, players, setProjects } = useAchievements();
 
   const [searchParams] = useSearchParams();
   const address = useMemo(() => {
@@ -49,9 +48,7 @@ export function App() {
     );
   }, [globals, address, game]);
 
-  const username = useMemo(() => {
-    return usernames[addAddressPadding(address)] || address.slice(0, 9);
-  }, [usernames, address]);
+  const { username } = useUsername({ address });
 
   useEffect(() => {
     if (projects.length === Object.values(games).length) return;

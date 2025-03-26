@@ -10,7 +10,11 @@ import { GameModel } from "@bal7hazar/arcade-sdk";
 import { addAddressPadding } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { useAccount } from "@starknet-react/core";
-import { AchievementsError, AchievementsLoading } from "../errors";
+import {
+  LeaderboardComingSoon,
+  LeaderboardError,
+  LeaderboardLoading,
+} from "../errors";
 
 export function Leaderboard({ game }: { game?: GameModel }) {
   const { address: self } = useAccount();
@@ -92,19 +96,17 @@ export function Leaderboard({ game }: { game?: GameModel }) {
     return [...data.slice(0, 99), selfData];
   }, [globals, address, self, usernames]);
 
-  if (isError) return <AchievementsError />;
+  if (isError) return <LeaderboardError />;
 
-  if (isLoading) return <AchievementsLoading />;
+  if (isLoading) return <LeaderboardLoading />;
 
   if (
     (!!game && gameAchievements.length === 0) ||
-    Object.values(achievements).length === 0
+    Object.values(achievements).length === 0 ||
+    (!game && gamesData.length === 0) ||
+    (!!game && gameData.length === 0)
   ) {
-    return (
-      <div className="flex justify-center items-center h-full border border-dashed rounded-md border-background-400 mb-4">
-        <p className="text-foreground-400">No trophies available</p>
-      </div>
-    );
+    return <LeaderboardComingSoon />;
   }
 
   return (

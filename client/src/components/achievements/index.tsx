@@ -9,7 +9,11 @@ import { useAchievements } from "@/hooks/achievements";
 import { useAccount } from "@starknet-react/core";
 import { Item } from "@/helpers/achievements";
 import banner from "@/assets/banner.svg";
-import { AchievementsError, AchievementsLoading } from "../errors";
+import {
+  AchievementsComingSoon,
+  AchievementsError,
+  AchievementsLoading,
+} from "../errors";
 import AchievementSummary from "../modules/summary";
 
 export function Achievements({ game }: { game?: GameModel }) {
@@ -62,11 +66,7 @@ export function Achievements({ game }: { game?: GameModel }) {
     (!!game && gameAchievements.length === 0) ||
     Object.values(achievements).length === 0
   ) {
-    return (
-      <div className="flex justify-center items-center h-full border border-dashed rounded-md border-background-400 mb-4">
-        <p className="text-foreground-400">No trophies available</p>
-      </div>
-    );
+    return <AchievementsComingSoon />;
   }
 
   return (
