@@ -1,29 +1,14 @@
 import { useERC20Balance } from "@cartridge/utils";
-import { useAccount } from "@starknet-react/core";
 import { useConnection } from "./context";
-import { getChecksumAddress } from "starknet";
+import { useAddress } from "./address";
 
-export function useTokens(accountAddress?: string, tokens?: string[]) {
+export function useTokens(tokens?: string[]) {
   const { erc20: options, provider, isVisible } = useConnection();
-  const { address } = useAccount();
+  const { address } = useAddress();
   return useERC20Balance({
-    address: accountAddress ?? address,
+    address: address,
     contractAddress: [...options, ...(tokens ?? [])],
     provider: provider as any,
     interval: isVisible ? 3000 : undefined,
   });
-}
-
-export function useToken({
-  tokenAddress,
-  accountAddress,
-}: {
-  accountAddress?: string;
-  tokenAddress: string;
-}) {
-  const { data } = useTokens(accountAddress);
-  return data.find(
-    (t) =>
-      getChecksumAddress(t.meta.address) === getChecksumAddress(tokenAddress),
-  );
 }

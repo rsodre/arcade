@@ -11,7 +11,7 @@ import { ERC20_ADDRESSES } from "@/constants";
 import placeholder from "@/assets/placeholder.svg";
 
 export const Tokens = () => {
-  const erc20 = useTokens(undefined, ERC20_ADDRESSES);
+  const erc20 = useTokens(ERC20_ADDRESSES);
 
   const tokens = useMemo(
     () =>

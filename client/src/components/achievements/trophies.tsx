@@ -11,12 +11,14 @@ import ControllerConnector from "@cartridge/connector/controller";
 const HIDDEN_GROUP = "Hidden";
 
 export function Trophies({
+  address,
   achievements,
   softview,
   enabled,
   game,
   pins,
 }: {
+  address: string;
   achievements: Item[];
   softview: boolean;
   enabled: boolean;
@@ -24,7 +26,6 @@ export function Trophies({
   pins: { [playerId: string]: string[] };
   earnings: number;
 }) {
-  const { address: self } = useAccount();
   const [groups, setGroups] = useState<{ [key: string]: Item[] }>({});
 
   useEffect(() => {
@@ -43,10 +44,6 @@ export function Trophies({
     });
     setGroups(groups);
   }, [achievements]);
-
-  const address = useMemo(() => {
-    return self || "";
-  }, [self]);
 
   return (
     <div className="flex flex-col gap-4">

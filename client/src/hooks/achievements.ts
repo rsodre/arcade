@@ -1,8 +1,8 @@
-import { useContext, useEffect, useMemo } from "react";
-import { useAccount } from "@starknet-react/core";
+import { useContext, useMemo } from "react";
 import { AchievementContext } from "@/context";
 import { addAddressPadding } from "starknet";
 import { useArcade } from "./arcade";
+import { useAddress } from "./address";
 
 export interface Item {
   id: string;
@@ -42,7 +42,7 @@ export interface Player {
   completeds: string[];
 }
 
-export function useAchievements(accountAddress?: string) {
+export function useAchievements() {
   const {
     achievements,
     players,
@@ -52,20 +52,8 @@ export function useAchievements(accountAddress?: string) {
     isLoading,
     isError,
     projects,
-    setAddress,
     setProjects,
   } = useContext(AchievementContext);
-
-  const { address } = useAccount();
-
-  const currentAddress = useMemo(() => {
-    return `0x${BigInt(accountAddress || address || "0x0").toString(16)}`;
-  }, [accountAddress, address]);
-
-  useEffect(() => {
-    setAddress(currentAddress);
-  }, [currentAddress]);
-
   return {
     achievements,
     players,
@@ -79,14 +67,9 @@ export function useAchievements(accountAddress?: string) {
   };
 }
 
-export function usePlayerStats(accountAddress?: string) {
-  const { achievements, globals } = useAchievements(accountAddress);
-
-  const { address } = useAccount();
-
-  const currentAddress = useMemo(() => {
-    return `0x${BigInt(accountAddress || address || "0x0").toString(16)}`;
-  }, [accountAddress, address]);
+export function usePlayerStats() {
+  const { address } = useAddress();
+  const { achievements, globals } = useAchievements();
 
   const { completed, total } = useMemo(() => {
     let completed = 0;
@@ -101,27 +84,21 @@ export function usePlayerStats(accountAddress?: string) {
   const { rank, earnings } = useMemo(() => {
     const rank =
       globals.findIndex(
-        (player) => BigInt(player.address || 0) === BigInt(currentAddress),
+        (player) => BigInt(player.address || 0) === BigInt(address),
       ) + 1;
     const earnings =
-      globals.find(
-        (player) => BigInt(player.address || 0) === BigInt(currentAddress),
-      )?.earnings || 0;
+      globals.find((player) => BigInt(player.address || 0) === BigInt(address))
+        ?.earnings || 0;
     return { rank, earnings };
-  }, [currentAddress, globals]);
+  }, [address, globals]);
 
   return { completed, total, rank, earnings };
 }
 
-export function usePlayerGameStats(project: string, accountAddress?: string) {
+export function usePlayerGameStats(project: string) {
   const { pins } = useArcade();
-  const { achievements, players } = useAchievements(accountAddress);
-
-  const { address } = useAccount();
-
-  const currentAddress = useMemo(() => {
-    return `0x${BigInt(accountAddress || address || "0x0").toString(16)}`;
-  }, [accountAddress, address]);
+  const { address } = useAddress();
+  const { achievements, players } = useAchievements();
 
   const gameAchievements = useMemo(() => {
     return achievements[project || ""] || [];
@@ -133,7 +110,7 @@ export function usePlayerGameStats(project: string, accountAddress?: string) {
   );
 
   const { pinneds, completed, total } = useMemo(() => {
-    const ids = pins[addAddressPadding(currentAddress)] || [];
+    const ids = pins[addAddressPadding(address)] || [];
     const pinneds = gameAchievements
       .filter((item) => ids.includes(item.id))
       .sort((a, b) => parseFloat(a.percentage) - parseFloat(b.percentage))
@@ -141,19 +118,19 @@ export function usePlayerGameStats(project: string, accountAddress?: string) {
     const completed = gameAchievements.filter((item) => item.completed).length;
     const total = gameAchievements.length;
     return { pinneds, completed, total };
-  }, [pins, currentAddress, gameAchievements]);
+  }, [pins, address, gameAchievements]);
 
   const { rank, earnings } = useMemo(() => {
     const rank =
       gamePlayers.findIndex(
-        (player) => BigInt(player.address || 0) === BigInt(currentAddress),
+        (player) => BigInt(player.address || 0) === BigInt(address),
       ) + 1;
     const earnings =
       gamePlayers.find(
-        (player) => BigInt(player.address || 0) === BigInt(currentAddress),
+        (player) => BigInt(player.address || 0) === BigInt(address),
       )?.earnings || 0;
     return { rank, earnings };
-  }, [currentAddress, gamePlayers]);
+  }, [address, gamePlayers]);
 
   return { pinneds, completed, total, rank, earnings };
 }

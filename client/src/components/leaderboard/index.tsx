@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutContent,
   AchievementLeaderboard,
@@ -9,7 +9,7 @@ import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { addAddressPadding } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
-import { useAccount } from "@starknet-react/core";
+import { useAddress } from "@/hooks/address";
 import {
   LeaderboardComingSoon,
   LeaderboardError,
@@ -17,7 +17,7 @@ import {
 } from "../errors";
 
 export function Leaderboard({ game }: { game?: GameModel }) {
-  const { address: self } = useAccount();
+  const { address } = useAddress();
   const { achievements, globals, players, usernames, isLoading, isError } =
     useAchievements();
   const { pins } = useArcade();
@@ -32,18 +32,14 @@ export function Leaderboard({ game }: { game?: GameModel }) {
     return achievements[game?.config.project || ""] || [];
   }, [achievements, game]);
 
-  const [searchParams] = useSearchParams();
-  const address = useMemo(() => {
-    return searchParams.get("address") || self || "0x0";
-  }, [searchParams, self]);
-
-  const location = useLocation();
-  const to = useCallback(
+  const handleClick = useCallback(
     (address: string) => {
-      if (address === self) return navigate(location.pathname);
-      navigate([...location.pathname.split("/"), address].join("/"));
+      // On click, we update the url param address to the address of the player
+      const url = new URL(window.location.href);
+      url.searchParams.set("address", address);
+      navigate(url.toString().replace(window.location.origin, ""));
     },
-    [location.pathname, self, navigate],
+    [navigate],
   );
 
   const gameData = useMemo(() => {
@@ -94,7 +90,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
       data.find((player) => BigInt(player.address) === BigInt(address)) ||
       data[0];
     return [...data.slice(0, 99), selfData];
-  }, [globals, address, self, usernames]);
+  }, [globals, address, usernames]);
 
   if (isError) return <LeaderboardError />;
 
@@ -126,7 +122,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
                     name={item.name}
                     points={item.points}
                     highlight={item.highlight}
-                    onClick={() => to(item.address)}
+                    onClick={() => handleClick(item.address)}
                   />
                 ))
               : gameData.map((item, index) => (
@@ -137,7 +133,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
                     name={item.name}
                     points={item.points}
                     highlight={item.highlight}
-                    onClick={() => to(item.address)}
+                    onClick={() => handleClick(item.address)}
                   />
                 ))}
           </AchievementLeaderboard>

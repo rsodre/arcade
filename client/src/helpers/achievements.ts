@@ -210,7 +210,8 @@ export const AchievementHelper = {
     Object.keys(trophies).forEach((game) => {
       const gameAchievements: Item[] = Object.values(trophies[game]).map(
         (trophy: Trophy) => {
-          const achievement = data[game]?.[address]?.[trophy.id] || {};
+          const formattedAddress = `0x${BigInt(address).toString(16)}`;
+          const achievement = data[game]?.[formattedAddress]?.[trophy.id] || {};
           const completion =
             Object.values(achievement).length > 0 &&
             Object.values(achievement).every((task) => task.completion);

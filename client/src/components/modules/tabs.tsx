@@ -135,7 +135,7 @@ export const ArcadeTabs = ({
 
     observer.observe(containerRef.current!);
     return () => observer.disconnect();
-  }, [order, containerRef.current, visibleTabs, overflowTabs]);
+  }, [order, containerRef.current, visibleTabs, overflowTabs, tabRefs]);
 
   const overflowActive = useMemo(
     () => overflowTabs.includes(active),

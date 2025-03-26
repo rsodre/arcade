@@ -1,4 +1,3 @@
-import { useSearchParams } from "react-router-dom";
 import { LayoutContent } from "@cartridge/ui-next";
 import { useMemo } from "react";
 import { Trophies } from "./trophies";
@@ -6,7 +5,6 @@ import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { addAddressPadding } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
-import { useAccount } from "@starknet-react/core";
 import { Item } from "@/helpers/achievements";
 import banner from "@/assets/banner.svg";
 import {
@@ -15,9 +13,10 @@ import {
   AchievementsLoading,
 } from "../errors";
 import AchievementSummary from "../modules/summary";
+import { useAddress } from "@/hooks/address";
 
 export function Achievements({ game }: { game?: GameModel }) {
-  const { address: self } = useAccount();
+  const { address, isSelf } = useAddress();
   const { achievements, players, isLoading, isError } = useAchievements();
   const { pins, games } = useArcade();
 
@@ -29,13 +28,8 @@ export function Achievements({ game }: { game?: GameModel }) {
     return achievements[game?.config.project || ""] || [];
   }, [achievements, game]);
 
-  const [searchParams] = useSearchParams();
-  const address = useMemo(() => {
-    return searchParams.get("address") || self || "0x0";
-  }, [searchParams, self]);
-
   const { pinneds } = useMemo(() => {
-    const ids = pins[addAddressPadding(address || self || "0x0")] || [];
+    const ids = pins[address] || [];
     const pinneds = gameAchievements
       .filter((item) => ids.includes(item.id))
       .sort((a, b) => parseFloat(a.percentage) - parseFloat(b.percentage))
@@ -49,10 +43,6 @@ export function Achievements({ game }: { game?: GameModel }) {
         ?.earnings || 0;
     return { points };
   }, [address, gamePlayers]);
-
-  const isSelf = useMemo(() => {
-    return !searchParams.get("address") || address === self;
-  }, [searchParams, self]);
 
   const filteredGames = useMemo(() => {
     return !game ? games : [game];
@@ -93,6 +83,7 @@ export function Achievements({ game }: { game?: GameModel }) {
 
             {game && (
               <Trophies
+                address={address}
                 achievements={gameAchievements}
                 softview={!isSelf}
                 enabled={pinneds.length < 3}

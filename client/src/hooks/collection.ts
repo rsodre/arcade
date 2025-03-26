@@ -1,6 +1,6 @@
-import { useAccount } from "@starknet-react/core";
 import { useState } from "react";
 import { useCollectionsQuery } from "@cartridge/utils/api/cartridge";
+import { useAddress } from "./address";
 
 const LIMIT = 1000;
 
@@ -41,7 +41,7 @@ export function useCollections({
 }: {
   projects: string[];
 }): UseCollectionsResponse {
-  const { address } = useAccount();
+  const { address } = useAddress();
   const [offset, setOffset] = useState(0);
   const [collections, setCollections] = useState<Collection[]>([]);
 

@@ -5,7 +5,7 @@ import {
   Input,
   SearchIcon,
 } from "@cartridge/ui-next";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "@/hooks/context";
 import {
   ControllerTheme,
@@ -17,12 +17,17 @@ import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { Register } from "./register";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAccount } from "@starknet-react/core";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const Games = () => {
-  const [selected, setSelected] = useState(0);
   const [search, setSearch] = useState("");
   const { address } = useAccount();
   const { games } = useArcade();
+
+  const [searchParams] = useSearchParams();
+  const selected = useMemo(() => {
+    return searchParams.get("game") || "All";
+  }, [searchParams]);
 
   const filteredGames = useMemo(() => {
     return games.filter((game) =>
@@ -38,24 +43,21 @@ export const Games = () => {
         style={{ scrollbarWidth: "none" }}
       >
         <Game
-          index={0}
           first={true}
           project=""
           namespace=""
           preset="default"
           name="All"
           icon=""
-          active={selected === 0}
-          setSelected={setSelected}
+          active={selected === "All"}
         />
         <CardListContent
           className="p-0 overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          {filteredGames.map((game, index) => (
+          {filteredGames.map((game) => (
             <Game
               key={`${game.worldAddress}-${game.namespace}`}
-              index={index + 1}
               first={false}
               project={game.config.project}
               namespace={game.namespace}
@@ -63,10 +65,9 @@ export const Games = () => {
               name={game.metadata.name}
               icon={game.metadata.image}
               cover={game.metadata.banner}
-              active={selected === index + 1}
+              active={selected === game.metadata.name}
               game={game}
               address={address}
-              setSelected={setSelected}
             />
           ))}
         </CardListContent>
@@ -109,7 +110,6 @@ export const Search = ({
 };
 
 export const Game = ({
-  index,
   first,
   project,
   namespace,
@@ -120,9 +120,7 @@ export const Game = ({
   active,
   game,
   address,
-  setSelected,
 }: {
-  index: number;
   first: boolean;
   project: string;
   namespace: string;
@@ -133,7 +131,6 @@ export const Game = ({
   active: boolean;
   game?: GameModel;
   address?: string;
-  setSelected: (index: number) => void;
 }) => {
   const { earnings: totalEarnings } = usePlayerStats();
   const { earnings: gameEarnings } = usePlayerGameStats(project);
@@ -145,12 +142,30 @@ export const Game = ({
     setNamespace,
   } = useProject();
 
+  const isOwner = useMemo(() => {
+    return BigInt(game?.owner || "0x0") === BigInt(address || "0x0");
+  }, [game, address]);
+
+  const navigate = useNavigate();
   const handleClick = useCallback(() => {
-    setSelected(index);
+    // Update the url params
+    const url = new URL(window.location.href);
+    url.searchParams.set("game", name);
+    navigate(url.toString().replace(window.location.origin, ""));
+  }, [name, navigate]);
+
+  useEffect(() => {
+    if (
+      !active ||
+      (currentProject === project && currentNamespace === namespace)
+    )
+      return;
+    // Update the selected project and namespace
     if (currentProject !== project || currentNamespace !== namespace) {
       setProject(project);
       setNamespace(namespace);
     }
+    // Update the theme and cover
     const config = configs[preset.toLowerCase()]?.theme;
     if (!config || !config.colors) {
       resetTheme();
@@ -167,21 +182,18 @@ export const Game = ({
     setTheme(newTheme);
     setCover(cover);
   }, [
-    index,
+    active,
     project,
     namespace,
     cover,
     currentProject,
     currentNamespace,
     theme,
-    setSelected,
     setTheme,
     setProject,
+    setNamespace,
     setCover,
   ]);
-  const isOwner = useMemo(() => {
-    return BigInt(game?.owner || "0x0") === BigInt(address || "0x0");
-  }, [game, address]);
 
   return (
     <div className={cn("flex gap-px", first && "rounded-t overflow-clip")}>

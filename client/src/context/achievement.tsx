@@ -12,6 +12,7 @@ import {
 } from "@/helpers/achievements";
 import { useUsernames } from "@/hooks/account";
 import { addAddressPadding } from "starknet";
+import { useAddress } from "@/hooks/address";
 
 export interface AchievementsProps {
   namespace: string;
@@ -27,7 +28,6 @@ type AchievementContextType = {
   isLoading: boolean;
   isError: boolean;
   projects: AchievementsProps[];
-  setAddress: (address: string | undefined) => void;
   setProjects: (projects: AchievementsProps[]) => void;
 };
 
@@ -40,7 +40,6 @@ const initialState: AchievementContextType = {
   isLoading: false,
   isError: false,
   projects: [],
-  setAddress: () => {},
   setProjects: () => {},
 };
 
@@ -49,13 +48,14 @@ export const AchievementContext =
 
 export function AchievementProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<AchievementsProps[]>([]);
-  const [achievements, setAchievements] = useState<{ [game: string]: Item[] }>(
-    {},
-  );
   const [players, setPlayers] = useState<{ [game: string]: Player[] }>({});
   const [events, setEvents] = useState<{ [game: string]: Event[] }>({});
   const [globals, setGlobals] = useState<Player[]>([]);
-  const [address, setAddress] = useState<string | undefined>();
+  const [achievements, setAchievements] = useState<{ [game: string]: Item[] }>(
+    {},
+  );
+
+  const { address } = useAddress();
 
   const trophiesProps = useMemo(
     () => projects.map((prop) => ({ ...prop, name: TROPHY })),
@@ -89,7 +89,8 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
     if (
       !Object.values(trophies).length ||
       !Object.values(progressions).length ||
-      !address
+      !address ||
+      address === "0x0"
     )
       return;
     // Compute players and achievement stats
@@ -146,7 +147,6 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
           (trophiesLoading || progressionsLoading),
         isError: trophiesError || progressionsError,
         projects,
-        setAddress,
         setProjects,
       }}
     >
