@@ -121,15 +121,14 @@ export const ArcadeTabs = ({
       const newVisibleTabs: string[] = [];
       const newOverflowTabs: string[] = [];
 
-      order.forEach((tab, index) => {
-        const last = index === order.length - 1;
+      order.forEach((tab) => {
         const { width, visible } = tabRefs.current.get(tab) || {
           width: 0,
           visible: false,
         };
         if (!visible) return;
         if (
-          usedWidth + width - (last && newOverflowTabs.length === 0 ? buttonWidth : 0) <= availableWidth &&
+          usedWidth + width <= availableWidth &&
           newOverflowTabs.length === 0
         ) {
           newVisibleTabs.push(tab);
@@ -139,10 +138,10 @@ export const ArcadeTabs = ({
         }
       });
 
-      if (visibleTabs.join(',') !== newVisibleTabs.join(',')) {
+      if (visibleTabs.join(",") !== newVisibleTabs.join(",")) {
         setVisibleTabs(newVisibleTabs);
       }
-      if (overflowTabs.join(',') !== newOverflowTabs.join(',')) {
+      if (overflowTabs.join(",") !== newOverflowTabs.join(",")) {
         setOverflowTabs(newOverflowTabs);
       }
     });
