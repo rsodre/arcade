@@ -86,16 +86,25 @@ export const ArcadeTabs = ({
   const [overflowTabs, setOverflowTabs] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const hiddenRef = useRef<HTMLDivElement>(null);
-  const tabRefs = useRef(new Map<string, number>());
+  const tabRefs = useRef(
+    new Map<string, { width: number; visible: boolean }>(),
+  );
 
   useEffect(() => {
     if (!hiddenRef.current) return;
-    const tabWidths = new Map<string, number>();
+    const tabWidths = new Map<string, { width: number; visible: boolean }>();
     hiddenRef.current.childNodes.forEach((node) => {
       const element = node as HTMLDivElement;
       const tab = element.textContent?.toLowerCase();
       if (tab) {
-        tabWidths.set(tab, element.offsetWidth);
+        let visible = false;
+        if (tab === "discover" && discover) visible = true;
+        if (tab === "inventory" && inventory) visible = true;
+        if (tab === "achievements" && achievements) visible = true;
+        if (tab === "leaderboard" && leaderboard) visible = true;
+        if (tab === "guilds" && guilds) visible = true;
+        if (tab === "activity" && activity) visible = true;
+        tabWidths.set(tab, { width: element.offsetWidth, visible });
       }
     });
     tabRefs.current = tabWidths;
@@ -108,12 +117,16 @@ export const ArcadeTabs = ({
       const buttonWidth = 32;
       const availableWidth =
         containerRef.current.offsetWidth - buttonWidth - gap;
-      let usedWidth = 0;
+      let usedWidth = 32;
       const newVisibleTabs: string[] = [];
       const newOverflowTabs: string[] = [];
 
       order.forEach((tab) => {
-        const width = tabRefs.current.get(tab) || 100;
+        const { width, visible } = tabRefs.current.get(tab) || {
+          width: 0,
+          visible: false,
+        };
+        if (!visible) return;
         if (
           usedWidth + width <= availableWidth &&
           newOverflowTabs.length === 0
