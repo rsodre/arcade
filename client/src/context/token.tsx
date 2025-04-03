@@ -18,9 +18,9 @@ import { formatEther } from "viem";
 
 const LIMIT = 1000;
 
-const DEFAULT_ERC20_ADDRESSES = [
-  ETH_CONTRACT_ADDRESS,
-  STRK_CONTRACT_ADDRESS,
+const DEFAULT_ERC20_ADDRESSES = [ETH_CONTRACT_ADDRESS, STRK_CONTRACT_ADDRESS];
+
+const EXTRA_ERC20_ADDRESSES = [
   USDC_CONTRACT_ADDRESS,
   USDT_CONTRACT_ADDRESS,
   DAI_CONTRACT_ADDRESS,
@@ -81,7 +81,6 @@ export function TokenProvider({ children }: { children: ReactNode }) {
       queryKey: ["balances", offset, address],
       enabled: projects.length > 0 && !!address,
       onSuccess: ({ balances }) => {
-        console.log("useBalancesQuery", address, { balances });
         const newTokens: { [key: string]: Token } = {};
         balances?.edges.forEach((e) => {
           const { amount, value, meta } = e.node;
@@ -127,9 +126,10 @@ export function TokenProvider({ children }: { children: ReactNode }) {
   );
 
   // Query default ERC20 balances
-  const contractAddresses = DEFAULT_ERC20_ADDRESSES.filter(
-    (address) => !toriiData[address],
-  );
+  const contractAddresses = [
+    ...DEFAULT_ERC20_ADDRESSES,
+    ...EXTRA_ERC20_ADDRESSES,
+  ].filter((address) => !toriiData[address]);
   const { data: rpcData }: UseERC20BalanceResponse = useERC20Balance({
     address: address,
     contractAddress: contractAddresses,
@@ -170,6 +170,9 @@ export function TokenProvider({ children }: { children: ReactNode }) {
           change,
         },
         metadata: {
+          project: EXTRA_ERC20_ADDRESSES.includes(contractAddress)
+            ? "extra"
+            : undefined,
           name: token.meta.name,
           symbol: token.meta.symbol,
           decimals: token.meta.decimals,
