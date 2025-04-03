@@ -2,7 +2,6 @@ import { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ArcadeProvider } from "./arcade";
 import { ThemeProvider } from "./theme";
-import { ConnectionProvider } from "./connection";
 import { BrowserRouter } from "react-router-dom";
 import { CartridgeAPIProvider } from "@cartridge/utils/api/cartridge";
 import { IndexerAPIProvider } from "@cartridge/utils/api/indexer";
@@ -24,17 +23,15 @@ export function Provider({ children }: PropsWithChildren) {
           <QueryClientProvider client={queryClient}>
             <ArcadeProvider>
               <StarknetProvider>
-                <ConnectionProvider>
-                  <ThemeProvider defaultScheme="system">
-                    <ProjectProvider>
-                      <CollectionProvider>
-                        <TokenProvider>
-                          <AchievementProvider>{children}</AchievementProvider>
-                        </TokenProvider>
-                      </CollectionProvider>
-                    </ProjectProvider>
-                  </ThemeProvider>
-                </ConnectionProvider>
+                <ThemeProvider defaultScheme="system">
+                  <ProjectProvider>
+                    <CollectionProvider>
+                      <TokenProvider>
+                        <AchievementProvider>{children}</AchievementProvider>
+                      </TokenProvider>
+                    </CollectionProvider>
+                  </ProjectProvider>
+                </ThemeProvider>
               </StarknetProvider>
             </ArcadeProvider>
           </QueryClientProvider>
