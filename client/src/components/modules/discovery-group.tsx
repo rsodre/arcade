@@ -3,17 +3,17 @@ import {
   ArcadeGameHeaderProps,
   cn,
 } from "@cartridge/ui-next";
-import { cva, VariantProps } from "class-variance-authority";
-import { HTMLAttributes } from "react";
 import {
   ArcadeDiscoveryEvent,
   ArcadeDiscoveryEventProps,
 } from "./discovery-event";
+import { cva, VariantProps } from "class-variance-authority";
+import { HTMLAttributes } from "react";
 
 interface ArcadeDiscoveryGroupProps
   extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof arcadeDiscoveryGroupVariants> {
-  game?: ArcadeGameHeaderProps;
+  game: ArcadeGameHeaderProps;
   events: ArcadeDiscoveryEventProps[];
   loading?: boolean;
   rounded?: boolean;
@@ -24,8 +24,13 @@ export const arcadeDiscoveryGroupVariants = cva(
   {
     variants: {
       variant: {
+        darkest: "",
+        darker: "",
+        dark: "",
         default: "",
-        faded: "",
+        light: "",
+        lighter: "",
+        lightest: "",
         ghost: "",
       },
     },
