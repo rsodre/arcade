@@ -70,7 +70,12 @@ export const AchievementPlayerLabel = ({
       className={cn(achievementPlayerLabelVariants({ variant }), className)}
       {...props}
     >
-      <AchievementPlayerBadge icon={icon} variant={variant} rank={rank} />
+      <AchievementPlayerBadge
+        icon={icon}
+        variant={variant}
+        rank={rank}
+        size="2xl"
+      />
       <div className="flex flex-col gap-y-0.5">
         <div className="flex items-center gap-x-2">
           <p className="text-lg/[22px] font-semibold text-foreground-100">
