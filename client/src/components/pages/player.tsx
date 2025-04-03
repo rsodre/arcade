@@ -87,21 +87,23 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
       const followeds = follows[getChecksumAddress(address)] || [];
       const follower = followeds.includes(getChecksumAddress(self || "0x0"));
       const followingCount = followeds.length;
-      const addresses = Object.keys(follows).filter((key) => {
+      const followers = Object.keys(follows).filter((key) => {
         const followeds = follows[key] || [];
         return followeds.includes(getChecksumAddress(address));
       });
-      const followerCount = addresses.length;
-      // Find intersection of addresses and followeds
-      const intersection = addresses.filter((address) =>
-        followeds.includes(address),
-      );
+      const followerCount = followers.length;
+      // Find intersection of addresses and self followeds
+      const addresses = follows[getChecksumAddress(self || "0x0")] || [];
+      const intersection = addresses
+        .filter((address) => followers.includes(address))
+        .map((address) => `0x${BigInt(address).toString(16)}`);
       return { follower, followerCount, followingCount, intersection };
     }, [follows, address, self]);
 
   const { usernames: followerUsernames } = useUsernames({
     addresses: intersection,
   });
+
   const followers = useMemo(() => {
     return followerUsernames
       .map((user) => user.username)
