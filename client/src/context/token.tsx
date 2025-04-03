@@ -78,9 +78,10 @@ export function TokenProvider({ children }: { children: ReactNode }) {
       offset: offset,
     },
     {
-      queryKey: ["balances", offset],
+      queryKey: ["balances", offset, address],
       enabled: projects.length > 0 && !!address,
       onSuccess: ({ balances }) => {
+        console.log("useBalancesQuery", address, { balances });
         const newTokens: { [key: string]: Token } = {};
         balances?.edges.forEach((e) => {
           const { amount, value, meta } = e.node;
@@ -120,7 +121,7 @@ export function TokenProvider({ children }: { children: ReactNode }) {
         if (balances?.edges.length === LIMIT) {
           setOffset(offset + LIMIT);
         }
-        setToriiData((prev) => ({ ...prev, ...newTokens }));
+        setToriiData(newTokens);
       },
     },
   );
