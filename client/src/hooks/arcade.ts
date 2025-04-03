@@ -22,7 +22,8 @@ export const useArcade = () => {
     );
   }
 
-  const { chainId, provider, pins, games, chains } = context;
+  const { chainId, provider, pins, games, chains, projects, setProjects } =
+    context;
 
-  return { chainId, provider, pins, games, chains };
+  return { chainId, provider, pins, games, chains, projects, setProjects };
 };

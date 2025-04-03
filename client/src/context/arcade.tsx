@@ -23,6 +23,11 @@ import { Chain } from "@starknet-react/chains";
 
 const CHAIN_ID = constants.StarknetChainId.SN_MAIN;
 
+export interface ProjectProps {
+  namespace: string;
+  project: string;
+}
+
 /**
  * Interface defining the shape of the Arcade context.
  */
@@ -33,6 +38,8 @@ interface ArcadeContextType {
   pins: { [playerId: string]: string[] };
   games: GameModel[];
   chains: Chain[];
+  projects: ProjectProps[];
+  setProjects: (projects: ProjectProps[]) => void;
 }
 
 /**
@@ -51,6 +58,7 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
   const [pins, setPins] = useState<{ [playerId: string]: string[] }>({});
   const [games, setGames] = useState<{ [gameId: string]: GameModel }>({});
   const [chains, setChains] = useState<Chain[]>([]);
+  const [projects, setProjects] = useState<ProjectProps[]>([]);
   const [initialized, setInitialized] = useState<boolean>(false);
 
   useEffect(() => {
@@ -188,6 +196,8 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
         pins,
         games: sortedGames,
         chains,
+        projects,
+        setProjects,
       }}
     >
       {children}

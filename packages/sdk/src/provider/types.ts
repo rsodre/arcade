@@ -59,17 +59,8 @@ export interface SocialUnfollowProps {
 }
 
 export interface SocialCreateAllianceProps {
-  color: BigNumberish;
-  preset: ByteArray;
-  name: ByteArray;
-  description: ByteArray;
-  image: ByteArray;
-  banner: ByteArray;
-  discord: ByteArray;
-  telegram: ByteArray;
-  twitter: ByteArray;
-  youtube: ByteArray;
-  website: ByteArray;
+  metadata: ByteArray;
+  socials: ByteArray;
 }
 
 export interface SocialOpenAllianceProps {
@@ -99,17 +90,8 @@ export interface SocialCancelAllianceProps {}
 export interface SocialLeaveAllianceProps {}
 
 export interface SocialCreateGuildProps {
-  color: BigNumberish;
-  preset: ByteArray;
-  name: ByteArray;
-  description: ByteArray;
-  image: ByteArray;
-  banner: ByteArray;
-  discord: ByteArray;
-  telegram: ByteArray;
-  twitter: ByteArray;
-  youtube: ByteArray;
-  website: ByteArray;
+  metadata: ByteArray;
+  socials: ByteArray;
 }
 
 export interface SocialOpenGuildProps {
@@ -160,17 +142,8 @@ export interface RegistryRegisterGameProps {
   project: ByteArray;
   rpc: ByteArray;
   policies: ByteArray;
-  color: BigNumberish;
-  preset: ByteArray;
-  name: ByteArray;
-  description: ByteArray;
-  image: ByteArray;
-  banner: ByteArray;
-  discord: ByteArray;
-  telegram: ByteArray;
-  twitter: ByteArray;
-  youtube: ByteArray;
-  website: ByteArray;
+  metadata: ByteArray;
+  socials: ByteArray;
 }
 
 export interface RegistryUpdateGameProps {
@@ -179,17 +152,8 @@ export interface RegistryUpdateGameProps {
   project: ByteArray;
   rpc: ByteArray;
   policies: ByteArray;
-  color: BigNumberish;
-  preset: ByteArray;
-  name: ByteArray;
-  description: ByteArray;
-  image: ByteArray;
-  banner: ByteArray;
-  discord: ByteArray;
-  telegram: ByteArray;
-  twitter: ByteArray;
-  youtube: ByteArray;
-  website: ByteArray;
+  metadata: ByteArray;
+  socials: ByteArray;
 }
 
 export interface RegistryPublishGameProps {

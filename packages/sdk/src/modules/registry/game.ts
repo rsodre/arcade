@@ -79,7 +79,7 @@ export class GameModel {
       0,
       new Config("", "", ""),
       new Metadata("", "", "", "", "", ""),
-      new Socials("", "", "", "", ""),
+      new Socials("", "", "", "", "", ""),
       "",
     );
   }

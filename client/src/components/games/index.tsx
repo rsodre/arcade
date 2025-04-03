@@ -18,6 +18,8 @@ import { Register } from "./register";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAccount } from "@starknet-react/core";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import cartridge from "@/assets/cartridge-logo.png";
+import banner from "@/assets/banner.png";
 
 export const Games = () => {
   const [search, setSearch] = useState("");
@@ -26,7 +28,7 @@ export const Games = () => {
 
   const [searchParams] = useSearchParams();
   const selected = useMemo(() => {
-    return searchParams.get("game") || "All";
+    return searchParams.get("game") || "All Games";
   }, [searchParams]);
 
   const filteredGames = useMemo(() => {
@@ -47,9 +49,10 @@ export const Games = () => {
           project=""
           namespace=""
           preset="default"
-          name="All"
-          icon=""
-          active={selected === "All"}
+          name="All Games"
+          icon={cartridge}
+          cover={banner}
+          active={selected === "All Games"}
         />
         <CardListContent
           className="p-0 overflow-y-scroll"

@@ -1,9 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import {
-  LayoutContent,
-  AchievementLeaderboard,
-  AchievementLeaderboardRow,
-} from "@cartridge/ui-next";
+import { LayoutContent, AchievementLeaderboard } from "@cartridge/ui-next";
 import { useCallback, useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
@@ -15,6 +11,7 @@ import {
   LeaderboardError,
   LeaderboardLoading,
 } from "../errors";
+import AchievementLeaderboardRow from "../modules/leaderboard-row";
 
 export function Leaderboard({ game }: { game?: GameModel }) {
   const { address } = useAddress();

@@ -3,8 +3,6 @@
 use registry::constants;
 pub use registry::models::index::Game;
 use registry::types::config::Config;
-use registry::types::metadata::Metadata;
-use registry::types::socials::Socials;
 use registry::helpers::json::JsonifiableTrait;
 
 // Errors
@@ -30,8 +28,8 @@ pub impl GameImpl of GameTrait {
         world_address: felt252,
         namespace: felt252,
         config: Config,
-        metadata: Metadata,
-        socials: Socials,
+        metadata: ByteArray,
+        socials: ByteArray,
         owner: felt252,
     ) -> Game {
         // [Check] Inputs
@@ -49,8 +47,8 @@ pub impl GameImpl of GameTrait {
             points: 0,
             priority: 0,
             config: config.jsonify(),
-            socials: socials.jsonify(),
-            metadata: metadata.jsonify(),
+            socials: socials,
+            metadata: metadata,
             owner: owner,
         }
     }
@@ -76,11 +74,11 @@ pub impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn update(ref self: Game, config: Config, metadata: Metadata, socials: Socials) {
+    fn update(ref self: Game, config: Config, metadata: ByteArray, socials: ByteArray) {
         // [Effect] Update Game
         self.config = config.jsonify();
-        self.metadata = metadata.jsonify();
-        self.socials = socials.jsonify();
+        self.metadata = metadata;
+        self.socials = socials;
         // [Effect] Reset visibility status
         self.published = false;
         self.whitelisted = false;
@@ -174,8 +172,6 @@ mod tests {
     // Internal imports
 
     use registry::types::config::{ConfigTrait, ConfigJsonifiable};
-    use registry::types::metadata::{MetadataTrait, MetadataJsonifiable};
-    use registry::types::socials::{SocialsTrait, SocialsJsonifiable};
     // Local imports
 
     use super::{GameTrait, GameAssert};
@@ -255,17 +251,8 @@ mod tests {
         let rpc = "CPR";
         let policies = "SEICILOP";
         let config = ConfigTrait::new(project, rpc, policies);
-        let metadata = MetadataTrait::new(
-            Option::Some('123456'),
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-        );
-        let socials = SocialsTrait::new(
-            Option::Some("discord"), Option::None, Option::None, Option::None, Option::None,
-        );
+        let metadata = "{\"color\": \"#123456\"}";
+        let socials = "{\"discord\": \"discord\"}";
         game.update(config.clone(), metadata.clone(), socials.clone());
         assert_eq!(game.config, config.jsonify());
         assert_eq!(game.metadata, metadata.clone().jsonify());

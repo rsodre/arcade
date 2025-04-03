@@ -1,7 +1,7 @@
 // Internal imports
 
 pub use achievement::events::index::TrophyCreation;
-use achievement::types::task::{Task, TaskTrait};
+use achievement::types::task::Task;
 
 // Constants
 
@@ -88,8 +88,9 @@ impl CreationAssert of AssertTrait {
 mod tests {
     // Local imports
 
+    use achievement::types::task::{Task, TaskTrait};
     use super::CreationTrait;
-    use super::{Task, TaskTrait, MAX_POINTS};
+    use super::MAX_POINTS;
 
     // Constants
 

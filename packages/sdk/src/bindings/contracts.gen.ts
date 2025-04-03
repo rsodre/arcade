@@ -9,17 +9,8 @@ export function setupWorld(provider: DojoProvider) {
     project: BigNumberish,
     rpc: ByteArray,
     policies: ByteArray,
-    color: BigNumberish,
-    preset: ByteArray,
-    name: ByteArray,
-    description: ByteArray,
-    image: ByteArray,
-    banner: ByteArray,
-    discord: ByteArray,
-    telegram: ByteArray,
-    twitter: ByteArray,
-    youtube: ByteArray,
-    website: ByteArray,
+    metadata: ByteArray,
+    socials: ByteArray,
   ) => {
     try {
       return await provider.execute(
@@ -33,17 +24,8 @@ export function setupWorld(provider: DojoProvider) {
             project,
             rpc,
             policies,
-            color,
-            preset,
-            name,
-            description,
-            image,
-            banner,
-            discord,
-            telegram,
-            twitter,
-            youtube,
-            website,
+            metadata,
+            socials,
           ],
         },
         "ARCADE",
@@ -60,17 +42,8 @@ export function setupWorld(provider: DojoProvider) {
     project: BigNumberish,
     rpc: ByteArray,
     policies: ByteArray,
-    color: BigNumberish,
-    preset: BigNumberish,
-    name: ByteArray,
-    description: ByteArray,
-    image: ByteArray,
-    banner: ByteArray,
-    discord: ByteArray,
-    telegram: ByteArray,
-    twitter: ByteArray,
-    youtube: ByteArray,
-    website: ByteArray,
+    metadata: ByteArray,
+    socials: ByteArray,
   ) => {
     try {
       return await provider.execute(
@@ -84,17 +57,8 @@ export function setupWorld(provider: DojoProvider) {
             project,
             rpc,
             policies,
-            color,
-            preset,
-            name,
-            description,
-            image,
-            banner,
-            discord,
-            telegram,
-            twitter,
-            youtube,
-            website,
+            metadata,
+            socials,
           ],
         },
         "ARCADE",
@@ -418,17 +382,8 @@ export function setupWorld(provider: DojoProvider) {
 
   const Social_createAlliance = async (
     snAccount: Account | AccountInterface,
-    color: BigNumberish,
-    preset: ByteArray,
-    name: ByteArray,
-    description: ByteArray,
-    image: ByteArray,
-    banner: ByteArray,
-    discord: ByteArray,
-    telegram: ByteArray,
-    twitter: ByteArray,
-    youtube: ByteArray,
-    website: ByteArray,
+    metadata: ByteArray,
+    socials: ByteArray,
   ) => {
     try {
       return await provider.execute(
@@ -436,7 +391,7 @@ export function setupWorld(provider: DojoProvider) {
         {
           contractName: "Social",
           entrypoint: "create_alliance",
-          calldata: [color, preset, name, description, image, banner, discord, telegram, twitter, youtube, website],
+          calldata: [metadata, socials],
         },
         "ARCADE",
       );
@@ -575,17 +530,8 @@ export function setupWorld(provider: DojoProvider) {
 
   const Social_createGuild = async (
     snAccount: Account | AccountInterface,
-    color: BigNumberish,
-    preset: ByteArray,
-    name: ByteArray,
-    description: ByteArray,
-    image: ByteArray,
-    banner: ByteArray,
-    discord: ByteArray,
-    telegram: ByteArray,
-    twitter: ByteArray,
-    youtube: ByteArray,
-    website: ByteArray,
+    metadata: ByteArray,
+    socials: ByteArray,
   ) => {
     try {
       return await provider.execute(
@@ -593,7 +539,7 @@ export function setupWorld(provider: DojoProvider) {
         {
           contractName: "Social",
           entrypoint: "create_guild",
-          calldata: [color, preset, name, description, image, banner, discord, telegram, twitter, youtube, website],
+          calldata: [metadata, socials],
         },
         "ARCADE",
       );

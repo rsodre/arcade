@@ -1,3 +1,5 @@
+import { byteArray, ByteArray } from "starknet";
+
 export class Metadata {
   constructor(
     public color: string,
@@ -23,5 +25,17 @@ export class Metadata {
       console.error("Error parsing metadata:", error);
       return new Metadata("", "", "", "", "", "");
     }
+  }
+
+  compile(): ByteArray {
+    const json = {
+      color: this.color,
+      preset: this.preset,
+      name: this.name,
+      description: this.description,
+      image: this.image,
+      banner: this.banner,
+    };
+    return byteArray.byteArrayFromString(JSON.stringify(json));
   }
 }

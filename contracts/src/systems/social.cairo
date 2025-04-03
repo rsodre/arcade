@@ -6,20 +6,7 @@ pub trait ISocial<TContractState> {
     fn unpin(ref self: TContractState, achievement_id: felt252);
     fn follow(ref self: TContractState, target: felt252);
     fn unfollow(ref self: TContractState, target: felt252);
-    fn create_alliance(
-        ref self: TContractState,
-        color: felt252,
-        preset: ByteArray,
-        name: ByteArray,
-        description: ByteArray,
-        image: ByteArray,
-        banner: ByteArray,
-        discord: ByteArray,
-        telegram: ByteArray,
-        twitter: ByteArray,
-        youtube: ByteArray,
-        website: ByteArray,
-    );
+    fn create_alliance(ref self: TContractState, metadata: ByteArray, socials: ByteArray);
     fn open_alliance(ref self: TContractState, free: bool);
     fn close_alliance(ref self: TContractState);
     fn crown_guild(ref self: TContractState, guild_id: u32);
@@ -28,20 +15,7 @@ pub trait ISocial<TContractState> {
     fn request_alliance(ref self: TContractState, alliance_id: u32);
     fn cancel_alliance(ref self: TContractState);
     fn leave_alliance(ref self: TContractState);
-    fn create_guild(
-        ref self: TContractState,
-        color: felt252,
-        preset: ByteArray,
-        name: ByteArray,
-        description: ByteArray,
-        image: ByteArray,
-        banner: ByteArray,
-        discord: ByteArray,
-        telegram: ByteArray,
-        twitter: ByteArray,
-        youtube: ByteArray,
-        website: ByteArray,
-    );
+    fn create_guild(ref self: TContractState, metadata: ByteArray, socials: ByteArray);
     fn open_guild(ref self: TContractState, free: bool);
     fn close_guild(ref self: TContractState);
     fn crown_member(ref self: TContractState, member_id: felt252);
@@ -147,39 +121,10 @@ pub mod Social {
 
         // Alliance
 
-        fn create_alliance(
-            ref self: ContractState,
-            color: felt252,
-            preset: ByteArray,
-            name: ByteArray,
-            description: ByteArray,
-            image: ByteArray,
-            banner: ByteArray,
-            discord: ByteArray,
-            telegram: ByteArray,
-            twitter: ByteArray,
-            youtube: ByteArray,
-            website: ByteArray,
-        ) {
+        fn create_alliance(ref self: ContractState, metadata: ByteArray, socials: ByteArray) {
             let world = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
-            self
-                .allianceable
-                .create(
-                    world,
-                    caller,
-                    Option::Some(color),
-                    Option::Some(preset),
-                    Option::Some(name),
-                    Option::Some(description),
-                    Option::Some(image),
-                    Option::Some(banner),
-                    Option::Some(discord),
-                    Option::Some(telegram),
-                    Option::Some(twitter),
-                    Option::Some(youtube),
-                    Option::Some(website),
-                );
+            self.allianceable.create(world, caller, metadata, socials);
         }
 
         fn open_alliance(ref self: ContractState, free: bool) {
@@ -232,39 +177,10 @@ pub mod Social {
 
         // Guild
 
-        fn create_guild(
-            ref self: ContractState,
-            color: felt252,
-            preset: ByteArray,
-            name: ByteArray,
-            description: ByteArray,
-            image: ByteArray,
-            banner: ByteArray,
-            discord: ByteArray,
-            telegram: ByteArray,
-            twitter: ByteArray,
-            youtube: ByteArray,
-            website: ByteArray,
-        ) {
+        fn create_guild(ref self: ContractState, metadata: ByteArray, socials: ByteArray) {
             let world = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
-            self
-                .guildable
-                .create(
-                    world,
-                    caller,
-                    Option::Some(color),
-                    Option::Some(preset),
-                    Option::Some(name),
-                    Option::Some(description),
-                    Option::Some(image),
-                    Option::Some(banner),
-                    Option::Some(discord),
-                    Option::Some(telegram),
-                    Option::Some(twitter),
-                    Option::Some(youtube),
-                    Option::Some(website),
-                );
+            self.guildable.create(world, caller, metadata, socials);
         }
 
         fn open_guild(ref self: ContractState, free: bool) {

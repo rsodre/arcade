@@ -1,6 +1,6 @@
 # db_dir = "./torii-db"
 rpc = "https://api.cartridge.gg/x/starknet/mainnet"
-world_address = "0x5fdd3d9c52a9a0a394c0a944f8813087515d70b6c8c9b9e6eb64f494e809323"
+world_address = "0x2b33bfaf6de21920da455b800547e1bfadabd9e22c299bd08fe42b81451fb02"
 
 [indexing]
 events_chunk_size = 1024
@@ -8,9 +8,8 @@ blocks_chunk_size = 1024
 pending = true
 polling_interval = 500
 max_concurrent_tasks = 100
-world_block = 1258804
+world_block = 1278947
 contracts = []
 
-[events]
-raw = true
+[sql]
 historical = ["ARCADE-TrophyProgression"]

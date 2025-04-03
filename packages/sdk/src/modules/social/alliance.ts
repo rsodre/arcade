@@ -45,7 +45,7 @@ export class AllianceModel {
       false,
       0,
       new Metadata("", "", "", "", "", ""),
-      new Socials("", "", "", "", ""),
+      new Socials("", "", "", "", "", ""),
     );
   }
 

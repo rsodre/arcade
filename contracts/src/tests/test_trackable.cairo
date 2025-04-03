@@ -28,24 +28,7 @@ const PRESET: felt252 = 'PRESET';
 
 fn register(systems: @Systems) {
     testing::set_contract_address(PLAYER());
-    (*systems)
-        .register
-        .register(
-            WORLD_ADDRESS,
-            NAMEPSACE,
-            PROJECT,
-            PRESET,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-        );
+    (*systems).register.register(WORLD_ADDRESS, NAMEPSACE, PROJECT, PRESET, "", "");
 }
 
 // Tests

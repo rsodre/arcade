@@ -1,45 +1,15 @@
-import { useTokens } from "@/hooks/token";
+import { useTokens } from "@/hooks/tokens";
 import { TokenCard } from "@cartridge/ui-next";
-import { Balance, ERC20Metadata, useCountervalue } from "@cartridge/utils";
-import { formatEther } from "viem";
-import { formatBalance } from "@/helpers";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import ControllerConnector from "@cartridge/connector/controller";
 import { useAccount } from "@starknet-react/core";
-import { ERC20_ADDRESSES } from "@/constants";
 
 import placeholder from "@/assets/placeholder.svg";
+import { useAddress } from "@/hooks/address";
+import { Token } from "@/context/token";
 
 export const Tokens = () => {
-  const erc20 = useTokens(ERC20_ADDRESSES);
-
-  const tokens = useMemo(
-    () =>
-      erc20.data
-        .filter(
-          (token) =>
-            !ERC20_ADDRESSES.includes(token.meta.address) ||
-            token.balance.value > 0n,
-        )
-        .map((t) => ({
-          balance: t.balance,
-          meta: t.meta,
-        })),
-    [erc20.data],
-  );
-
-  const tokenData = useMemo(
-    () =>
-      tokens.map((token) => ({
-        balance: formatEther(token.balance.value || 0n),
-        address: token.meta.address,
-      })),
-    [tokens],
-  );
-
-  const { countervalues } = useCountervalue({
-    tokens: tokenData,
-  });
+  const { tokens } = useTokens();
 
   return (
     <div
@@ -47,32 +17,15 @@ export const Tokens = () => {
       style={{ scrollbarWidth: "none" }}
     >
       {tokens.map((token) => (
-        <Item key={token.meta.address} token={token} values={countervalues} />
+        <Item key={token.metadata.address} token={token} />
       ))}
     </div>
   );
 };
 
-function Item({
-  token,
-  values,
-}: {
-  token: { balance: Balance; meta: ERC20Metadata };
-  values: ReturnType<typeof useCountervalue>["countervalues"];
-}) {
+function Item({ token }: { token: Token }) {
   const { connector } = useAccount();
-
-  const value = useMemo(
-    () => values.find((v) => v?.address === token.meta.address),
-    [values, token.meta.address],
-  );
-
-  const change = useMemo(() => {
-    if (!value) {
-      return 0;
-    }
-    return value.current.value - value.period.value;
-  }, [value]);
+  const { isSelf } = useAddress();
 
   const handleClick = useCallback(async () => {
     const controller = (connector as ControllerConnector)?.controller;
@@ -80,24 +33,33 @@ function Item({
       console.error("Connector not initialized");
       return;
     }
-    const path = `inventory/token/${token.meta.address}/send`;
+    const path = `inventory/token/${token.metadata.address}/send`;
     controller.openProfileTo(path);
-  }, [token.meta.address, connector]);
+  }, [token.metadata.address, connector]);
+
+  if (token.balance.amount === 0) return null;
 
   return (
     <TokenCard
-      image={token.meta.logoUrl || placeholder}
-      title={token.meta.name}
-      amount={`${formatBalance(token.balance.formatted, ["~"])} ${token.meta.symbol}`}
-      value={value ? formatBalance(value.current.formatted, ["~"]) : ""}
-      change={
-        !change
-          ? undefined
-          : change > 0
-            ? `+$${change.toFixed(2)}`
-            : `-$${(-change).toFixed(2)}`
+      image={token.metadata.image || placeholder}
+      title={token.metadata.name}
+      amount={`${token.balance.amount.toLocaleString(undefined, { maximumFractionDigits: 5 })} ${token.metadata.symbol}`}
+      value={
+        token.balance.value
+          ? `$${token.balance.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+          : ""
       }
-      onClick={handleClick}
+      change={
+        token.balance.change === 0
+          ? undefined
+          : token.balance.change > 0
+            ? `+$${token.balance.change.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+            : `-$${(-token.balance.change).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+      }
+      onClick={isSelf ? handleClick : undefined}
+      className={
+        isSelf ? "cursor-pointer" : "cursor-default hover:bg-background-200"
+      }
     />
   );
 }

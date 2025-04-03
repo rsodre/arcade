@@ -55,7 +55,15 @@ export function StarknetProvider({ children }: PropsWithChildren) {
   }, [chains]);
 
   const provider: ProviderOptions | null = useMemo(() => {
-    if (!chains.length) return null;
+    if (!chains.length)
+      return {
+        defaultChainId: constants.StarknetChainId.SN_MAIN,
+        chains: [
+          {
+            rpcUrl: import.meta.env.VITE_RPC_URL,
+          },
+        ],
+      };
     return {
       defaultChainId: chainId,
       chains: chains.map((chain) => ({ rpcUrl: chain.rpcUrls.public.http[0] })),
@@ -73,13 +81,11 @@ export function StarknetProvider({ children }: PropsWithChildren) {
     return controllerRef.current;
   }, [controllerRef, provider]);
 
-  if (!chains.length || !controller) return null;
-
   return (
     <StarknetConfig
       autoConnect
       chains={[mainnet, sepolia]}
-      connectors={[controller]}
+      connectors={!controller ? [] : [controller]}
       explorer={voyager}
       provider={jsonProvider}
     >

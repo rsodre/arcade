@@ -4,7 +4,7 @@ import { addAddressPadding } from "starknet";
 import { useSearchParams } from "react-router-dom";
 
 export function useAddress() {
-  const { address: self } = useAccount();
+  const { isConnected, address: self } = useAccount();
 
   const [searchParams] = useSearchParams();
   const address = useMemo(() => {
@@ -12,12 +12,13 @@ export function useAddress() {
   }, [searchParams, self]);
 
   const isSelf = useMemo(() => {
-    return !searchParams.get("address") || address === self;
-  }, [searchParams, self]);
+    return isConnected && address === self;
+  }, [address, self, isConnected]);
 
   const isZero = useMemo(() => {
+    const address = addAddressPadding(searchParams.get("address") || "0x0");
     return BigInt(address) === 0n;
-  }, [address]);
+  }, [searchParams]);
 
   return {
     self,

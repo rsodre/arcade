@@ -26,7 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { GameModel } from "@bal7hazar/arcade-sdk";
+import { GameModel, Metadata, Socials } from "@bal7hazar/arcade-sdk";
 import ControllerConnector from "@cartridge/connector/controller";
 
 const formSchema = z.object({
@@ -70,6 +70,9 @@ const formSchema = z.object({
   website: z.string().refine((val) => val.startsWith("http") || !val, {
     message: "Invalid Website URL",
   }),
+  github: z.string().refine((val) => val.startsWith("http") || !val, {
+    message: "Invalid Github URL",
+  }),
 });
 
 export function Register({ game }: { game?: GameModel }) {
@@ -96,6 +99,7 @@ export function Register({ game }: { game?: GameModel }) {
     //   twitter: game?.socials.twitter || "https://x.com/await_0x",
     //   youtube: game?.socials.youtube || "",
     //   website: game?.socials.website || "https://darkshuffle.dev/",
+    //   github: game?.socials.github || "https://github.com/Provable-Games/dark-shuffle",
     // },
     // defaultValues: {
     //   worldAddress: game?.worldAddress || "0x4f3dccb47477c087ad9c76b8067b8aadded57f8df7f2d7543e6066bcb25332c",
@@ -114,9 +118,12 @@ export function Register({ game }: { game?: GameModel }) {
     //   twitter: game?.socials.twitter || "https://x.com/TheDopeWars",
     //   youtube: game?.socials.youtube || "",
     //   website: game?.socials.website || "https://dopewars.game/",
+    //   github: game?.socials.github || "https://github.com/cartridge-gg/dopewars",
     // },
     // defaultValues: {
-    //   worldAddress: game?.worldAddress || "0x6a9e4c6f0799160ea8ddc43ff982a5f83d7f633e9732ce42701de1288ff705f",
+    //   worldAddress:
+    //     game?.worldAddress ||
+    //     "0x6a9e4c6f0799160ea8ddc43ff982a5f83d7f633e9732ce42701de1288ff705f",
     //   namespace: game?.namespace || "s0_eternum",
     //   project: game?.config.project || "eternum-prod",
     //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
@@ -125,60 +132,80 @@ export function Register({ game }: { game?: GameModel }) {
     //   preset: game?.metadata.preset || "eternum",
     //   name: game?.metadata.name || "Eternum",
     //   description: game?.metadata.description || "Rule the Hex.",
-    //   image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/eternum/icon.svg?raw=true",
-    //   banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/eternum/cover.png?raw=true",
+    //   image:
+    //     game?.metadata.image ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/eternum/icon.svg?raw=true",
+    //   banner:
+    //     game?.metadata.banner ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/eternum/cover.png?raw=true",
     //   discord: game?.socials.discord || "https://discord.gg/CEXUEJF3",
     //   telegram: game?.socials.telegram || "",
     //   twitter: game?.socials.twitter || "https://x.com/RealmsEternum",
     //   youtube: game?.socials.youtube || "",
     //   website: game?.socials.website || "https://eternum.realms.world/",
-    // },
-    // defaultValues: {
-    //   worldAddress: game?.worldAddress || "0x022055481479edc9542aa28bc7da760c45fbf320bce571c31c161baddc13acd9",
-    //   namespace: game?.namespace || "dragark",
-    //   project: game?.config.project || "dragark-mainnet-v9-5",
-    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
-    //   policies: JSON.stringify(game?.config.policies) || ``,
-    //   color: game?.metadata.color || "#71EB34",
-    //   preset: game?.metadata.preset || "dragark",
-    //   name: game?.metadata.name || "Dragark",
-    //   description: game?.metadata.description || "Dragark Mainnet is live now! Let's dive into the Action: Battle, Upgrade, and Mine for Dragark Stones!",
-    //   image: game?.metadata.image || "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/icon.png?raw=true",
-    //   banner: game?.metadata.banner || "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/cover.png?raw=true",
-    //   discord: game?.socials.discord || "https://discord.gg/KEChMrdk7z",
-    //   telegram: game?.socials.telegram || "",
-    //   twitter: game?.socials.twitter || "https://x.com/playDRAGARK",
-    //   youtube: game?.socials.youtube || "",
-    //   website: game?.socials.website || "https://dragark.net/",
+    //   github:
+    //     game?.socials.github || "https://github.com/BibliothecaDAO/eternum",
     // },
     defaultValues: {
       worldAddress:
         game?.worldAddress ||
-        "0x02ea88c9a6314a10e7d8b6e557d01d68cf72d962707086aa242bc4805071f34d",
-      namespace: game?.namespace || "pistols",
-      project: game?.config.project || "pistols-staging",
-      rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/sepolia",
+        "0x022055481479edc9542aa28bc7da760c45fbf320bce571c31c161baddc13acd9",
+      namespace: game?.namespace || "dragark",
+      project: game?.config.project || "dragark-mainnet-v10-1",
+      rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
       policies: game?.config.policies
         ? JSON.stringify(game?.config.policies)
-        : ``,
-      color: game?.metadata.color || "#EF9758",
-      preset: game?.metadata.preset || "pistols",
-      name: game?.metadata.name || "Pistols",
+        : "",
+      color: game?.metadata.color || "#71EB34",
+      preset: game?.metadata.preset || "dragark",
+      name: game?.metadata.name || "Dragark",
       description:
         game?.metadata.description ||
-        "Fully on-chain game made with Dojo by Underware.gg",
+        "Dragark Mainnet is live now! Let's dive into the Action: Battle, Upgrade, and Mine for Dragark Stones!",
       image:
         game?.metadata.image ||
-        "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/icon.png?raw=true",
+        "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/icon.png?raw=true",
       banner:
         game?.metadata.banner ||
-        "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/cover.png?raw=true",
-      discord: game?.socials.discord || "https://discord.gg/Zbap29dD",
+        "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/cover.png?raw=true",
+      discord: game?.socials.discord || "https://discord.gg/KEChMrdk7z",
       telegram: game?.socials.telegram || "",
-      twitter: game?.socials.twitter || "https://x.com/underware_gg",
+      twitter: game?.socials.twitter || "https://x.com/playDRAGARK",
       youtube: game?.socials.youtube || "",
-      website: game?.socials.website || "https://pistols.underware.gg/",
+      website: game?.socials.website || "https://dragark.net/",
+      github:
+        game?.socials.github ||
+        "https://github.com/DragarkTeam/dragark-contract",
     },
+    // defaultValues: {
+    //   worldAddress:
+    //     game?.worldAddress ||
+    //     "0x02ea88c9a6314a10e7d8b6e557d01d68cf72d962707086aa242bc4805071f34d",
+    //   namespace: game?.namespace || "pistols",
+    //   project: game?.config.project || "pistols-staging",
+    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/sepolia",
+    //   policies: game?.config.policies
+    //     ? JSON.stringify(game?.config.policies)
+    //     : ``,
+    //   color: game?.metadata.color || "#EF9758",
+    //   preset: game?.metadata.preset || "pistols",
+    //   name: game?.metadata.name || "Pistols",
+    //   description:
+    //     game?.metadata.description ||
+    //     "Fully on-chain game made with Dojo by Underware.gg",
+    //   image:
+    //     game?.metadata.image ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/icon.png?raw=true",
+    //   banner:
+    //     game?.metadata.banner ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/pistols/cover.png?raw=true",
+    //   discord: game?.socials.discord || "https://discord.gg/Zbap29dD",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "https://x.com/underware_gg",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "https://pistols.underware.gg/",
+    //   github: game?.socials.github || "https://github.com/underware-gg/pistols",
+    // },
     // defaultValues: {
     //   worldAddress: game?.worldAddress || "",
     //   namespace: game?.namespace || "",
@@ -232,23 +259,30 @@ export function Register({ game }: { game?: GameModel }) {
         setLoading(true);
         try {
           let calls: AllowArray<Call> = [];
+          const metadata = new Metadata(
+            values.color,
+            values.preset,
+            values.name,
+            values.description,
+            values.image,
+            values.banner,
+          );
+          const socials = new Socials(
+            values.discord,
+            values.telegram,
+            values.twitter,
+            values.youtube,
+            values.website,
+            values.github,
+          );
           const args = {
             worldAddress: values.worldAddress,
             namespace: values.namespace,
             project: byteArray.byteArrayFromString(values.project),
             rpc: byteArray.byteArrayFromString(values.rpc),
             policies: byteArray.byteArrayFromString(values.policies),
-            color: values.color,
-            preset: byteArray.byteArrayFromString(values.preset),
-            name: byteArray.byteArrayFromString(values.name),
-            description: byteArray.byteArrayFromString(values.description),
-            image: byteArray.byteArrayFromString(values.image),
-            banner: byteArray.byteArrayFromString(values.banner),
-            discord: byteArray.byteArrayFromString(values.discord),
-            telegram: byteArray.byteArrayFromString(values.telegram),
-            twitter: byteArray.byteArrayFromString(values.twitter),
-            youtube: byteArray.byteArrayFromString(values.youtube),
-            website: byteArray.byteArrayFromString(values.website),
+            metadata: metadata.compile(),
+            socials: socials.compile(),
           };
           if (!game) {
             calls = provider.registry.register_game(args);
@@ -411,6 +445,12 @@ export function Register({ game }: { game?: GameModel }) {
                 name="website"
                 label="Website"
                 placeholder="https://book.dojoengine.org/"
+                form={form}
+              />
+              <Field
+                name="github"
+                label="Github"
+                placeholder="https://github.com/dojoengine/dojo"
                 form={form}
               />
             </div>

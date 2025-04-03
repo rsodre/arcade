@@ -2,15 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { Connection } from "./connection";
 import ArcadeHeader from "./modules/arcade-header";
 
-interface HeaderProps {
-  cover?: string;
-}
+interface HeaderProps {}
 
-export const Header = ({ cover }: HeaderProps) => {
+export const Header = ({}: HeaderProps) => {
   const navigate = useNavigate();
 
   return (
-    <ArcadeHeader cover={cover} onClick={() => navigate("/")}>
+    <ArcadeHeader onClick={() => navigate("/")}>
       <Connection />
     </ArcadeHeader>
   );

@@ -6,32 +6,16 @@ pub trait IRegister<TContractState> {
         namespace: felt252,
         project: felt252,
         preset: felt252,
-        color: Option<felt252>,
-        name: Option<ByteArray>,
-        description: Option<ByteArray>,
-        image: Option<ByteArray>,
-        banner: Option<ByteArray>,
-        discord: Option<ByteArray>,
-        telegram: Option<ByteArray>,
-        twitter: Option<ByteArray>,
-        youtube: Option<ByteArray>,
-        website: Option<ByteArray>,
+        metadata: ByteArray,
+        socials: ByteArray,
     );
     fn update(
         self: @TContractState,
         world_address: felt252,
         namespace: felt252,
         preset: felt252,
-        color: Option<felt252>,
-        name: Option<ByteArray>,
-        description: Option<ByteArray>,
-        image: Option<ByteArray>,
-        banner: Option<ByteArray>,
-        discord: Option<ByteArray>,
-        telegram: Option<ByteArray>,
-        twitter: Option<ByteArray>,
-        youtube: Option<ByteArray>,
-        website: Option<ByteArray>,
+        metadata: ByteArray,
+        socials: ByteArray,
     );
     fn publish(self: @TContractState, world_address: felt252, namespace: felt252);
     fn hide(self: @TContractState, world_address: felt252, namespace: felt252);
@@ -95,38 +79,15 @@ pub mod Register {
             namespace: felt252,
             project: felt252,
             preset: felt252,
-            color: Option<felt252>,
-            name: Option<ByteArray>,
-            description: Option<ByteArray>,
-            image: Option<ByteArray>,
-            banner: Option<ByteArray>,
-            discord: Option<ByteArray>,
-            telegram: Option<ByteArray>,
-            twitter: Option<ByteArray>,
-            youtube: Option<ByteArray>,
-            website: Option<ByteArray>,
+            metadata: ByteArray,
+            socials: ByteArray,
         ) {
             let world = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
             self
                 .registerable
                 .register(
-                    world,
-                    caller,
-                    world_address,
-                    namespace,
-                    project,
-                    preset,
-                    color,
-                    name,
-                    description,
-                    image,
-                    banner,
-                    discord,
-                    telegram,
-                    twitter,
-                    youtube,
-                    website,
+                    world, caller, world_address, namespace, project, preset, metadata, socials,
                 );
         }
 
@@ -135,38 +96,14 @@ pub mod Register {
             world_address: felt252,
             namespace: felt252,
             preset: felt252,
-            color: Option<felt252>,
-            name: Option<ByteArray>,
-            description: Option<ByteArray>,
-            image: Option<ByteArray>,
-            banner: Option<ByteArray>,
-            discord: Option<ByteArray>,
-            telegram: Option<ByteArray>,
-            twitter: Option<ByteArray>,
-            youtube: Option<ByteArray>,
-            website: Option<ByteArray>,
+            metadata: ByteArray,
+            socials: ByteArray,
         ) {
             let world = self.world_storage();
             let caller: felt252 = starknet::get_caller_address().into();
             self
                 .registerable
-                .update(
-                    world,
-                    caller,
-                    world_address,
-                    namespace,
-                    preset,
-                    color,
-                    name,
-                    description,
-                    image,
-                    banner,
-                    discord,
-                    telegram,
-                    twitter,
-                    youtube,
-                    website,
-                );
+                .update(world, caller, world_address, namespace, preset, metadata, socials);
         }
 
         fn publish(self: @ContractState, world_address: felt252, namespace: felt252) {

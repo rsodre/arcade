@@ -9,6 +9,8 @@ import { IndexerAPIProvider } from "@cartridge/utils/api/indexer";
 import { AchievementProvider } from "./achievement";
 import { StarknetProvider } from "./starknet";
 import { ProjectProvider } from "./project";
+import { CollectionProvider } from "./collection";
+import { TokenProvider } from "./token";
 
 export function Provider({ children }: PropsWithChildren) {
   const queryClient = new QueryClient();
@@ -25,7 +27,11 @@ export function Provider({ children }: PropsWithChildren) {
                 <ConnectionProvider>
                   <ThemeProvider defaultScheme="system">
                     <ProjectProvider>
-                      <AchievementProvider>{children}</AchievementProvider>
+                      <CollectionProvider>
+                        <TokenProvider>
+                          <AchievementProvider>{children}</AchievementProvider>
+                        </TokenProvider>
+                      </CollectionProvider>
                     </ProjectProvider>
                   </ThemeProvider>
                 </ConnectionProvider>

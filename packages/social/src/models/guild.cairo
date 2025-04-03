@@ -1,9 +1,3 @@
-// External imports
-
-use registry::types::metadata::Metadata;
-use registry::types::socials::Socials;
-use registry::helpers::json::JsonifiableTrait;
-
 // Internal imports
 
 use social::constants::MAX_MEMBER_COUNT;
@@ -34,7 +28,7 @@ pub mod errors {
 #[generate_trait]
 pub impl GuildImpl of GuildTrait {
     #[inline]
-    fn new(id: u32, metadata: Metadata, socials: Socials) -> Guild {
+    fn new(id: u32, metadata: ByteArray, socials: ByteArray) -> Guild {
         Guild {
             id: id,
             open: false,
@@ -43,8 +37,8 @@ pub impl GuildImpl of GuildTrait {
             member_count: 0,
             alliance_id: 0,
             pending_alliance_id: 0,
-            metadata: metadata.jsonify(),
-            socials: socials.jsonify(),
+            metadata: metadata,
+            socials: socials,
         }
     }
 
@@ -230,9 +224,7 @@ mod tests {
 
     #[test]
     fn test_guild_new() {
-        let metadata = core::traits::Default::default();
-        let socials = core::traits::Default::default();
-        let guild = GuildTrait::new(GUILD_ID, metadata, socials);
+        let guild = GuildTrait::new(GUILD_ID, "", "");
         assert_eq!(guild.id, GUILD_ID);
         assert_eq!(guild.open, false);
         assert_eq!(guild.free, false);

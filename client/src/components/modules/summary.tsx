@@ -1,6 +1,5 @@
 import {
   AchievementContentProps,
-  ArcadeGameHeader,
   AchievementPinProps,
   AchievementProgress,
   Card,
@@ -10,6 +9,8 @@ import {
 } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
+import ArcadeGameHeader from "./game-header";
+import { cn } from "@/lib/utils";
 
 export interface AchievementSummaryProps
   extends VariantProps<typeof achievementSummaryVariants> {
@@ -28,8 +29,13 @@ export interface AchievementSummaryProps
 const achievementSummaryVariants = cva("border border-transparent", {
   variants: {
     variant: {
+      darkest: "",
+      darker: "",
+      dark: "",
       default: "",
-      faded: "",
+      light: "",
+      lighter: "",
+      lightest: "",
       ghost: "",
     },
   },
@@ -77,7 +83,7 @@ export const AchievementSummary = ({
           points={points}
           variant={variant}
           completed
-          className={className}
+          className={cn(variant === "dark" && "bg-background-125", className)}
           color={color}
         />
       </CardContent>

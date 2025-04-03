@@ -1,39 +1,124 @@
-import { AchievementPlayerHeader } from "@cartridge/ui-next";
-import { useMemo } from "react";
+import { HTMLAttributes, useMemo } from "react";
+import { cva, VariantProps } from "class-variance-authority";
+import { cn, AchievementFollowerTag } from "@cartridge/ui-next";
+import AchievementPlayerLabel from "./player-label";
 
-export const PlayerHeader = ({
-  username,
-  address,
-  points,
-  banner,
-}: {
+interface AchievementPlayerHeaderProps
+  extends HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof achievementPlayerHeaderVariants> {
   username: string;
   address: string;
   points: number;
-  rank: number;
-  banner: string;
-}) => {
-  const style = useMemo(() => {
-    const bgColor = `var(--background-100)`;
-    const opacity = "88%";
-    const image = banner ? `url(${banner})` : "var(--theme-cover-url)";
-    return {
-      backgroundImage: `linear-gradient(to top,${bgColor},color-mix(in srgb, ${bgColor} ${opacity}, transparent)),${image}`,
-    };
-  }, [banner]);
+  icon?: React.ReactNode;
+  follower?: boolean;
+  followerCount?: number;
+  followingCount?: number;
+  followers?: string[];
+  compacted?: boolean;
+}
 
-  if (BigInt(address) === 0n) return <div />;
+const achievementPlayerHeaderVariants = cva("flex flex-col gap-y-4", {
+  variants: {
+    variant: {
+      darkest: "",
+      darker: "",
+      dark: "",
+      default: "",
+      light: "",
+      lighter: "",
+      lightest: "",
+      ghost: "",
+    },
+    rank: {
+      default: "",
+      gold: "",
+      silver: "",
+      bronze: "",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    rank: "default",
+  },
+});
 
+export const AchievementPlayerHeader = ({
+  username,
+  address,
+  points,
+  icon,
+  follower,
+  followerCount,
+  followingCount,
+  followers,
+  compacted,
+  variant,
+  rank,
+  className,
+  ...props
+}: AchievementPlayerHeaderProps) => {
   return (
     <div
-      className="p-4 pb-0 bg-top bg-cover bg-no-repeat select-none"
-      style={style}
+      className={cn(
+        achievementPlayerHeaderVariants({ variant, rank }),
+        className,
+      )}
+      {...props}
     >
-      <AchievementPlayerHeader
+      <AchievementPlayerLabel
         username={username}
         address={address}
-        points={points}
+        icon={icon}
+        variant="default"
+        rank={rank}
       />
+      <div className="flex flex-col px-2">
+        <div className="h-6 flex items-center gap-x-2">
+          <p className="text-xs text-foreground-300 flex items-center gap-x-1">
+            <strong className="font-medium text-foreground-100">
+              {followerCount?.toLocaleString() || 0}
+            </strong>
+            Followers
+          </p>
+          <p className="text-xs text-foreground-300 flex items-center gap-x-1">
+            <strong className="font-medium text-foreground-100">
+              {followingCount?.toLocaleString() || 0}
+            </strong>
+            Following
+          </p>
+          <p className="text-xs text-foreground-300 flex items-center gap-x-1">
+            <strong className="font-medium text-foreground-100">
+              {points.toLocaleString()}
+            </strong>
+            Points
+          </p>
+          {follower && <AchievementFollowerTag variant={variant} />}
+        </div>
+        {!compacted && <FollowerDescription followers={followers || []} />}
+      </div>
     </div>
   );
 };
+
+const FollowerDescription = ({ followers }: { followers: string[] }) => {
+  const description = useMemo(() => {
+    const names = followers.slice(0, 2);
+    if (followers.length > 3) {
+      return `Followed by ${names.join(", ")} and ${followers.length - 2} others you follow`;
+    } else if (followers.length === 3) {
+      return `Followed by ${names.join(", ")} and ${followers.length - 2} other you follow`;
+    } else if (followers.length > 0) {
+      return `Followed by ${names.join(" and ")}`;
+    } else {
+      return `Followed by no one you follow`;
+    }
+  }, [followers]);
+
+  return (
+    <p className="h-6 flex items-center text-xs text-foreground-300">
+      {description}
+    </p>
+  );
+};
+
+export default AchievementPlayerHeader;

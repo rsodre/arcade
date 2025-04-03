@@ -10,8 +10,6 @@ pub mod RegisterableComponent {
     use registry::models::access::{AccessAssert};
     use registry::models::game::{GameTrait, GameAssert};
     use registry::types::config::{ConfigTrait};
-    use registry::types::metadata::{MetadataTrait};
-    use registry::types::socials::{SocialsTrait};
     use registry::types::role::Role;
 
     // Storage
@@ -38,17 +36,8 @@ pub mod RegisterableComponent {
             project: ByteArray,
             rpc: ByteArray,
             policies: ByteArray,
-            color: Option<felt252>,
-            preset: Option<ByteArray>,
-            name: Option<ByteArray>,
-            description: Option<ByteArray>,
-            image: Option<ByteArray>,
-            banner: Option<ByteArray>,
-            discord: Option<ByteArray>,
-            telegram: Option<ByteArray>,
-            twitter: Option<ByteArray>,
-            youtube: Option<ByteArray>,
-            website: Option<ByteArray>,
+            metadata: ByteArray,
+            socials: ByteArray,
         ) {
             // [Setup] Datastore
             let mut store: Store = StoreTrait::new(world);
@@ -59,8 +48,6 @@ pub mod RegisterableComponent {
 
             // [Effect] Create game
             let config = ConfigTrait::new(project, rpc, policies);
-            let metadata = MetadataTrait::new(color, preset, name, description, image, banner);
-            let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
             let game = GameTrait::new(
                 world_address, namespace, config, metadata, socials, caller_id,
             );
@@ -78,17 +65,8 @@ pub mod RegisterableComponent {
             project: ByteArray,
             rpc: ByteArray,
             policies: ByteArray,
-            color: Option<felt252>,
-            preset: Option<ByteArray>,
-            name: Option<ByteArray>,
-            description: Option<ByteArray>,
-            image: Option<ByteArray>,
-            banner: Option<ByteArray>,
-            discord: Option<ByteArray>,
-            telegram: Option<ByteArray>,
-            twitter: Option<ByteArray>,
-            youtube: Option<ByteArray>,
-            website: Option<ByteArray>,
+            metadata: ByteArray,
+            socials: ByteArray,
         ) {
             // [Setup] Datastore
             let mut store: Store = StoreTrait::new(world);
@@ -102,8 +80,6 @@ pub mod RegisterableComponent {
 
             // [Effect] Update game
             let config = ConfigTrait::new(project, rpc, policies);
-            let metadata = MetadataTrait::new(color, preset, name, description, image, banner);
-            let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
             game.update(config, metadata, socials);
 
             // [Effect] Update game

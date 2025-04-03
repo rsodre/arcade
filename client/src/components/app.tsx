@@ -1,59 +1,19 @@
-import { InventoryScene } from "./scenes/inventory";
-import { AchievementScene } from "./scenes/achievement";
 import { Games } from "@/components/games";
 import { SceneLayout } from "@/components/scenes/layout";
+import { GamePage } from "./pages/game";
+import { useEffect, useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
-import { useCallback, useEffect, useMemo } from "react";
-import { useAchievements } from "@/hooks/achievements";
-import { Button, cn, TabsContent, TimesIcon } from "@cartridge/ui-next";
-import { useAccount } from "@starknet-react/core";
-import { DiscoverScene } from "./scenes/discover";
-import { GuildsScene } from "./scenes/guild";
-import { ActivityScene } from "./scenes/activity";
-import { ArcadeTabs } from "./modules";
-import { LeaderboardScene } from "./scenes/leaderboard";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useProject } from "@/hooks/project";
-import { GameModel } from "@bal7hazar/arcade-sdk";
-import { useUsername } from "@/hooks/account";
-import { PlayerHeader } from "./modules/player-header";
-import banner from "@/assets/banner.svg";
 import { useAddress } from "@/hooks/address";
+import { PlayerPage } from "./pages/player";
+import { cn } from "@cartridge/ui-next";
+import { GameModel } from "@bal7hazar/arcade-sdk";
+import { useProject } from "@/hooks/project";
+import banner from "@/assets/banner.png";
 
 export function App() {
-  const { isConnected } = useAccount();
-  const { games } = useArcade();
+  const { isZero } = useAddress();
+  const { games, projects, setProjects } = useArcade();
   const { project, namespace } = useProject();
-
-  const [searchParams] = useSearchParams();
-  const { address, isSelf, isZero } = useAddress();
-  const { usernames, globals, projects, players, setProjects } =
-    useAchievements();
-
-  const navigate = useNavigate();
-  const defaultValue = useMemo(() => {
-    // Default tab is ignored if there is no address,
-    // meanning the user is not connected and doesnt inspect another user
-    return searchParams.get("tab") || "discover";
-  }, [searchParams, address]);
-
-  const handleClick = useCallback(
-    (value: string) => {
-      // Clicking on a tab updates the url param tab to the value of the tab
-      // So the tab is persisted in the url and the user can update and share the url
-      const url = new URL(window.location.href);
-      url.searchParams.set("tab", value);
-      navigate(url.toString().replace(window.location.origin, ""));
-    },
-    [navigate],
-  );
-
-  const handleClose = useCallback(() => {
-    // On close, remove address from url
-    const url = new URL(window.location.href);
-    url.searchParams.delete("address");
-    navigate(url.toString().replace(window.location.origin, ""));
-  }, [navigate]);
 
   const game: GameModel | undefined = useMemo(() => {
     return Object.values(games).find(
@@ -61,32 +21,14 @@ export function App() {
     );
   }, [games, project, namespace]);
 
-  const { rank, points } = useMemo(() => {
-    if (game) {
-      const gamePlayers = players[game?.config.project || ""] || [];
-      const points =
-        gamePlayers.find((player) => BigInt(player.address) === BigInt(address))
-          ?.earnings || 0;
-      const rank =
-        gamePlayers.findIndex(
-          (player) => BigInt(player.address) === BigInt(address),
-        ) + 1;
-      return { rank, points };
-    }
-    const points =
-      globals.find((player) => BigInt(player.address) === BigInt(address))
-        ?.earnings || 0;
-    const rank =
-      globals.findIndex(
-        (player) => BigInt(player.address) === BigInt(address),
-      ) + 1;
-    return { rank, points };
-  }, [globals, address, game]);
-
-  const { username } = useUsername({ address });
-  const name = useMemo(() => {
-    return usernames[address] || username;
-  }, [usernames, address, username]);
+  const style = useMemo(() => {
+    const bgColor = !isZero ? `var(--background-125)` : `var(--background-100)`;
+    const image = `url(${game?.metadata.banner ? game.metadata.banner : banner})`;
+    const colorMix = `color-mix(in srgb, ${bgColor} 100%, transparent 32%)`;
+    return {
+      backgroundImage: `linear-gradient(to top, ${bgColor}, ${colorMix}), ${image}`,
+    };
+  }, [game?.metadata.banner, isZero]);
 
   useEffect(() => {
     if (projects.length === Object.values(games).length) return;
@@ -101,7 +43,7 @@ export function App() {
   return (
     <SceneLayout>
       <div
-        className="h-full w-full bg-background-100 overflow-y-scroll"
+        className="h-full w-full overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
         <div className="w-[1048px] pt-8 pb-6 gap-8 flex items-stretch m-auto h-full overflow-clip">
@@ -110,99 +52,18 @@ export function App() {
             className={cn(
               "relative grow h-full flex flex-col rounded gap-2",
               "border border-background-200 bg-background-100",
-              isConnected &&
-                !isSelf &&
-                "brightness-110 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
+              !isZero &&
+                " bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
             )}
           >
-            <PlayerHeader
-              username={name}
-              address={address}
-              points={points}
-              rank={rank}
-              banner={game?.metadata.banner || banner}
-            />
             <div
-              className={cn(
-                "absolute top-4 right-4",
-                (!isConnected || isSelf) && "hidden",
-              )}
-            >
-              <CloseButton handleClose={handleClose} />
-            </div>
-            <ArcadeTabs
-              discover={!isConnected || isSelf}
-              inventory={!isZero}
-              achievements={!isZero}
-              leaderboard
-              guilds={!isZero}
-              activity={!isZero}
-              defaultValue={defaultValue}
-              onDiscoverClick={() => handleClick("discover")}
-              onInventoryClick={() => handleClick("inventory")}
-              onAchievementsClick={() => handleClick("achievements")}
-              onLeaderboardClick={() => handleClick("leaderboard")}
-              onGuildsClick={() => handleClick("guilds")}
-              onActivityClick={() => handleClick("activity")}
-            >
-              <div
-                className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
-                style={{ scrollbarWidth: "none" }}
-              >
-                <TabsContent
-                  className="p-0 px-4 mt-0 grow w-full"
-                  value="discover"
-                >
-                  <DiscoverScene />
-                </TabsContent>
-                <TabsContent
-                  className="p-0 px-4 mt-0 grow w-full"
-                  value="inventory"
-                >
-                  <InventoryScene />
-                </TabsContent>
-                <TabsContent
-                  className="p-0 px-4 mt-0 grow w-full"
-                  value="achievements"
-                >
-                  <AchievementScene />
-                </TabsContent>
-                <TabsContent
-                  className="p-0 px-4 mt-0 grow w-full"
-                  value="leaderboard"
-                >
-                  <LeaderboardScene />
-                </TabsContent>
-                <TabsContent
-                  className="p-0 px-4 mt-0 grow w-full"
-                  value="guilds"
-                >
-                  <GuildsScene />
-                </TabsContent>
-                <TabsContent
-                  className="p-0 px-4 mt-0 grow w-full h-full"
-                  value="activity"
-                >
-                  <ActivityScene />
-                </TabsContent>
-              </div>
-            </ArcadeTabs>
+              className="bg-cover bg-top h-[72px] w-full absolute top-0 left-0"
+              style={style}
+            />
+            {isZero ? <GamePage game={game} /> : <PlayerPage game={game} />}
           </div>
         </div>
       </div>
     </SceneLayout>
-  );
-}
-
-function CloseButton({ handleClose }: { handleClose: () => void }) {
-  return (
-    <Button
-      variant="secondary"
-      size="icon"
-      onClick={handleClose}
-      className="bg-background-100 h-8 w-8"
-    >
-      <TimesIcon size="xs" className="text-foreground-300" />
-    </Button>
   );
 }

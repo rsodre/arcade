@@ -26,17 +26,8 @@ fn register(systems: @Systems) {
             "PROJECT",
             "RPC",
             "POLICIES",
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
+            "{\"color\":\"\",\"preset\":\"\",\"name\":\"\",\"description\":\"\",\"image\":\"\",\"banner\":\"\"}",
+            "{\"discord\":\"\",\"telegram\":\"\",\"twitter\":\"\",\"youtube\":\"\",\"website\":\"\"}",
         );
 }
 
@@ -74,7 +65,6 @@ fn test_registrable_update() {
     let (world, systems, _context) = spawn();
     register(@systems);
     // [Update] Game
-    let color = Option::Some('#123456');
     systems
         .register
         .update(
@@ -83,17 +73,8 @@ fn test_registrable_update() {
             "PROJECT",
             "RPC",
             "POLICIES",
-            color,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
+            "{\"color\":\"#123456\",\"preset\":\"\",\"name\":\"\",\"description\":\"\",\"image\":\"\",\"banner\":\"\"}",
+            "{\"discord\":\"\",\"telegram\":\"\",\"twitter\":\"\",\"youtube\":\"\",\"website\":\"\"}",
         );
     // [Assert] Game
     let store = StoreTrait::new(world);

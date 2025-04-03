@@ -1,16 +1,19 @@
-import { LayoutContent, ArcadeDiscoveryGroup } from "@cartridge/ui-next";
-import { useMemo } from "react";
+import { LayoutContent } from "@cartridge/ui-next";
+import { useCallback, useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
-import banner from "@/assets/banner.svg";
+import banner from "@/assets/banner.png";
 import { DiscoverError, DiscoverLoading } from "../errors";
 import { addAddressPadding } from "starknet";
+import { ArcadeDiscoveryGroup } from "../modules/discovery-group";
+import { useNavigate } from "react-router-dom";
 
 interface Event {
   name: string;
   achievement: { title: string; icon: string };
   timestamp: number;
+  onClick: () => void;
 }
 
 export function Discover({ game }: { game?: GameModel }) {
@@ -21,6 +24,17 @@ export function Discover({ game }: { game?: GameModel }) {
     return !game ? games : [game];
   }, [games, game]);
 
+  const navigate = useNavigate();
+  const handleClick = useCallback(
+    (address: string) => {
+      // On click, we update the url param address to the address of the player
+      const url = new URL(window.location.href);
+      url.searchParams.set("address", address);
+      navigate(url.toString().replace(window.location.origin, ""));
+    },
+    [navigate],
+  );
+
   const gameEvents = useMemo(() => {
     return filteredGames.map((game) => {
       const data = events[game?.config.project]?.map((event) => {
@@ -28,6 +42,7 @@ export function Discover({ game }: { game?: GameModel }) {
           name: usernames[addAddressPadding(event.player)],
           achievement: event.achievement,
           timestamp: event.timestamp,
+          onClick: () => handleClick(addAddressPadding(event.player)),
         };
       });
       if (!data) return [];
@@ -36,7 +51,7 @@ export function Discover({ game }: { game?: GameModel }) {
       }
       return data.slice(0, 20);
     });
-  }, [events, filteredGames, usernames]);
+  }, [events, filteredGames, usernames, handleClick]);
 
   if (isError) return <DiscoverError />;
 
@@ -52,7 +67,7 @@ export function Discover({ game }: { game?: GameModel }) {
           {filteredGames.map((item, index) => (
             <GameRow
               key={`${index}-${item.config.project}`}
-              game={item}
+              game={filteredGames.length > 1 ? item : undefined}
               events={gameEvents[index]}
               covered={filteredGames.length > 1}
             />
@@ -68,20 +83,21 @@ export function GameRow({
   events,
   covered,
 }: {
-  game: GameModel;
+  game: GameModel | undefined;
   events: Event[];
   covered: boolean;
 }) {
   const gameData = useMemo(() => {
+    if (!game) return undefined;
     return {
       metadata: {
         name: game.metadata.name,
         logo: game.metadata.image,
         cover: covered ? (game.metadata.banner ?? banner) : banner,
       },
-      socials: game.socials,
+      socials: {},
     };
-  }, [game]);
+  }, [game, covered]);
 
   return (
     <div className="rounded-lg overflow-hidden">
@@ -89,7 +105,7 @@ export function GameRow({
         <ArcadeDiscoveryGroup
           game={gameData}
           events={events}
-          color={game.metadata.color}
+          color={game?.metadata.color}
         />
       </div>
     </div>

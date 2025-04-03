@@ -1,11 +1,12 @@
 import ControllerConnector from "@cartridge/connector/controller";
-import { Button, SpaceInvaderIcon } from "@cartridge/ui-next";
+import { Button } from "@cartridge/ui-next";
 import { useAccount } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
-import { constants } from "starknet";
+import { UserAvatar } from "../user/avatar";
+import { useNavigate } from "react-router-dom";
 
 export function User() {
-  const { account, connector } = useAccount();
+  const { account, connector, address } = useAccount();
   const { isConnected } = useAccount();
   const [name, setName] = useState<string>("");
 
@@ -22,22 +23,23 @@ export function User() {
     fetch();
   }, [connector]);
 
-  const handleClick = useCallback(async () => {
-    const controller = (connector as ControllerConnector)?.controller;
-    if (!controller) {
-      console.error("Connector not initialized");
-      return;
-    }
-    controller.switchStarknetChain(constants.StarknetChainId.SN_MAIN);
-    controller.openProfileTo("inventory");
-  }, [connector]);
+  const navigate = useNavigate();
+  const handleClick = useCallback(
+    (address: string | undefined) => {
+      if (!address) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set("address", address);
+      navigate(url.toString().replace(window.location.origin, ""));
+    },
+    [navigate],
+  );
 
   if (!isConnected || !account || !name) return null;
 
   return (
-    <Button variant="secondary" onClick={handleClick}>
+    <Button variant="secondary" onClick={() => handleClick(address)}>
       <div className="h-7 w-7 flex items-center justify-center">
-        <SpaceInvaderIcon className="h-4 w-4" size="lg" variant="solid" />
+        <UserAvatar username={name} size="lg" />
       </div>
       <p className="text-sm font-semibold normal-case">{name}</p>
     </Button>

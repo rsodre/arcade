@@ -13,11 +13,7 @@ import {
 import { useUsernames } from "@/hooks/account";
 import { addAddressPadding } from "starknet";
 import { useAddress } from "@/hooks/address";
-
-export interface AchievementsProps {
-  namespace: string;
-  project: string;
-}
+import { useArcade } from "@/hooks/arcade";
 
 type AchievementContextType = {
   achievements: { [game: string]: Item[] };
@@ -27,27 +23,13 @@ type AchievementContextType = {
   globals: Player[];
   isLoading: boolean;
   isError: boolean;
-  projects: AchievementsProps[];
-  setProjects: (projects: AchievementsProps[]) => void;
 };
 
-const initialState: AchievementContextType = {
-  achievements: {},
-  players: {},
-  events: {},
-  usernames: {},
-  globals: [],
-  isLoading: false,
-  isError: false,
-  projects: [],
-  setProjects: () => {},
-};
-
-export const AchievementContext =
-  createContext<AchievementContextType>(initialState);
+export const AchievementContext = createContext<AchievementContextType | null>(
+  null,
+);
 
 export function AchievementProvider({ children }: { children: ReactNode }) {
-  const [projects, setProjects] = useState<AchievementsProps[]>([]);
   const [players, setPlayers] = useState<{ [game: string]: Player[] }>({});
   const [events, setEvents] = useState<{ [game: string]: Event[] }>({});
   const [globals, setGlobals] = useState<Player[]>([]);
@@ -55,6 +37,7 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
     {},
   );
 
+  const { projects } = useArcade();
   const { address } = useAddress();
 
   const trophiesProps = useMemo(
@@ -146,8 +129,6 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
           !progressionsError &&
           (trophiesLoading || progressionsLoading),
         isError: trophiesError || progressionsError,
-        projects,
-        setProjects,
       }}
     >
       {children}

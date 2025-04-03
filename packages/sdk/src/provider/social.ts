@@ -62,13 +62,13 @@ export class Social {
   }
 
   public create_alliance(props: SystemProps.SocialCreateAllianceProps): AllowArray<Call> {
-    const { color, preset, name, description, image, banner, discord, telegram, twitter, youtube } = props;
+    const { metadata, socials } = props;
     const entrypoint = "create_alliance";
 
     return {
       contractAddress: getContractByName(this.manifest, this.name),
       entrypoint,
-      calldata: [color, preset, name, description, image, banner, discord, telegram, twitter, youtube],
+      calldata: [metadata, socials],
     };
   }
 
@@ -158,13 +158,13 @@ export class Social {
   }
 
   public create_guild(props: SystemProps.SocialCreateGuildProps): AllowArray<Call> {
-    const { color, preset, name, description, image, banner, discord, telegram, twitter, youtube } = props;
+    const { metadata, socials } = props;
     const entrypoint = "create_guild";
 
     return {
       contractAddress: getContractByName(this.manifest, this.name),
       entrypoint,
-      calldata: [color, preset, name, description, image, banner, discord, telegram, twitter, youtube],
+      calldata: [metadata, socials],
     };
   }
 

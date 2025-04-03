@@ -1,12 +1,16 @@
 import {
   ArcadeMenuButton,
+  ArcadeMenuItem,
+  ArcadeTab,
   ChestIcon,
-  ClockIcon,
   cn,
   LeaderboardIcon,
+  ListIcon,
+  MetricsIcon,
   PulseIcon,
   Select,
   SelectContent,
+  ShoppingCartIcon,
   SwordsIcon,
   Tabs,
   TabsList,
@@ -14,8 +18,6 @@ import {
 } from "@cartridge/ui-next";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
-import ArcadeTab from "./tab";
-import ArcadeMenuItem from "./menu-item";
 
 const arcadeTabsVariants = cva(
   "flex justify-start items-end w-full p-0 px-4 border-b rounded-none",
@@ -23,6 +25,7 @@ const arcadeTabsVariants = cva(
     variants: {
       variant: {
         default: "bg-background-100 border-background-200",
+        light: "bg-background-125 border-background-200",
       },
       size: {
         default: "gap-3 h-10",
@@ -35,80 +38,64 @@ const arcadeTabsVariants = cva(
   },
 );
 
+export type TabValue =
+  | "inventory"
+  | "achievements"
+  | "leaderboard"
+  | "guilds"
+  | "activity"
+  | "metrics"
+  | "about"
+  | "marketplace";
+
 export interface ArcadeTabsProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof arcadeTabsVariants> {
-  discover?: boolean;
-  inventory?: boolean;
-  achievements?: boolean;
-  leaderboard?: boolean;
-  guilds?: boolean;
-  activity?: boolean;
-  defaultValue?: string;
-  order?: string[];
-  onDiscoverClick?: () => void;
-  onInventoryClick?: () => void;
-  onAchievementsClick?: () => void;
-  onLeaderboardClick?: () => void;
-  onGuildsClick?: () => void;
-  onActivityClick?: () => void;
+  defaultValue?: TabValue;
+  order?: TabValue[];
+  onTabClick?: (tab: TabValue) => void;
 }
 
 export const ArcadeTabs = ({
-  discover,
-  inventory,
-  achievements,
-  leaderboard,
-  guilds,
-  activity,
-  defaultValue = "discover",
+  defaultValue = "activity",
   order = [
-    "discover",
+    "activity",
+    "leaderboard",
+    "about",
+    "metrics",
+    "marketplace",
     "inventory",
     "achievements",
-    "leaderboard",
     "guilds",
-    "activity",
   ],
-  onDiscoverClick,
-  onInventoryClick,
-  onAchievementsClick,
-  onLeaderboardClick,
-  onGuildsClick,
-  onActivityClick,
+  onTabClick,
   variant,
   size,
   className,
   children,
 }: ArcadeTabsProps) => {
-  const [active, setActive] = useState(defaultValue);
-  const [visibleTabs, setVisibleTabs] = useState(order);
-  const [overflowTabs, setOverflowTabs] = useState<string[]>([]);
+  const [active, setActive] = useState<TabValue>(defaultValue);
+  const [visibleTabs, setVisibleTabs] = useState<TabValue[]>(order);
+  const [overflowTabs, setOverflowTabs] = useState<TabValue[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const hiddenRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef(
-    new Map<string, { width: number; visible: boolean }>(),
+    new Map<TabValue, { width: number; visible: boolean }>(),
   );
 
   useEffect(() => {
     if (!hiddenRef.current) return;
-    const tabWidths = new Map<string, { width: number; visible: boolean }>();
+    const tabWidths = new Map<TabValue, { width: number; visible: boolean }>();
     hiddenRef.current.childNodes.forEach((node) => {
       const element = node as HTMLDivElement;
       const tab = element.textContent?.toLowerCase();
       if (tab) {
-        let visible = false;
-        if (tab === "discover" && discover) visible = true;
-        if (tab === "inventory" && inventory) visible = true;
-        if (tab === "achievements" && achievements) visible = true;
-        if (tab === "leaderboard" && leaderboard) visible = true;
-        if (tab === "guilds" && guilds) visible = true;
-        if (tab === "activity" && activity) visible = true;
-        tabWidths.set(tab, { width: element.offsetWidth, visible });
+        const visible = order.includes(tab as TabValue);
+        tabWidths.set(tab as TabValue, { width: element.offsetWidth, visible });
       }
     });
     tabRefs.current = tabWidths;
-  }, [order, discover, inventory, achievements, guilds, activity]);
+  }, [tabRefs, hiddenRef, order]);
 
   useEffect(() => {
     const observer = new ResizeObserver(() => {
@@ -118,8 +105,8 @@ export const ArcadeTabs = ({
       const availableWidth =
         containerRef.current.offsetWidth - buttonWidth - gap;
       let usedWidth = 32;
-      const newVisibleTabs: string[] = [];
-      const newOverflowTabs: string[] = [];
+      const newVisibleTabs: TabValue[] = [];
+      const newOverflowTabs: TabValue[] = [];
 
       order.forEach((tab) => {
         const { width, visible } = tabRefs.current.get(tab) || {
@@ -158,7 +145,7 @@ export const ArcadeTabs = ({
   return (
     <Tabs
       defaultValue={defaultValue}
-      onValueChange={setActive}
+      onValueChange={(value: string) => setActive(value as TabValue)}
       className="h-full flex flex-col overflow-hidden"
     >
       <TabsList
@@ -167,44 +154,16 @@ export const ArcadeTabs = ({
       >
         <div ref={hiddenRef} className="flex gap-2 absolute invisible">
           {order.map((tab) => (
-            <Tab
-              key={tab}
-              tab={tab}
-              discover={!!discover}
-              inventory={!!inventory}
-              achievements={!!achievements}
-              leaderboard={!!leaderboard}
-              guilds={!!guilds}
-              activity={!!activity}
-              value={active}
-              size={size}
-              onDiscoverClick={onDiscoverClick}
-              onInventoryClick={onInventoryClick}
-              onAchievementsClick={onAchievementsClick}
-              onLeaderboardClick={onLeaderboardClick}
-              onGuildsClick={onGuildsClick}
-              onActivityClick={onActivityClick}
-            />
+            <Tab key={tab} tab={tab} value={active} size={size} />
           ))}
         </div>
         {visibleTabs.map((tab) => (
           <Tab
             key={tab}
             tab={tab}
-            discover={!!discover}
-            inventory={!!inventory}
-            achievements={!!achievements}
-            leaderboard={!!leaderboard}
-            guilds={!!guilds}
-            activity={!!activity}
             value={active}
             size={size}
-            onDiscoverClick={onDiscoverClick}
-            onInventoryClick={onInventoryClick}
-            onAchievementsClick={onAchievementsClick}
-            onLeaderboardClick={onLeaderboardClick}
-            onGuildsClick={onGuildsClick}
-            onActivityClick={onActivityClick}
+            onTabClick={() => onTabClick?.(tab as TabValue)}
           />
         ))}
         <Select>
@@ -219,20 +178,9 @@ export const ArcadeTabs = ({
               <Tab
                 key={tab}
                 tab={tab}
-                discover={!!discover}
-                inventory={!!inventory}
-                achievements={!!achievements}
-                leaderboard={!!leaderboard}
-                guilds={!!guilds}
-                activity={!!activity}
                 value={active}
                 size={size}
-                onDiscoverClick={onDiscoverClick}
-                onInventoryClick={onInventoryClick}
-                onAchievementsClick={onAchievementsClick}
-                onLeaderboardClick={onLeaderboardClick}
-                onGuildsClick={onGuildsClick}
-                onActivityClick={onActivityClick}
+                onTabClick={() => onTabClick?.(tab as TabValue)}
                 item={true}
               />
             ))}
@@ -246,152 +194,45 @@ export const ArcadeTabs = ({
 
 const Tab = ({
   tab,
-  discover,
-  inventory,
-  achievements,
-  leaderboard,
-  guilds,
-  activity,
   value,
   size,
-  onDiscoverClick,
-  onInventoryClick,
-  onAchievementsClick,
-  onLeaderboardClick,
-  onGuildsClick,
-  onActivityClick,
+  onTabClick,
   item,
 }: {
-  tab: string;
-  discover: boolean;
-  inventory: boolean;
-  achievements: boolean;
-  leaderboard: boolean;
-  guilds: boolean;
-  activity: boolean;
+  tab: TabValue;
   value: string;
   size: "default" | null | undefined;
-  onDiscoverClick?: () => void;
-  onInventoryClick?: () => void;
-  onAchievementsClick?: () => void;
-  onLeaderboardClick?: () => void;
-  onGuildsClick?: () => void;
-  onActivityClick?: () => void;
+  onTabClick?: () => void;
   item?: boolean;
 }) => {
+  const props = {
+    value: tab,
+    active: value === tab,
+    size,
+    onClick: onTabClick,
+    item,
+  };
   switch (tab) {
-    case "discover":
-      if (!discover) return null;
-      return (
-        <DiscoverNavButton
-          key="discover"
-          value="discover"
-          active={value === "discover"}
-          size={size}
-          onClick={onDiscoverClick}
-          item={item}
-        />
-      );
     case "inventory":
-      if (!inventory) return null;
-      return (
-        <InventoryNavButton
-          key="inventory"
-          value="inventory"
-          active={value === "inventory"}
-          size={size}
-          onClick={onInventoryClick}
-          item={item}
-        />
-      );
+      return <InventoryNavButton key={tab} {...props} />;
     case "achievements":
-      if (!achievements) return null;
-      return (
-        <AchievementsNavButton
-          key="achievements"
-          value="achievements"
-          active={value === "achievements"}
-          size={size}
-          onClick={onAchievementsClick}
-          item={item}
-        />
-      );
+      return <AchievementsNavButton key={tab} {...props} />;
     case "leaderboard":
-      if (!leaderboard) return null;
-      return (
-        <LeaderboardNavButton
-          key="leaderboard"
-          value="leaderboard"
-          active={value === "leaderboard"}
-          size={size}
-          onClick={onLeaderboardClick}
-          item={item}
-        />
-      );
+      return <LeaderboardNavButton key={tab} {...props} />;
     case "guilds":
-      if (!guilds) return null;
-      return (
-        <GuildsNavButton
-          key="guilds"
-          value="guilds"
-          active={value === "guilds"}
-          size={size}
-          onClick={onGuildsClick}
-          item={item}
-        />
-      );
+      return <GuildsNavButton key={tab} {...props} />;
     case "activity":
-      if (!activity) return null;
-      return (
-        <ActivityNavButton
-          key="activity"
-          value="activity"
-          active={value === "activity"}
-          size={size}
-          onClick={onActivityClick}
-          item={item}
-        />
-      );
+      return <ActivityNavButton key={tab} {...props} />;
+    case "metrics":
+      return <MetricsNavButton key={tab} {...props} />;
+    case "about":
+      return <AboutNavButton key={tab} {...props} />;
+    case "marketplace":
+      return <MarketplaceNavButton key={tab} {...props} />;
     default:
       return null;
   }
 };
-
-const DiscoverNavButton = React.forwardRef<
-  HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
-  }
->(({ value, active, size, onClick, item }, ref) => {
-  if (item) {
-    return (
-      <ArcadeMenuItem
-        ref={ref}
-        value={value}
-        Icon={<PulseIcon variant="solid" size="sm" />}
-        label="Discover"
-        active={active}
-        size={size}
-        onClick={onClick}
-      />
-    );
-  }
-  return (
-    <ArcadeTab
-      ref={ref}
-      value={value}
-      Icon={<PulseIcon variant="solid" size="sm" />}
-      label="Discover"
-      active={active}
-      size={size}
-      onClick={onClick}
-    />
-  );
-});
 
 const InventoryNavButton = React.forwardRef<
   HTMLButtonElement,
@@ -552,7 +393,7 @@ const ActivityNavButton = React.forwardRef<
       <ArcadeMenuItem
         ref={ref}
         value={value}
-        Icon={<ClockIcon variant="solid" size="sm" />}
+        Icon={<PulseIcon variant="solid" size="sm" />}
         label="Activity"
         active={active}
         size={size}
@@ -564,8 +405,116 @@ const ActivityNavButton = React.forwardRef<
     <ArcadeTab
       ref={ref}
       value={value}
-      Icon={<ClockIcon variant="solid" size="sm" />}
+      Icon={<PulseIcon variant="solid" size="sm" />}
       label="Activity"
+      active={active}
+      size={size}
+      onClick={onClick}
+    />
+  );
+});
+
+const MetricsNavButton = React.forwardRef<
+  HTMLButtonElement,
+  {
+    value: string;
+    active: boolean;
+    size: "default" | null | undefined;
+    onClick?: () => void;
+    item?: boolean;
+  }
+>(({ value, active, size, onClick, item }, ref) => {
+  if (item) {
+    return (
+      <ArcadeMenuItem
+        ref={ref}
+        value={value}
+        Icon={<MetricsIcon variant="solid" size="sm" />}
+        label="Metrics"
+        active={active}
+        size={size}
+        onClick={onClick}
+      />
+    );
+  }
+  return (
+    <ArcadeTab
+      ref={ref}
+      value={value}
+      Icon={<MetricsIcon variant="solid" size="sm" />}
+      label="Metrics"
+      active={active}
+      size={size}
+      onClick={onClick}
+    />
+  );
+});
+
+const AboutNavButton = React.forwardRef<
+  HTMLButtonElement,
+  {
+    value: string;
+    active: boolean;
+    size: "default" | null | undefined;
+    onClick?: () => void;
+    item?: boolean;
+  }
+>(({ value, active, size, onClick, item }, ref) => {
+  if (item) {
+    return (
+      <ArcadeMenuItem
+        ref={ref}
+        value={value}
+        Icon={<ListIcon variant="solid" size="sm" />}
+        label="About"
+        active={active}
+        size={size}
+        onClick={onClick}
+      />
+    );
+  }
+  return (
+    <ArcadeTab
+      ref={ref}
+      value={value}
+      Icon={<ListIcon variant="solid" size="sm" />}
+      label="About"
+      active={active}
+      size={size}
+      onClick={onClick}
+    />
+  );
+});
+
+const MarketplaceNavButton = React.forwardRef<
+  HTMLButtonElement,
+  {
+    value: string;
+    active: boolean;
+    size: "default" | null | undefined;
+    onClick?: () => void;
+    item?: boolean;
+  }
+>(({ value, active, size, onClick, item }, ref) => {
+  if (item) {
+    return (
+      <ArcadeMenuItem
+        ref={ref}
+        value={value}
+        Icon={<ShoppingCartIcon variant="solid" size="sm" />}
+        label="Marketplace"
+        active={active}
+        size={size}
+        onClick={onClick}
+      />
+    );
+  }
+  return (
+    <ArcadeTab
+      ref={ref}
+      value={value}
+      Icon={<ShoppingCartIcon variant="solid" size="sm" />}
+      label="Marketplace"
       active={active}
       size={size}
       onClick={onClick}

@@ -5,11 +5,6 @@ pub mod AllianceableComponent {
     use dojo::world::WorldStorage;
     use dojo::world::IWorldDispatcherTrait;
 
-    // External imports
-
-    use registry::types::metadata::MetadataTrait;
-    use registry::types::socials::SocialsTrait;
-
     // Internal imports
 
     use social::store::StoreTrait;
@@ -37,17 +32,8 @@ pub mod AllianceableComponent {
             self: @ComponentState<TContractState>,
             world: WorldStorage,
             player_id: felt252,
-            color: Option<felt252>,
-            preset: Option<ByteArray>,
-            name: Option<ByteArray>,
-            description: Option<ByteArray>,
-            image: Option<ByteArray>,
-            banner: Option<ByteArray>,
-            discord: Option<ByteArray>,
-            telegram: Option<ByteArray>,
-            twitter: Option<ByteArray>,
-            youtube: Option<ByteArray>,
-            website: Option<ByteArray>,
+            metadata: ByteArray,
+            socials: ByteArray,
         ) {
             // [Setup] Datastore
             let mut store = StoreTrait::new(world);
@@ -62,8 +48,6 @@ pub mod AllianceableComponent {
 
             // [Effect] Create an alliance
             let alliance_id = world.dispatcher.uuid();
-            let metadata = MetadataTrait::new(color, preset, name, description, image, banner);
-            let socials = SocialsTrait::new(discord, telegram, twitter, youtube, website);
             let mut alliance = AllianceTrait::new(alliance_id, metadata, socials);
 
             // [Effect] Guild joins alliance

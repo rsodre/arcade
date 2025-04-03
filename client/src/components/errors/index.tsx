@@ -15,7 +15,12 @@ export function Error({
 }) {
   return (
     <div className="h-full py-4">
-      <div className="h-full flex flex-col gap-2 justify-center items-center select-none border border-background-400 border-dashed rounded">
+      <div
+        className="h-full flex flex-col gap-2 justify-center items-center select-none rounded"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23242824' stroke-width='2' stroke-dasharray='3%2c 6' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
+        }}
+      >
         <div className="w-[135px] h-[135px] max-w-[135px] max-h-[135px] min-h-[135px] min-w-[135px]">
           {Icon}
         </div>
@@ -75,6 +80,60 @@ export function GuildsError() {
     <Error
       title="Oops! Something went wrong"
       Icon={<EmptyStateGuildIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function MarketplaceComingSoon() {
+  return (
+    <Error
+      title="Coming soon"
+      Icon={<EmptyStateInventoryIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function MarketplaceLoading() {
+  return (
+    <Error
+      title="Loading..."
+      Icon={<EmptyStateInventoryIcon className="h-full w-full animate-pulse" />}
+    />
+  );
+}
+
+export function MarketplaceError() {
+  return (
+    <Error
+      title="Oops! Something went wrong"
+      Icon={<EmptyStateInventoryIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function AboutComingSoon() {
+  return (
+    <Error
+      title="Coming soon"
+      Icon={<EmptyStateActivityIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function AboutLoading() {
+  return (
+    <Error
+      title="Loading..."
+      Icon={<EmptyStateActivityIcon className="h-full w-full animate-pulse" />}
+    />
+  );
+}
+
+export function AboutError() {
+  return (
+    <Error
+      title="Oops! Something went wrong"
+      Icon={<EmptyStateActivityIcon className="h-full w-full" />}
     />
   );
 }

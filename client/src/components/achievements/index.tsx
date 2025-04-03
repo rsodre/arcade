@@ -6,7 +6,7 @@ import { GameModel } from "@bal7hazar/arcade-sdk";
 import { addAddressPadding } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { Item } from "@/helpers/achievements";
-import banner from "@/assets/banner.svg";
+import banner from "@/assets/banner.png";
 import {
   AchievementsComingSoon,
   AchievementsError,
@@ -76,7 +76,7 @@ export function Achievements({ game }: { game?: GameModel }) {
                   achievements={achievements}
                   pins={pins}
                   background={filteredGames.length > 1}
-                  variant={!game ? "default" : "faded"}
+                  variant={!game ? "default" : "dark"}
                 />
               ))}
             </div>
@@ -112,7 +112,7 @@ export function GameRow({
   achievements: { [game: string]: Item[] };
   pins: { [playerId: string]: string[] };
   background: boolean;
-  variant: "default" | "faded";
+  variant: "default" | "dark";
 }) {
   const gameAchievements = useMemo(() => {
     return achievements[game?.config.project || ""] || [];
@@ -155,7 +155,7 @@ export function GameRow({
       },
       socials: { ...game?.socials },
     };
-  }, [gameAchievements, game, pinneds]);
+  }, [gameAchievements, game, pinneds, background]);
 
   return (
     <div className="rounded-lg overflow-hidden">

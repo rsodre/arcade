@@ -1,5 +1,5 @@
 import { CollectibleAsset } from "@cartridge/ui-next";
-import { Collection, useCollections } from "@/hooks/collection";
+import { useCollections } from "@/hooks/collections";
 import { useArcade } from "@/hooks/arcade";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GameModel } from "@bal7hazar/arcade-sdk";
@@ -7,16 +7,11 @@ import placeholder from "@/assets/placeholder.svg";
 import { useAccount } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";
 import { Chain, mainnet } from "@starknet-react/chains";
+import { Collection } from "@/context/collection";
 
-export const Collections = ({ game }: { game?: GameModel }) => {
+export const Collections = () => {
   const { games, chains } = useArcade();
-
-  const projects = useMemo(() => {
-    if (!game) return games.map((game) => game.config.project);
-    return [game.config.project];
-  }, [game, games]);
-
-  const { collections, status } = useCollections({ projects: projects });
+  const { collections, status } = useCollections();
 
   switch (status) {
     case "loading":

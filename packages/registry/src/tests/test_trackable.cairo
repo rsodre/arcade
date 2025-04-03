@@ -18,26 +18,7 @@ const NAMEPSACE: felt252 = 'NAMESPACE';
 
 fn register(systems: @Systems) {
     testing::set_contract_address(PLAYER());
-    (*systems)
-        .register
-        .register(
-            WORLD_ADDRESS,
-            NAMEPSACE,
-            "PROJECT",
-            "RPC",
-            "POLICIES",
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-            Option::None,
-        );
+    (*systems).register.register(WORLD_ADDRESS, NAMEPSACE, "PROJECT", "RPC", "POLICIES", "", "");
 }
 
 // Tests

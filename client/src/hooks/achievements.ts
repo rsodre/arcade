@@ -42,7 +42,15 @@ export interface Player {
   completeds: string[];
 }
 
-export function useAchievements() {
+export const useAchievements = () => {
+  const context = useContext(AchievementContext);
+
+  if (!context) {
+    throw new Error(
+      "The `useAchievements` hook must be used within a `AchievementProvider`",
+    );
+  }
+
   const {
     achievements,
     players,
@@ -51,9 +59,8 @@ export function useAchievements() {
     globals,
     isLoading,
     isError,
-    projects,
-    setProjects,
-  } = useContext(AchievementContext);
+  } = context;
+
   return {
     achievements,
     players,
@@ -62,10 +69,8 @@ export function useAchievements() {
     globals,
     isLoading,
     isError,
-    projects,
-    setProjects,
   };
-}
+};
 
 export function usePlayerStats() {
   const { address } = useAddress();

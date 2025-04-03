@@ -8,8 +8,6 @@ pub mod helpers {
 pub mod types {
     pub mod role;
     pub mod config;
-    pub mod metadata;
-    pub mod socials;
 }
 
 pub mod models {
