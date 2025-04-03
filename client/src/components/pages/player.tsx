@@ -1,21 +1,35 @@
 import { InventoryScene } from "../scenes/inventory";
 import { AchievementScene } from "../scenes/achievement";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useAchievements } from "@/hooks/achievements";
-import { Button, TabsContent, TabValue, TimesIcon } from "@cartridge/ui-next";
+import {
+  Button,
+  cn,
+  TabsContent,
+  TabValue,
+  TimesIcon,
+} from "@cartridge/ui-next";
 import { ActivityScene } from "../scenes/activity";
 import { ArcadeTabs } from "../modules";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { GameModel } from "@bal7hazar/arcade-sdk";
-import { useUsername } from "@/hooks/account";
+import { useUsername, useUsernames } from "@/hooks/account";
 import { useAddress } from "@/hooks/address";
 import AchievementPlayerHeader from "../modules/player-header";
 import { UserAvatar } from "../user/avatar";
+import { useAccount } from "@starknet-react/core";
+import { useArcade } from "@/hooks/arcade";
+import ControllerConnector from "@cartridge/connector/controller";
+import { constants, getChecksumAddress } from "starknet";
+import { toast } from "sonner";
 
 export function PlayerPage({ game }: { game: GameModel | undefined }) {
   const [searchParams] = useSearchParams();
-  const { address, isSelf } = useAddress();
+  const { address, isSelf, self } = useAddress();
   const { usernames, globals, players } = useAchievements();
+  const [loading, setLoading] = useState(false);
+  const { account, connector } = useAccount();
+  const { provider, follows } = useArcade();
 
   const navigate = useNavigate();
 
@@ -63,6 +77,37 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
     return { rank, points };
   }, [globals, address, game]);
 
+  const following = useMemo(() => {
+    const followeds = follows[getChecksumAddress(self || "0x0")] || [];
+    return followeds.includes(getChecksumAddress(address));
+  }, [follows, address, self]);
+
+  const { follower, followerCount, followingCount, intersection } =
+    useMemo(() => {
+      const followeds = follows[getChecksumAddress(address)] || [];
+      const follower = followeds.includes(getChecksumAddress(self || "0x0"));
+      const followingCount = followeds.length;
+      const addresses = Object.keys(follows).filter((key) => {
+        const followeds = follows[key] || [];
+        return followeds.includes(getChecksumAddress(address));
+      });
+      const followerCount = addresses.length;
+      // Find intersection of addresses and followeds
+      const intersection = addresses.filter((address) =>
+        followeds.includes(address),
+      );
+      return { follower, followerCount, followingCount, intersection };
+    }, [follows, address, self]);
+
+  const { usernames: followerUsernames } = useUsernames({
+    addresses: intersection,
+  });
+  const followers = useMemo(() => {
+    return followerUsernames
+      .map((user) => user.username)
+      .filter((name) => !!name) as string[];
+  }, [followerUsernames]);
+
   const { username } = useUsername({ address });
   const name = useMemo(() => {
     return usernames[address] || username;
@@ -72,6 +117,36 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
     return <UserAvatar username={name} className="h-full w-full" />;
   }, [name]);
 
+  const handleFollow = useCallback(
+    (following: boolean, target: string) => {
+      if (!account) return;
+      const controller = (connector as ControllerConnector)?.controller;
+      if (!controller) return;
+      const process = async () => {
+        setLoading(true);
+        try {
+          const calls = following
+            ? provider.social.unfollow({ target })
+            : provider.social.follow({ target });
+          controller.switchStarknetChain(constants.StarknetChainId.SN_MAIN);
+          const res = await account.execute(calls);
+          if (res) {
+            toast.success(
+              `Player ${following ? "unfollowed" : "followed"} successfully`,
+            );
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error(`Failed to ${following ? "unfollow" : "follow"} player`);
+        } finally {
+          setLoading(false);
+        }
+      };
+      process();
+    },
+    [account, connector, setLoading],
+  );
+
   return (
     <>
       <AchievementPlayerHeader
@@ -79,6 +154,10 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
         address={address}
         points={points}
         icon={Icon}
+        follower={follower}
+        followerCount={followerCount}
+        followingCount={followingCount}
+        followers={followers}
         compacted={isSelf}
         rank={
           rank === 1
@@ -91,7 +170,14 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
         }
         className="relative p-4 pb-0"
       />
-      <div className="absolute top-4 right-4">
+      <div className="absolute flex gap-3 top-4 right-4">
+        {!isSelf && (
+          <FollowButton
+            following={following}
+            loading={loading}
+            handleFollow={() => handleFollow(following, address)}
+          />
+        )}
         <CloseButton handleClose={handleClose} />
       </div>
       <ArcadeTabs
@@ -133,7 +219,32 @@ function CloseButton({ handleClose }: { handleClose: () => void }) {
       onClick={handleClose}
       className="bg-background-125 h-8 w-8"
     >
-      <TimesIcon size="xs" className="text-foreground-300" />
+      <TimesIcon size="xs" />
+    </Button>
+  );
+}
+
+function FollowButton({
+  following,
+  loading,
+  handleFollow,
+}: {
+  following: boolean;
+  loading: boolean;
+  handleFollow: () => void;
+}) {
+  return (
+    <Button
+      variant="secondary"
+      onClick={handleFollow}
+      disabled={loading}
+      isLoading={loading}
+      className={cn(
+        "bg-background-125 disabled:bg-background-125 h-8 normal-case font-medium tracking-normal font-sans text-sm",
+        "px-3 py-1.5",
+      )}
+    >
+      {following ? "Unfollow" : "Follow"}
     </Button>
   );
 }

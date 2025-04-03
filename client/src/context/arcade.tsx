@@ -17,8 +17,14 @@ import {
   SocialModel,
   SocialOptions,
   RegistryOptions,
+  FollowEvent,
 } from "@bal7hazar/arcade-sdk";
-import { constants, RpcProvider, shortString } from "starknet";
+import {
+  constants,
+  getChecksumAddress,
+  RpcProvider,
+  shortString,
+} from "starknet";
 import { Chain } from "@starknet-react/chains";
 
 const CHAIN_ID = constants.StarknetChainId.SN_MAIN;
@@ -36,6 +42,7 @@ interface ArcadeContextType {
   chainId: string;
   provider: ExternalProvider;
   pins: { [playerId: string]: string[] };
+  follows: { [playerId: string]: string[] };
   games: GameModel[];
   chains: Chain[];
   projects: ProjectProps[];
@@ -56,6 +63,7 @@ export const ArcadeContext = createContext<ArcadeContextType | null>(null);
 export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
   const currentValue = useContext(ArcadeContext);
   const [pins, setPins] = useState<{ [playerId: string]: string[] }>({});
+  const [follows, setFollows] = useState<{ [playerId: string]: string[] }>({});
   const [games, setGames] = useState<{ [gameId: string]: GameModel }>({});
   const [chains, setChains] = useState<Chain[]>([]);
   const [projects, setProjects] = useState<ProjectProps[]>([]);
@@ -103,35 +111,67 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
     [],
   );
 
-  const handlePinEvents = useCallback((models: SocialModel[]) => {
-    models.forEach((model: SocialModel) => {
-      // Return if the model is not a PinEvent
-      if (!PinEvent.isType(model as PinEvent)) return;
-      const event = model as PinEvent;
-      // Return if the event is not a PinEvent
-      if (event.time == 0) {
-        // Remove the achievement from the player's list
-        setPins((prevPins) => {
-          const achievementIds = prevPins[event.playerId] || [];
-          return {
-            ...prevPins,
-            [event.playerId]: achievementIds.filter(
-              (id: string) => id !== event.achievementId,
-            ),
-          };
-        });
-      } else {
-        // Otherwise, add the achievement to the player's list
-        setPins((prevPins) => {
-          const achievementIds = prevPins[event.playerId] || [];
-          return {
-            ...prevPins,
-            [event.playerId]: [...achievementIds, event.achievementId],
-          };
-        });
-      }
-    });
+  const handlePinEvent = useCallback((event: PinEvent) => {
+    const playerId = getChecksumAddress(event.playerId);
+    if (event.time == 0) {
+      // Remove the achievement from the player's list
+      setPins((prevPins) => {
+        const achievementIds = prevPins[event.playerId] || [];
+        return {
+          ...prevPins,
+          [playerId]: achievementIds.filter(
+            (id: string) => id !== event.achievementId,
+          ),
+        };
+      });
+    } else {
+      // Otherwise, add the achievement to the player's list
+      setPins((prevPins) => {
+        const achievementIds = prevPins[event.playerId] || [];
+        return {
+          ...prevPins,
+          [playerId]: [...new Set([...achievementIds, event.achievementId])],
+        };
+      });
+    }
   }, []);
+
+  const handleFollowEvent = useCallback((event: FollowEvent) => {
+    const follower = getChecksumAddress(event.follower);
+    const followed = getChecksumAddress(event.followed);
+    if (event.time == 0) {
+      // Remove the follow
+      setFollows((prevFollows) => {
+        const followeds = prevFollows[follower] || [];
+        return {
+          ...prevFollows,
+          [follower]: followeds.filter((id: string) => id !== followed),
+        };
+      });
+    } else {
+      // Otherwise, add the follow
+      setFollows((prevFollows) => {
+        const followeds = prevFollows[follower] || [];
+        return {
+          ...prevFollows,
+          [follower]: [...new Set([...followeds, followed])],
+        };
+      });
+    }
+  }, []);
+
+  const handleSocialEvents = useCallback(
+    (models: SocialModel[]) => {
+      models.forEach((model: SocialModel) => {
+        // Return if the model is not a PinEvent
+        if (PinEvent.isType(model as PinEvent))
+          return handlePinEvent(model as PinEvent);
+        if (FollowEvent.isType(model as FollowEvent))
+          return handleFollowEvent(model as FollowEvent);
+      });
+    },
+    [handlePinEvent, handleFollowEvent],
+  );
 
   const handleGameModels = useCallback((models: RegistryModel[]) => {
     models.forEach((model: RegistryModel) => {
@@ -164,13 +204,13 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!initialized) return;
-    const options: SocialOptions = { pin: true };
-    Social.fetch(handlePinEvents, options);
-    Social.sub(handlePinEvents, options);
+    const options: SocialOptions = { pin: true, follow: true };
+    Social.fetch(handleSocialEvents, options);
+    Social.sub(handleSocialEvents, options);
     return () => {
       Social.unsub();
     };
-  }, [initialized, handlePinEvents]);
+  }, [initialized, handleSocialEvents]);
 
   useEffect(() => {
     if (!initialized) return;
@@ -194,6 +234,7 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
         chainId: CHAIN_ID,
         provider,
         pins,
+        follows,
         games: sortedGames,
         chains,
         projects,

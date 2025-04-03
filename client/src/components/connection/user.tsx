@@ -37,8 +37,12 @@ export function User() {
   if (!isConnected || !account || !name) return null;
 
   return (
-    <Button variant="secondary" onClick={() => handleClick(address)}>
-      <div className="h-7 w-7 flex items-center justify-center">
+    <Button
+      variant="secondary"
+      className="px-3 py-2.5"
+      onClick={() => handleClick(address)}
+    >
+      <div className="h-5 w-5 flex items-center justify-center">
         <UserAvatar username={name} size="lg" />
       </div>
       <p className="text-sm font-semibold normal-case">{name}</p>
