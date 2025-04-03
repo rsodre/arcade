@@ -13,8 +13,8 @@ import { HTMLAttributes } from "react";
 interface ArcadeDiscoveryGroupProps
   extends HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof arcadeDiscoveryGroupVariants> {
-  game: ArcadeGameHeaderProps;
   events: ArcadeDiscoveryEventProps[];
+  game?: ArcadeGameHeaderProps;
   loading?: boolean;
   rounded?: boolean;
 }
