@@ -4,7 +4,12 @@ import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
 import banner from "@/assets/banner.png";
-import { Connect, DiscoverError, DiscoverLoading } from "../errors";
+import {
+  Connect,
+  DiscoverEmpty,
+  DiscoverError,
+  DiscoverLoading,
+} from "../errors";
 import { addAddressPadding, getChecksumAddress } from "starknet";
 import { ArcadeDiscoveryGroup } from "../modules/discovery-group";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -26,10 +31,9 @@ export function Discover({ game }: { game?: GameModel }) {
 
   const following = useMemo(() => {
     if (!address) return [];
-    return [
-      ...(follows[getChecksumAddress(address)] || []),
-      getChecksumAddress(address),
-    ];
+    const addresses = follows[getChecksumAddress(address)] || [];
+    if (addresses.length === 0) return [];
+    return [...addresses, getChecksumAddress(address)];
   }, [follows, address]);
 
   const filteredGames = useMemo(() => {
@@ -128,6 +132,8 @@ export function Discover({ game }: { game?: GameModel }) {
             <TabsContent className="p-0 mt-0 grow w-full" value="following">
               {!isConnected ? (
                 <Connect />
+              ) : following.length === 0 ? (
+                <DiscoverEmpty />
               ) : (
                 <div className="flex flex-col gap-y-4">
                   {filteredGames.map((item, index) => (

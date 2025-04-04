@@ -89,6 +89,15 @@ export function ActivityLoading() {
   );
 }
 
+export function ActivityEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
+      Icon={<EmptyStateActivityIcon className="h-full w-full" />}
+    />
+  );
+}
+
 export function GuildsComingSoon() {
   return (
     <Error
@@ -111,6 +120,15 @@ export function GuildsError() {
   return (
     <Error
       title="Oops! Something went wrong"
+      Icon={<EmptyStateGuildIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function GuildsEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
       Icon={<EmptyStateGuildIcon className="h-full w-full" />}
     />
   );
@@ -143,6 +161,15 @@ export function MarketplaceError() {
   );
 }
 
+export function MarketplaceEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
+      Icon={<EmptyStateInventoryIcon className="h-full w-full" />}
+    />
+  );
+}
+
 export function AboutComingSoon() {
   return (
     <Error
@@ -165,6 +192,15 @@ export function AboutError() {
   return (
     <Error
       title="Oops! Something went wrong"
+      Icon={<EmptyStateActivityIcon className="h-full w-full" />}
+    />
+  );
+}
+
+export function AboutEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
       Icon={<EmptyStateActivityIcon className="h-full w-full" />}
     />
   );
@@ -199,6 +235,15 @@ export function AchievementsLoading() {
   );
 }
 
+export function AchievementsEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
+      Icon={<EmptyStateAchievementIcon className="h-full w-full" />}
+    />
+  );
+}
+
 export function LeaderboardComingSoon() {
   return (
     <Error
@@ -224,6 +269,15 @@ export function LeaderboardLoading() {
       Icon={
         <EmptyStateAchievementIcon className="h-full w-full animate-pulse" />
       }
+    />
+  );
+}
+
+export function LeaderboardEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
+      Icon={<EmptyStateAchievementIcon className="h-full w-full" />}
     />
   );
 }
@@ -255,6 +309,15 @@ export function InventoryLoading() {
   );
 }
 
+export function InventoryEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
+      Icon={<EmptyStateInventoryIcon className="h-full w-full" />}
+    />
+  );
+}
+
 export function DiscoverComingSoon() {
   return (
     <Error
@@ -282,6 +345,14 @@ export function DiscoverLoading() {
   );
 }
 
+export function DiscoverEmpty() {
+  return (
+    <Error
+      title="It's lonely in here..."
+      Icon={<EmptyStateActivityIcon className="h-full w-full" />}
+    />
+  );
+}
 export function GenericError() {
   return (
     <Error

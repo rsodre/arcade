@@ -12,6 +12,7 @@ import { useAchievements } from "@/hooks/achievements";
 import {
   Connect,
   LeaderboardComingSoon,
+  LeaderboardEmpty,
   LeaderboardError,
   LeaderboardLoading,
 } from "../errors";
@@ -28,10 +29,9 @@ export function Leaderboard({ game }: { game?: GameModel }) {
 
   const following = useMemo(() => {
     if (!address) return [];
-    return [
-      ...(follows[getChecksumAddress(address)] || []),
-      getChecksumAddress(address),
-    ];
+    const addresses = follows[getChecksumAddress(address)] || [];
+    if (addresses.length === 0) return [];
+    return [...addresses, getChecksumAddress(address)];
   }, [follows, address]);
 
   const navigate = useNavigate();
@@ -221,6 +221,8 @@ export function Leaderboard({ game }: { game?: GameModel }) {
             <TabsContent className="p-0 mt-0 grow w-full" value="following">
               {!isConnected ? (
                 <Connect />
+              ) : following.length === 0 ? (
+                <LeaderboardEmpty />
               ) : (
                 <AchievementLeaderboard className="h-full rounded">
                   {!game
