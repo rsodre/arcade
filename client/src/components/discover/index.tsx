@@ -1,13 +1,15 @@
-import { LayoutContent } from "@cartridge/ui-next";
+import { LayoutContent, TabsContent } from "@cartridge/ui-next";
 import { useCallback, useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
 import banner from "@/assets/banner.png";
-import { DiscoverError, DiscoverLoading } from "../errors";
-import { addAddressPadding } from "starknet";
+import { Connect, DiscoverError, DiscoverLoading } from "../errors";
+import { addAddressPadding, getChecksumAddress } from "starknet";
 import { ArcadeDiscoveryGroup } from "../modules/discovery-group";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
+import { useAccount } from "@starknet-react/core";
 
 interface Event {
   name: string;
@@ -17,8 +19,15 @@ interface Event {
 }
 
 export function Discover({ game }: { game?: GameModel }) {
+  const [searchParams] = useSearchParams();
+  const { isConnected, address } = useAccount();
   const { events, usernames, isLoading, isError } = useAchievements();
-  const { games } = useArcade();
+  const { games, follows } = useArcade();
+
+  const following = useMemo(() => {
+    if (!address) return [];
+    return [...follows[getChecksumAddress(address)]];
+  }, [follows, address]);
 
   const filteredGames = useMemo(() => {
     return !game ? games : [game];
@@ -35,23 +44,51 @@ export function Discover({ game }: { game?: GameModel }) {
     [navigate],
   );
 
+  const defaultValue = useMemo(() => {
+    // Default tab is ignored if there is no address,
+    // meanning the user is not connected and doesnt inspect another user
+    return searchParams.get("subTab") || "all";
+  }, [searchParams]);
+
+  const handleTabClick = useCallback(
+    (value: string) => {
+      // Clicking on a tab updates the url param tab to the value of the tab
+      // So the tab is persisted in the url and the user can update and share the url
+      const url = new URL(window.location.href);
+      url.searchParams.set("subTab", value);
+      navigate(url.toString().replace(window.location.origin, ""));
+    },
+    [navigate],
+  );
+
   const gameEvents = useMemo(() => {
     return filteredGames.map((game) => {
       const data = events[game?.config.project]?.map((event) => {
         return {
           name: usernames[addAddressPadding(event.player)],
+          address: getChecksumAddress(event.player),
           achievement: event.achievement,
           timestamp: event.timestamp,
           onClick: () => handleClick(addAddressPadding(event.player)),
         };
       });
-      if (!data) return [];
+      if (!data) return { all: [], following: [] };
       if (filteredGames.length > 1) {
-        return data.slice(0, 3);
+        return {
+          all: data.slice(0, 3),
+          following: data
+            .filter((event) => following.includes(event.address))
+            .slice(0, 3),
+        };
       }
-      return data.slice(0, 20);
+      return {
+        all: data.slice(0, 20),
+        following: data
+          .filter((event) => following.includes(event.address))
+          .slice(0, 20),
+      };
     });
-  }, [events, filteredGames, usernames, handleClick]);
+  }, [events, filteredGames, usernames, following, handleClick]);
 
   if (isError) return <DiscoverError />;
 
@@ -60,19 +97,49 @@ export function Discover({ game }: { game?: GameModel }) {
   return (
     <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0 py-4">
       <div
-        className="p-0 mt-0 overflow-y-scroll"
+        className="p-0 mt-0 h-full overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
-        <div className="flex flex-col gap-y-4">
-          {filteredGames.map((item, index) => (
-            <GameRow
-              key={`${index}-${item.config.project}`}
-              game={filteredGames.length > 1 ? item : undefined}
-              events={gameEvents[index]}
-              covered={filteredGames.length > 1}
-            />
-          ))}
-        </div>
+        <ArcadeSubTabs
+          tabs={["all", "following"]}
+          defaultValue={defaultValue as SubTabValue}
+          onTabClick={(tab: SubTabValue) => handleTabClick(tab)}
+          className="mb-4"
+        >
+          <div
+            className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
+            style={{ scrollbarWidth: "none" }}
+          >
+            <TabsContent className="p-0 mt-0 grow w-full" value="all">
+              <div className="flex flex-col gap-y-4">
+                {filteredGames.map((item, index) => (
+                  <GameRow
+                    key={`${index}-${item.config.project}`}
+                    game={filteredGames.length > 1 ? item : undefined}
+                    events={gameEvents[index].all}
+                    covered={filteredGames.length > 1}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent className="p-0 mt-0 grow w-full" value="following">
+              {!isConnected ? (
+                <Connect />
+              ) : (
+                <div className="flex flex-col gap-y-4">
+                  {filteredGames.map((item, index) => (
+                    <GameRow
+                      key={`${index}-${item.config.project}`}
+                      game={filteredGames.length > 1 ? item : undefined}
+                      events={gameEvents[index].following}
+                      covered={filteredGames.length > 1}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </div>
+        </ArcadeSubTabs>
       </div>
     </LayoutContent>
   );
