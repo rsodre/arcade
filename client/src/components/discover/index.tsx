@@ -26,7 +26,10 @@ export function Discover({ game }: { game?: GameModel }) {
 
   const following = useMemo(() => {
     if (!address) return [];
-    return [...follows[getChecksumAddress(address)]];
+    return [
+      ...follows[getChecksumAddress(address)],
+      getChecksumAddress(address),
+    ];
   }, [follows, address]);
 
   const filteredGames = useMemo(() => {
