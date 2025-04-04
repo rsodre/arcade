@@ -95,7 +95,9 @@ export function Leaderboard({ game }: { game?: GameModel }) {
       return {
         all: data.slice(0, 100),
         following: data
-          .filter((player) => following.includes(player.address))
+          .filter((player) =>
+            following.includes(getChecksumAddress(player.address)),
+          )
           .slice(0, 100),
       };
     }
@@ -105,9 +107,14 @@ export function Leaderboard({ game }: { game?: GameModel }) {
     return selfData
       ? {
           all: [...data.slice(0, 99), selfData],
-          following: [...data.slice(0, 99), selfData].filter((player) =>
-            following.includes(getChecksumAddress(player.address)),
-          ),
+          following: [
+            ...data
+              .filter((player) =>
+                following.includes(getChecksumAddress(player.address)),
+              )
+              .slice(0, 99),
+            selfData,
+          ],
         }
       : {
           all: data.slice(0, 100),
