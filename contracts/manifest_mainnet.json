@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x75fc75bcd1a7f8b4bf64b74978b0f89c8cee44bb755c1dae6f82284756451ec",
-    "address": "0x2b33bfaf6de21920da455b800547e1bfadabd9e22c299bd08fe42b81451fb02",
-    "seed": "Arcade-2",
+    "address": "0x65613bd4a3b58ebe84abed13a67ff9eaa1de29a640cb6598da54207a5551d87",
+    "seed": "Arcade-3",
     "name": "Cartridge World",
     "entrypoints": [
       "uuid",
@@ -1312,7 +1312,7 @@
   },
   "contracts": [
     {
-      "address": "0x1f3d74972c8e103300999c5f9c6c5c14eac71eb481e08c26633b24e2867a93f",
+      "address": "0x12af1568b4baf297638ca0ca8648625010158502940ef44c3d3604e3c0c2098",
       "class_hash": "0x2e5ba498a20108d69ce7796e55d7b3f0077caad2d76923080d145f9e575ae12",
       "abi": [
         {
@@ -1854,7 +1854,7 @@
       ]
     },
     {
-      "address": "0x2084812c53f8714123d1ea1a67125c32d8b90d5a7bc5b95c9bfffdcf571dd78",
+      "address": "0x7ad90897d536f9c4b5cab45a3d1ac414e222c83c83e6868ad9a49ed2c00c0f",
       "class_hash": "0x1718d25cb59c42414c40ea0ec00fe715c02013ccede953d76ddcfbf72351acc",
       "abi": [
         {
@@ -2140,8 +2140,8 @@
       ]
     },
     {
-      "address": "0x2bf2ed32399f3037be98ce589f7f89a35f5225b684ecfdb5917a6062c2cf111",
-      "class_hash": "0x37fad5753021a142bd9df28e3f45495a56bda54f3a52822e60bf1e93ec29145",
+      "address": "0x144f948e5d8084467a1bed5c4eaa87ee2057c6c2be06de428774a436c825f75",
+      "class_hash": "0x6566e0595e0c3f8cd4767c6641d61137f2330176b5e0b9eb9eeed7a5c9a3ab8",
       "abi": [
         {
           "type": "impl",
@@ -2675,7 +2675,7 @@
       ]
     },
     {
-      "address": "0x2e7e8cb51a5d411ad0123fb440f6b3e9284ff75e8aeacd6810d0ba2e11e32c5",
+      "address": "0x502d4def71dbba260f8f4c308b006daa367ff7648bf124685c5f6ae90e8eb10",
       "class_hash": "0x12a869dfb44f540886161b7b18a1401a2a8ca8bec0f3796cd8399087bfe4bd9",
       "abi": [
         {
@@ -2956,7 +2956,7 @@
   "events": [
     {
       "members": [],
-      "class_hash": "0x1c44a5d760c40dbbb8ce03c01a13e9a71abd961e37a48bb938ea390c6899d77",
+      "class_hash": "0x267263506d39eeba83ba032276674b09df56edda2a83b0c0874a48e3492bac4",
       "tag": "ARCADE-Follow",
       "selector": "0x38866790c8a50b1c2d43786d8d06856b7ab65ce7a59e136bc47fbae18b147f1"
     },

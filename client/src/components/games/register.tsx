@@ -146,37 +146,37 @@ export function Register({ game }: { game?: GameModel }) {
     //   github:
     //     game?.socials.github || "https://github.com/BibliothecaDAO/eternum",
     // },
-    defaultValues: {
-      worldAddress:
-        game?.worldAddress ||
-        "0x022055481479edc9542aa28bc7da760c45fbf320bce571c31c161baddc13acd9",
-      namespace: game?.namespace || "dragark",
-      project: game?.config.project || "dragark-mainnet-v10-1",
-      rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
-      policies: game?.config.policies
-        ? JSON.stringify(game?.config.policies)
-        : "",
-      color: game?.metadata.color || "#71EB34",
-      preset: game?.metadata.preset || "dragark",
-      name: game?.metadata.name || "Dragark",
-      description:
-        game?.metadata.description ||
-        "Dragark Mainnet is live now! Let's dive into the Action: Battle, Upgrade, and Mine for Dragark Stones!",
-      image:
-        game?.metadata.image ||
-        "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/icon.png?raw=true",
-      banner:
-        game?.metadata.banner ||
-        "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/cover.png?raw=true",
-      discord: game?.socials.discord || "https://discord.gg/KEChMrdk7z",
-      telegram: game?.socials.telegram || "",
-      twitter: game?.socials.twitter || "https://x.com/playDRAGARK",
-      youtube: game?.socials.youtube || "",
-      website: game?.socials.website || "https://dragark.net/",
-      github:
-        game?.socials.github ||
-        "https://github.com/DragarkTeam/dragark-contract",
-    },
+    // defaultValues: {
+    //   worldAddress:
+    //     game?.worldAddress ||
+    //     "0x022055481479edc9542aa28bc7da760c45fbf320bce571c31c161baddc13acd9",
+    //   namespace: game?.namespace || "dragark",
+    //   project: game?.config.project || "dragark-mainnet-v10-1",
+    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
+    //   policies: game?.config.policies
+    //     ? JSON.stringify(game?.config.policies)
+    //     : "",
+    //   color: game?.metadata.color || "#71EB34",
+    //   preset: game?.metadata.preset || "dragark",
+    //   name: game?.metadata.name || "Dragark",
+    //   description:
+    //     game?.metadata.description ||
+    //     "Dragark Mainnet is live now! Let's dive into the Action: Battle, Upgrade, and Mine for Dragark Stones!",
+    //   image:
+    //     game?.metadata.image ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/icon.png?raw=true",
+    //   banner:
+    //     game?.metadata.banner ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/dragark/cover.png?raw=true",
+    //   discord: game?.socials.discord || "https://discord.gg/KEChMrdk7z",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "https://x.com/playDRAGARK",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "https://dragark.net/",
+    //   github:
+    //     game?.socials.github ||
+    //     "https://github.com/DragarkTeam/dragark-contract",
+    // },
     // defaultValues: {
     //   worldAddress:
     //     game?.worldAddress ||
@@ -206,24 +206,25 @@ export function Register({ game }: { game?: GameModel }) {
     //   website: game?.socials.website || "https://pistols.underware.gg/",
     //   github: game?.socials.github || "https://github.com/underware-gg/pistols",
     // },
-    // defaultValues: {
-    //   worldAddress: game?.worldAddress || "",
-    //   namespace: game?.namespace || "",
-    //   project: game?.config.project || "",
-    //   rpc: game?.config.rpc || "",
-    //   policies: JSON.stringify(game?.config.policies) || ``,
-    //   color: game?.metadata.color || "",
-    //   preset: game?.metadata.preset || "",
-    //   name: game?.metadata.name || "",
-    //   description: game?.metadata.description || "",
-    //   image: game?.metadata.image || "",
-    //   banner: game?.metadata.banner || "",
-    //   discord: game?.socials.discord || "",
-    //   telegram: game?.socials.telegram || "",
-    //   twitter: game?.socials.twitter || "",
-    //   youtube: game?.socials.youtube || "",
-    //   website: game?.socials.website || "",
-    // },
+    defaultValues: {
+      worldAddress: game?.worldAddress || "",
+      namespace: game?.namespace || "",
+      project: game?.config.project || "",
+      rpc: game?.config.rpc || "",
+      policies: JSON.stringify(game?.config.policies) || ``,
+      color: game?.metadata.color || "",
+      preset: game?.metadata.preset || "",
+      name: game?.metadata.name || "",
+      description: game?.metadata.description || "",
+      image: game?.metadata.image || "",
+      banner: game?.metadata.banner || "",
+      discord: game?.socials.discord || "",
+      telegram: game?.socials.telegram || "",
+      twitter: game?.socials.twitter || "",
+      youtube: game?.socials.youtube || "",
+      website: game?.socials.website || "",
+      github: game?.socials.github || "",
+    },
   });
 
   const onDelete = useCallback(() => {

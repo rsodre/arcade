@@ -137,6 +137,7 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const handleFollowEvent = useCallback((event: FollowEvent) => {
+    console.log("handleFollowEvent", event);
     const follower = getChecksumAddress(event.follower);
     const followed = getChecksumAddress(event.followed);
     if (event.time == 0) {

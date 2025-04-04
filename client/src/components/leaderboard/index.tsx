@@ -29,7 +29,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
   const following = useMemo(() => {
     if (!address) return [];
     return [
-      ...follows[getChecksumAddress(address)],
+      ...(follows[getChecksumAddress(address)] || []),
       getChecksumAddress(address),
     ];
   }, [follows, address]);

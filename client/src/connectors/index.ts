@@ -26,7 +26,7 @@ const keychain: KeychainOptions = {
 
 const profile: ProfileOptions = {
   preset: "cartridge",
-  slot: "arcadebal",
+  slot: "arcade",
   tokens: {
     erc20: ERC20_ADDRESSES,
   },
