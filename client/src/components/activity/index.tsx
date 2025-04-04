@@ -96,6 +96,7 @@ export function Activity() {
     });
 
     const achievements: CardProps[] = Object.keys(events).flatMap((gameKey) => {
+      if (project !== gameKey && !!project) return [];
       const gameEvents = events[gameKey].filter(
         (event) => BigInt(event.player) === BigInt(address),
       );
