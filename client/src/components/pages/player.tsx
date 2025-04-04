@@ -28,7 +28,7 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
   const { address, isSelf, self } = useAddress();
   const { usernames, globals, players } = useAchievements();
   const [loading, setLoading] = useState(false);
-  const { account, connector } = useAccount();
+  const { account, connector, isConnected } = useAccount();
   const { provider, follows } = useArcade();
 
   const navigate = useNavigate();
@@ -173,7 +173,7 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
         className="relative p-4 pb-0"
       />
       <div className="absolute flex gap-3 top-4 right-4">
-        {!isSelf && (
+        {!isSelf && isConnected && (
           <FollowButton
             following={following}
             loading={loading}
