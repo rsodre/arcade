@@ -75,7 +75,7 @@ export function ActivityError() {
   return (
     <Error
       title="Oops! Something went wrong"
-      Icon={<EmptyStateActivityIcon size="xl" />}
+      Icon={<EmptyStateActivityIcon className="h-full w-full" />}
     />
   );
 }

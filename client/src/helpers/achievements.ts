@@ -45,6 +45,7 @@ export interface Event {
   achievement: {
     title: string;
     icon: string;
+    points: number;
   };
   timestamp: number;
 }
@@ -155,6 +156,7 @@ export const AchievementHelper = {
               achievement: {
                 title: trophies[game][achievementId].title,
                 icon: trophies[game][achievementId].icon,
+                points: trophies[game][achievementId].earning,
               },
               timestamp: completionTimestamp,
             };

@@ -10,6 +10,7 @@ import { StarknetProvider } from "./starknet";
 import { ProjectProvider } from "./project";
 import { CollectionProvider } from "./collection";
 import { TokenProvider } from "./token";
+import { ActivitiesProvider } from "./activities";
 
 export function Provider({ children }: PropsWithChildren) {
   const queryClient = new QueryClient();
@@ -27,7 +28,9 @@ export function Provider({ children }: PropsWithChildren) {
                   <ProjectProvider>
                     <CollectionProvider>
                       <TokenProvider>
-                        <AchievementProvider>{children}</AchievementProvider>
+                        <ActivitiesProvider>
+                          <AchievementProvider>{children}</AchievementProvider>
+                        </ActivitiesProvider>
                       </TokenProvider>
                     </CollectionProvider>
                   </ProjectProvider>
