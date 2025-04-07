@@ -50,10 +50,10 @@ export function App() {
           <Games />
           <div
             className={cn(
-              "relative grow h-full flex flex-col rounded gap-2",
+              "relative grow h-full flex flex-col rounded gap-2 overflow-hidden",
               "border border-background-200 bg-background-100",
               !isZero &&
-                " bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
+                "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
             )}
           >
             <div
