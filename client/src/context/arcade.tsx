@@ -174,9 +174,13 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const handleGameModels = useCallback((models: RegistryModel[]) => {
-    models.forEach((model: RegistryModel) => {
+    models.forEach(async (model: RegistryModel) => {
       if (!GameModel.isType(model as GameModel)) return;
       const game = model as GameModel;
+      const torii = `https://api.cartridge.gg/x/${game.config.project}/torii`;
+      const response = await fetch(torii);
+      const data = await response.json();
+      if (!data.success) return;
       if (!game.exists()) {
         setGames((prevGames) => {
           const newGames = { ...prevGames };
