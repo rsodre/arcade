@@ -82,7 +82,7 @@ export function Media() {
         </div>
         <div className="relative">
           <div
-            className="absolute w-11 h-full z-10 right-0"
+            className="absolute w-11 h-full z-10 right-0 pointer-events-none"
             style={{
               background: `linear-gradient(to right, transparent 0%, transparent 50%, var(--background-100) 100%`,
             }}
@@ -92,7 +92,7 @@ export function Media() {
               <CarouselItem key={index} className="basis-[600px]">
                 <div
                   className={cn(
-                    "rounded-lg overflow-hidden w-[600px] h-[320px]",
+                    "relative rounded-lg overflow-hidden w-[600px] h-[320px]",
                     index === VIDEOS.length - 1 && !IMAGES.length && "pr-4",
                   )}
                 >
@@ -102,6 +102,12 @@ export function Media() {
                     height="100%"
                     loop
                     controls
+                  />
+                  <div
+                    className={cn(
+                      "absolute inset-0 z-10",
+                      current === index + 1 && "pointer-events-none",
+                    )}
                   />
                 </div>
               </CarouselItem>
