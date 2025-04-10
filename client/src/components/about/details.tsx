@@ -9,7 +9,7 @@ export function Details({ content }: { content: string }) {
   useEffect(() => {
     const element = ref.current!;
     setIsOverflown(isExpanded || element.scrollHeight > element.clientHeight);
-  }, [isExpanded, ref]);
+  }, [isExpanded, ref, content]);
 
   return (
     <div className="flex flex-col gap-2">
