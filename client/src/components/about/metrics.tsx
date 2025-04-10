@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
+import { cn } from "@cartridge/ui-next";
+import { useMetrics } from "@/hooks/metrics";
+import { useTheme } from "@/hooks/context";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,8 +15,7 @@ import {
   TooltipItem,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { cn } from "@cartridge/ui-next";
-import { useTheme } from "@/hooks/context";
+import zoomPlugin from "chartjs-plugin-zoom";
 
 ChartJS.register(
   CategoryScale,
@@ -22,6 +24,7 @@ ChartJS.register(
   LineElement,
   Tooltip,
   Filler,
+  zoomPlugin
 );
 
 export interface MetricsProps {
@@ -29,17 +32,146 @@ export interface MetricsProps {
   playerCount: number;
 }
 
-export function Metrics({ txsCount, playerCount }: MetricsProps) {
+export function Metrics() {
   const { theme } = useTheme();
+  const { data, isLoading, isError } = useMetrics("dopewarsbal");
+  const chartRef = useRef<ChartJS<"line">>(null);
+
   const [activeTab, setActiveTab] = useState<"txs" | "players">("txs");
 
-  const data = useMemo(() => {
-    const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
+  const avgDailyTxs = useMemo(() => {
+    let totalTxs = 0;
+    let dayCount = 0;
+
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Process all data points
+    data.forEach((item) => {
+      item.metrics.forEach((metric) => {
+        const date = new Date(metric.transactionDate);
+        date.setHours(0, 0, 0, 0);
+
+        // Calculate days difference
+        const dayDiff = Math.floor(
+          (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000)
+        );
+
+        // Only include data from the last 49 days (7 weeks)
+        if (dayDiff >= 0 && dayDiff < 49) {
+          totalTxs += metric.transactionCount;
+          dayCount++;
+        }
+      });
+    });
+
+    return dayCount > 0 ? totalTxs / dayCount : 0;
+  }, [data]);
+
+  const avgDailyPlayers = useMemo(() => {
+    let totalPlayers = 0;
+    let dayCount = 0;
+
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Process all data points
+    data.forEach((item) => {
+      item.metrics.forEach((metric) => {
+        const date = new Date(metric.transactionDate);
+        date.setHours(0, 0, 0, 0);
+
+        // Calculate days difference
+        const dayDiff = Math.floor(
+          (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000)
+        );
+
+        // Only include data from the last 49 days (7 weeks)
+        if (dayDiff >= 0 && dayDiff < 49) {
+          totalPlayers += metric.callerCount;
+          dayCount++;
+        }
+      });
+    });
+
+    return dayCount > 0 ? totalPlayers / dayCount : 0;
+  }, [data]);
+
+  const chartData = useMemo(() => {
+    // Create a map to store daily data
+    const dailyData = new Map();
+
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Process all data points
+    data.forEach((item) => {
+      item.metrics.forEach((metric) => {
+        const date = new Date(metric.transactionDate);
+        date.setHours(0, 0, 0, 0);
+
+        // Calculate days difference
+        const dayDiff = Math.floor(
+          (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000)
+        );
+
+        // Only include data from the last 49 days (7 weeks)
+        if (dayDiff >= 0 && dayDiff < 49) {
+          const dayKey = dayDiff;
+
+          if (!dailyData.has(dayKey)) {
+            dailyData.set(dayKey, {
+              transactionCount: 0,
+              callerCount: 0,
+              date: date,
+            });
+          }
+
+          const dayData = dailyData.get(dayKey);
+          dayData.transactionCount += metric.transactionCount;
+          dayData.callerCount += metric.callerCount;
+        }
+      });
+    });
+
+    // Convert to arrays for chart
+    const dayLabels = [];
+    const counts = [];
+
+    // Process days in reverse order (most recent first)
+    for (let i = 0; i < 49; i++) {
+      if (dailyData.has(i)) {
+        const dayData = dailyData.get(i);
+        const date = dayData.date;
+
+        // Format date as "M/D" (e.g., "2/20")
+        const month = date.getMonth() + 1; // JavaScript months are 0-indexed
+        const day = date.getDate();
+        dayLabels.unshift(`${month}/${day}`);
+
+        counts.unshift(
+          activeTab === "txs" ? dayData.transactionCount : dayData.callerCount
+        );
+      } else {
+        // If no data for a day, use placeholder
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        dayLabels.unshift(`${month}/${day}`);
+        counts.unshift(0);
+      }
+    }
+
     const datasets: ChartDataset<"line", unknown>[] = [
       {
         fill: true,
-        label: "Daily Transactions",
-        data: [50, 200, 210, 120, 30, 60, 350],
+        label:
+          activeTab === "txs" ? "Daily Transactions" : "Daily Active Players",
+        data: counts,
         borderColor: "#2A2F2A",
         backgroundColor: "#212621",
         borderDash: [5, 5],
@@ -49,12 +181,12 @@ export function Metrics({ txsCount, playerCount }: MetricsProps) {
         },
         pointBackgroundColor: "#242824",
         pointBorderWidth: 1,
-        pointRadius: 4,
+        pointRadius: 2,
         tension: 0.4,
       },
     ];
-    return { labels, datasets };
-  }, [theme]);
+    return { labels: dayLabels, datasets };
+  }, [theme, data, activeTab]);
 
   const options: ChartOptions<"line"> = useMemo(() => {
     return {
@@ -93,11 +225,32 @@ export function Metrics({ txsCount, playerCount }: MetricsProps) {
           yAlign: "bottom",
           caretPadding: 12,
         },
+        zoom: {
+          zoom: {
+            drag: {
+              enabled: true,
+            },
+            // wheel: {
+            //   enabled: true,
+            //   speed: 0.1,
+            // },
+            // pinch: {
+            //   enabled: true
+            // },
+            mode: "x",
+          },
+        },
       },
       scales: {
         x: {
           grid: {
             display: false,
+          },
+          ticks: {
+            maxRotation: 45,
+            minRotation: 45,
+            autoSkip: true,
+            maxTicksLimit: 7, // Show only 7 labels on the x-axis
           },
         },
         y: {
@@ -105,7 +258,7 @@ export function Metrics({ txsCount, playerCount }: MetricsProps) {
             display: false,
           },
           ticks: {
-            stepSize: 200,
+            stepSize: activeTab === "txs" ? 200 : 20,
           },
           grid: {
             display: true,
@@ -115,7 +268,13 @@ export function Metrics({ txsCount, playerCount }: MetricsProps) {
         },
       },
     };
-  }, [theme]);
+  }, [theme, activeTab]);
+
+  const resetZoom = () => {
+    if (chartRef.current) {
+      chartRef.current.resetZoom();
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -123,24 +282,40 @@ export function Metrics({ txsCount, playerCount }: MetricsProps) {
         <p className="text-xs tracking-wider font-semibold text-foreground-400">
           Metrics
         </p>
+        <button
+          onClick={resetZoom}
+          className="px-3 py-1 text-xs bg-background-200 hover:bg-background-300 rounded transition-colors duration-200"
+        >
+          Reset Zoom
+        </button>
       </div>
       <div className="flex flex-col gap-4 w-full">
         <div className="flex gap-4 w-full">
           <Tab
             label="Daily Transactions"
-            value={txsCount.toLocaleString()}
+            value={isLoading ? "0" : Math.round(avgDailyTxs).toLocaleString()}
             active={activeTab === "txs"}
             onClick={() => setActiveTab("txs")}
           />
           <Tab
             label="Daily Active Players"
-            value={playerCount.toLocaleString()}
+            value={isLoading ? "0" : Math.round(avgDailyPlayers).toLocaleString()}
             active={activeTab === "players"}
             onClick={() => setActiveTab("players")}
           />
         </div>
+        {isLoading && (
+          <div className="flex items-center justify-center h-64">
+            <p className="text-sm text-foreground-400">Loading...</p>
+          </div>
+        )}
+        {isError && (
+          <div className="flex items-center justify-center h-64">
+            <p className="text-sm text-red-500">Error loading metrics</p>
+          </div>
+        )}
         <div className="bg-background-200 rounded p-4">
-          <Line data={data} options={options} />
+          <Line ref={chartRef} data={chartData} options={options} />
         </div>
       </div>
     </div>
@@ -167,7 +342,7 @@ function Tab({
         "grow px-6 py-4 flex flex-col gap-2 border border-transparent border-b-background-200 bg-background-100 cursor-pointer transition-all duration-300",
         "hover:bg-background-125 hover:border-b-background-300",
         "data-[active=true]:rounded data-[active=true]:border-primary data-[active=true]:bg-background-150",
-        "data-[active=true]:hover:bg-background-200",
+        "data-[active=true]:hover:bg-background-200"
       )}
       onClick={onClick}
       onMouseEnter={() => setHover(true)}
@@ -179,7 +354,7 @@ function Tab({
       <p
         className={cn(
           "text-sm text-foreground-300 transition-all duration-300",
-          !hover && !active && "text-foreground-400",
+          !hover && !active && "text-foreground-400"
         )}
       >
         {label}
