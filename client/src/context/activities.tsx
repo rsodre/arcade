@@ -2,27 +2,8 @@ import { createContext, useState, ReactNode, useMemo } from "react";
 import { useActivitiesQuery } from "@cartridge/utils/api/cartridge";
 import { useAddress } from "@/hooks/address";
 import { useArcade } from "@/hooks/arcade";
-import { hash } from "starknet";
 
 const LIMIT = 100;
-export const ENTRYPOINTS: string[] = [
-  // Dope Wars
-  "approve",
-  "create_game",
-  "travel",
-  "decide",
-  "end_game",
-  "register_score",
-  "claim",
-  "launder",
-  "transfer",
-  // Dark Shuffle
-  "start_game",
-  "battle_actions",
-  "pick_card",
-  "generate_tree",
-  "select_node",
-];
 
 export type Activity = {
   project: string;
@@ -53,11 +34,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
     return [{ project: "dopewarsbal" }].map((slot) => {
       return {
         project: slot.project,
-        entrypoints: ENTRYPOINTS.map(
-          (entrypoint) => `0x${hash.starknetKeccak(entrypoint).toString(16)}`,
-        ),
         address: address,
-        date: "",
         limit: LIMIT,
       };
     });

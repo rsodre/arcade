@@ -9,9 +9,6 @@ import {
 } from "@cartridge/ui-next";
 import { useCallback, useMemo } from "react";
 import { ActivityEmpty, ActivityError, ActivityLoading } from "../errors";
-import { ENTRYPOINTS } from "@/context/activities";
-import { hash } from "starknet";
-import { formatAddress } from "@cartridge/utils";
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { useAddress } from "@/hooks/address";
@@ -71,12 +68,7 @@ export function Activity() {
       if (!dates.includes(date)) {
         dates.push(date);
       }
-      const title =
-        ENTRYPOINTS.find(
-          (entrypoint) =>
-            `0x${hash.starknetKeccak(entrypoint).toString(16)}` ===
-            activity.entrypoint,
-        ) || formatAddress(activity.entrypoint, { size: "xs" });
+      const title = activity.entrypoint;
       const game = games.find(
         (game) =>
           game.config.project === activity.project ||
