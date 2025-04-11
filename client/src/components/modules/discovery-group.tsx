@@ -56,9 +56,9 @@ export const ArcadeDiscoveryGroup = ({
       className={cn(arcadeDiscoveryGroupVariants({ variant }), className)}
     >
       {game && <ArcadeGameHeader variant={variant} {...game} />}
-      {events.map((event, index) => (
+      {events.map((event) => (
         <ArcadeDiscoveryEvent
-          key={index}
+          key={`${event.name}-${event.timestamp}`}
           loading={loading}
           className={className}
           variant={variant}
