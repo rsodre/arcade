@@ -125,7 +125,7 @@ export function Discover({ game }: { game?: GameModel }) {
         };
       }
       return {
-        all: data.slice(0, 20),
+        all: data.slice(0, 100),
         following: data
           .filter((event) => following.includes(event.address))
           .slice(0, 100),
