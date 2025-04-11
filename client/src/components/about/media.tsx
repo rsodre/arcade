@@ -66,7 +66,7 @@ export function Media() {
                 key={index}
                 className={cn(
                   "flex justify-center items-center h-3.5 w-3.5 select-none cursor-pointer opacity-50 hover:opacity-100 transition-all duration-300",
-                  current === index + 1 && "opacity-100"
+                  current === index + 1 && "opacity-100",
                 )}
                 onClick={() => api?.scrollTo(index)}
               >
@@ -74,7 +74,7 @@ export function Media() {
                   key={index}
                   className={cn(
                     "size-[3px] bg-foreground-100 rounded-full",
-                    current === index + 1 && "size-1"
+                    current === index + 1 && "size-1",
                   )}
                 />
               </div>
@@ -94,7 +94,7 @@ export function Media() {
                 <div
                   className={cn(
                     "relative rounded-lg overflow-hidden w-[600px] h-[320px]",
-                    index === VIDEOS.length - 1 && !IMAGES.length && "pr-4"
+                    index === VIDEOS.length - 1 && !IMAGES.length && "pr-4",
                   )}
                 >
                   <ReactPlayer
@@ -112,13 +112,18 @@ export function Media() {
                           modestbranding: 1,
                           rel: 0,
                           showinfo: 0,
-                          iv_load_policy: 3
+                          iv_load_policy: 3,
                         },
-                      }
+                      },
                     }}
                   />
                   <div className="absolute inset-0 z-10">
-                    <a href={video} target="_blank" rel="noopener noreferrer" className="absolute bottom-5 right-5">
+                    <a
+                      href={video}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute bottom-5 right-5"
+                    >
                       <YoutubeEmbedIcon
                         className="hover:scale-110 transition-all duration-300"
                         width={100}
@@ -135,7 +140,7 @@ export function Media() {
                 <div
                   className={cn(
                     "rounded-lg overflow-hidden w-[600px] h-[320px]",
-                    index === IMAGES.length - 1 && "pr-4"
+                    index === IMAGES.length - 1 && "pr-4",
                   )}
                 >
                   <img
