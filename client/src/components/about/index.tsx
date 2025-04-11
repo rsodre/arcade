@@ -7,8 +7,8 @@ export function About({ game }: { game: GameModel }) {
   return (
     <div className="flex flex-col gap-4 py-4">
       <Media
-        videos={game.socials.videos ?? []}
-        images={game.socials.images ?? []}
+        videos={game.socials.videos?.filter((v) => !!v) ?? []}
+        images={game.socials.images?.filter((i) => !!i) ?? []}
       />
       <Details content={game.metadata.description || ""} />
       <Metrics />

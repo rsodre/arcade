@@ -116,10 +116,10 @@ export function Register({ game }: { game?: GameModel }) {
     // },
     // defaultValues: {
     //   worldAddress: game?.worldAddress || "0x6a9e4c6f0799160ea8ddc43ff982a5f83d7f633e9732ce42701de1288ff705f",
-    //   namespace: game?.namespace || "ds_v1_1_4",
-    //   project: game?.config.project || "darkshuffle-mainnet",
+    //   namespace: game?.namespace || "ds_v1_2_0",
+    //   project: game?.config.project || "darkshufflebal",
     //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
-    //   policies: JSON.stringify(game?.config.policies) || `{"chains":{"SN_MAIN":{"policies":{"contracts":{"0x0320f977f47f0885e376b781d9e244d9f59f10154ce844ae1815c919f0374726":{"name":"game_systems","methods":[{"entrypoint":"mint"},{"entrypoint":"start_game"}]},"0x0062cfee20a5be4b305f610a23291aa27f3fca7a5fd14bd8e2d0389556003e12":{"name":"battle_systems","methods":[{"entrypoint":"battle_actions"}]},"0x00ae7393b60ad9fd5c26851341b9a4afe61c6ae34326dee79cf5d096e9f55a36":{"name":"draft_systems","methods":[{"entrypoint":"pick_card"}]},"0x07c9a684813410b39c776c49544d8ecb2d39f0b91bd83ffec31ebc938e053e25":{"name":"map_systems","methods":[{"entrypoint":"generate_tree"},{"entrypoint":"select_node"}]}}}}}}`,
+    //   policies: JSON.stringify(game?.config.policies) || ``,
     //   color: game?.metadata.color || "#F59100",
     //   preset: game?.metadata.preset || "dark-shuffle",
     //   name: game?.metadata.name || "Dark Shuffle",
@@ -132,45 +132,45 @@ export function Register({ game }: { game?: GameModel }) {
     //   youtube: game?.socials.youtube || "",
     //   website: game?.socials.website || "https://darkshuffle.dev/",
     //   github: game?.socials.github || "https://github.com/Provable-Games/dark-shuffle",
-    //   videos: game?.socials.videos?.join("\n") || [],
-    //   images: game?.socials.images?.join("\n") || [],
+    //   videos: game?.socials.videos?.join("\n") || "",
+    //   images: game?.socials.images?.join("\n") || "",
     // },
-    defaultValues: {
-      worldAddress:
-        game?.worldAddress ||
-        "0x4f3dccb47477c087ad9c76b8067b8aadded57f8df7f2d7543e6066bcb25332c",
-      namespace: game?.namespace || "dopewars",
-      project: game?.config.project || "dopewarsbal",
-      rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
-      policies:
-        JSON.stringify(game?.config.policies) ||
-        `{"origin":"dopewars.game","chains":{"SN_MAIN":{"policies":{"contracts":{"0x051Fea4450Da9D6aeE758BDEbA88B2f665bCbf549D2C61421AA724E9AC0Ced8F":{"name":"VRF Provider","description":"Provides verifiable random functions","methods":[{"name":"Request Random","description":"Request a random number","entrypoint":"request_random"}]},"0x0410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113":{"name":"Paper Token","description":"Manages paper approvals","methods":[{"name":"Approve","description":"Approve paper usage","entrypoint":"approve"}]},"0x044a23BbfE03FFe90D3C23Fb6e5A8AD0341036C039363DfA6F3513278Aa51fCA":{"name":"Game Contract","description":"Core game mechanics","methods":[{"name":"Create Game","description":"Start a new game","entrypoint":"create_game"},{"name":"Travel","description":"Travel to a new location","entrypoint":"travel"},{"name":"Decide","description":"Make a game decision","entrypoint":"decide"},{"name":"End Game","description":"End the current game","entrypoint":"end_game"}]},"0x0412445e644070C69fEa16b964cC81Cd6dEBF6A4DBf683E2E9686a45ad088de8":{"name":"Laundromat Contract","description":"Manages game scoring and laundering","methods":[{"name":"Register Score","description":"Register a game score","entrypoint":"register_score"},{"name":"Claim","description":"Claim rewards","entrypoint":"claim"},{"name":"Launder","description":"Launder resources","entrypoint":"launder"}]}}}}},"theme":{"colors":{"primary":"#11ED83"},"cover":"cover.png","icon":"icon.png","name":"Dope Wars"}}`,
-      color: game?.metadata.color || "#11ED83",
-      preset: game?.metadata.preset || "dope-wars",
-      name: game?.metadata.name || "Dope Wars",
-      description:
-        game?.metadata.description ||
-        "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO.",
-      image:
-        game?.metadata.image ||
-        "https://github.com/cartridge-gg/presets/blob/main/configs/dope-wars/icon.png?raw=true",
-      banner:
-        game?.metadata.banner ||
-        "https://github.com/cartridge-gg/presets/blob/main/configs/dope-wars/cover.png?raw=true",
-      discord: game?.socials.discord || "https://discord.gg/CEXUEJF3",
-      telegram: game?.socials.telegram || "",
-      twitter: game?.socials.twitter || "https://x.com/TheDopeWars",
-      youtube: game?.socials.youtube || "",
-      website: game?.socials.website || "https://dopewars.game/",
-      github:
-        game?.socials.github || "https://github.com/cartridge-gg/dopewars",
-      videos:
-        game?.socials.videos?.join("\n") ||
-        "https://youtu.be/bkNF9VdY2-o?si=Fh2KQLC1-qQmYPlG\nhttps://youtu.be/-ptcWqcGiuo?si=eslLenE0vRqL-bRM\nhttps://youtube.com/shorts/OU8rqBxHdDI?si=mgZ9zLA1wc6OWzfB",
-      images:
-        game?.socials.images?.join("\n") ||
-        "https://repository-images.githubusercontent.com/614510733/32e5253b-7fd6-4e39-b536-9678ee2557bc\nhttps://pbs.twimg.com/media/GI6077pW8AA6wrt?format=jpg&name=large",
-    },
+    // defaultValues: {
+    //   worldAddress:
+    //     game?.worldAddress ||
+    //     "0x4f3dccb47477c087ad9c76b8067b8aadded57f8df7f2d7543e6066bcb25332c",
+    //   namespace: game?.namespace || "dopewars",
+    //   project: game?.config.project || "dopewarsbal",
+    //   rpc: game?.config.rpc || "https://api.cartridge.gg/x/starknet/mainnet",
+    //   policies:
+    //     JSON.stringify(game?.config.policies) ||
+    //     `{"origin":"dopewars.game","chains":{"SN_MAIN":{"policies":{"contracts":{"0x051Fea4450Da9D6aeE758BDEbA88B2f665bCbf549D2C61421AA724E9AC0Ced8F":{"name":"VRF Provider","description":"Provides verifiable random functions","methods":[{"name":"Request Random","description":"Request a random number","entrypoint":"request_random"}]},"0x0410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113":{"name":"Paper Token","description":"Manages paper approvals","methods":[{"name":"Approve","description":"Approve paper usage","entrypoint":"approve"}]},"0x044a23BbfE03FFe90D3C23Fb6e5A8AD0341036C039363DfA6F3513278Aa51fCA":{"name":"Game Contract","description":"Core game mechanics","methods":[{"name":"Create Game","description":"Start a new game","entrypoint":"create_game"},{"name":"Travel","description":"Travel to a new location","entrypoint":"travel"},{"name":"Decide","description":"Make a game decision","entrypoint":"decide"},{"name":"End Game","description":"End the current game","entrypoint":"end_game"}]},"0x0412445e644070C69fEa16b964cC81Cd6dEBF6A4DBf683E2E9686a45ad088de8":{"name":"Laundromat Contract","description":"Manages game scoring and laundering","methods":[{"name":"Register Score","description":"Register a game score","entrypoint":"register_score"},{"name":"Claim","description":"Claim rewards","entrypoint":"claim"},{"name":"Launder","description":"Launder resources","entrypoint":"launder"}]}}}}},"theme":{"colors":{"primary":"#11ED83"},"cover":"cover.png","icon":"icon.png","name":"Dope Wars"}}`,
+    //   color: game?.metadata.color || "#11ED83",
+    //   preset: game?.metadata.preset || "dope-wars",
+    //   name: game?.metadata.name || "Dope Wars",
+    //   description:
+    //     game?.metadata.description ||
+    //     "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO.",
+    //   image:
+    //     game?.metadata.image ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/dope-wars/icon.png?raw=true",
+    //   banner:
+    //     game?.metadata.banner ||
+    //     "https://github.com/cartridge-gg/presets/blob/main/configs/dope-wars/cover.png?raw=true",
+    //   discord: game?.socials.discord || "https://discord.gg/CEXUEJF3",
+    //   telegram: game?.socials.telegram || "",
+    //   twitter: game?.socials.twitter || "https://x.com/TheDopeWars",
+    //   youtube: game?.socials.youtube || "",
+    //   website: game?.socials.website || "https://dopewars.game/",
+    //   github:
+    //     game?.socials.github || "https://github.com/cartridge-gg/dopewars",
+    //   videos:
+    //     game?.socials.videos?.join("\n") ||
+    //     "https://youtu.be/bkNF9VdY2-o?si=Fh2KQLC1-qQmYPlG\nhttps://youtu.be/-ptcWqcGiuo?si=eslLenE0vRqL-bRM\nhttps://youtube.com/shorts/OU8rqBxHdDI?si=mgZ9zLA1wc6OWzfB",
+    //   images:
+    //     game?.socials.images?.join("\n") ||
+    //     "https://repository-images.githubusercontent.com/614510733/32e5253b-7fd6-4e39-b536-9678ee2557bc\nhttps://pbs.twimg.com/media/GI6077pW8AA6wrt?format=jpg&name=large",
+    // },
     // defaultValues: {
     //   worldAddress:
     //     game?.worldAddress ||
@@ -294,27 +294,27 @@ export function Register({ game }: { game?: GameModel }) {
     //   videos: game?.socials.videos?.join("\n") || [],
     //   images: game?.socials.images?.join("\n") || [],
     // },
-    // defaultValues: {
-    //   worldAddress: game?.worldAddress || "",
-    //   namespace: game?.namespace || "",
-    //   project: game?.config.project || "",
-    //   rpc: game?.config.rpc || "",
-    //   policies: JSON.stringify(game?.config.policies) || ``,
-    //   color: game?.metadata.color || "",
-    //   preset: game?.metadata.preset || "",
-    //   name: game?.metadata.name || "",
-    //   description: game?.metadata.description || "",
-    //   image: game?.metadata.image || "",
-    //   banner: game?.metadata.banner || "",
-    //   discord: game?.socials.discord || "",
-    //   telegram: game?.socials.telegram || "",
-    //   twitter: game?.socials.twitter || "",
-    //   youtube: game?.socials.youtube || "",
-    //   website: game?.socials.website || "",
-    //   github: game?.socials.github || "",
-    //   videos: game?.socials.videos?.join("\n") || "",
-    //   images: game?.socials.images?.join("\n") || "",
-    // },
+    defaultValues: {
+      worldAddress: game?.worldAddress || "",
+      namespace: game?.namespace || "",
+      project: game?.config.project || "",
+      rpc: game?.config.rpc || "",
+      policies: JSON.stringify(game?.config.policies) || ``,
+      color: game?.metadata.color || "",
+      preset: game?.metadata.preset || "",
+      name: game?.metadata.name || "",
+      description: game?.metadata.description || "",
+      image: game?.metadata.image || "",
+      banner: game?.metadata.banner || "",
+      discord: game?.socials.discord || "",
+      telegram: game?.socials.telegram || "",
+      twitter: game?.socials.twitter || "",
+      youtube: game?.socials.youtube || "",
+      website: game?.socials.website || "",
+      github: game?.socials.github || "",
+      videos: game?.socials.videos?.join("\n") || "",
+      images: game?.socials.images?.join("\n") || "",
+    },
   });
 
   const onDelete = useCallback(() => {
