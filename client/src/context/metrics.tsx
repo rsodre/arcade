@@ -28,7 +28,7 @@ export function MetricsProvider({ children }: { children: ReactNode }) {
   const projects: MetricsProject[] = useMemo(
     () =>
       slots.map((slot) => ({
-        project: slot.project === "ryomainnet" ? "dopewarsbal" : slot.project,
+        project: slot.project,
       })),
     [slots],
   );

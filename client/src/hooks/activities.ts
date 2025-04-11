@@ -26,8 +26,7 @@ export const useActivities = () => {
   const activities = useMemo(() => {
     if (!project)
       return Object.values(allActivities).flatMap((activities) => activities);
-    // return allActivities[project];
-    return allActivities[project === "ryomainnet" ? "dopewarsbal" : project];
+    return allActivities[project];
   }, [project, allActivities]);
 
   return { activities, status };

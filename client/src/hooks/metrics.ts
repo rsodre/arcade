@@ -25,11 +25,7 @@ export const useMetrics = () => {
 
   const metrics = useMemo(() => {
     if (!project) return allMetrics;
-    return allMetrics.filter((metric) =>
-      project === "ryomainnet"
-        ? metric.project === "dopewarsbal"
-        : metric.project === project,
-    );
+    return allMetrics.filter((metric) => metric.project === project);
   }, [project, allMetrics]);
 
   return { metrics, status };

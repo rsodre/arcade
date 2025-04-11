@@ -30,8 +30,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
   );
 
   const projects = useMemo(() => {
-    // return slots.map((slot) => {
-    return [{ project: "dopewarsbal" }].map((slot) => {
+    return slots.map((slot) => {
       return {
         project: slot.project,
         address: address,
