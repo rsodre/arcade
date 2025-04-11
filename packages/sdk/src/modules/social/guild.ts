@@ -49,7 +49,7 @@ export class GuildModel {
       false,
       0,
       new Metadata("", "", "", "", "", ""),
-      new Socials("", "", "", "", "", ""),
+      new Socials("", "", "", "", "", "", [], []),
     );
   }
 

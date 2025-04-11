@@ -11,18 +11,13 @@ import ReactPlayer from "react-player/lazy";
 import { cn } from "@cartridge/ui-next";
 import { YoutubeEmbedIcon } from "./youtube-icon";
 
-const VIDEOS = [
-  "https://youtu.be/bkNF9VdY2-o?si=Fh2KQLC1-qQmYPlG",
-  "https://youtu.be/-ptcWqcGiuo?si=eslLenE0vRqL-bRM",
-  "https://youtube.com/shorts/OU8rqBxHdDI?si=mgZ9zLA1wc6OWzfB",
-];
-
-const IMAGES = [
-  "https://repository-images.githubusercontent.com/614510733/32e5253b-7fd6-4e39-b536-9678ee2557bc",
-  "https://pbs.twimg.com/media/GI6077pW8AA6wrt?format=jpg&name=large",
-];
-
-export function Media() {
+export function Media({
+  videos,
+  images,
+}: {
+  videos: string[];
+  images: string[];
+}) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -39,6 +34,8 @@ export function Media() {
       setCurrent(api.selectedScrollSnap() + 1);
     });
   }, [api]);
+
+  if (!videos.length && !images.length) return null;
 
   return (
     <div className="relative flex flex-col gap-2">
@@ -89,12 +86,12 @@ export function Media() {
             }}
           />
           <CarouselContent className="flex gap-4">
-            {VIDEOS.map((video, index) => (
+            {videos.map((video, index) => (
               <CarouselItem key={index} className="basis-[600px]">
                 <div
                   className={cn(
                     "relative rounded-lg overflow-hidden w-[600px] h-[320px]",
-                    index === VIDEOS.length - 1 && !IMAGES.length && "pr-4",
+                    index === videos.length - 1 && !images.length && "pr-4",
                   )}
                 >
                   <ReactPlayer
@@ -135,12 +132,12 @@ export function Media() {
                 </div>
               </CarouselItem>
             ))}
-            {IMAGES.map((image, index) => (
+            {images.map((image, index) => (
               <CarouselItem key={index} className="basis-[600px]">
                 <div
                   className={cn(
                     "rounded-lg overflow-hidden w-[600px] h-[320px]",
-                    index === IMAGES.length - 1 && "pr-4",
+                    index === images.length - 1 && "pr-4",
                   )}
                 >
                   <img

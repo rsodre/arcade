@@ -8,6 +8,8 @@ export class Socials {
     public youtube: string,
     public website: string,
     public github: string,
+    public videos: string[],
+    public images: string[],
   ) {
     this.discord = discord;
     this.telegram = telegram;
@@ -15,15 +17,17 @@ export class Socials {
     this.youtube = youtube;
     this.website = website;
     this.github = github;
+    this.videos = videos;
+    this.images = images;
   }
 
   static from(value: string) {
     try {
       const json = JSON.parse(value);
-      return new Socials(json.discord, json.telegram, json.twitter, json.youtube, json.website, json.github);
+      return new Socials(json.discord, json.telegram, json.twitter, json.youtube, json.website, json.github, json.videos, json.images);
     } catch (error: unknown) {
       console.error("Error parsing socials:", error);
-      return new Socials("", "", "", "", "", "");
+      return new Socials("", "", "", "", "", "", [], []);
     }
   }
 
@@ -35,6 +39,8 @@ export class Socials {
       youtube: this.youtube,
       website: this.website,
       github: this.github,
+      videos: this.videos,
+      images: this.images,
     };
     return byteArray.byteArrayFromString(JSON.stringify(json));
   }
