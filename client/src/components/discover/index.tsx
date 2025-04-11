@@ -146,7 +146,7 @@ export function Discover({ game }: { game?: GameModel }) {
   if (isLoading && activitiesStatus === "loading") return <DiscoverLoading />;
 
   return (
-    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0 py-4">
+    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0 pt-4">
       <div
         className="p-0 mt-0 h-full overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
@@ -162,17 +162,22 @@ export function Discover({ game }: { game?: GameModel }) {
             style={{ scrollbarWidth: "none" }}
           >
             <TabsContent className="p-0 mt-0 grow w-full" value="all">
-              {}
-              <div className="flex flex-col gap-y-4">
-                {filteredGames.map((item, index) => (
-                  <GameRow
-                    key={`${index}-${item.config.project}`}
-                    game={filteredGames.length > 1 ? item : undefined}
-                    events={gameEvents[index].all}
-                    covered={filteredGames.length > 1}
-                  />
-                ))}
-              </div>
+              {filteredGames.length === 1 &&
+              gameEvents.length > 0 &&
+              gameEvents[0].all.length === 0 ? (
+                <DiscoverEmpty />
+              ) : (
+                <div className="flex flex-col gap-y-4 pb-4">
+                  {filteredGames.map((item, index) => (
+                    <GameRow
+                      key={`${index}-${item.config.project}`}
+                      game={filteredGames.length > 1 ? item : undefined}
+                      events={gameEvents[index].all}
+                      covered={filteredGames.length > 1}
+                    />
+                  ))}
+                </div>
+              )}
             </TabsContent>
             <TabsContent className="p-0 mt-0 grow w-full" value="following">
               {!isConnected ? (
@@ -183,7 +188,7 @@ export function Discover({ game }: { game?: GameModel }) {
                   gameEvents[0].following.length === 0) ? (
                 <DiscoverEmpty />
               ) : (
-                <div className="flex flex-col gap-y-4">
+                <div className="flex flex-col gap-y-4 pb-4">
                   {filteredGames.map((item, index) => (
                     <GameRow
                       key={`${index}-${item.config.project}`}
