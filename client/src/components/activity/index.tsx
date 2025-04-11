@@ -1,7 +1,6 @@
 import { useAchievements } from "@/hooks/achievements";
 import { useActivities } from "@/hooks/activities";
 import {
-  ActivityAchievementCard,
   ActivityCollectibleCard,
   ActivityGameCard,
   ActivityTokenCard,
@@ -12,6 +11,7 @@ import { ActivityEmpty, ActivityError, ActivityLoading } from "../errors";
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { useAddress } from "@/hooks/address";
+import ActivityAchievementCard from "../modules/achievement-card";
 
 interface CardProps {
   variant: "token" | "collectible" | "game" | "achievement";
@@ -30,6 +30,7 @@ interface CardProps {
   timestamp: number;
   date: string;
   points: number;
+  color?: string;
 }
 
 export function Activity() {
@@ -47,9 +48,12 @@ export function Activity() {
   const getDate = useCallback((timestamp: number) => {
     const date = new Date(timestamp);
     const today = new Date();
-    if (date.getDate() === today.getDate()) {
+    if (date.toDateString() === today.toDateString()) {
       return "Today";
-    } else if (date.getDate() === today.getDate() - 1) {
+    } else if (
+      date.toDateString() ===
+      new Date(today.getTime() - 24 * 60 * 60 * 1000).toDateString()
+    ) {
       return "Yesterday";
     } else {
       return date.toLocaleDateString("en-US", {
@@ -84,6 +88,7 @@ export function Activity() {
         certified: !!game,
         timestamp: activity.timestamp / 1000,
         date: date,
+        color: game?.metadata.color,
       } as CardProps;
     });
 
@@ -108,6 +113,7 @@ export function Activity() {
           website: game?.socials.website || "",
           certified: !!game,
           points: event.achievement.points,
+          color: game?.metadata.color,
         } as CardProps;
       });
     });
@@ -184,6 +190,7 @@ export function Activity() {
                               topic={props.title}
                               points={props.points}
                               website={props.website}
+                              color={props.color}
                             />
                           );
                       }

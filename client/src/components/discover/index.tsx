@@ -101,6 +101,8 @@ export function Discover({ game }: { game?: GameModel }) {
 
   if (isLoading) return <DiscoverLoading />;
 
+  if (Object.values(events).length === 0) return <DiscoverEmpty />;
+
   return (
     <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0 py-4">
       <div
