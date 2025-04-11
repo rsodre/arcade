@@ -15,10 +15,11 @@ import { ArcadeDiscoveryGroup } from "../modules/discovery-group";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
 import { useAccount } from "@starknet-react/core";
+import { useActivities } from "@/hooks/activities";
 
 interface Event {
   name: string;
-  achievement: { title: string; icon: string };
+  data: { title: string; label: string; icon: string };
   timestamp: number;
   onClick: () => void;
 }
@@ -26,7 +27,17 @@ interface Event {
 export function Discover({ game }: { game?: GameModel }) {
   const [searchParams] = useSearchParams();
   const { isConnected, address } = useAccount();
-  const { events, usernames, isLoading, isError } = useAchievements();
+  const {
+    allActivities,
+    usernames: activitiesUsernames,
+    status: activitiesStatus,
+  } = useActivities();
+  const {
+    events,
+    usernames: achievementsUsernames,
+    isLoading,
+    isError,
+  } = useAchievements();
   const { games, follows } = useArcade();
 
   const following = useMemo(() => {
@@ -70,15 +81,40 @@ export function Discover({ game }: { game?: GameModel }) {
 
   const gameEvents = useMemo(() => {
     return filteredGames.map((game) => {
-      const data = events[game?.config.project]?.map((event) => {
-        return {
-          name: usernames[addAddressPadding(event.player)],
-          address: getChecksumAddress(event.player),
-          achievement: event.achievement,
-          timestamp: event.timestamp,
-          onClick: () => handleClick(addAddressPadding(event.player)),
-        };
-      });
+      const achievements =
+        events[game?.config.project]?.map((event) => {
+          return {
+            name: achievementsUsernames[addAddressPadding(event.player)],
+            address: getChecksumAddress(event.player),
+            data: {
+              title: event.achievement.title,
+              label: "earned",
+              icon: event.achievement.icon,
+            },
+            timestamp: event.timestamp,
+            onClick: () => handleClick(addAddressPadding(event.player)),
+          };
+        }) || [];
+      const activities =
+        allActivities[game?.config.project]?.map((activity) => {
+          return {
+            name: activitiesUsernames[
+              addAddressPadding(activity.callerAddress)
+            ],
+            address: getChecksumAddress(activity.callerAddress),
+            data: {
+              title: activity.entrypoint,
+              label: "performed",
+              icon: "fa-joystick",
+            },
+            timestamp: Math.floor(activity.timestamp / 1000),
+            onClick: () =>
+              handleClick(addAddressPadding(activity.callerAddress)),
+          };
+        }) || [];
+      const data = [...achievements, ...activities].sort(
+        (a, b) => b.timestamp - a.timestamp,
+      );
       if (!data) return { all: [], following: [] };
       if (filteredGames.length > 1) {
         return {
@@ -92,16 +128,22 @@ export function Discover({ game }: { game?: GameModel }) {
         all: data.slice(0, 20),
         following: data
           .filter((event) => following.includes(event.address))
-          .slice(0, 20),
+          .slice(0, 100),
       };
     });
-  }, [events, filteredGames, usernames, following, handleClick]);
+  }, [
+    events,
+    allActivities,
+    filteredGames,
+    achievementsUsernames,
+    activitiesUsernames,
+    following,
+    handleClick,
+  ]);
 
-  if (isError) return <DiscoverError />;
+  if (isError || activitiesStatus === "error") return <DiscoverError />;
 
-  if (isLoading) return <DiscoverLoading />;
-
-  if (Object.values(events).length === 0) return <DiscoverEmpty />;
+  if (isLoading && activitiesStatus === "loading") return <DiscoverLoading />;
 
   return (
     <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0 py-4">
@@ -120,6 +162,7 @@ export function Discover({ game }: { game?: GameModel }) {
             style={{ scrollbarWidth: "none" }}
           >
             <TabsContent className="p-0 mt-0 grow w-full" value="all">
+              {}
               <div className="flex flex-col gap-y-4">
                 {filteredGames.map((item, index) => (
                   <GameRow
@@ -134,7 +177,10 @@ export function Discover({ game }: { game?: GameModel }) {
             <TabsContent className="p-0 mt-0 grow w-full" value="following">
               {!isConnected ? (
                 <Connect />
-              ) : following.length === 0 ? (
+              ) : following.length === 0 ||
+                (filteredGames.length === 1 &&
+                  gameEvents.length > 0 &&
+                  gameEvents[0].following.length === 0) ? (
                 <DiscoverEmpty />
               ) : (
                 <div className="flex flex-col gap-y-4">
@@ -176,6 +222,8 @@ export function GameRow({
       socials: {},
     };
   }, [game, covered]);
+
+  if (events.length === 0) return null;
 
   return (
     <div className="rounded-lg overflow-hidden">

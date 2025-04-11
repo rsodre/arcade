@@ -21,7 +21,7 @@ export const useActivities = () => {
     );
   }
 
-  const { activities: allActivities, status } = context;
+  const { activities: allActivities, usernames, status } = context;
 
   const activities = useMemo(() => {
     if (!project)
@@ -29,5 +29,5 @@ export const useActivities = () => {
     return allActivities[project];
   }, [project, allActivities]);
 
-  return { activities, status };
+  return { allActivities, usernames, activities, status };
 };

@@ -8,8 +8,9 @@ export interface ArcadeDiscoveryEventProps
   name: string;
   timestamp: number;
   Icon?: React.ReactNode;
-  achievement?: {
+  data?: {
     title: string;
+    label: string;
     icon: string;
   };
   loading?: boolean;
@@ -41,7 +42,7 @@ export const ArcadeDiscoveryEvent = ({
   name,
   timestamp,
   Icon,
-  achievement,
+  data,
   loading,
   variant,
   className,
@@ -82,10 +83,11 @@ export const ArcadeDiscoveryEvent = ({
         <CardTitle className="text-sm font-normal tracking-normal text-foreground-100">
           {name}
         </CardTitle>
-        {achievement && (
-          <AchievementEvent
-            title={achievement.title}
-            icon={achievement.icon}
+        {data && (
+          <DiscoveryEvent
+            title={data.title}
+            label={data.label}
+            icon={data.icon}
             className={className}
             color={color}
           />
@@ -96,13 +98,15 @@ export const ArcadeDiscoveryEvent = ({
   );
 };
 
-const AchievementEvent = ({
+const DiscoveryEvent = ({
   title,
+  label,
   icon,
   className,
   color,
 }: {
   title: string;
+  label: string;
   icon: string;
   className?: string;
   color?: string;
@@ -116,10 +120,10 @@ const AchievementEvent = ({
       )}
       style={{ color }}
     >
-      <p className="text-xs text-foreground-300">earned</p>
+      <p className="text-xs text-foreground-300">{label}</p>
       <div className="flex items-center gap-1 p-1 border-background-400 border rounded-sm">
         <div className={cn(icon, "fa-solid w-3 h-3")} />
-        <p className="text-xs">{title}</p>
+        <p className="text-xs capitalize">{title.replace(/_/g, " ")}</p>
       </div>
     </div>
   );
