@@ -16,6 +16,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
 import { useAccount } from "@starknet-react/core";
 import { useActivities } from "@/hooks/activities";
+import { UserAvatar } from "../user/avatar";
 
 interface Event {
   name: string;
@@ -83,9 +84,12 @@ export function Discover({ game }: { game?: GameModel }) {
     return filteredGames.map((game) => {
       const achievements =
         events[game?.config.project]?.map((event) => {
+          const username =
+            achievementsUsernames[addAddressPadding(event.player)];
           return {
-            name: achievementsUsernames[addAddressPadding(event.player)],
+            name: username,
             address: getChecksumAddress(event.player),
+            Icon: <UserAvatar username={username} />,
             data: {
               title: event.achievement.title,
               label: "earned",
@@ -97,11 +101,12 @@ export function Discover({ game }: { game?: GameModel }) {
         }) || [];
       const activities =
         allActivities[game?.config.project]?.map((activity) => {
+          const username =
+            activitiesUsernames[addAddressPadding(activity.callerAddress)];
           return {
-            name: activitiesUsernames[
-              addAddressPadding(activity.callerAddress)
-            ],
+            name: username,
             address: getChecksumAddress(activity.callerAddress),
+            Icon: <UserAvatar username={username} />,
             data: {
               title: activity.entrypoint,
               label: "performed",
