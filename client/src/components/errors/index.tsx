@@ -372,7 +372,7 @@ export function DiscoverLoading() {
     <Error
       title="Loading..."
       Icon={<EmptyStateActivityIcon className="h-full w-full animate-pulse" />}
-      className="pb-4"
+      className="py-4"
     />
   );
 }
