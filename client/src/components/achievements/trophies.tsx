@@ -3,7 +3,7 @@ import { Item } from "@/hooks/achievements";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useArcade } from "@/hooks/arcade";
-import { addAddressPadding, constants } from "starknet";
+import { constants, getChecksumAddress } from "starknet";
 import { toast } from "sonner";
 import { useAccount } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";
@@ -134,7 +134,7 @@ function Group({
   const achievements = useMemo(() => {
     return items.map((item) => {
       const pinned =
-        pins[addAddressPadding(address)]?.includes(item.id) && item.completed;
+        pins[getChecksumAddress(address)]?.includes(item.id) && item.completed;
       return {
         id: item.id,
         index: item.index,

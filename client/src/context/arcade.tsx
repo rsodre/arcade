@@ -116,7 +116,7 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
     if (event.time == 0) {
       // Remove the achievement from the player's list
       setPins((prevPins) => {
-        const achievementIds = prevPins[event.playerId] || [];
+        const achievementIds = prevPins[playerId] || [];
         return {
           ...prevPins,
           [playerId]: achievementIds.filter(
@@ -127,7 +127,7 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
     } else {
       // Otherwise, add the achievement to the player's list
       setPins((prevPins) => {
-        const achievementIds = prevPins[event.playerId] || [];
+        const achievementIds = prevPins[playerId] || [];
         return {
           ...prevPins,
           [playerId]: [...new Set([...achievementIds, event.achievementId])],

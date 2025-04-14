@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Trophies } from "./trophies";
 import { useArcade } from "@/hooks/arcade";
 import { GameModel } from "@bal7hazar/arcade-sdk";
-import { addAddressPadding } from "starknet";
+import { getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { Item } from "@/helpers/achievements";
 import banner from "@/assets/banner.png";
@@ -29,7 +29,7 @@ export function Achievements({ game }: { game?: GameModel }) {
   }, [achievements, game]);
 
   const { pinneds } = useMemo(() => {
-    const ids = pins[address] || [];
+    const ids = pins[getChecksumAddress(address)] || [];
     const pinneds = gameAchievements
       .filter((item) => ids.includes(item.id))
       .sort((a, b) => parseFloat(a.percentage) - parseFloat(b.percentage))
@@ -66,7 +66,7 @@ export function Achievements({ game }: { game?: GameModel }) {
           className="p-0 mt-0 overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          <div className="flex flex-col gap-4 py-4">
+          <div className="flex flex-col gap-4 py-6">
             <div className="flex flex-col gap-y-4">
               {filteredGames.map((item, index) => (
                 <GameRow
@@ -76,6 +76,7 @@ export function Achievements({ game }: { game?: GameModel }) {
                   achievements={achievements}
                   pins={pins}
                   background={filteredGames.length > 1}
+                  header={!game}
                   variant={!game ? "default" : "dark"}
                 />
               ))}
@@ -105,6 +106,7 @@ export function GameRow({
   achievements,
   pins,
   background,
+  header,
   variant,
 }: {
   address: string;
@@ -112,6 +114,7 @@ export function GameRow({
   achievements: { [game: string]: Item[] };
   pins: { [playerId: string]: string[] };
   background: boolean;
+  header: boolean;
   variant: "default" | "dark";
 }) {
   const gameAchievements = useMemo(() => {
@@ -119,7 +122,7 @@ export function GameRow({
   }, [achievements, game]);
 
   const { pinneds } = useMemo(() => {
-    const ids = pins[addAddressPadding(address)] || [];
+    const ids = pins[getChecksumAddress(address)] || [];
     const pinneds = gameAchievements
       .filter((item) => ids.includes(item.id))
       .sort((a, b) => parseFloat(a.percentage) - parseFloat(b.percentage))
@@ -163,6 +166,7 @@ export function GameRow({
         {...summaryProps}
         variant={variant}
         active
+        header={header}
         color={game.metadata.color}
       />
     </div>

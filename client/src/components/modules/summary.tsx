@@ -1,5 +1,6 @@
 import {
   AchievementContentProps,
+  AchievementPinIcons,
   AchievementPinProps,
   AchievementProgress,
   Card,
@@ -20,6 +21,7 @@ export interface AchievementSummaryProps
     pin?: AchievementPinProps;
   }[];
   metadata: Metadata;
+  header?: boolean;
   socials?: Socials;
   active?: boolean;
   className?: string;
@@ -47,6 +49,7 @@ const achievementSummaryVariants = cva("border border-transparent", {
 export const AchievementSummary = ({
   achievements,
   metadata,
+  header = true,
   socials,
   active,
   className,
@@ -65,27 +68,48 @@ export const AchievementSummary = ({
     return { points, count };
   }, [achievements]);
 
+  const pins = useMemo(() => {
+    if (!achievements) return [];
+    return achievements
+      .filter((a) => a.content.icon && a.pin?.pinned)
+      .map((a) => ({
+        id: a.id,
+        icon: a.content.icon || "fa-trophy",
+        name: a.content.title || "",
+      }))
+      .slice(0, 3);
+  }, [achievements]);
+
   return (
     <Card className={achievementSummaryVariants({ variant })}>
-      <ArcadeGameHeader
-        achievements={achievements}
-        metadata={metadata}
-        socials={socials}
-        variant={variant}
-        active={active}
-        className={className}
-        color={color}
-      />
-      <CardContent className="p-0">
+      {header && (
+        <ArcadeGameHeader
+          achievements={achievements}
+          metadata={metadata}
+          socials={socials}
+          variant={variant}
+          active={active}
+          className={className}
+          color={color}
+        />
+      )}
+      <CardContent className="p-0 flex gap-3 bg-transparent">
         <AchievementProgress
           count={count}
           total={achievements.length}
           points={points}
           variant={variant}
           completed
-          className={cn(variant === "dark" && "bg-background-125", className)}
+          className={cn(
+            "grow",
+            variant === "dark" && "bg-background-125",
+            className,
+          )}
           color={color}
         />
+        {!header && (
+          <AchievementPinIcons theme={active} pins={pins} variant="darkest" />
+        )}
       </CardContent>
     </Card>
   );

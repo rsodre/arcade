@@ -151,9 +151,9 @@ export function Discover({ game }: { game?: GameModel }) {
   if (isLoading && activitiesStatus === "loading") return <DiscoverLoading />;
 
   return (
-    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0 pt-4">
+    <LayoutContent className="gap-y-6 select-none h-full overflow-clip p-0">
       <div
-        className="p-0 mt-0 h-full overflow-y-scroll"
+        className="p-0 pt-6 mt-0 h-full overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
         <ArcadeSubTabs
@@ -172,7 +172,7 @@ export function Discover({ game }: { game?: GameModel }) {
               gameEvents[0].all.length === 0 ? (
                 <DiscoverEmpty />
               ) : (
-                <div className="flex flex-col gap-y-4 pb-4">
+                <div className="flex flex-col gap-y-4 pb-6">
                   {filteredGames.map((item, index) => (
                     <GameRow
                       key={`${index}-${item.config.project}`}
@@ -184,7 +184,7 @@ export function Discover({ game }: { game?: GameModel }) {
                 </div>
               )}
             </TabsContent>
-            <TabsContent className="p-0 mt-0 grow w-full" value="following">
+            <TabsContent className="pb-0 mt-0 grow w-full" value="following">
               {!isConnected ? (
                 <Connect />
               ) : following.length === 0 ||
@@ -193,7 +193,7 @@ export function Discover({ game }: { game?: GameModel }) {
                   gameEvents[0].following.length === 0) ? (
                 <DiscoverEmpty />
               ) : (
-                <div className="flex flex-col gap-y-4 pb-4">
+                <div className="flex flex-col gap-y-4 pb-6">
                   {filteredGames.map((item, index) => (
                     <GameRow
                       key={`${index}-${item.config.project}`}
@@ -236,14 +236,11 @@ export function GameRow({
   if (events.length === 0) return null;
 
   return (
-    <div className="rounded-lg overflow-hidden">
-      <div className="border border-transparent overflow-hidden rounded">
-        <ArcadeDiscoveryGroup
-          game={gameData}
-          events={events}
-          color={game?.metadata.color}
-        />
-      </div>
-    </div>
+    <ArcadeDiscoveryGroup
+      game={gameData}
+      events={events}
+      color={game?.metadata.color}
+      rounded
+    />
   );
 }

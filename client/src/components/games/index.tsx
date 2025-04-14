@@ -1,10 +1,4 @@
-import {
-  ArcadeGameSelect,
-  CardListContent,
-  cn,
-  Input,
-  SearchIcon,
-} from "@cartridge/ui-next";
+import { CardListContent, Input, SearchIcon } from "@cartridge/ui-next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTheme } from "@/hooks/context";
 import {
@@ -20,6 +14,7 @@ import { useAccount } from "@starknet-react/core";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import cartridge from "@/assets/cartridge-logo.png";
 import banner from "@/assets/banner.png";
+import ArcadeGameSelect from "../modules/game-select";
 
 export const Games = () => {
   const [search, setSearch] = useState("");
@@ -38,42 +33,44 @@ export const Games = () => {
   }, [games, search]);
 
   return (
-    <div className="flex flex-col gap-y-6 min-w-[324px] h-full overflow-clip">
-      <Search search={search} setSearch={setSearch} />
-      <div
-        className="flex flex-col gap-y-px grow overflow-clip"
-        style={{ scrollbarWidth: "none" }}
-      >
-        <Game
-          first={true}
-          project=""
-          namespace=""
-          preset="default"
-          name="All Games"
-          icon={cartridge}
-          cover={banner}
-          active={selected === "All Games"}
-        />
-        <CardListContent
-          className="p-0 overflow-y-scroll"
-          style={{ scrollbarWidth: "none" }}
-        >
-          {filteredGames.map((game) => (
-            <Game
-              key={`${game.worldAddress}-${game.namespace}`}
-              first={false}
-              project={game.config.project}
-              namespace={game.namespace}
-              preset={game.metadata.preset ?? "default"}
-              name={game.metadata.name}
-              icon={game.metadata.image}
-              cover={game.metadata.banner}
-              active={selected === game.metadata.name}
-              game={game}
-              address={address}
-            />
-          ))}
-        </CardListContent>
+    <div className="self-start flex flex-col gap-px bg-background-200 overflow-clip rounded-xl border border-background-200 min-w-[360px]">
+      <div className="flex flex-col gap-3 bg-background-100 p-4">
+        <Search search={search} setSearch={setSearch} />
+        <div className="flex flex-col gap-1">
+          <Game
+            project=""
+            namespace=""
+            preset="default"
+            name="All Games"
+            icon={cartridge}
+            cover={banner}
+            active={selected === "All Games"}
+          />
+          <p className="font-semibold text-xs tracking-wider text-foreground-400 px-2 py-3">
+            Games
+          </p>
+          <CardListContent
+            className="p-0 overflow-y-scroll"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {filteredGames.map((game) => (
+              <Game
+                key={`${game.worldAddress}-${game.namespace}`}
+                project={game.config.project}
+                namespace={game.namespace}
+                preset={game.metadata.preset ?? "default"}
+                name={game.metadata.name}
+                icon={game.metadata.image}
+                cover={game.metadata.banner}
+                active={selected === game.metadata.name}
+                game={game}
+                address={address}
+              />
+            ))}
+          </CardListContent>
+        </div>
+      </div>
+      <div className="flex items-center justify-center p-3 gap-2.5 bg-background-100">
         <Register />
       </div>
     </div>
@@ -87,33 +84,29 @@ export const Search = ({
   search: string;
   setSearch: (search: string) => void;
 }) => {
-  const [hover, setHover] = useState(false);
   const [focus, setFocus] = useState(false);
 
   return (
     <div className="relative">
       <Input
-        className="pr-9"
+        className="pr-9 bg-spacer-100 hover:bg-spacer-100 focus-visible:bg-spacer-100"
         type="text"
         placeholder="Search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
       />
       <SearchIcon
         data-focused={focus}
-        data-hover={hover && !focus}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-foreground-400 transition-colors duration-100 data-[hover=true]:text-foreground-300 data-[focused=true]:text-foreground-100 "
+        data-content={search.length > 0 && !focus}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-foreground-400 transition-colors duration-100 data-[content=true]:text-foreground-300 data-[focused=true]:text-foreground-100 "
       />
     </div>
   );
 };
 
 export const Game = ({
-  first,
   project,
   namespace,
   preset,
@@ -124,7 +117,6 @@ export const Game = ({
   game,
   address,
 }: {
-  first: boolean;
   project: string;
   namespace: string;
   preset: string;
@@ -199,16 +191,22 @@ export const Game = ({
   ]);
 
   return (
-    <div className={cn("flex gap-px", first && "rounded-t overflow-clip")}>
-      <ArcadeGameSelect
-        name={name}
-        logo={icon}
-        cover={cover}
-        points={project ? gameEarnings : totalEarnings}
-        active={active}
-        onClick={handleClick}
-        className="grow"
-      />
+    <div className="flex items-center gap-2">
+      <div
+        data-active={active}
+        className="grow rounded border border-transparent data-[active=true]:border-primary transition-colors duration-300 ease-in-out"
+      >
+        <ArcadeGameSelect
+          name={name}
+          logo={icon}
+          cover={cover}
+          points={project ? gameEarnings : totalEarnings}
+          active={active}
+          onClick={handleClick}
+          variant="darkest"
+          className="grow rounded"
+        />
+      </div>
       {isOwner && !!game && <Register game={game} />}
     </div>
   );

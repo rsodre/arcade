@@ -170,7 +170,7 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
                 ? "bronze"
                 : "default"
         }
-        className="relative p-4 pb-0"
+        className="relative p-6 pb-0"
       />
       <div className="absolute flex gap-3 top-4 right-4">
         {!isSelf && isConnected && (
@@ -192,17 +192,17 @@ export function PlayerPage({ game }: { game: GameModel | undefined }) {
           className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          <TabsContent className="p-0 px-4 mt-0 grow w-full" value="inventory">
+          <TabsContent className="p-0 px-6 mt-0 grow w-full" value="inventory">
             <InventoryScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-4 mt-0 grow w-full"
+            className="p-0 px-6 mt-0 grow w-full"
             value="achievements"
           >
             <AchievementScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-4 mt-0 grow w-full h-full"
+            className="p-0 px-6 mt-0 grow w-full h-full"
             value="activity"
           >
             <ActivityScene />

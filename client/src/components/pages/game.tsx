@@ -56,7 +56,7 @@ export function GamePage({ game }: { game: GameModel | undefined }) {
 
   return (
     <>
-      <div className="relative flex items-center justify-between p-4 pb-0">
+      <div className="relative flex items-center justify-between p-6 pb-0">
         <div className="flex gap-3 items-center">
           <Thumbnail icon={game?.metadata.image || cartridge} size="xl" />
           <p className="font-semibold text-lg/[22px] text-foreground-100">
@@ -90,25 +90,25 @@ export function GamePage({ game }: { game: GameModel | undefined }) {
           className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          <TabsContent className="p-0 px-4 mt-0 grow w-full" value="activity">
+          <TabsContent className="p-0 px-6 mt-0 grow w-full" value="activity">
             <DiscoverScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-4 mt-0 grow w-full"
+            className="p-0 px-6 mt-0 grow w-full"
             value="leaderboard"
           >
             <LeaderboardScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-4 mt-0 grow w-full"
+            className="p-0 px-6 mt-0 grow w-full"
             value="marketplace"
           >
             <MarketplaceScene />
           </TabsContent>
-          <TabsContent className="p-0 px-4 mt-0 grow w-full" value="guilds">
+          <TabsContent className="p-0 px-6 mt-0 grow w-full" value="guilds">
             <GuildsScene />
           </TabsContent>
-          <TabsContent className="p-0 px-4 mt-0 grow w-full" value="about">
+          <TabsContent className="p-0 px-6 mt-0 grow w-full" value="about">
             <AboutScene />
           </TabsContent>
         </div>

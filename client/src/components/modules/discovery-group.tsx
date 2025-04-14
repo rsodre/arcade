@@ -20,7 +20,7 @@ interface ArcadeDiscoveryGroupProps
 }
 
 export const arcadeDiscoveryGroupVariants = cva(
-  "select-none flex flex-col gap-y-px data-[rounded=true]:rounded-lg data-[rounded=true]:overflow-hidden",
+  "select-none flex flex-col gap-y-px data-[rounded=true]:rounded data-[rounded=true]:overflow-hidden",
   {
     variants: {
       variant: {

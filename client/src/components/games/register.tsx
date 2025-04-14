@@ -401,17 +401,18 @@ export function Register({ game }: { game?: GameModel }) {
       <SheetTrigger asChild>
         {!game ? (
           <Button
-            className="normal-case font-sans select-none min-h-12 flex justify-center items-center p-2 gap-x-2 rounded-b cursor-pointer text-sm font-medium text-foreground-300 bg-background-200 hover:bg-background-300 hover:text-foreground-200"
+            className="normal-case text-sm font-medium text-foreground-300 tracking-normal font-sans grow"
+            variant="secondary"
             disabled={!account}
           >
-            <PlusIcon size="sm" variant="line" />
+            <PlusIcon size="xs" variant="solid" />
             Register Game
           </Button>
         ) : (
           <Button
             variant="secondary"
             size="icon"
-            className="w-7 h-full rounded-none"
+            className="w-7 h-7 bg-background-150 hover:bg-background-200 text-foreground-300 hover:text-foreground-100"
             disabled={!account}
           >
             <GearIcon size="xs" />

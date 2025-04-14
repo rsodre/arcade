@@ -83,7 +83,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
         rank: index + 1,
         points: player.earnings,
         highlight: BigInt(player.address) === BigInt(address || "0x0"),
-        pins: pins[addAddressPadding(player.address)]
+        pins: pins[getChecksumAddress(player.address)]
           ?.map((id) => {
             const achievement = gameAchievements.find((a) => a?.id === id);
             return achievement ? { id, icon: achievement.icon } : undefined;
@@ -178,7 +178,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
       <div
-        className="p-0 py-4 mt-0 h-full overflow-y-scroll"
+        className="p-0 pt-6 mt-0 h-full overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
         <ArcadeSubTabs
@@ -191,7 +191,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
             className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
             style={{ scrollbarWidth: "none" }}
           >
-            <TabsContent className="p-0 mt-0 grow w-full" value="all">
+            <TabsContent className="p-0 pb-6 mt-0 grow w-full" value="all">
               <AchievementLeaderboard className="h-full rounded">
                 {!game
                   ? gamesData.all.map((item, index) => (

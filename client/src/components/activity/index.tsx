@@ -38,7 +38,8 @@ export function Activity() {
   const { project } = useProject();
   const { games } = useArcade();
   const { events } = useAchievements();
-  const { activities, status: activitiesStatus } = useActivities();
+  const { playerActivities: activities, status: activitiesStatus } =
+    useActivities();
 
   const gameEvents = useMemo(() => {
     if (!project) return Object.values(events).flatMap((event) => event);
@@ -136,7 +137,7 @@ export function Activity() {
     }
     case "success": {
       return (
-        <LayoutContent className="gap-y-6 select-none h-full overflow-y-scroll p-0 py-4">
+        <LayoutContent className="gap-y-6 select-none h-full overflow-y-scroll p-0 py-6">
           {dates.length > 0 ? (
             dates.map((current) => {
               return (

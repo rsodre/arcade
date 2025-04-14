@@ -21,7 +21,12 @@ export const useActivities = () => {
     );
   }
 
-  const { activities: allActivities, usernames, status } = context;
+  const {
+    activities: allActivities,
+    playerActivities: allPlayerActivities,
+    usernames,
+    status,
+  } = context;
 
   const activities = useMemo(() => {
     if (!project)
@@ -29,5 +34,13 @@ export const useActivities = () => {
     return allActivities[project];
   }, [project, allActivities]);
 
-  return { allActivities, usernames, activities, status };
+  const playerActivities = useMemo(() => {
+    if (!project)
+      return Object.values(allPlayerActivities).flatMap(
+        (activities) => activities,
+      );
+    return allPlayerActivities[project];
+  }, [project, allPlayerActivities]);
+
+  return { allActivities, usernames, activities, playerActivities, status };
 };
