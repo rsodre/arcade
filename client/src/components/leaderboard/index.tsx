@@ -82,6 +82,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
             player.completeds.includes(item.id) &&
             (ids.length === 0 || ids.includes(item.id)),
         )
+        .sort((a, b) => a.id.localeCompare(b.id))
         .sort((a, b) => parseFloat(a.percentage) - parseFloat(b.percentage))
         .slice(0, 3)
         .map((item) => {
