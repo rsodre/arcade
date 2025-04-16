@@ -87,10 +87,13 @@ export function Media({
           />
           <CarouselContent className="flex gap-4">
             {videos.map((video, index) => (
-              <CarouselItem key={index} className="basis-[600px]">
+              <CarouselItem
+                key={index}
+                className="basis-[295px] lg:basis-[600px]"
+              >
                 <div
                   className={cn(
-                    "relative rounded-lg overflow-hidden w-[600px] h-[320px]",
+                    "relative rounded-lg overflow-hidden w-[295px] h-[160px] lg:w-[600px] lg:h-[320px]",
                     index === videos.length - 1 && !images.length && "pr-4",
                   )}
                 >
@@ -133,10 +136,13 @@ export function Media({
               </CarouselItem>
             ))}
             {images.map((image, index) => (
-              <CarouselItem key={index} className="basis-[600px]">
+              <CarouselItem
+                key={index}
+                className="basis-[295px] lg:basis-[600px]"
+              >
                 <div
                   className={cn(
-                    "rounded-lg overflow-hidden w-[600px] h-[320px]",
+                    "rounded-lg overflow-hidden w-[295px] h-[160px] lg:w-[600px] lg:h-[320px]",
                     index === images.length - 1 && "pr-4",
                   )}
                 >
