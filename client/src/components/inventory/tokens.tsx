@@ -23,7 +23,7 @@ export const Tokens = () => {
       className={cn("rounded overflow-y-scroll w-full flex flex-col gap-y-px")}
       style={{ scrollbarWidth: "none" }}
     >
-      <Item key={credits.metadata.address} token={credits} />
+      <Item key={credits.metadata.address} token={credits} clickable={false} />
       {filteredTokens
         .slice(0, unfolded ? filteredTokens.length : DEFAULT_TOKENS_COUNT)
         .map((token) => (
@@ -50,7 +50,13 @@ export const Tokens = () => {
   );
 };
 
-function Item({ token }: { token: Token }) {
+function Item({
+  token,
+  clickable = true,
+}: {
+  token: Token;
+  clickable?: boolean;
+}) {
   const { connector } = useAccount();
   const { isSelf } = useAddress();
 
@@ -81,9 +87,11 @@ function Item({ token }: { token: Token }) {
             ? `+$${token.balance.change.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
             : `-$${(-token.balance.change).toLocaleString(undefined, { maximumFractionDigits: 2 })}`
       }
-      onClick={isSelf ? handleClick : undefined}
+      onClick={isSelf && clickable ? handleClick : undefined}
       className={
-        isSelf ? "cursor-pointer" : "cursor-default hover:bg-background-200"
+        isSelf && clickable
+          ? "cursor-pointer"
+          : "cursor-default hover:bg-background-200"
       }
     />
   );
