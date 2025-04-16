@@ -52,7 +52,7 @@ export function Media({
         }}
         setApi={setApi}
       >
-        <div className="flex flex-row-reverse items-center gap-4 h-10 absolute top-[-48px] right-2 ml-16">
+        <div className="flex flex-row-reverse items-center gap-3 lg:gap-4 h-10 absolute top-[-48px] right-2 ml-16">
           <div className="flex gap-3">
             <CarouselPrevious />
             <CarouselNext />
