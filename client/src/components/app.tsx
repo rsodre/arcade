@@ -75,7 +75,7 @@ const AppContent = () => {
     >
       <div
         className={cn(
-          "lg:w-[1112px] pt-2 lg:pt-8 pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
+          "lg:w-[1112px] lg:pt-8 pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
           "transition-all duration-300 ease-in-out",
         )}
       >
