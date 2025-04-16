@@ -1,5 +1,7 @@
 import { cn } from "@cartridge/ui-next";
 import { HTMLAttributes, SVGProps } from "react";
+import { SidebarToggle } from "../sidebar-toggle";
+import { useMediaQuery } from "@cartridge/ui-next";
 
 export interface ArcadeHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -8,18 +10,32 @@ export const ArcadeHeader = ({
   onClick,
   ...props
 }: ArcadeHeaderProps) => {
+  const isMobile = useMediaQuery("(max-width: 1024px)");
+
   return (
-    <div className="w-full flex gap-x-px h-14" {...props}>
-      <div
-        className={cn(
-          "flex items-center justify-center text-primary w-14",
-          onClick && "cursor-pointer",
-        )}
-        onClick={onClick}
-      >
-        <ArcadeIcon className="w-8 h-8 transition-colors duration-300" />
-      </div>
-      <div className="grow flex justify-end items-center gap-2 px-3 py-2 select-none">
+    <div
+      className={cn(
+        "w-full flex items-center gap-x-px h-16 lg:h-14",
+        "transition-transform duration-300 ease-in-out will-change-transform",
+      )}
+      {...props}
+    >
+      {isMobile ? (
+        <div className="lg:hidden">
+          <SidebarToggle />
+        </div>
+      ) : (
+        <div
+          className={cn(
+            "flex items-center justify-center text-primary w-14",
+            onClick && "cursor-pointer",
+          )}
+          onClick={onClick}
+        >
+          <ArcadeIcon className="w-8 h-8 transition-colors duration-300" />
+        </div>
+      )}
+      <div className="grow flex justify-end items-center gap-2 lg:px-3 py-2 select-none">
         {children}
       </div>
     </div>
