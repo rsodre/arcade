@@ -8,7 +8,7 @@ export const achievementFollowTagVariants = cva(
     variants: {
       variant: {
         default:
-          "border border-background-300 text-background-400 data-[active=true]:text-foreground-100",
+          "border border-background-300 group-hover:border-background-400 text-background-400 group-hover:text-background-500 data-[active=true]:text-foreground-100 data-[active=true]:group-hover:text-foreground-100 transition-colors",
       },
     },
     defaultVariants: {
