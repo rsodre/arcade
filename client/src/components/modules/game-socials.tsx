@@ -1,6 +1,6 @@
 import {
-  ArcadeMenuButton,
   cn,
+  DotsIcon,
   Select,
   SelectContent,
   useMediaQuery,
@@ -14,6 +14,7 @@ import {
   GameSocialTwitter,
   GameSocialWebsite,
 } from "./game-social";
+import ArcadeMenuButton from "./menu-button";
 
 const gameSocialsVariants = cva("flex gap-2", {
   variants: {
@@ -62,7 +63,9 @@ const GameSocials = ({
               "bg-background-100 text-foreground-100 hover:bg-background-200 hover:text-foreground-100 w-9 h-9 rounded-full",
               !isMobile && "hidden",
             )}
-          />
+          >
+            <DotsIcon size="sm" />
+          </ArcadeMenuButton>
         </div>
         <SelectContent className="bg-background-100">
           {socials?.twitter && (
