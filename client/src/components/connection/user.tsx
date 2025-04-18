@@ -1,5 +1,5 @@
 import ControllerConnector from "@cartridge/connector/controller";
-import { Button, DisconnectIcon, GearIcon } from "@cartridge/ui-next";
+import { Button, GearIcon, SignOutIcon } from "@cartridge/ui-next";
 import { useAccount, useDisconnect } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { UserAvatar } from "../user/avatar";
@@ -74,7 +74,7 @@ export function User() {
         />
         <ControllerAction
           label="Disconnect"
-          Icon={<DisconnectIcon variant="solid" size="sm" />}
+          Icon={<SignOutIcon size="sm" />}
           onClick={handleDisconnect}
         />
       </ControllerActions>
