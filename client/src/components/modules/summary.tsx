@@ -9,12 +9,13 @@ import {
   Socials,
 } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
-import { useMemo } from "react";
+import { HTMLAttributes, useMemo } from "react";
 import ArcadeGameHeader from "./game-header";
 import { cn } from "@/lib/utils";
 
 export interface AchievementSummaryProps
-  extends VariantProps<typeof achievementSummaryVariants> {
+  extends HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof achievementSummaryVariants> {
   achievements: {
     id: string;
     content: AchievementContentProps;
@@ -55,6 +56,8 @@ export const AchievementSummary = ({
   className,
   color,
   variant,
+  onClick,
+  ...props
 }: AchievementSummaryProps) => {
   const { points, count } = useMemo(() => {
     let points = 0;
@@ -84,7 +87,7 @@ export const AchievementSummary = ({
   }, [achievements]);
 
   return (
-    <Card className={achievementSummaryVariants({ variant })}>
+    <Card className={achievementSummaryVariants({ variant })} {...props}>
       {header && (
         <ArcadeGameHeader
           achievements={achievements}
@@ -94,6 +97,7 @@ export const AchievementSummary = ({
           active={active}
           className={className}
           color={color}
+          onClick={onClick}
         />
       )}
       <CardContent className="p-0 flex gap-3 bg-transparent">

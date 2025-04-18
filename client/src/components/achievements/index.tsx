@@ -14,6 +14,7 @@ import {
 } from "../errors";
 import AchievementSummary from "../modules/summary";
 import { useAddress } from "@/hooks/address";
+import { useNavigate } from "react-router-dom";
 
 export function Achievements({ game }: { game?: GameModel }) {
   const { address, isSelf } = useAddress();
@@ -138,6 +139,7 @@ export function GameRow({
     return { pinneds };
   }, [gameAchievements, pins, address, self]);
 
+  const navigate = useNavigate();
   const summaryProps = useMemo(() => {
     return {
       achievements: gameAchievements.map((achievement) => {
@@ -165,8 +167,13 @@ export function GameRow({
         cover: background ? game?.metadata.banner : banner,
       },
       socials: { ...game?.socials },
+      onClick: () => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("game", game.metadata.name);
+        navigate(url.toString().replace(window.location.origin, ""));
+      },
     };
-  }, [gameAchievements, game, pinneds, background]);
+  }, [gameAchievements, game, pinneds, background, navigate]);
 
   return (
     <div className="rounded-lg overflow-hidden">

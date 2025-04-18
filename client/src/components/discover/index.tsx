@@ -223,6 +223,7 @@ export function GameRow({
   events: Event[];
   covered: boolean;
 }) {
+  const navigate = useNavigate();
   const gameData = useMemo(() => {
     if (!game) return undefined;
     return {
@@ -232,8 +233,13 @@ export function GameRow({
         cover: covered ? (game.metadata.banner ?? banner) : banner,
       },
       socials: {},
+      onClick: () => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("game", game.metadata.name);
+        navigate(url.toString().replace(window.location.origin, ""));
+      },
     };
-  }, [game, covered]);
+  }, [game, covered, navigate]);
 
   if (events.length === 0) return null;
 

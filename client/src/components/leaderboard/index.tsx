@@ -52,7 +52,7 @@ export function Leaderboard({ game }: { game?: GameModel }) {
       url.searchParams.set("playerTab", "achievements");
       navigate(url.toString().replace(window.location.origin, ""));
     },
-    [navigate],
+    [searchParams, navigate],
   );
 
   const defaultValue = useMemo(() => {

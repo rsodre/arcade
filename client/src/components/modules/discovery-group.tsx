@@ -1,14 +1,11 @@
-import {
-  ArcadeGameHeader,
-  ArcadeGameHeaderProps,
-  cn,
-} from "@cartridge/ui-next";
+import { ArcadeGameHeaderProps, cn } from "@cartridge/ui-next";
 import {
   ArcadeDiscoveryEvent,
   ArcadeDiscoveryEventProps,
 } from "./discovery-event";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes } from "react";
+import ArcadeGameHeader from "./game-header";
 
 interface ArcadeDiscoveryGroupProps
   extends HTMLAttributes<HTMLDivElement>,

@@ -8,7 +8,7 @@ import {
   AchievementPinIcons,
 } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
-import { useMemo } from "react";
+import { HTMLAttributes, useMemo, useState } from "react";
 import banner from "@/assets/banner.png";
 
 export interface Metadata {
@@ -26,7 +26,8 @@ export interface Socials {
 }
 
 export interface ArcadeGameHeaderProps
-  extends VariantProps<typeof arcadeGameHeaderVariants> {
+  extends HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof arcadeGameHeaderVariants> {
   metadata: Metadata;
   achievements?: {
     id: string;
@@ -40,7 +41,7 @@ export interface ArcadeGameHeaderProps
 }
 
 export const arcadeGameHeaderVariants = cva(
-  "h-16 flex justify-between items-center px-4 py-3 gap-x-3",
+  "h-16 flex justify-between items-center px-4 py-3 gap-x-3 data-[clickable=true]:cursor-pointer",
   {
     variants: {
       variant: {
@@ -67,7 +68,12 @@ export const ArcadeGameHeader = ({
   variant,
   className,
   color,
+  onClick,
+  ...props
 }: ArcadeGameHeaderProps) => {
+  const [hover, setHover] = useState(false);
+  const clickable = useMemo(() => !!onClick, [onClick]);
+
   const pins = useMemo(() => {
     if (!achievements) return [];
     return achievements
@@ -82,24 +88,29 @@ export const ArcadeGameHeader = ({
 
   const style = useMemo(() => {
     if (!!variant && variant !== "default") return {};
-    const bgColor = `var(--background-200)`;
+    const bgColor =
+      hover && clickable ? `var(--background-300)` : `var(--background-200)`;
     const image = `url(${metadata.cover ? metadata.cover : banner})`;
     const colorMix = `color-mix(in srgb, ${bgColor} 100%, transparent 4%)`;
     return {
       backgroundImage: `linear-gradient(to right, ${bgColor}, ${colorMix}), ${image}`,
     };
-  }, [variant, metadata.cover]);
+  }, [variant, metadata.cover, hover, clickable]);
 
   return (
-    <div className={cn(arcadeGameHeaderVariants({ variant }))} style={style}>
+    <div
+      data-clickable={clickable}
+      className={cn(arcadeGameHeaderVariants({ variant }))}
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={style}
+      {...props}
+    >
       <div className="flex items-center gap-3">
         <Thumbnail
           icon={metadata.logo ?? <DojoIcon className="w-full h-full" />}
-          variant={
-            !variant || variant === "default" || variant?.includes("light")
-              ? "light"
-              : "default"
-          }
+          variant={hover && clickable ? "lightest" : "light"}
           size="lg"
         />
         <CardTitle className="text-foreground-100 text-sm font-medium tracking-normal flex items-center whitespace-nowrap">
