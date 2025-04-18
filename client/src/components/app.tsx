@@ -20,19 +20,17 @@ const MainContent = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className={cn(
-        "relative grow flex flex-col overflow-hidden",
-        "transition-transform duration-300 ease-in-out will-change-transform",
-        isOpen
-          ? "translate-x-[min(calc(100vw-64px),360px)] lg:translate-x-0"
-          : "lg:translate-x-0 translate-x-0",
+        "grow flex flex-col overflow-hidden px-3 pb-[84px] lg:pb-0",
+        "transition-transform duration-300 ease-in-out",
+        isOpen && "translate-x-[min(calc(100vw-64px),360px)]",
       )}
     >
-      <div className="relative lg:hidden w-full">
+      <div className="lg:hidden w-full">
         <Header />
       </div>
       <div
         className={cn(
-          "relative grow h-full flex flex-col rounded-xl gap-2 overflow-hidden border border-background-200 bg-background-100",
+          "relative grow h-full flex flex-col rounded-xl lg:gap-2 overflow-hidden border border-background-200 bg-background-100",
           !isZero &&
             "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
         )}
@@ -67,15 +65,12 @@ const AppContent = () => {
 
   return (
     <div
-      className={cn(
-        "h-full w-full overflow-y-scroll px-3 lg:px-0",
-        isOpen ? "px-0 pl-3" : "px-3",
-      )}
+      className={cn("h-full w-full overflow-y-scroll lg:px-0")}
       style={{ scrollbarWidth: "none" }}
     >
       <div
         className={cn(
-          "lg:w-[1112px] lg:pt-8 pb-3 lg:pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
+          "lg:w-[1112px] lg:pt-8 lg:pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
           "transition-all duration-300 ease-in-out",
         )}
       >

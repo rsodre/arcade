@@ -2,8 +2,10 @@ import {
   ArcadeMenuButton,
   ArcadeMenuItem,
   ArcadeTab,
+  BottomTab,
   ChestIcon,
   cn,
+  LayoutBottomTabs,
   LeaderboardIcon,
   ListIcon,
   MetricsIcon,
@@ -14,7 +16,9 @@ import {
   SwordsIcon,
   Tabs,
   TabsList,
+  TabsTrigger,
   TrophyIcon,
+  useMediaQuery,
 } from "@cartridge/ui-next";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
@@ -83,7 +87,10 @@ export const ArcadeTabs = ({
     new Map<TabValue, { width: number; visible: boolean }>(),
   );
 
+  const isMobile = useMediaQuery("(max-width: 1024px)");
+
   useEffect(() => {
+    if (isMobile) return;
     if (!hiddenRef.current) return;
     const tabWidths = new Map<TabValue, { width: number; visible: boolean }>();
     hiddenRef.current.childNodes.forEach((node) => {
@@ -95,9 +102,10 @@ export const ArcadeTabs = ({
       }
     });
     tabRefs.current = tabWidths;
-  }, [tabRefs, hiddenRef, order]);
+  }, [tabRefs, hiddenRef, order, isMobile]);
 
   useEffect(() => {
+    if (isMobile) return;
     const observer = new ResizeObserver(() => {
       if (!containerRef.current) return;
       const gap = 12;
@@ -135,7 +143,14 @@ export const ArcadeTabs = ({
 
     observer.observe(containerRef.current!);
     return () => observer.disconnect();
-  }, [order, containerRef.current, visibleTabs, overflowTabs, tabRefs]);
+  }, [
+    order,
+    containerRef.current,
+    visibleTabs,
+    overflowTabs,
+    tabRefs,
+    isMobile,
+  ]);
 
   useEffect(() => {
     if (order.includes(active)) return;
@@ -154,45 +169,66 @@ export const ArcadeTabs = ({
       onValueChange={(value: string) => setActive(value as TabValue)}
       className="h-full flex flex-col overflow-hidden"
     >
-      <TabsList
-        ref={containerRef}
-        className={cn(arcadeTabsVariants({ variant, size }), className)}
-      >
-        <div ref={hiddenRef} className="flex gap-2 absolute invisible">
-          {order.map((tab) => (
-            <Tab key={tab} tab={tab} value={active} size={size} />
-          ))}
-        </div>
-        {visibleTabs.map((tab) => (
-          <Tab
-            key={tab}
-            tab={tab}
-            value={active}
-            size={size}
-            onTabClick={() => onTabClick?.(tab as TabValue)}
-          />
-        ))}
-        <Select>
-          <div className="grow flex justify-end items-center self-center">
-            <ArcadeMenuButton
-              active={overflowActive}
-              className={cn(overflowTabs.length === 0 && "hidden")}
-            />
-          </div>
-          <SelectContent className="bg-background-100">
-            {overflowTabs.map((tab) => (
+      {isMobile ? (
+        <LayoutBottomTabs className="fixed bottom-0 left-0 right-0 z-50 w-full">
+          <TabsList className="h-full w-full p-0 flex gap-2 items-stretch justify-around">
+            {order.map((tab) => (
               <Tab
                 key={tab}
                 tab={tab}
                 value={active}
                 size={size}
                 onTabClick={() => onTabClick?.(tab as TabValue)}
-                item={true}
+                isMobile={true}
               />
             ))}
-          </SelectContent>
-        </Select>
-      </TabsList>
+          </TabsList>
+        </LayoutBottomTabs>
+      ) : (
+        <TabsList
+          ref={containerRef}
+          className={cn(
+            arcadeTabsVariants({ variant, size }),
+            "hidden lg:flex",
+            className,
+          )}
+        >
+          <div ref={hiddenRef} className="flex gap-2 absolute invisible">
+            {order.map((tab) => (
+              <Tab key={tab} tab={tab} value={active} size={size} />
+            ))}
+          </div>
+          {visibleTabs.map((tab) => (
+            <Tab
+              key={tab}
+              tab={tab}
+              value={active}
+              size={size}
+              onTabClick={() => onTabClick?.(tab as TabValue)}
+            />
+          ))}
+          <Select>
+            <div className="grow flex justify-end items-center self-center">
+              <ArcadeMenuButton
+                active={overflowActive}
+                className={cn(overflowTabs.length === 0 && "hidden")}
+              />
+            </div>
+            <SelectContent className="bg-background-100">
+              {overflowTabs.map((tab) => (
+                <Tab
+                  key={tab}
+                  tab={tab}
+                  value={active}
+                  size={size}
+                  onTabClick={() => onTabClick?.(tab as TabValue)}
+                  item={true}
+                />
+              ))}
+            </SelectContent>
+          </Select>
+        </TabsList>
+      )}
       {children}
     </Tabs>
   );
@@ -204,12 +240,14 @@ const Tab = ({
   size,
   onTabClick,
   item,
+  isMobile = false,
 }: {
   tab: TabValue;
   value: string;
   size: "default" | null | undefined;
   onTabClick?: () => void;
   item?: boolean;
+  isMobile?: boolean;
 }) => {
   const props = {
     value: tab,
@@ -217,6 +255,7 @@ const Tab = ({
     size,
     onClick: onTabClick,
     item,
+    isMobile,
   };
   switch (tab) {
     case "inventory":
@@ -240,19 +279,47 @@ const Tab = ({
   }
 };
 
-const InventoryNavButton = React.forwardRef<
-  HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
-  }
->(({ value, active, size, onClick, item }, ref) => {
-  if (item) {
+interface NavButtonProps {
+  value: string;
+  active: boolean;
+  size: "default" | null | undefined;
+  onClick?: () => void;
+  item?: boolean;
+  isMobile?: boolean;
+}
+
+const InventoryNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <ChestIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<ChestIcon variant="solid" size="sm" />}
+          label="Inventory"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
     return (
-      <ArcadeMenuItem
+      <ArcadeTab
         ref={ref}
         value={value}
         Icon={<ChestIcon variant="solid" size="sm" />}
@@ -262,30 +329,27 @@ const InventoryNavButton = React.forwardRef<
         onClick={onClick}
       />
     );
-  }
-  return (
-    <ArcadeTab
-      ref={ref}
-      value={value}
-      Icon={<ChestIcon variant="solid" size="sm" />}
-      label="Inventory"
-      active={active}
-      size={size}
-      onClick={onClick}
-    />
-  );
-});
+  },
+);
 
 const AchievementsNavButton = React.forwardRef<
   HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
+  NavButtonProps
+>(({ value, active, size, onClick, item, isMobile }, ref) => {
+  if (isMobile) {
+    return (
+      <TabsTrigger
+        className="p-0 grow data-[state=active]:shadow-none data-[state=active]:bg-background-transparent"
+        value={value}
+        ref={ref}
+      >
+        <BottomTab status={active ? "active" : null} onClick={onClick}>
+          <TrophyIcon variant="solid" size="lg" />
+        </BottomTab>
+      </TabsTrigger>
+    );
   }
->(({ value, active, size, onClick, item }, ref) => {
+
   if (item) {
     return (
       <ArcadeMenuItem
@@ -299,6 +363,7 @@ const AchievementsNavButton = React.forwardRef<
       />
     );
   }
+
   return (
     <ArcadeTab
       ref={ref}
@@ -314,14 +379,22 @@ const AchievementsNavButton = React.forwardRef<
 
 const LeaderboardNavButton = React.forwardRef<
   HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
+  NavButtonProps
+>(({ value, active, size, onClick, item, isMobile }, ref) => {
+  if (isMobile) {
+    return (
+      <TabsTrigger
+        className="p-0 grow data-[state=active]:bg-background-transparent"
+        value={value}
+        ref={ref}
+      >
+        <BottomTab status={active ? "active" : null} onClick={onClick}>
+          <LeaderboardIcon variant="solid" size="lg" />
+        </BottomTab>
+      </TabsTrigger>
+    );
   }
->(({ value, active, size, onClick, item }, ref) => {
+
   if (item) {
     return (
       <ArcadeMenuItem
@@ -335,6 +408,7 @@ const LeaderboardNavButton = React.forwardRef<
       />
     );
   }
+
   return (
     <ArcadeTab
       ref={ref}
@@ -348,19 +422,38 @@ const LeaderboardNavButton = React.forwardRef<
   );
 });
 
-const GuildsNavButton = React.forwardRef<
-  HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
-  }
->(({ value, active, size, onClick, item }, ref) => {
-  if (item) {
+const GuildsNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <SwordsIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<SwordsIcon variant="solid" size="sm" />}
+          label="Guilds"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
     return (
-      <ArcadeMenuItem
+      <ArcadeTab
         ref={ref}
         value={value}
         Icon={<SwordsIcon variant="solid" size="sm" />}
@@ -370,33 +463,41 @@ const GuildsNavButton = React.forwardRef<
         onClick={onClick}
       />
     );
-  }
-  return (
-    <ArcadeTab
-      ref={ref}
-      value={value}
-      Icon={<SwordsIcon variant="solid" size="sm" />}
-      label="Guilds"
-      active={active}
-      size={size}
-      onClick={onClick}
-    />
-  );
-});
+  },
+);
 
-const ActivityNavButton = React.forwardRef<
-  HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
-  }
->(({ value, active, size, onClick, item }, ref) => {
-  if (item) {
+const ActivityNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <PulseIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<PulseIcon variant="solid" size="sm" />}
+          label="Activity"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
     return (
-      <ArcadeMenuItem
+      <ArcadeTab
         ref={ref}
         value={value}
         Icon={<PulseIcon variant="solid" size="sm" />}
@@ -406,33 +507,41 @@ const ActivityNavButton = React.forwardRef<
         onClick={onClick}
       />
     );
-  }
-  return (
-    <ArcadeTab
-      ref={ref}
-      value={value}
-      Icon={<PulseIcon variant="solid" size="sm" />}
-      label="Activity"
-      active={active}
-      size={size}
-      onClick={onClick}
-    />
-  );
-});
+  },
+);
 
-const MetricsNavButton = React.forwardRef<
-  HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
-  }
->(({ value, active, size, onClick, item }, ref) => {
-  if (item) {
+const MetricsNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <MetricsIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<MetricsIcon variant="solid" size="sm" />}
+          label="Metrics"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
     return (
-      <ArcadeMenuItem
+      <ArcadeTab
         ref={ref}
         value={value}
         Icon={<MetricsIcon variant="solid" size="sm" />}
@@ -442,33 +551,41 @@ const MetricsNavButton = React.forwardRef<
         onClick={onClick}
       />
     );
-  }
-  return (
-    <ArcadeTab
-      ref={ref}
-      value={value}
-      Icon={<MetricsIcon variant="solid" size="sm" />}
-      label="Metrics"
-      active={active}
-      size={size}
-      onClick={onClick}
-    />
-  );
-});
+  },
+);
 
-const AboutNavButton = React.forwardRef<
-  HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
-  }
->(({ value, active, size, onClick, item }, ref) => {
-  if (item) {
+const AboutNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <ListIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<ListIcon variant="solid" size="sm" />}
+          label="About"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
     return (
-      <ArcadeMenuItem
+      <ArcadeTab
         ref={ref}
         value={value}
         Icon={<ListIcon variant="solid" size="sm" />}
@@ -478,30 +595,27 @@ const AboutNavButton = React.forwardRef<
         onClick={onClick}
       />
     );
-  }
-  return (
-    <ArcadeTab
-      ref={ref}
-      value={value}
-      Icon={<ListIcon variant="solid" size="sm" />}
-      label="About"
-      active={active}
-      size={size}
-      onClick={onClick}
-    />
-  );
-});
+  },
+);
 
 const MarketplaceNavButton = React.forwardRef<
   HTMLButtonElement,
-  {
-    value: string;
-    active: boolean;
-    size: "default" | null | undefined;
-    onClick?: () => void;
-    item?: boolean;
+  NavButtonProps
+>(({ value, active, size, onClick, item, isMobile }, ref) => {
+  if (isMobile) {
+    return (
+      <TabsTrigger
+        className="p-0 grow data-[state=active]:bg-background-transparent"
+        value={value}
+        ref={ref}
+      >
+        <BottomTab status={active ? "active" : null} onClick={onClick}>
+          <ShoppingCartIcon variant="solid" size="lg" />
+        </BottomTab>
+      </TabsTrigger>
+    );
   }
->(({ value, active, size, onClick, item }, ref) => {
+
   if (item) {
     return (
       <ArcadeMenuItem
@@ -515,6 +629,7 @@ const MarketplaceNavButton = React.forwardRef<
       />
     );
   }
+
   return (
     <ArcadeTab
       ref={ref}
