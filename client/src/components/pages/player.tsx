@@ -12,7 +12,7 @@ import {
 import { ActivityScene } from "../scenes/activity";
 import { ArcadeTabs } from "../modules";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { EditionModel, GameModel } from "@bal7hazar/arcade-sdk";
+import { EditionModel } from "@bal7hazar/arcade-sdk";
 import { useUsername, useUsernames } from "@/hooks/account";
 import { useAddress } from "@/hooks/address";
 import AchievementPlayerHeader from "../modules/player-header";
