@@ -11,6 +11,8 @@ export type Collection = {
   type: string;
   imageUrl: string;
   totalCount: number;
+  project: string;
+  tokenIds: string[];
 };
 
 export type CollectionContextType = {
@@ -39,6 +41,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
     {
       queryKey: ["collections", projects, offset, address],
       enabled: projects.length > 0 && !!address,
+      refetchOnWindowFocus: true,
       onSuccess: ({ collections }) => {
         const newCollections: { [key: string]: Collection } = {};
         collections?.edges.forEach((e) => {
@@ -46,12 +49,16 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
           const imagePath = e.node.meta.imagePath;
           const name = e.node.meta.name;
           const count = e.node.meta.assetCount;
+          const project = e.node.meta.project;
+          const tokenIds = e.node.assets.map((asset) => asset.tokenId);
           newCollections[`${contractAddress}`] = {
             address: contractAddress,
             imageUrl: imagePath,
             name,
             totalCount: count,
             type: "ERC-721",
+            tokenIds: tokenIds,
+            project: project,
           };
         });
         if (collections?.edges.length === LIMIT) {

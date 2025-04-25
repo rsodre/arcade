@@ -12,6 +12,7 @@ import { CollectionProvider } from "./collection";
 import { TokenProvider } from "./token";
 import { ActivitiesProvider } from "./activities";
 import { MetricsProvider } from "./metrics";
+import { OwnershipProvider } from "./ownership";
 
 export function Provider({ children }: PropsWithChildren) {
   const queryClient = new QueryClient();
@@ -25,21 +26,23 @@ export function Provider({ children }: PropsWithChildren) {
           <QueryClientProvider client={queryClient}>
             <ArcadeProvider>
               <StarknetProvider>
-                <ThemeProvider defaultScheme="system">
-                  <ProjectProvider>
-                    <CollectionProvider>
-                      <TokenProvider>
-                        <ActivitiesProvider>
-                          <MetricsProvider>
-                            <AchievementProvider>
-                              {children}
-                            </AchievementProvider>
-                          </MetricsProvider>
-                        </ActivitiesProvider>
-                      </TokenProvider>
-                    </CollectionProvider>
-                  </ProjectProvider>
-                </ThemeProvider>
+                <ProjectProvider>
+                  <ThemeProvider defaultScheme="dark">
+                    <OwnershipProvider>
+                      <CollectionProvider>
+                        <TokenProvider>
+                          <ActivitiesProvider>
+                            <MetricsProvider>
+                              <AchievementProvider>
+                                {children}
+                              </AchievementProvider>
+                            </MetricsProvider>
+                          </ActivitiesProvider>
+                        </TokenProvider>
+                      </CollectionProvider>
+                    </OwnershipProvider>
+                  </ThemeProvider>
+                </ProjectProvider>
               </StarknetProvider>
             </ArcadeProvider>
           </QueryClientProvider>
