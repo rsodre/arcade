@@ -9,5 +9,6 @@ runs:
 
     - name: Install dojo
       run: |
-        source ~/.dojo/env && dojoup --version ${{ env.DOJO_VERSION }}
+        /home/runner/.config/.dojo/dojoup/dojoup --version ${{ env.DOJO_VERSION }}
+        sudo mv /home/runner/.config/.dojo/bin/sozo /usr/local/bin/
       shell: bash
