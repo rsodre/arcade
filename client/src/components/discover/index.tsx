@@ -46,13 +46,21 @@ export function Discover({ edition }: { edition?: EditionModel }) {
 
   const navigate = useNavigate();
   const handleClick = useCallback(
-    (gameId: number, editionId: number) => {
+    (gameId: number, editionId: number, address: string) => {
+      // If there are several games displayed, then clicking a card link to the game
       const url = new URL(window.location.href);
-      url.searchParams.set("game", gameId.toString());
-      url.searchParams.set("edition", editionId.toString());
+      if (filteredEditions.length > 1) {
+        url.searchParams.set("game", gameId.toString());
+        url.searchParams.set("edition", editionId.toString());
+        navigate(url.toString().replace(window.location.origin, ""));
+        return;
+      }
+      // Otherwise it links to the player
+      url.searchParams.set("address", address);
+      url.searchParams.set("playerTab", "activity");
       navigate(url.toString().replace(window.location.origin, ""));
     },
-    [navigate],
+    [navigate, filteredEditions],
   );
 
   const defaultValue = useMemo(() => {
@@ -92,7 +100,12 @@ export function Discover({ edition }: { edition?: EditionModel }) {
               logo: edition.properties.icon,
               color: edition.color,
               points: event.achievement.points,
-              onClick: () => handleClick(edition.gameId, edition.id),
+              onClick: () =>
+                handleClick(
+                  edition.gameId,
+                  edition.id,
+                  getChecksumAddress(event.player),
+                ),
             };
           }) || [];
         const activities =
@@ -113,7 +126,12 @@ export function Discover({ edition }: { edition?: EditionModel }) {
               timestamp: Math.floor(activity.timestamp / 1000),
               logo: edition.properties.icon,
               color: edition.color,
-              onClick: () => handleClick(edition.gameId, edition.id),
+              onClick: () =>
+                handleClick(
+                  edition.gameId,
+                  edition.id,
+                  getChecksumAddress(activity.callerAddress),
+                ),
             };
           }) || [];
         return [...achievements, ...activities];
