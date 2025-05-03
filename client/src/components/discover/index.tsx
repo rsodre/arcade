@@ -105,9 +105,10 @@ export function Discover({ edition }: { edition?: EditionModel }) {
               address: getChecksumAddress(activity.callerAddress),
               Icon: <UserAvatar username={username} size="sm" />,
               data: {
-                title: count > 1 ? `${count} Actions` : activity.entrypoint,
+                title: count > 1 ? `Actions` : activity.entrypoint,
                 label: "performed",
                 icon: "fa-wave-pulse",
+                count,
               },
               timestamp: Math.floor(activity.timestamp / 1000),
               logo: edition.properties.icon,

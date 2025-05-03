@@ -18,6 +18,7 @@ export interface ArcadeDiscoveryEventProps
     title: string;
     label: string;
     icon: string;
+    count?: number;
   };
   loading?: boolean;
   color?: string;
@@ -72,7 +73,7 @@ export const ArcadeDiscoveryEvent = ({
     >
       <div className="flex items-center gap-x-1.5">
         {Icon ? Icon : <SpaceInvaderIcon size="sm" variant="solid" />}
-        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-16 lg:max-w-none lg:truncate-none">
+        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-20 lg:max-w-none lg:truncate-none">
           {name}
         </CardTitle>
         {data && (
@@ -80,6 +81,7 @@ export const ArcadeDiscoveryEvent = ({
             title={data.title}
             label={data.label}
             icon={data.icon}
+            count={data.count}
             className={className}
             color={color}
             points={points}
@@ -98,6 +100,7 @@ const DiscoveryEvent = ({
   title,
   label,
   icon,
+  count,
   className,
   color,
   points,
@@ -105,6 +108,7 @@ const DiscoveryEvent = ({
   title: string;
   label: string;
   icon: string;
+  count?: number;
   className?: string;
   color?: string;
   points?: number;
@@ -118,13 +122,25 @@ const DiscoveryEvent = ({
       )}
       style={{ color }}
     >
-      <p className="text-xs text-[#FFFFFF29]">{label}</p>
-      <div className="flex items-center gap-0.5 p-1 rounded-sm bg-[#00000029]">
+      <p className="text-sm text-[#FFFFFF29]">{label}</p>
+      <div className="flex items-center lg:gap-0.5 p-1 rounded-sm bg-[#00000029]">
         <div className="w-4 h-4 p-[2.5px] flex justify-center items-center">
           <div className={cn(icon, "fa-solid w-full h-full")} />
         </div>
-        <p className="text-xs px-px capitalize truncate max-w-16 lg:max-w-none lg:truncate-none">
-          {title.replace(/_/g, " ")}
+        <p
+          className={cn(
+            "text-xs px-px flex lg:gap-1",
+            !count && "hidden lg:block",
+          )}
+        >
+          {!!count && (
+            <span className={cn("block", count <= 1 && "lg:hidden")}>
+              {count}
+            </span>
+          )}
+          <span className="capitalize hidden lg:block">
+            {title.replace(/_/g, " ")}
+          </span>
         </p>
       </div>
       {!!points && (
@@ -172,13 +188,18 @@ const Timestamp = ({ timestamp }: { timestamp: number }) => {
   }, [timestamp]);
 
   const label = useMemo(() => {
-    if (state.years > 0) return `${state.years}y ago`;
-    if (state.months > 0) return `${state.months}mo ago`;
-    if (state.days > 0) return `${state.days}d ago`;
-    if (state.hours > 0) return `${state.hours}h ago`;
-    if (state.minutes > 0) return `${state.minutes}m ago`;
-    return `${state.seconds}s ago`;
+    if (state.years > 0) return `${state.years}y`;
+    if (state.months > 0) return `${state.months}mo`;
+    if (state.days > 0) return `${state.days}d`;
+    if (state.hours > 0) return `${state.hours}h`;
+    if (state.minutes > 0) return `${state.minutes}m`;
+    return `${state.seconds}s`;
   }, [state]);
 
-  return <p className="text-xs text-[#FFFFFF29]">{label}</p>;
+  return (
+    <p className="text-xs text-[#FFFFFF29] flex gap-1">
+      {label}
+      <span className="hidden lg:block">{" ago"}</span>
+    </p>
+  );
 };

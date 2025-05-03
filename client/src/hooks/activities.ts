@@ -3,6 +3,8 @@ import { useProject } from "./project";
 import { ActivitiesContext } from "@/context";
 import { Activity } from "@/context/activities";
 
+const SESSION_MAX_BREAK = 3600 * 1000; // 1 hour
+
 /**
  * Custom hook to access the Activities context and account information.
  * Must be used within a ActivitiesProvider component.
@@ -32,15 +34,26 @@ export const useActivities = () => {
   const aggregatedActivities: { [key: string]: Activity[] } = useMemo(() => {
     const result: { [key: string]: Activity[] } = {};
     Object.entries(allActivities).forEach(([project, activities]) => {
-      let username = "";
+      const history: { [address: string]: { time: number; index: number } } =
+        {};
       const aggregatedActivities: Activity[] = [];
       activities.forEach((activity) => {
-        if (activity.callerAddress !== username) {
-          username = activity.callerAddress;
-          aggregatedActivities.push({ ...activity });
+        const last = history[activity.callerAddress];
+        const currentTime = activity.timestamp;
+        const deltaTime = !last?.time
+          ? SESSION_MAX_BREAK
+          : last.time > currentTime
+            ? last.time - currentTime
+            : currentTime - last.time;
+        if (deltaTime < SESSION_MAX_BREAK) {
+          history[activity.callerAddress].time = currentTime;
+          aggregatedActivities[last.index].count += activity.count;
         } else {
-          aggregatedActivities[aggregatedActivities.length - 1].count +=
-            activity.count;
+          history[activity.callerAddress] = {
+            time: currentTime,
+            index: aggregatedActivities.length,
+          };
+          aggregatedActivities.push({ ...activity });
         }
       });
       result[project] = aggregatedActivities;
