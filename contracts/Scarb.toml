@@ -1,5 +1,5 @@
 [package]
-cairo-version = "2.9.4"
+cairo-version = "2.10.1"
 edition = "2024_07"
 name = "arcade"
 version = "0.0.0"
@@ -17,11 +17,11 @@ controller = { path = ".." }
 provider = { path = ".." }
 registry = { path = ".." }
 social = { path = ".." }
-starknet = "2.9.4"
+starknet = "2.10.1"
 
 [dev-dependencies]
 dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
-cairo_test = "2.9.4"
+cairo_test = "2.10.1"
 
 [[target.starknet-contract]]
 build-external-contracts = [
