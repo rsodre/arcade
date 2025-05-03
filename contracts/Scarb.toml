@@ -17,6 +17,7 @@ controller = { path = ".." }
 provider = { path = ".." }
 registry = { path = ".." }
 social = { path = ".." }
+collection = { path = ".." }
 starknet = "2.10.1"
 
 [dev-dependencies]

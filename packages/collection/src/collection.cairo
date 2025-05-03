@@ -1,5 +1,5 @@
 #[starknet::contract]
-mod Collection {
+pub mod Collection {
     use starknet::ContractAddress;
     use openzeppelin_upgrades::UpgradeableComponent;
     use openzeppelin_upgrades::interface::IUpgradeable;

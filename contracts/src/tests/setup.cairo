@@ -20,6 +20,7 @@ pub mod setup {
     use social::models::{index as social_models};
     use social::events::{index as social_events};
     use achievement::events::{index as achievement_events};
+    // use collection::collection::Collection;
 
     // Internal imports
 
@@ -83,11 +84,13 @@ pub mod setup {
         }
     }
 
+    #[inline]
     fn setup_contracts() -> Span<ContractDef> {
         [
-            ContractDefTrait::new(@NAMESPACE(), @"Registry")
-                .with_writer_of([dojo::utils::bytearray_hash(@NAMESPACE())].span())
-                .with_init_calldata(array![OWNER().into()].span()),
+            // TODO: Find a way to go through the deploy process
+            // ContractDefTrait::new(@NAMESPACE(), @"Registry")
+            //     .with_writer_of([dojo::utils::bytearray_hash(@NAMESPACE())].span()),
+            //     .with_init_calldata(array![OWNER().into(), Collection::TEST_CLASS_HASH].span()),
             ContractDefTrait::new(@NAMESPACE(), @"Slot")
                 .with_writer_of([dojo::utils::bytearray_hash(@NAMESPACE())].span())
                 .with_init_calldata(array![].span()),
