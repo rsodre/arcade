@@ -126,7 +126,7 @@ export function Register() {
   const [close, setClose] = useState(false);
 
   const defaultValues = useMemo(() => {
-    return { ...data.ponziland };
+    return { ...data.eternum };
     // return {
     //   worldAddress: "",
     //   namespace: "",

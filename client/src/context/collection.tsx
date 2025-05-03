@@ -40,7 +40,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
     },
     {
       queryKey: ["collections", projects, offset, address],
-      enabled: projects.length > 0 && !!address,
+      enabled: projects.length > 0 && !!address && BigInt(address) !== 0n,
       refetchOnWindowFocus: true,
       onSuccess: ({ collections }) => {
         const newCollections: { [key: string]: Collection } = {};

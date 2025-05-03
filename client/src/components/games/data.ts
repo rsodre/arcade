@@ -1,9 +1,9 @@
 export const data = {
-  blobert: {
+  blobarena: {
     worldAddress:
-      "0x1405692c316d05ac219d844829293d1ff1271fde8fd486e5fe1e68a774b2adb",
-    namespace: "amma_blobert",
-    project: "ba-pve-dev-alex",
+      "0x5889c701561056654e583ec0dba453f78030e4ea624d07e7e6c224ad91a39fe",
+    namespace: "achievements",
+    project: "blobarenabal",
     rpc: "https://api.cartridge.gg/x/starknet/sepolia",
     policies: "",
     color: "#D7B000",
