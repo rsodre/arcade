@@ -9,5 +9,5 @@ runs:
 
     - name: Install dojo
       run: |
-        /home/runner/.config/.dojo/bin/dojoup --version ${{ env.DOJO_VERSION }}
+        /home/runner/.config/.dojo/dojoup/dojoup --version ${{ env.DOJO_VERSION }}
       shell: bash
