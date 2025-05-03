@@ -3,7 +3,6 @@ import { useCallback, useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { EditionModel } from "@bal7hazar/arcade-sdk";
 import { useAchievements } from "@/hooks/achievements";
-import banner from "@/assets/banner.png";
 import {
   Connect,
   DiscoverEmpty,
@@ -17,13 +16,6 @@ import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
 import { useAccount } from "@starknet-react/core";
 import { useActivities } from "@/hooks/activities";
 import { UserAvatar } from "../user/avatar";
-
-interface Event {
-  name: string;
-  data: { title: string; label: string; icon: string };
-  timestamp: number;
-  onClick: () => void;
-}
 
 export function Discover({ edition }: { edition?: EditionModel }) {
   const [searchParams] = useSearchParams();
@@ -54,11 +46,10 @@ export function Discover({ edition }: { edition?: EditionModel }) {
 
   const navigate = useNavigate();
   const handleClick = useCallback(
-    (address: string) => {
-      // On click, we update the url param address to the address of the player
+    (gameId: number, editionId: number) => {
       const url = new URL(window.location.href);
-      url.searchParams.set("address", address);
-      url.searchParams.set("playerTab", "activity");
+      url.searchParams.set("game", gameId.toString());
+      url.searchParams.set("edition", editionId.toString());
       navigate(url.toString().replace(window.location.origin, ""));
     },
     [navigate],
@@ -82,62 +73,58 @@ export function Discover({ edition }: { edition?: EditionModel }) {
   );
 
   const editionEvents = useMemo(() => {
-    return filteredEditions.map((edition) => {
-      const achievements =
-        events[edition?.config.project]?.map((event) => {
-          const username =
-            achievementsUsernames[addAddressPadding(event.player)];
-          return {
-            name: username,
-            address: getChecksumAddress(event.player),
-            Icon: <UserAvatar username={username} />,
-            data: {
-              title: event.achievement.title,
-              label: "earned",
-              icon: event.achievement.icon,
-            },
-            timestamp: event.timestamp,
-            onClick: () => handleClick(addAddressPadding(event.player)),
-          };
-        }) || [];
-      const activities =
-        aggregatedActivities[edition?.config.project]?.map((activity) => {
-          const username =
-            activitiesUsernames[addAddressPadding(activity.callerAddress)];
-          const count = activity.count;
-          return {
-            name: username,
-            address: getChecksumAddress(activity.callerAddress),
-            Icon: <UserAvatar username={username} size="sm" />,
-            data: {
-              title: count > 1 ? `${count} Actions` : activity.entrypoint,
-              label: "performed",
-              icon: count > 1 ? "fa-layer-group" : "fa-joystick",
-            },
-            timestamp: Math.floor(activity.timestamp / 1000),
-            onClick: () =>
-              handleClick(addAddressPadding(activity.callerAddress)),
-          };
-        }) || [];
-      const data = [...achievements, ...activities].sort(
-        (a, b) => b.timestamp - a.timestamp,
-      );
-      if (!data) return { all: [], following: [] };
-      if (filteredEditions.length > 1) {
-        return {
-          all: data.slice(0, 3),
-          following: data
-            .filter((event) => following.includes(event.address))
-            .slice(0, 3),
-        };
-      }
-      return {
-        all: data.slice(0, 100),
-        following: data
-          .filter((event) => following.includes(event.address))
-          .slice(0, 100),
-      };
-    });
+    const data = filteredEditions
+      .flatMap((edition) => {
+        const achievements =
+          events[edition?.config.project]?.map((event) => {
+            const username =
+              achievementsUsernames[addAddressPadding(event.player)];
+            return {
+              name: username,
+              address: getChecksumAddress(event.player),
+              Icon: <UserAvatar username={username} size="sm" />,
+              data: {
+                title: event.achievement.title,
+                label: "earned",
+                icon: event.achievement.icon,
+              },
+              timestamp: event.timestamp,
+              logo: edition.properties.icon,
+              color: edition.color,
+              points: event.achievement.points,
+              onClick: () => handleClick(edition.gameId, edition.id),
+            };
+          }) || [];
+        const activities =
+          aggregatedActivities[edition?.config.project]?.map((activity) => {
+            const username =
+              activitiesUsernames[addAddressPadding(activity.callerAddress)];
+            const count = activity.count;
+            return {
+              name: username,
+              address: getChecksumAddress(activity.callerAddress),
+              Icon: <UserAvatar username={username} size="sm" />,
+              data: {
+                title: count > 1 ? `${count} Actions` : activity.entrypoint,
+                label: "performed",
+                icon: "fa-wave-pulse",
+              },
+              timestamp: Math.floor(activity.timestamp / 1000),
+              logo: edition.properties.icon,
+              color: edition.color,
+              onClick: () => handleClick(edition.gameId, edition.id),
+            };
+          }) || [];
+        return [...achievements, ...activities];
+      })
+      .sort((a, b) => b.timestamp - a.timestamp);
+    if (!data) return { all: [], following: [] };
+    return {
+      all: data.slice(0, 100),
+      following: data
+        .filter((event) => following.includes(event.address))
+        .slice(0, 100),
+    };
   }, [
     events,
     aggregatedActivities,
@@ -169,20 +156,11 @@ export function Discover({ edition }: { edition?: EditionModel }) {
             style={{ scrollbarWidth: "none" }}
           >
             <TabsContent className="p-0 mt-0 grow w-full" value="all">
-              {filteredEditions.length === 1 &&
-              editionEvents.length > 0 &&
-              editionEvents[0].all.length === 0 ? (
+              {editionEvents.all.length === 0 ? (
                 <DiscoverEmpty />
               ) : (
-                <div className="flex flex-col gap-y-4 pb-3 lg:pb-6">
-                  {filteredEditions.map((item, index) => (
-                    <GameRow
-                      key={`${index}-${item.config.project}`}
-                      edition={filteredEditions.length > 1 ? item : undefined}
-                      events={editionEvents[index].all}
-                      covered={filteredEditions.length > 1}
-                    />
-                  ))}
+                <div className="pb-6">
+                  <ArcadeDiscoveryGroup events={editionEvents.all} rounded />
                 </div>
               )}
             </TabsContent>
@@ -190,20 +168,14 @@ export function Discover({ edition }: { edition?: EditionModel }) {
               {!isConnected ? (
                 <Connect />
               ) : following.length === 0 ||
-                (filteredEditions.length === 1 &&
-                  editionEvents.length > 0 &&
-                  editionEvents[0].following.length === 0) ? (
+                editionEvents.following.length === 0 ? (
                 <DiscoverEmpty />
               ) : (
-                <div className="flex flex-col gap-y-4 pb-6">
-                  {filteredEditions.map((item, index) => (
-                    <GameRow
-                      key={`${index}-${item.config.project}`}
-                      edition={filteredEditions.length > 1 ? item : undefined}
-                      events={editionEvents[index].following}
-                      covered={filteredEditions.length > 1}
-                    />
-                  ))}
+                <div className="pb-6">
+                  <ArcadeDiscoveryGroup
+                    events={editionEvents.following}
+                    rounded
+                  />
                 </div>
               )}
             </TabsContent>
@@ -211,52 +183,5 @@ export function Discover({ edition }: { edition?: EditionModel }) {
         </ArcadeSubTabs>
       </div>
     </LayoutContent>
-  );
-}
-
-export function GameRow({
-  edition,
-  events,
-  covered,
-}: {
-  edition: EditionModel | undefined;
-  events: Event[];
-  covered: boolean;
-}) {
-  const { games } = useArcade();
-  const game = useMemo(() => {
-    return games.find((game) => game.id === edition?.gameId);
-  }, [games, edition]);
-
-  const navigate = useNavigate();
-  const editionData = useMemo(() => {
-    if (!edition) return undefined;
-    return {
-      metadata: {
-        name: game?.name ? `${game.name} - ${edition.name}` : edition.name,
-        logo: edition.properties.icon,
-        cover: covered
-          ? game?.properties.banner || edition.properties.banner || banner
-          : banner,
-      },
-      socials: {},
-      onClick: () => {
-        const url = new URL(window.location.href);
-        if (game) url.searchParams.set("game", game.id.toString());
-        url.searchParams.set("edition", edition.id.toString());
-        navigate(url.toString().replace(window.location.origin, ""));
-      },
-    };
-  }, [game, edition, covered, navigate]);
-
-  if (events.length === 0) return null;
-
-  return (
-    <ArcadeDiscoveryGroup
-      game={editionData}
-      events={events}
-      color={edition?.color}
-      rounded
-    />
   );
 }

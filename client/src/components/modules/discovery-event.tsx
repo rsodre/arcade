@@ -1,4 +1,10 @@
-import { CardTitle, cn, Skeleton, SpaceInvaderIcon } from "@cartridge/ui-next";
+import {
+  CardTitle,
+  cn,
+  SpaceInvaderIcon,
+  SparklesIcon,
+  Thumbnail,
+} from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo, HTMLAttributes, useState, useEffect } from "react";
 
@@ -15,17 +21,19 @@ export interface ArcadeDiscoveryEventProps
   };
   loading?: boolean;
   color?: string;
+  logo?: string;
+  points?: number;
 }
 
 export const arcadeDiscoveryEventVariants = cva(
-  "select-none h-11 flex justify-between items-center px-3 py-2.5",
+  "relative select-none h-11 flex justify-between items-center px-3 py-2.5 cursor-pointer",
   {
     variants: {
       variant: {
         darkest: "bg-background-100",
         darker: "bg-background-100",
         dark: "bg-background-100",
-        default: "bg-background-200 hover:bg-background-300 cursor-pointer",
+        default: "bg-background-200 hover:bg-background-300",
         light: "bg-background-200",
         lighter: "bg-background-200",
         lightest: "bg-background-200",
@@ -43,39 +51,23 @@ export const ArcadeDiscoveryEvent = ({
   timestamp,
   Icon,
   data,
-  loading,
+  logo,
+  color,
+  points,
   variant,
   className,
-  color,
   ...props
 }: ArcadeDiscoveryEventProps) => {
-  const bgColor = useMemo(() => {
-    switch (variant) {
-      case "darkest":
-      case "darker":
-      case "dark":
-        return "bg-background-200";
-      case "default":
-      case "light":
-      case "lighter":
-      case "lightest":
-      case "ghost":
-      default:
-        return "bg-background-300";
-    }
-  }, [variant]);
-
-  if (loading) {
-    return (
-      <div className={cn(arcadeDiscoveryEventVariants({ variant }), className)}>
-        <Skeleton className={cn("w-[120px] h-full", bgColor)} />
-        <Skeleton className={cn("w-[60px] h-full", bgColor)} />
-      </div>
-    );
-  }
+  const colorMix = useMemo(
+    () => `color-mix(in srgb, ${color} 1%, transparent 100%)`,
+    [color],
+  );
   return (
     <div
       className={cn(arcadeDiscoveryEventVariants({ variant }), className)}
+      style={{
+        backgroundImage: `linear-gradient(0deg, ${colorMix})`,
+      }}
       {...props}
     >
       <div className="flex items-center gap-x-1.5">
@@ -90,10 +82,14 @@ export const ArcadeDiscoveryEvent = ({
             icon={data.icon}
             className={className}
             color={color}
+            points={points}
           />
         )}
       </div>
-      <Timestamp timestamp={timestamp} />
+      <div className="flex items-center gap-2">
+        <Timestamp timestamp={timestamp} />
+        <Thumbnail icon={logo} size="sm" variant="dark" />
+      </div>
     </div>
   );
 };
@@ -104,12 +100,14 @@ const DiscoveryEvent = ({
   icon,
   className,
   color,
+  points,
 }: {
   title: string;
   label: string;
   icon: string;
   className?: string;
   color?: string;
+  points?: number;
 }) => {
   return (
     <div
@@ -120,13 +118,21 @@ const DiscoveryEvent = ({
       )}
       style={{ color }}
     >
-      <p className="text-xs text-foreground-300">{label}</p>
-      <div className="flex items-center gap-1 p-1 border-background-400 border rounded-sm">
-        <div className={cn(icon, "fa-solid w-3 h-3")} />
-        <p className="text-xs capitalize truncate max-w-16 lg:max-w-none lg:truncate-none">
+      <p className="text-xs text-[#FFFFFF29]">{label}</p>
+      <div className="flex items-center gap-0.5 p-1 rounded-sm bg-[#00000029]">
+        <div className="w-4 h-4 p-[2.5px] flex justify-center items-center">
+          <div className={cn(icon, "fa-solid w-full h-full")} />
+        </div>
+        <p className="text-xs px-px capitalize truncate max-w-16 lg:max-w-none lg:truncate-none">
           {title.replace(/_/g, " ")}
         </p>
       </div>
+      {!!points && (
+        <div className="flex items-center gap-0.5 p-1 rounded-sm bg-[#00000029]">
+          <SparklesIcon variant="solid" size="xs" />
+          <p className="text-xs px-px">{points}</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -174,5 +180,5 @@ const Timestamp = ({ timestamp }: { timestamp: number }) => {
     return `${state.seconds}s ago`;
   }, [state]);
 
-  return <p className="text-xs text-foreground-300">{label}</p>;
+  return <p className="text-xs text-[#FFFFFF29]">{label}</p>;
 };

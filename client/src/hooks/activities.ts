@@ -41,8 +41,6 @@ export const useActivities = () => {
         } else {
           aggregatedActivities[aggregatedActivities.length - 1].count +=
             activity.count;
-          aggregatedActivities[aggregatedActivities.length - 1].timestamp =
-            activity.timestamp;
         }
       });
       result[project] = aggregatedActivities;
