@@ -18,5 +18,6 @@ runs:
         echo $DOJO_DIR
         echo $DOJO_BIN_DIR
         ls $DOJO_BIN_DIR
+        which sozo
         sudo mv /home/runner/.config/.dojo/bin/sozo /usr/local/bin/
       shell: bash
