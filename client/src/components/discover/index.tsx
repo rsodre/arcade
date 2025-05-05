@@ -113,6 +113,14 @@ export function Discover({ edition }: { edition?: EditionModel }) {
   );
 
   useEffect(() => {
+    // Reset the events if the edition changes, meaning the user has clicked on a new game edition
+    setEvents({
+      all: [],
+      following: [],
+    });
+  }, [edition]);
+
+  useEffect(() => {
     if (!filteredEditions) return;
     if (!Object.entries(aggregatedActivities)) return;
     if (!Object.entries(activitiesUsernames)) return;
@@ -165,6 +173,8 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     following,
     handleClick,
   ]);
+
+  console.log({ events: events.all });
 
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
