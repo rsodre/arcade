@@ -174,8 +174,6 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     handleClick,
   ]);
 
-  console.log({ events: events.all });
-
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
       <div
