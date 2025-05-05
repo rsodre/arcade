@@ -5,7 +5,7 @@ import {
   ArcadeDiscoveryEventProps,
 } from "./discovery-event";
 import { cva, VariantProps } from "class-variance-authority";
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useEffect, useState } from "react";
 
 interface ArcadeDiscoveryGroupProps
   extends HTMLAttributes<HTMLDivElement>,
@@ -44,6 +44,15 @@ export const ArcadeDiscoveryGroup = ({
   className,
   onClick,
 }: ArcadeDiscoveryGroupProps) => {
+  const [duration, setDuration] = useState(0.1);
+
+  useEffect(() => {
+    setDuration(0.1);
+    setTimeout(() => {
+      setDuration(0.3);
+    }, 100);
+  }, [events]);
+    
   return (
     <div
       data-rounded={rounded}
@@ -54,9 +63,9 @@ export const ArcadeDiscoveryGroup = ({
           <motion.div
             key={event.identifier}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            animate={{ opacity: 1, transition: { duration: 0.3 } }}
+            exit={{ opacity: 0, transition: { duration: 0 } }}
+            transition={{ duration }}
             layout
           >
             <ArcadeDiscoveryEvent
