@@ -8,6 +8,8 @@ import {
   TabsContent,
   TabValue,
   TimesIcon,
+  UserAddIcon,
+  UserCheckIcon,
 } from "@cartridge/ui-next";
 import { ActivityScene } from "../scenes/activity";
 import { ArcadeTabs } from "../modules";
@@ -251,7 +253,8 @@ function FollowButton({
           "h-9 px-4 py-2 rounded-full",
         )}
       >
-        Follow
+        <p className="hidden lg:block">Follow</p>
+        <p className="block lg:hidden"><UserAddIcon variant="solid" size="sm"/></p>
       </Button>
     );
   }
@@ -262,13 +265,25 @@ function FollowButton({
       disabled={loading}
       isLoading={loading}
       className={cn(
-        "bg-background-125 border border-background-200 text-foreground-300 hover:bg-background-200 hover:text-destructive-100 disabled:bg-background-125 normal-case font-normal tracking-normal font-sans text-sm transition-colors",
-        "h-9 px-4 py-2 rounded-full w-24",
+        "group bg-background-125 border border-background-200 disabled:bg-background-125 normal-case font-normal tracking-normal font-sans text-sm transition-colors",
+        "h-9 w-9 p-0 lg:px-4 lg:py-2 rounded-full lg:w-24 flex items-center justify-center",
+        "text-destructive-100 bg-background-200 lg:text-foreground-300 lg:bg-background-125 hover:lg:text-destructive-100 hover:lg:bg-background-200",
       )}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {hover ? "Unfollow" : "Following"}
+      {hover ? (
+        <p className="hidden lg:block">Unfollow</p>
+      ) : (
+        <>
+          <p className="text-center hidden lg:block">Following</p>
+        </>
+      )}
+      <UserCheckIcon
+        variant="solid"
+        size="sm"
+        className="lg:hidden"
+      />
     </Button>
   );
 }

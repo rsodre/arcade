@@ -92,7 +92,9 @@ export const AchievementPlayerHeader = ({
             </strong>
             Points
           </p>
-          {follower && <FollowerTag variant={variant} />}
+          <div className="hidden lg:block">
+            {follower && <FollowerTag variant={variant} />}
+          </div>
         </div>
         {!compacted && <FollowerDescription followers={followers || []} />}
       </div>
