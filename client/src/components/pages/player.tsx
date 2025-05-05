@@ -238,6 +238,23 @@ function FollowButton({
   loading: boolean;
   handleFollow: () => void;
 }) {
+  const [hover, setHover] = useState(false);
+  if (!following) {
+    return (
+      <Button
+        variant="secondary"
+        onClick={handleFollow}
+        disabled={loading}
+        isLoading={loading}
+        className={cn(
+          "bg-background-200 hover:opacity-80 disabled:bg-background-125 normal-case font-normal tracking-normal font-sans text-sm transition-opacity",
+          "h-9 px-4 py-2 rounded-full",
+        )}
+      >
+        Follow
+      </Button>
+    );
+  }
   return (
     <Button
       variant="secondary"
@@ -245,11 +262,13 @@ function FollowButton({
       disabled={loading}
       isLoading={loading}
       className={cn(
-        "bg-background-125 disabled:bg-background-125 h-8 normal-case font-medium tracking-normal font-sans text-sm",
-        "px-3 py-1.5",
+        "bg-background-125 border border-background-200 text-foreground-300 hover:bg-background-200 hover:text-destructive-100 disabled:bg-background-125 normal-case font-normal tracking-normal font-sans text-sm transition-colors",
+        "h-9 px-4 py-2 rounded-full w-24",
       )}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      {following ? "Unfollow" : "Follow"}
+      {hover ? "Unfollow" : "Following"}
     </Button>
   );
 }

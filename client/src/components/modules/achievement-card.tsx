@@ -1,117 +1,129 @@
 import {
+  AchievementBit,
+  AchievementBits,
+  AchievementContent,
+  AchievementContentProps,
+  AchievementPagination,
+  AchievementPin,
+  AchievementPinProps,
+  AchievementShare,
+  AchievementShareProps,
+  Card,
+  CardHeader,
+  CardTitle,
   cn,
-  SparklesIcon,
-  Thumbnail,
-  ThumbnailsSubIcon,
-  TrophyIcon,
-  ActivityCard,
-  ActivitySocialWebsite,
-  activityCardVariants,
 } from "@cartridge/ui-next";
-import { VariantProps } from "class-variance-authority";
-import { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-export interface ActivityAchievementCardProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof activityCardVariants> {
-  title: string;
-  topic: string;
-  points: number;
-  website: string;
-  image: string;
-  color?: string;
-  error?: boolean;
-  loading?: boolean;
-  certified?: boolean;
-  className?: string;
+export interface AchievementCardProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  name: string;
+  achievements: {
+    id: string;
+    index: number;
+    completed: boolean;
+    content: AchievementContentProps;
+    pin?: AchievementPinProps;
+    share?: AchievementShareProps;
+  }[];
 }
 
-export const ActivityAchievementCard = ({
-  title,
-  topic,
-  points,
-  website,
-  image,
-  color,
-  error,
-  loading,
-  certified,
-  variant,
-  className,
-  ...props
-}: ActivityAchievementCardProps) => {
-  const [hover, setHover] = useState(false);
+export const AchievementCard = ({
+  name,
+  achievements,
+}: AchievementCardProps) => {
+  const [page, setPage] = useState(0);
+  const [pages, setPages] = useState<number[]>([]);
 
-  const Icon = useMemo(
-    () => (
-      <TrophyIcon
-        className="w-full h-full text-foreground-100"
-        variant="solid"
-      />
-    ),
-    [],
-  );
-
-  const Logo = useMemo(
-    () => (
-      <div
-        className={cn(
-          "text-inherit",
-          !error && !loading && !color && "text-primary",
-        )}
-        style={{ color }}
-      >
-        <Thumbnail
-          icon={image}
-          subIcon={
-            <ThumbnailsSubIcon
-              variant={hover ? "lighter" : "light"}
-              Icon={Icon}
-            />
-          }
-          error={error}
-          loading={loading}
-          size="lg"
-          variant={hover ? "lighter" : "light"}
-          className={cn(
-            "text-inherit",
-            !error && !loading && !color && "text-primary",
-          )}
-        />
-      </div>
-    ),
-    [image, error, loading, hover, Icon, color],
-  );
-
-  const Social = useMemo(() => {
-    return <ActivitySocialWebsite website={website} certified={certified} />;
-  }, [website, certified]);
-
-  const Points = useMemo(() => {
-    return (
-      <div className="flex items-center gap-1 text-inherit">
-        <SparklesIcon variant="solid" size="xs" />
-        <span>{points}</span>
-      </div>
+  const visibles = useMemo(() => {
+    return (achievements || []).filter(
+      (a) => a.index === page || (a.content.hidden && !a.completed),
     );
-  }, [points]);
+  }, [achievements, page]);
+
+  const handleNext = useCallback(() => {
+    const index = pages.indexOf(page);
+    const next = pages[index + 1];
+    if (!next) return;
+    setPage(next);
+  }, [page, pages]);
+
+  const handlePrevious = useCallback(() => {
+    const index = pages.indexOf(page);
+    if (index === 0) return;
+    setPage(pages[index - 1]);
+  }, [page, pages]);
+
+  useEffect(() => {
+    // Set the page to the first uncompleted achievement or 0 if there are none
+    const filtereds = achievements.filter(
+      (a) => !a.content.hidden || a.completed,
+    );
+    // Get the unique list of indexes for the achievements in this group
+    const pages =
+      filtereds.length > 0 ? [...new Set(filtereds.map((a) => a.index))] : [0];
+    setPages(pages);
+    const page = filtereds.find((a) => !a.completed);
+    setPage(page ? page.index : pages[pages.length - 1]);
+  }, [achievements]);
+
+  if (visibles.length === 0) return null;
 
   return (
-    <ActivityCard
-      Logo={Logo}
-      title={title}
-      subTitle={Social}
-      topic={topic}
-      subTopic={Points}
-      error={error}
-      loading={loading}
-      variant={variant}
-      className={className}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      {...props}
-    />
+    <Card>
+      <div className="flex flex-row gap-x-px w-full overflow-hidden">
+        <CardHeader className="grow">
+          <CardTitle className="capitalize truncate">
+            {name.toLowerCase()}
+          </CardTitle>
+        </CardHeader>
+        {pages.length > 1 && (
+          <AchievementPagination
+            direction="left"
+            onClick={handlePrevious}
+            disabled={page === pages[0]}
+          />
+        )}
+        {pages.length > 1 && (
+          <AchievementPagination
+            direction="right"
+            onClick={handleNext}
+            disabled={page === pages[pages.length - 1]}
+          />
+        )}
+        {pages.length > 1 && (
+          <CardHeader>
+            <AchievementBits>
+              {pages.map((p) => (
+                <AchievementBit
+                  key={p}
+                  completed={achievements
+                    .filter((a) => a.index === p)
+                    .every((a) => a.completed)}
+                  active={p === page}
+                  onClick={() => setPage(p)}
+                />
+              ))}
+            </AchievementBits>
+          </CardHeader>
+        )}
+      </div>
+      {visibles.map((achievement) => (
+        <div key={achievement.id} className="flex gap-x-px">
+          <AchievementContent {...achievement.content} />
+          <div
+            className={cn(
+              "flex flex-col gap-y-px",
+              !achievement.pin && !achievement.share && "hidden",
+            )}
+          >
+            {achievement.pin && <AchievementPin {...achievement.pin} />}
+            {achievement.share && <AchievementShare {...achievement.share} />}
+          </div>
+        </div>
+      ))}
+    </Card>
   );
 };
 
-export default ActivityAchievementCard;
+export default AchievementCard;

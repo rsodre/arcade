@@ -8,6 +8,7 @@ import { useAccount } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";
 import { Chain, mainnet } from "@starknet-react/chains";
 import { Collection } from "@/context/collection";
+import { useAddress } from "@/hooks/address";
 
 export const Collections = () => {
   const { editions, chains } = useArcade();
@@ -44,6 +45,7 @@ function Item({
   editions: EditionModel[];
   chains: Chain[];
 }) {
+  const { isSelf } = useAddress();
   const { connector } = useAccount();
   const [username, setUsername] = useState<string>("");
 
@@ -92,7 +94,8 @@ function Item({
           placeholder
         }
         count={collection.totalCount}
-        onClick={handleClick}
+        onClick={isSelf ? handleClick : undefined}
+        className="cursor-default"
       />
     </div>
   );

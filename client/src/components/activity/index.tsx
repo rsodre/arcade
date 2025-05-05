@@ -11,7 +11,7 @@ import { ActivityEmpty, ActivityError, ActivityLoading } from "../errors";
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { useAddress } from "@/hooks/address";
-import ActivityAchievementCard from "../modules/achievement-card";
+import ActivityAchievementCard from "../modules/activity-achievement-card";
 import { Link } from "react-router-dom";
 import { VoyagerUrl } from "@cartridge/utils";
 import { constants } from "starknet";

@@ -1,4 +1,4 @@
-import { AchievementCard } from "@cartridge/ui-next";
+import { AchievementCard } from "@/components/modules/achievement-card";
 import { Item } from "@/hooks/achievements";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Socials } from "@bal7hazar/arcade-sdk";

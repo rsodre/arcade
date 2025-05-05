@@ -28,7 +28,7 @@ import {
 import { Attributes, Properties, Socials } from "@bal7hazar/arcade-sdk";
 import ControllerConnector from "@cartridge/connector/controller";
 import { MetadataHelper } from "@/helpers/metadata";
-import { data } from "./data";
+// import { data } from "./data";
 
 const formSchema = z.object({
   // Configuration
@@ -126,29 +126,29 @@ export function Register() {
   const [close, setClose] = useState(false);
 
   const defaultValues = useMemo(() => {
-    return { ...data.eternum };
-    // return {
-    //   worldAddress: "",
-    //   namespace: "",
-    //   project: "",
-    //   rpc: "",
-    //   policies: "",
-    //   preset: "",
-    //   color: "",
-    //   name: "",
-    //   description: "",
-    //   image: "",
-    //   banner: "",
-    //   cover: "",
-    //   discord: "",
-    //   telegram: "",
-    //   twitter: "",
-    //   youtube: "",
-    //   website: "",
-    //   github: "",
-    //   videos: "",
-    //   images: "",
-    // }
+    // return { ...data.eternum };
+    return {
+      worldAddress: "",
+      namespace: "",
+      project: "",
+      rpc: "",
+      policies: "",
+      preset: "",
+      color: "",
+      name: "",
+      description: "",
+      image: "",
+      banner: "",
+      cover: "",
+      discord: "",
+      telegram: "",
+      twitter: "",
+      youtube: "",
+      website: "",
+      github: "",
+      videos: "",
+      images: "",
+    };
   }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({

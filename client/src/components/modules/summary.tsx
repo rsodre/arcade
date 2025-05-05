@@ -1,6 +1,5 @@
 import {
   AchievementContentProps,
-  AchievementPinIcons,
   AchievementPinProps,
   AchievementProgress,
   Card,
@@ -8,6 +7,7 @@ import {
   Metadata,
   Socials,
 } from "@cartridge/ui-next";
+import { AchievementPinIcons } from "./achievement-pin-icons";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes, useMemo } from "react";
 import ArcadeGameHeader from "./game-header";
@@ -115,7 +115,12 @@ export const AchievementSummary = ({
           color={color}
         />
         {!header && (
-          <AchievementPinIcons theme={active} pins={pins} variant="darkest" />
+          <AchievementPinIcons
+            theme={active}
+            pins={pins}
+            variant="dark"
+            size="lg"
+          />
         )}
       </CardContent>
     </Card>

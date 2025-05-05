@@ -1,9 +1,9 @@
 import {
-  AchievementPlayerBadge,
   CopyAddress,
   BronzeTagIcon,
   GoldTagIcon,
   SilverTagIcon,
+  AchievementPlayerBadge,
   cn,
 } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
@@ -76,14 +76,16 @@ export const AchievementPlayerLabel = ({
         rank={rank}
         size="2xl"
       />
-      <div className="flex flex-col gap-y-0.5">
+      <div className="flex flex-col gap-y-0.5 justify-between h-12">
         <div className="flex items-center gap-x-2">
-          <p className="text-lg/[22px] font-semibold text-foreground-100">
+          <p className="text-xl/[22px] font-semibold text-foreground-100">
             {username}
           </p>
           {TagIcon}
         </div>
-        <CopyAddress address={address} size="xs" />
+        <div className="bg-background-150 border border-background-200">
+          <CopyAddress address={address} size="xs" className="text-sm" />
+        </div>
       </div>
     </div>
   );

@@ -25,7 +25,7 @@ export function Achievements({
 }) {
   const { address, isSelf } = useAddress();
   const { achievements, players, isLoading, isError } = useAchievements();
-  const { pins, editions } = useArcade();
+  const { pins, games, editions } = useArcade();
 
   const isMobile = useMediaQuery("(max-width: 1024px)");
 
@@ -93,6 +93,7 @@ export function Achievements({
                   pins={pins}
                   background={filteredEditions.length > 1}
                   header={!edition || isMobile}
+                  game={game || games.find((game) => game.id === item.gameId)}
                   variant={!edition ? "default" : "dark"}
                 />
               ))}
@@ -122,6 +123,7 @@ export function Row({
   pins,
   background,
   header,
+  game,
   variant,
 }: {
   address: string;
@@ -130,6 +132,7 @@ export function Row({
   pins: { [playerId: string]: string[] };
   background: boolean;
   header: boolean;
+  game?: GameModel;
   variant: "default" | "dark";
 }) {
   const gameAchievements = useMemo(() => {
@@ -171,18 +174,19 @@ export function Row({
         };
       }),
       metadata: {
-        name: edition?.name || "Game",
+        name: game?.name ?? "Game",
         logo: edition?.properties.icon,
         cover: background ? edition?.properties.banner : banner,
       },
       socials: { ...edition?.socials },
       onClick: () => {
         const url = new URL(window.location.href);
+        url.searchParams.set("game", game?.id.toString() || "");
         url.searchParams.set("edition", edition.id.toString());
         navigate(url.toString().replace(window.location.origin, ""));
       },
     };
-  }, [gameAchievements, edition, pinneds, background, navigate]);
+  }, [gameAchievements, game, edition, pinneds, background, navigate]);
 
   return (
     <div className="rounded-lg overflow-hidden">
