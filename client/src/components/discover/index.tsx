@@ -197,7 +197,11 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                 <LoadingState />
               ) : (
                 <div className="pb-6">
-                  <ArcadeDiscoveryGroup events={events.all} rounded animated={filteredEditions.length > 1} />
+                  <ArcadeDiscoveryGroup
+                    events={events.all}
+                    rounded
+                    animated={filteredEditions.length > 1}
+                  />
                 </div>
               )}
             </TabsContent>
@@ -213,7 +217,11 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                 <LoadingState />
               ) : (
                 <div className="pb-6">
-                  <ArcadeDiscoveryGroup events={events.following} rounded animated={filteredEditions.length > 1} />
+                  <ArcadeDiscoveryGroup
+                    events={events.following}
+                    rounded
+                    animated={filteredEditions.length > 1}
+                  />
                 </div>
               )}
             </TabsContent>

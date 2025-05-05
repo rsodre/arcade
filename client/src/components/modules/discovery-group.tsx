@@ -94,10 +94,7 @@ export const ArcadeDiscoveryGroup = ({
           </motion.div>
         ))}
         {events.map((event, index) => (
-          <div
-            className={cn(isAnimated ? "hidden" : "block")}
-            key={index}
-          >
+          <div className={cn(isAnimated ? "hidden" : "block")} key={index}>
             <ArcadeDiscoveryEvent
               loading={loading}
               className={className}
