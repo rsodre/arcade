@@ -200,7 +200,11 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                   <ArcadeDiscoveryGroup
                     events={events.all}
                     rounded
-                    animated={filteredEditions.length > 1}
+                    identifier={
+                      filteredEditions.length === 1
+                        ? filteredEditions[0].id
+                        : undefined
+                    }
                   />
                 </div>
               )}
@@ -220,7 +224,11 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                   <ArcadeDiscoveryGroup
                     events={events.following}
                     rounded
-                    animated={filteredEditions.length > 1}
+                    identifier={
+                      filteredEditions.length === 1
+                        ? filteredEditions[0].id
+                        : undefined
+                    }
                   />
                 </div>
               )}

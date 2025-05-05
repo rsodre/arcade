@@ -13,7 +13,7 @@ interface ArcadeDiscoveryGroupProps
   events: ArcadeDiscoveryEventProps[];
   loading?: boolean;
   rounded?: boolean;
-  animated?: boolean;
+  identifier?: number;
 }
 
 export const arcadeDiscoveryGroupVariants = cva(
@@ -41,60 +41,74 @@ export const ArcadeDiscoveryGroup = ({
   events,
   loading,
   rounded,
-  animated,
+  identifier,
   variant,
   className,
   onClick,
 }: ArcadeDiscoveryGroupProps) => {
-  const [isAnimated, setIsAnimated] = useState(animated);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [cachedIdentifier, setCachedIdentifier] = useState<number | undefined>(
+    undefined,
+  );
+  const [isAnimated, setIsAnimated] = useState(true);
+  const ref = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (animated) {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      setIsAnimated(true);
-    } else {
-      timeoutRef.current = setTimeout(() => {
-        setIsAnimated(false);
-      }, 1000);
+    if (identifier === cachedIdentifier) return;
+    setCachedIdentifier(identifier);
+    // Clear the ongoing timeout if it exists
+    if (ref.current) {
+      clearTimeout(ref.current);
     }
+    // Case Game to Games or case Games to Game
+    if (identifier === undefined || cachedIdentifier === undefined) {
+      // We turn the animation on immediately
+      setIsAnimated(true);
+      return;
+    }
+    // Otherwise, case Game to Game
+    // We turn the animation off immediately
+    setIsAnimated(false);
+    // We turn the animation on after 1s
+    ref.current = setTimeout(() => {
+      setIsAnimated(true);
+    }, 1000);
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (ref.current) {
+        clearTimeout(ref.current);
       }
     };
-  }, [timeoutRef, animated]);
+  }, [ref, identifier]);
 
   return (
     <div
       data-rounded={rounded}
       className={cn(arcadeDiscoveryGroupVariants({ variant }), className)}
     >
-      <AnimatePresence initial={false}>
-        {events.map((event) => (
-          <motion.div
-            className={cn(isAnimated ? "block" : "hidden")}
-            key={event.identifier}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            layout
-          >
-            <ArcadeDiscoveryEvent
-              loading={loading}
-              className={className}
-              variant={variant}
-              onClick={onClick}
-              {...event}
-            />
-          </motion.div>
-        ))}
-        {events.map((event, index) => (
-          <div className={cn(isAnimated ? "hidden" : "block")} key={index}>
+      {isAnimated ? (
+        <AnimatePresence initial={false}>
+          {events.map((event) => (
+            <motion.div
+              key={event.identifier}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              layout
+            >
+              <ArcadeDiscoveryEvent
+                loading={loading}
+                className={className}
+                variant={variant}
+                onClick={onClick}
+                {...event}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      ) : (
+        events.map((event, index) => (
+          <div key={index}>
             <ArcadeDiscoveryEvent
               loading={loading}
               className={className}
@@ -103,8 +117,8 @@ export const ArcadeDiscoveryGroup = ({
               {...event}
             />
           </div>
-        ))}
-      </AnimatePresence>
+        ))
+      )}
     </div>
   );
 };
