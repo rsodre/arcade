@@ -118,7 +118,7 @@ export const AchievementSummary = ({
           <AchievementPinIcons
             theme={active}
             pins={pins}
-            variant="dark"
+            variant="default"
             size="lg"
           />
         )}

@@ -1,4 +1,9 @@
-import { LayoutContent, useMediaQuery } from "@cartridge/ui-next";
+import {
+  Empty,
+  LayoutContent,
+  Skeleton,
+  useMediaQuery,
+} from "@cartridge/ui-next";
 import { useMemo } from "react";
 import { Trophies } from "./trophies";
 import { useArcade } from "@/hooks/arcade";
@@ -7,11 +12,6 @@ import { getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { Item } from "@/helpers/achievements";
 import banner from "@/assets/banner.png";
-import {
-  AchievementsComingSoon,
-  AchievementsError,
-  AchievementsLoading,
-} from "../errors";
 import AchievementSummary from "../modules/summary";
 import { useAddress } from "@/hooks/address";
 import { useNavigate } from "react-router-dom";
@@ -64,15 +64,15 @@ export function Achievements({
     return Socials.merge(game?.socials, edition?.socials);
   }, [game, edition]);
 
-  if (isError) return <AchievementsError />;
+  if (isError) return <EmptyState />;
 
-  if (isLoading) return <AchievementsLoading />;
+  if (isLoading) return <LoadingState multi={filteredEditions.length > 1} />;
 
   if (
     (!!edition && gameAchievements.length === 0) ||
     Object.values(achievements).length === 0
   ) {
-    return <AchievementsComingSoon />;
+    return <EmptyState />;
   }
 
   return (
@@ -200,3 +200,33 @@ export function Row({
     </div>
   );
 }
+
+const LoadingState = ({ multi }: { multi?: boolean }) => {
+  if (multi) {
+    return (
+      <div className="flex flex-col gap-y-3 lg:gap-y-4 overflow-hidden h-full py-3 lg:py-6">
+        {Array.from({ length: 10 }).map((_, index) => (
+          <Skeleton key={index} className="min-h-[99px] w-full rounded" />
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-col gap-y-3 lg:gap-y-4 overflow-hidden h-full py-3 lg:py-6">
+      <Skeleton className="min-h-[97px] lg:min-h-10 w-full rounded" />
+      {Array.from({ length: 10 }).map((_, index) => (
+        <Skeleton key={index} className="min-h-[177px] w-full rounded" />
+      ))}
+    </div>
+  );
+};
+
+const EmptyState = () => {
+  return (
+    <Empty
+      title="No achievements exist for this game."
+      icon="achievement"
+      className="h-full py-3 lg:py-6"
+    />
+  );
+};

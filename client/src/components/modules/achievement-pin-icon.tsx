@@ -10,7 +10,7 @@ const achievementPinIconVariants = cva(
           "bg-background-100 text-foreground-100 data-[empty=true]:text-background-500",
         darker:
           "bg-background-100 text-foreground-100 data-[empty=true]:text-background-500",
-        dark: "bg-translucent-dark-200 text-foreground-100 data-[empty=true]:text-background-500",
+        dark: "bg-translucent-dark-150 text-foreground-100 data-[empty=true]:text-background-500",
         default:
           "bg-translucent-dark-150 text-foreground-100 data-[empty=true]:text-foreground-400",
         light:
