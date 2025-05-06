@@ -1,5 +1,5 @@
-const PROJECT_ID = "2EBrzr7ZASQZKH32sl2xWauXPSA";
-const PROJECT_SECRET = "12290b883db9138a8ae3363b6739d220";
+const JWT =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI3ZjhjN2JlYy00OGIwLTQ4ODQtOTllMS1lY2U2NTk4YTNjZWQiLCJlbWFpbCI6ImJhbDdoYXphckBwcm90b24ubWUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNTgxNjFkM2ZkYjNlOTE5MGVlNjUiLCJzY29wZWRLZXlTZWNyZXQiOiJhNjk1MjFjMjYwZWQ4ODA2YjdlYTg1YmU2OWFlMGE5MTE0ZmQ1YmIyOTJiYzJjM2FhYWVmZDgxZjU0ZmFlN2ExIiwiZXhwIjoxNzc4MDc3MDE3fQ.vNU3I0QnD-D-jZChENS5mTFYNGjppU56IJv38K8X7gQ";
 
 export const MetadataHelper = {
   async check(url: string): Promise<boolean> {
@@ -21,30 +21,33 @@ export const MetadataHelper = {
   },
 
   async upload(content: string) {
-    // Check url
     if (!content) return "";
 
-    // Convert to File
     const blob = new Blob([content], { type: "image/svg+xml" });
     const file = new File([blob], "image.svg", { type: "image/svg+xml" });
 
-    // Upload to IPFS
-    const auth = "Basic " + btoa(`${PROJECT_ID}:${PROJECT_SECRET}`);
     const formData = new FormData();
     formData.append("file", file);
-    const ipfsRes = await fetch("https://ipfs.infura.io:5001/api/v0/add", {
+    formData.append("network", "public");
+
+    const res = await fetch("https://uploads.pinata.cloud/v3/files", {
       method: "POST",
       headers: {
-        Authorization: auth,
+        Authorization: `Bearer ${JWT}`,
       },
       body: formData,
     });
 
-    // Logs
-    const data = await ipfsRes.json();
-    const ipfsUrl = `https://ipfs.io/ipfs/${data.Hash}`;
-    console.log("✅ Image uploaded to IPFS:", ipfsUrl);
+    if (!res.ok) {
+      console.error("❌ IPFS upload failed:", await res.text());
+      throw new Error("Failed to upload to IPFS");
+    }
 
+    const data = await res.json();
+    const cid = data.data.cid;
+    const ipfsUrl = `https://turquoise-legal-fox-870.mypinata.cloud/ipfs/${cid}`;
+
+    console.log("✅ Image uploaded to IPFS:", ipfsUrl);
     return ipfsUrl;
   },
 
