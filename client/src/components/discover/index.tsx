@@ -13,8 +13,8 @@ import { ArcadeDiscoveryGroup } from "../modules/discovery-group";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
 import { useAccount } from "@starknet-react/core";
-import { useActivities } from "@/hooks/activities";
 import { UserAvatar } from "../user/avatar";
+import { useDiscovers } from "@/hooks/discovers";
 
 type Events = {
   all: {
@@ -59,10 +59,10 @@ export function Discover({ edition }: { edition?: EditionModel }) {
   const [searchParams] = useSearchParams();
   const { isConnected, address } = useAccount();
   const {
-    aggregatedActivities,
+    aggregates,
     usernames: activitiesUsernames,
     status: activitiesStatus,
-  } = useActivities();
+  } = useDiscovers();
   const { editions, follows } = useArcade();
 
   const following = useMemo(() => {
@@ -122,12 +122,12 @@ export function Discover({ edition }: { edition?: EditionModel }) {
 
   useEffect(() => {
     if (!filteredEditions) return;
-    if (!Object.entries(aggregatedActivities)) return;
+    if (!Object.entries(aggregates)) return;
     if (!Object.entries(activitiesUsernames)) return;
     const data = filteredEditions
       .flatMap((edition) => {
         const activities =
-          aggregatedActivities[edition?.config.project]?.map((activity) => {
+          aggregates[edition?.config.project]?.map((activity) => {
             const username =
               activitiesUsernames[addAddressPadding(activity.callerAddress)];
             if (!username) return null;
@@ -167,7 +167,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     if (newEvents.all.length === 0) return;
     setEvents(newEvents);
   }, [
-    aggregatedActivities,
+    aggregates,
     filteredEditions,
     activitiesUsernames,
     following,

@@ -1,27 +1,44 @@
-import { createContext, useState, ReactNode, useMemo } from "react";
-import { useActivitiesQuery } from "@cartridge/utils/api/cartridge";
+import { createContext, ReactNode, useMemo } from "react";
+import {
+  useActivitiesQuery,
+  useTransfersQuery,
+} from "@cartridge/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
-import { useUsernames } from "@/hooks/account";
-import { addAddressPadding } from "starknet";
+import { constants, getChecksumAddress } from "starknet";
 import { useAddress } from "@/hooks/address";
+import { useAchievements } from "@/hooks/achievements";
+import { erc20Metadata } from "@cartridge/presets";
+import { getDate } from "@cartridge/utils";
+import { getChainId } from "@/helpers";
 
-const LIMIT = 10000;
-
-export type Activity = {
-  identifier: string;
+export interface CardProps {
+  variant: "token" | "collectible" | "game" | "achievement";
+  key: string;
   project: string;
-  callerAddress: string;
+  chainId: constants.StarknetChainId;
   contractAddress: string;
   transactionHash: string;
-  entrypoint: string;
+  amount: string;
+  address: string;
+  value: string;
+  name: string;
+  collection: string;
+  image: string;
+  title: string;
+  website: string;
+  certified: boolean;
+  action: "send" | "receive" | "mint";
   timestamp: number;
-  count: number;
-};
+  date: string;
+  points?: number;
+  color?: string;
+}
 
 export type ActivitiesContextType = {
-  activities: { [key: string]: Activity[] };
-  playerActivities: { [key: string]: Activity[] };
-  usernames: { [key: string]: string | undefined };
+  erc20s: { [project: string]: CardProps[] };
+  erc721s: { [project: string]: CardProps[] };
+  actions: { [project: string]: CardProps[] };
+  trophies: { [project: string]: CardProps[] };
   status: "success" | "error" | "idle" | "loading";
 };
 
@@ -30,124 +47,250 @@ export const ActivitiesContext = createContext<ActivitiesContextType | null>(
 );
 
 export function ActivitiesProvider({ children }: { children: ReactNode }) {
-  const { projects: slots } = useArcade();
-  const [activities, setActivities] = useState<{ [key: string]: Activity[] }>(
-    {},
-  );
-  const [playerActivities, setPlayerActivities] = useState<{
-    [key: string]: Activity[];
-  }>({});
+  const { games, editions } = useArcade();
   const { address, isZero } = useAddress();
-  const addresses = useMemo(() => {
-    const addresses = Object.values(activities).flatMap((activity) =>
-      activity.map((activity) => activity.callerAddress),
-    );
-    const uniqueAddresses = [...new Set(addresses)];
-    return uniqueAddresses;
-  }, [activities]);
-
-  const { usernames } = useUsernames({ addresses });
-  const usernamesData = useMemo(() => {
-    const data: { [key: string]: string | undefined } = {};
-    addresses.forEach((address) => {
-      data[addAddressPadding(address)] = usernames.find(
-        (username) => BigInt(username.address || "0x0") === BigInt(address),
-      )?.username;
-    });
-    return data;
-  }, [usernames, addresses]);
+  const { projects: slots } = useArcade();
 
   const projects = useMemo(() => {
     return slots.map((slot) => {
       return {
         project: slot.project,
-        address: "",
-        limit: LIMIT,
-      };
-    });
-  }, [slots]);
-
-  const playerProjects = useMemo(() => {
-    return slots.map((slot) => {
-      return {
-        project: slot.project,
-        address: address,
-        limit: LIMIT,
+        address,
+        limit: 0,
       };
     });
   }, [slots, address]);
 
-  const { status: allStatus } = useActivitiesQuery(
+  const { achievements } = useAchievements();
+
+  const { data: transfers, status: transfersStatus } = useTransfersQuery(
+    {
+      projects: projects.map((project) => ({
+        ...project,
+        date: "",
+      })),
+    },
+    {
+      queryKey: ["transfers", address, projects],
+      enabled: !!address && !isZero && projects.length > 0,
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  const { data: transactions, status: transactionsStatus } = useActivitiesQuery(
     {
       projects: projects,
     },
     {
-      queryKey: ["activities", projects],
-      enabled: projects.length > 0,
-      refetchInterval: 30 * 1000, // 30 seconds
-      onSuccess: ({ activities }) => {
-        const newActivities: { [key: string]: Activity[] } = {};
-        activities?.items.forEach((item) => {
-          const project = item.meta.project;
-          newActivities[project] = item.activities.map((activity) => {
-            return {
-              identifier: activity.transactionHash,
-              project: project,
-              callerAddress: activity.callerAddress,
-              contractAddress: activity.contractAddress,
-              transactionHash: activity.transactionHash,
-              entrypoint: activity.entrypoint,
-              timestamp: new Date(activity.executedAt).getTime(),
-              count: 1,
-            };
-          });
-        });
-        setActivities(newActivities);
-      },
+      queryKey: ["activities", address, projects],
+      enabled: !!address && !isZero && projects.length > 0,
+      refetchOnWindowFocus: false,
     },
   );
 
-  const { status: playerStatus } = useActivitiesQuery(
-    {
-      projects: playerProjects,
-    },
-    {
-      queryKey: ["activities", playerProjects],
-      enabled: playerProjects.length > 0 && !isZero,
-      onSuccess: ({ activities }) => {
-        const newActivities: { [key: string]: Activity[] } = {};
-        activities?.items.forEach((item) => {
-          const project = item.meta.project;
-          newActivities[project] = item.activities.map((activity) => {
-            return {
-              identifier: activity.transactionHash,
-              project: project,
-              callerAddress: activity.callerAddress,
-              contractAddress: activity.contractAddress,
-              transactionHash: activity.transactionHash,
-              entrypoint: activity.entrypoint,
-              timestamp: new Date(activity.executedAt).getTime(),
-              count: 1,
-            };
-          });
+  const status = useMemo(() => {
+    return transfersStatus === "loading" && transactionsStatus === "loading"
+      ? "loading"
+      : transfersStatus === "error" || transactionsStatus === "error"
+        ? "error"
+        : "success";
+  }, [transfersStatus, transactionsStatus]);
+
+  const erc20s: { [project: string]: CardProps[] } = useMemo(() => {
+    const results: { [project: string]: CardProps[] } = {};
+    transfers?.transfers?.items.forEach((item) => {
+      item.transfers
+        .filter(({ tokenId }) => !tokenId)
+        .forEach((transfer) => {
+          const value = `${(BigInt(transfer.amount) / BigInt(10 ** Number(transfer.decimals))).toString()} ${transfer.symbol}`;
+          const timestamp = new Date(transfer.executedAt).getTime();
+          const date = getDate(timestamp);
+          const image = erc20Metadata.find(
+            (m) =>
+              getChecksumAddress(m.l2_token_address) ===
+              getChecksumAddress(transfer.contractAddress),
+          )?.logo_url;
+          const edition = editions.find(
+            (edition) => edition.config.project === item.meta.project,
+          );
+          const chainId = getChainId(edition?.config.rpc);
+          const card: CardProps = {
+            variant: "token",
+            key: `${transfer.transactionHash}-${transfer.eventId}`,
+            project: item.meta.project,
+            contractAddress: transfer.contractAddress,
+            transactionHash: transfer.transactionHash,
+            amount: value,
+            address:
+              BigInt(transfer.fromAddress) === BigInt(address)
+                ? transfer.toAddress
+                : transfer.fromAddress,
+            value: "$-",
+            image: image || "",
+            action:
+              BigInt(transfer.fromAddress) === 0n
+                ? "mint"
+                : BigInt(transfer.fromAddress) === BigInt(address)
+                  ? "send"
+                  : "receive",
+            timestamp: timestamp / 1000,
+            date: date,
+            chainId,
+          } as CardProps;
+          if (!results[item.meta.project]) {
+            results[item.meta.project] = [];
+          }
+          results[item.meta.project].push(card);
         });
-        setPlayerActivities(newActivities);
-      },
-    },
-  );
+    });
+    return results;
+  }, [transfers, address]);
+
+  const erc721s: { [project: string]: CardProps[] } = useMemo(() => {
+    const results: { [project: string]: CardProps[] } = {};
+    transfers?.transfers?.items.forEach((item) => {
+      item.transfers
+        .filter(({ tokenId }) => !!tokenId)
+        .forEach((transfer) => {
+          const timestamp = new Date(transfer.executedAt).getTime();
+          const date = getDate(timestamp);
+          let metadata;
+          try {
+            metadata = JSON.parse(
+              !transfer.metadata ? "{}" : transfer.metadata,
+            );
+          } catch (error) {
+            console.warn(error);
+          }
+          const name =
+            metadata.attributes?.find(
+              (attribute: { trait: string; value: string }) =>
+                attribute?.trait?.toLowerCase() === "name",
+            )?.value || metadata.name;
+          const edition = editions.find(
+            (edition) => edition.config.project === item.meta.project,
+          );
+          const chainId = getChainId(edition?.config.rpc);
+          const card: CardProps = {
+            variant: "collectible",
+            key: `${transfer.transactionHash}-${transfer.eventId}`,
+            project: item.meta.project,
+            contractAddress: transfer.contractAddress,
+            transactionHash: transfer.transactionHash,
+            name: name || "",
+            collection: transfer.name,
+            amount: "",
+            address:
+              BigInt(transfer.fromAddress) === BigInt(address)
+                ? transfer.toAddress
+                : transfer.fromAddress,
+            value: "",
+            image: metadata.image || "",
+            action:
+              BigInt(transfer.fromAddress) === 0n
+                ? "mint"
+                : BigInt(transfer.fromAddress) === BigInt(address)
+                  ? "send"
+                  : "receive",
+            timestamp: timestamp / 1000,
+            date: date,
+            chainId,
+          } as CardProps;
+          if (!results[item.meta.project]) {
+            results[item.meta.project] = [];
+          }
+          results[item.meta.project].push(card);
+        });
+    });
+    return results;
+  }, [transfers, address]);
+
+  const actions: { [project: string]: CardProps[] } = useMemo(() => {
+    const results: { [project: string]: CardProps[] } = {};
+    transactions?.activities?.items.forEach((item) => {
+      item.activities?.forEach(
+        ({ transactionHash, contractAddress, entrypoint, executedAt }) => {
+          const timestamp = new Date(executedAt).getTime();
+          const date = getDate(timestamp);
+          const project = item.meta.project;
+          const edition = editions.find(
+            (edition) => edition.config.project === project,
+          );
+          const game = games.find((game) => game.id === edition?.gameId);
+          const chainId = getChainId(edition?.config.rpc);
+          const card: CardProps = {
+            variant: "game",
+            key: `${transactionHash}-${entrypoint}`,
+            project: item.meta.project,
+            contractAddress: contractAddress,
+            transactionHash: transactionHash,
+            title: entrypoint,
+            image: game?.properties.icon || "",
+            website: edition?.socials.website || "",
+            certified: !!game,
+            timestamp: timestamp / 1000,
+            date: date,
+            chainId,
+          } as CardProps;
+          if (!results[project]) {
+            results[project] = [];
+          }
+          results[project].push(card);
+        },
+      );
+    });
+    return results;
+  }, [transactions, games, editions]);
+
+  const trophies: { [project: string]: CardProps[] } = useMemo(() => {
+    const results: { [project: string]: CardProps[] } = {};
+    Object.entries(achievements).forEach(([project, gameAchievements]) => {
+      const edition = editions.find(
+        (edition) => edition.config.project === project,
+      );
+      const game = games.find((game) => game.id === edition?.gameId);
+      gameAchievements
+        .filter((item) => item.completed)
+        .forEach((item) => {
+          const date = getDate(item.timestamp * 1000);
+          const card = {
+            variant: "achievement",
+            key: item.id,
+            transactionHash: "",
+            contractAddress: "",
+            title: item.title,
+            image: item.icon,
+            timestamp: item.timestamp,
+            date: date,
+            website: edition?.socials.website || "",
+            certified: !!game,
+            points: item.earning,
+            amount: "",
+            address: "",
+            value: "",
+            name: "",
+            collection: "",
+            action: "mint",
+            color: edition?.color,
+            chainId: getChainId(edition?.config.rpc),
+          } as CardProps;
+          if (!results[project]) {
+            results[project] = [];
+          }
+          results[project].push(card);
+        });
+    });
+    return results;
+  }, [achievements, games, editions]);
 
   return (
     <ActivitiesContext.Provider
       value={{
-        activities,
-        playerActivities,
-        usernames: usernamesData,
-        status:
-          allStatus === "error" || playerStatus === "error"
-            ? "error"
-            : allStatus === "loading" || playerStatus === "loading"
-              ? "loading"
-              : "success",
+        erc20s,
+        erc721s,
+        actions,
+        trophies,
+        status,
       }}
     >
       {children}

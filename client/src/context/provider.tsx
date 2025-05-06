@@ -11,6 +11,7 @@ import { ProjectProvider } from "./project";
 import { CollectionProvider } from "./collection";
 import { TokenProvider } from "./token";
 import { ActivitiesProvider } from "./activities";
+import { DiscoversProvider } from "./discovers";
 import { MetricsProvider } from "./metrics";
 import { OwnershipProvider } from "./ownership";
 
@@ -31,13 +32,13 @@ export function Provider({ children }: PropsWithChildren) {
                     <OwnershipProvider>
                       <CollectionProvider>
                         <TokenProvider>
-                          <ActivitiesProvider>
-                            <MetricsProvider>
-                              <AchievementProvider>
-                                {children}
-                              </AchievementProvider>
-                            </MetricsProvider>
-                          </ActivitiesProvider>
+                          <DiscoversProvider>
+                            <AchievementProvider>
+                              <ActivitiesProvider>
+                                <MetricsProvider>{children}</MetricsProvider>
+                              </ActivitiesProvider>
+                            </AchievementProvider>
+                          </DiscoversProvider>
                         </TokenProvider>
                       </CollectionProvider>
                     </OwnershipProvider>
