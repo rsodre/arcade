@@ -1,5 +1,4 @@
-import { CollectibleAsset } from "@cartridge/ui-next";
-import { useCollections } from "@/hooks/collections";
+import { CollectibleAsset, Skeleton } from "@cartridge/ui-next";
 import { useArcade } from "@/hooks/arcade";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { EditionModel } from "@bal7hazar/arcade-sdk";
@@ -10,14 +9,17 @@ import { Chain, mainnet } from "@starknet-react/chains";
 import { Collection } from "@/context/collection";
 import { useAddress } from "@/hooks/address";
 
-export const Collections = () => {
+interface CollectionsProps {
+  collections: Collection[];
+  status: "loading" | "error" | "idle" | "success";
+}
+
+export const Collections = ({ collections, status }: CollectionsProps) => {
   const { editions, chains } = useArcade();
-  const { collections, status } = useCollections();
 
   switch (status) {
-    case "loading":
-    case "error": {
-      return null;
+    case "loading": {
+      return <LoadingState />;
     }
     default: {
       return (
@@ -100,3 +102,13 @@ function Item({
     </div>
   );
 }
+
+const LoadingState = () => {
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 place-items-center select-none">
+      <Skeleton className="w-full h-[164px] rounded" />
+      <Skeleton className="w-full h-[164px] rounded" />
+      <Skeleton className="hidden lg:block w-full h-[164px] rounded" />
+    </div>
+  );
+};

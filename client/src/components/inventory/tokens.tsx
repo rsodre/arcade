@@ -1,5 +1,10 @@
-import { useTokens } from "@/hooks/tokens";
-import { cn, MinusIcon, PlusIcon, TokenCard } from "@cartridge/ui-next";
+import {
+  cn,
+  MinusIcon,
+  PlusIcon,
+  Skeleton,
+  TokenCard,
+} from "@cartridge/ui-next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ControllerConnector from "@cartridge/connector/controller";
 import { useAccount } from "@starknet-react/core";
@@ -13,14 +18,23 @@ import { useArcade } from "@/hooks/arcade";
 
 const DEFAULT_TOKENS_COUNT = 3;
 
-export const Tokens = () => {
+interface TokensProps {
+  tokens: Token[];
+  credits: Token;
+  status: "loading" | "error" | "idle" | "success";
+}
+
+export const Tokens = ({ tokens, credits, status }: TokensProps) => {
   const { editions, chains } = useArcade();
-  const { tokens, credits } = useTokens();
   const [unfolded, setUnfolded] = useState(false);
 
   const filteredTokens = useMemo(() => {
     return tokens.filter((token) => token.balance.amount > 0);
   }, [tokens]);
+
+  if (status === "loading") {
+    return <LoadingState />;
+  }
 
   return (
     <div
@@ -145,3 +159,14 @@ function Item({
     />
   );
 }
+
+const LoadingState = () => {
+  return (
+    <div className="flex flex-col gap-y-px overflow-hidden h-full">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Skeleton key={index} className="min-h-16 w-full" />
+      ))}
+      <Skeleton className="min-h-9 w-full" />
+    </div>
+  );
+};
