@@ -190,13 +190,16 @@ export function Discover({ edition }: { edition?: EditionModel }) {
             className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
             style={{ scrollbarWidth: "none" }}
           >
-            <TabsContent className="p-0 mt-0 grow w-full" value="all">
-              {activitiesStatus === "error" ? (
-                <EmptyState />
-              ) : activitiesStatus === "loading" && events.all.length === 0 ? (
+            <TabsContent
+              className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
+              value="all"
+            >
+              {activitiesStatus === "loading" && events.all.length === 0 ? (
                 <LoadingState />
+              ) : activitiesStatus === "error" || events.all.length === 0 ? (
+                <EmptyState />
               ) : (
-                <div className="pb-6">
+                <div className="pb-3 lg:pb-6">
                   <ArcadeDiscoveryGroup
                     events={events.all}
                     rounded
@@ -209,7 +212,10 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                 </div>
               )}
             </TabsContent>
-            <TabsContent className="pb-0 mt-0 grow w-full" value="following">
+            <TabsContent
+              className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
+              value="following"
+            >
               {!isConnected ? (
                 <Connect />
               ) : activitiesStatus === "error" ||
@@ -220,7 +226,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                 events.following.length === 0 ? (
                 <LoadingState />
               ) : (
-                <div className="pb-6">
+                <div className="pb-3 lg:pb-6">
                   <ArcadeDiscoveryGroup
                     events={events.following}
                     rounded
@@ -252,10 +258,6 @@ const LoadingState = () => {
 
 const EmptyState = () => {
   return (
-    <Empty
-      title="It's feel lonely here"
-      icon="discover"
-      className="h-full pb-6"
-    />
+    <Empty title="It's feel lonely here" icon="discover" className="h-full" />
   );
 };

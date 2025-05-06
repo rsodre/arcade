@@ -194,16 +194,16 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
             style={{ scrollbarWidth: "none" }}
           >
             <TabsContent
-              className="p-0 pb-3 lg:pb-6 mt-0 grow w-full"
+              className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
               value="all"
             >
-              <LeaderboardTable className="h-full rounded">
-                {isError || filteredData.all.length === 0 ? (
-                  <EmptyState />
-                ) : isLoading && filteredData.all.length === 0 ? (
-                  <LoadingState />
-                ) : (
-                  filteredData.all.map((item, index) => (
+              {isError || filteredData.all.length === 0 ? (
+                <EmptyState />
+              ) : isLoading && filteredData.all.length === 0 ? (
+                <LoadingState />
+              ) : (
+                <LeaderboardTable className="h-full rounded">
+                  {filteredData.all.map((item, index) => (
                     <LeaderboardRow
                       key={index}
                       pins={[]}
@@ -214,12 +214,12 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
                       following={item.following}
                       onClick={() => handleClick(item.address)}
                     />
-                  ))
-                )}
-              </LeaderboardTable>
+                  ))}
+                </LeaderboardTable>
+              )}
             </TabsContent>
             <TabsContent
-              className="p-0 pb-3 lg:pb-6 mt-0 grow w-full"
+              className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
               value="following"
             >
               {!isConnected ? (
