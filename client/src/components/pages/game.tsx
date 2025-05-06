@@ -66,7 +66,7 @@ export function GamePage({
             size="xl"
             className="w-16 h-16"
           />
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 h-[60px] self-end">
             <p className="font-semibold text-xl/[24px] text-foreground-100">
               {game?.name ?? "All Games"}
             </p>

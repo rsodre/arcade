@@ -254,7 +254,9 @@ function FollowButton({
         )}
       >
         <p className="hidden lg:block">Follow</p>
-        <p className="block lg:hidden"><UserAddIcon variant="solid" size="sm"/></p>
+        <p className="block lg:hidden">
+          <UserAddIcon variant="solid" size="sm" />
+        </p>
       </Button>
     );
   }
@@ -279,11 +281,7 @@ function FollowButton({
           <p className="text-center hidden lg:block">Following</p>
         </>
       )}
-      <UserCheckIcon
-        variant="solid"
-        size="sm"
-        className="lg:hidden"
-      />
+      <UserCheckIcon variant="solid" size="sm" className="lg:hidden" />
     </Button>
   );
 }

@@ -1,5 +1,4 @@
 import {
-  CopyAddress,
   BronzeTagIcon,
   GoldTagIcon,
   SilverTagIcon,
@@ -8,6 +7,7 @@ import {
 } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
+import { CopyAddress } from "./copy-address";
 
 export interface AchievementPlayerLabelProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -17,30 +17,33 @@ export interface AchievementPlayerLabelProps
   icon?: React.ReactNode;
 }
 
-const achievementPlayerLabelVariants = cva("flex items-center gap-x-4", {
-  variants: {
-    variant: {
-      darkest: "",
-      darker: "",
-      dark: "",
-      default: "",
-      light: "",
-      lighter: "",
-      lightest: "",
-      ghost: "",
+const achievementPlayerLabelVariants = cva(
+  "flex items-center gap-x-5 h-16 pl-2",
+  {
+    variants: {
+      variant: {
+        darkest: "",
+        darker: "",
+        dark: "",
+        default: "",
+        light: "",
+        lighter: "",
+        lightest: "",
+        ghost: "",
+      },
+      rank: {
+        default: "",
+        gold: "",
+        silver: "",
+        bronze: "",
+      },
     },
-    rank: {
-      default: "",
-      gold: "",
-      silver: "",
-      bronze: "",
+    defaultVariants: {
+      variant: "default",
+      rank: "default",
     },
   },
-  defaultVariants: {
-    variant: "default",
-    rank: "default",
-  },
-});
+);
 
 export const AchievementPlayerLabel = ({
   username,
@@ -54,11 +57,11 @@ export const AchievementPlayerLabel = ({
   const TagIcon = useMemo(() => {
     switch (rank) {
       case "gold":
-        return <GoldTagIcon size="sm" />;
+        return <GoldTagIcon size="default" />;
       case "silver":
-        return <SilverTagIcon size="sm" />;
+        return <SilverTagIcon size="default" />;
       case "bronze":
-        return <BronzeTagIcon size="sm" />;
+        return <BronzeTagIcon size="default" />;
       case "default":
       default:
         return null;
@@ -74,17 +77,21 @@ export const AchievementPlayerLabel = ({
         icon={icon}
         variant={variant}
         rank={rank}
-        size="2xl"
+        size="3xl"
       />
-      <div className="flex flex-col gap-y-0.5 justify-between h-12">
+      <div className="flex flex-col gap-y-2 justify-between h-[60px] self-end">
         <div className="flex items-center gap-x-2">
-          <p className="text-xl/[22px] font-semibold text-foreground-100">
+          <p className="text-xl/[24px] font-semibold text-foreground-100">
             {username}
           </p>
           {TagIcon}
         </div>
         <div className="bg-background-150 border border-background-200">
-          <CopyAddress address={address} size="xs" className="text-sm" />
+          <CopyAddress
+            address={address}
+            size="xs"
+            className="text-sm h-7 px-1.5 py-1"
+          />
         </div>
       </div>
     </div>
