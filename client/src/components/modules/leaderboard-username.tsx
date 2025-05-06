@@ -1,19 +1,19 @@
 import { cn } from "@/lib/utils";
 import { UserAvatar } from "../user/avatar";
 
-export interface AchievementLeaderboardUsernameProps {
+export interface LeaderboardUsernameProps {
   username: string;
   icon?: string;
   highlight?: boolean;
   className?: string;
 }
 
-export const AchievementLeaderboardUsername = ({
+export const LeaderboardUsername = ({
   username,
   icon,
   highlight,
   className,
-}: AchievementLeaderboardUsernameProps) => {
+}: LeaderboardUsernameProps) => {
   return (
     <div
       className={cn(
@@ -36,4 +36,4 @@ export const AchievementLeaderboardUsername = ({
   );
 };
 
-export default AchievementLeaderboardUsername;
+export default LeaderboardUsername;

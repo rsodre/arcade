@@ -6,10 +6,10 @@ import {
   SparklesIcon,
 } from "@cartridge/ui-next";
 import { useEffect, useMemo, useRef, useState } from "react";
-import AchievementLeaderboardUsername from "./leaderboard-username";
+import LeaderboardUsername from "./leaderboard-username";
 import AchievementFollowTag from "./follow-tag";
 
-export interface AchievementLeaderboardRowProps
+export interface LeaderboardRowProps
   extends React.HTMLAttributes<HTMLDivElement> {
   pins: { id: string; icon: string }[];
   rank: number;
@@ -20,7 +20,7 @@ export interface AchievementLeaderboardRowProps
   following?: boolean;
 }
 
-export const AchievementLeaderboardRow = ({
+export const LeaderboardRow = ({
   pins,
   rank,
   name,
@@ -30,7 +30,7 @@ export const AchievementLeaderboardRow = ({
   following,
   className,
   ...props
-}: AchievementLeaderboardRowProps) => {
+}: LeaderboardRowProps) => {
   const [sticky, setSticky] = useState(false);
   const ref = useRef(null);
 
@@ -66,10 +66,10 @@ export const AchievementLeaderboardRow = ({
     <div
       ref={ref}
       className={cn(
-        "group min-h-11 flex select-none py-2.5 px-3 justify-between bg-background-200 text-foreground-400 hover:bg-background-300 hover:text-foreground-300 cursor-pointer transition-colors",
+        "group min-h-11 flex select-none py-2.5 px-3 justify-between bg-background-200 text-foreground-400 hover:bg-background-300 hover:text-foreground-300 cursor-pointer transition-colors border-y border-transparent",
         highlight &&
           "bg-background-300 text-foreground-300 sticky top-[-1px] bottom-[-1px] z-10",
-        highlight && sticky && "border-y border-spacer-100",
+        highlight && sticky && "border-background-100",
         className,
       )}
       {...props}
@@ -79,7 +79,7 @@ export const AchievementLeaderboardRow = ({
           <p className="text-sm">{`${rank}.`}</p>
           {Tag}
         </div>
-        <AchievementLeaderboardUsername
+        <LeaderboardUsername
           username={name}
           icon={icon}
           highlight={highlight}
@@ -107,4 +107,4 @@ export const AchievementLeaderboardRow = ({
   );
 };
 
-export default AchievementLeaderboardRow;
+export default LeaderboardRow;

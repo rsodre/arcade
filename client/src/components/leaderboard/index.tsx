@@ -1,7 +1,9 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
+  Empty,
   LayoutContent,
   LeaderboardTable,
+  Skeleton,
   TabsContent,
 } from "@cartridge/ui-next";
 import { useCallback, useMemo } from "react";
@@ -9,14 +11,8 @@ import { useArcade } from "@/hooks/arcade";
 import { EditionModel } from "@bal7hazar/arcade-sdk";
 import { addAddressPadding, getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
-import {
-  Connect,
-  LeaderboardComingSoon,
-  LeaderboardEmpty,
-  LeaderboardError,
-  LeaderboardLoading,
-} from "../errors";
-import AchievementLeaderboardRow from "../modules/leaderboard-row";
+import { Connect } from "../errors";
+import LeaderboardRow from "../modules/leaderboard-row";
 import { useAccount } from "@starknet-react/core";
 import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
 
@@ -176,18 +172,10 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
     };
   }, [globals, address, usernames, following]);
 
-  if (isError) return <LeaderboardError />;
-
-  if (isLoading) return <LeaderboardLoading />;
-
-  if (
-    (!!edition && gameAchievements.length === 0) ||
-    Object.values(achievements).length === 0 ||
-    (!edition && gamesData.all.length === 0) ||
-    (!!edition && gameData.all.length === 0)
-  ) {
-    return <LeaderboardComingSoon />;
-  }
+  const filteredData = useMemo(() => {
+    if (!edition) return gamesData;
+    return gameData;
+  }, [edition, gamesData, gameData]);
 
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
@@ -210,63 +198,49 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
               value="all"
             >
               <LeaderboardTable className="h-full rounded">
-                {!edition
-                  ? gamesData.all.map((item, index) => (
-                      <AchievementLeaderboardRow
-                        key={index}
-                        pins={[]}
-                        rank={item.rank}
-                        name={item.name}
-                        points={item.points}
-                        highlight={item.highlight}
-                        following={item.following}
-                        onClick={() => handleClick(item.address)}
-                      />
-                    ))
-                  : gameData.all.map((item, index) => (
-                      <AchievementLeaderboardRow
-                        key={index}
-                        pins={item.pins || []}
-                        rank={item.rank}
-                        name={item.name}
-                        points={item.points}
-                        highlight={item.highlight}
-                        following={item.following}
-                        onClick={() => handleClick(item.address)}
-                      />
-                    ))}
+                {isError || filteredData.all.length === 0 ? (
+                  <EmptyState />
+                ) : isLoading && filteredData.all.length === 0 ? (
+                  <LoadingState />
+                ) : (
+                  filteredData.all.map((item, index) => (
+                    <LeaderboardRow
+                      key={index}
+                      pins={[]}
+                      rank={item.rank}
+                      name={item.name}
+                      points={item.points}
+                      highlight={item.highlight}
+                      following={item.following}
+                      onClick={() => handleClick(item.address)}
+                    />
+                  ))
+                )}
               </LeaderboardTable>
             </TabsContent>
-            <TabsContent className="p-0 mt-0 grow w-full" value="following">
+            <TabsContent
+              className="p-0 pb-3 lg:pb-6 mt-0 grow w-full"
+              value="following"
+            >
               {!isConnected ? (
                 <Connect />
-              ) : following.length === 0 ? (
-                <LeaderboardEmpty />
+              ) : isError || filteredData.following.length === 0 ? (
+                <EmptyState />
+              ) : isLoading && gamesData.following.length === 0 ? (
+                <LoadingState />
               ) : (
-                <LeaderboardTable className="h-full rounded">
-                  {!edition
-                    ? gamesData.following.map((item, index) => (
-                        <AchievementLeaderboardRow
-                          key={index}
-                          pins={[]}
-                          rank={item.rank}
-                          name={item.name}
-                          points={item.points}
-                          highlight={item.highlight}
-                          onClick={() => handleClick(item.address)}
-                        />
-                      ))
-                    : gameData.following.map((item, index) => (
-                        <AchievementLeaderboardRow
-                          key={index}
-                          pins={item.pins || []}
-                          rank={item.rank}
-                          name={item.name}
-                          points={item.points}
-                          highlight={item.highlight}
-                          onClick={() => handleClick(item.address)}
-                        />
-                      ))}
+                <LeaderboardTable>
+                  {filteredData.following.map((item, index) => (
+                    <LeaderboardRow
+                      key={index}
+                      pins={[]}
+                      rank={item.rank}
+                      name={item.name}
+                      points={item.points}
+                      highlight={item.highlight}
+                      onClick={() => handleClick(item.address)}
+                    />
+                  ))}
                 </LeaderboardTable>
               )}
             </TabsContent>
@@ -276,3 +250,23 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
     </LayoutContent>
   );
 }
+
+const LoadingState = () => {
+  return (
+    <div className="flex flex-col gap-y-px overflow-hidden h-full">
+      {Array.from({ length: 20 }).map((_, index) => (
+        <Skeleton key={index} className="min-h-11 w-full" />
+      ))}
+    </div>
+  );
+};
+
+const EmptyState = () => {
+  return (
+    <Empty
+      title="No leaderboard available for this game."
+      icon="leaderboard"
+      className="h-full"
+    />
+  );
+};
