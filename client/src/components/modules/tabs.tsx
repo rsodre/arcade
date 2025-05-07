@@ -170,8 +170,8 @@ export const ArcadeTabs = ({
       className="h-full flex flex-col overflow-hidden"
     >
       {isMobile ? (
-        <LayoutBottomTabs className="fixed bottom-0 left-0 right-0 z-50 w-full">
-          <TabsList className="h-full w-full p-0 flex gap-2 items-stretch justify-around">
+        <LayoutBottomTabs className="fixed bottom-0 left-0 right-0 z-50 w-full h-[78px]">
+          <TabsList className="h-full w-full p-0 flex gap-2 items-start justify-around">
             {order.map((tab) => (
               <Tab
                 key={tab}
@@ -293,7 +293,7 @@ const InventoryNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
     if (isMobile) {
       return (
         <TabsTrigger
-          className="p-0 grow data-[state=active]:bg-background-transparent"
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
           value={value}
           ref={ref}
         >
@@ -339,7 +339,7 @@ const AchievementsNavButton = React.forwardRef<
   if (isMobile) {
     return (
       <TabsTrigger
-        className="p-0 grow data-[state=active]:shadow-none data-[state=active]:bg-background-transparent"
+        className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
         value={value}
         ref={ref}
       >
@@ -384,7 +384,7 @@ const LeaderboardNavButton = React.forwardRef<
   if (isMobile) {
     return (
       <TabsTrigger
-        className="p-0 grow data-[state=active]:bg-background-transparent"
+        className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
         value={value}
         ref={ref}
       >
@@ -427,7 +427,7 @@ const GuildsNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
     if (isMobile) {
       return (
         <TabsTrigger
-          className="p-0 grow data-[state=active]:bg-background-transparent"
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
           value={value}
           ref={ref}
         >
@@ -471,7 +471,7 @@ const ActivityNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
     if (isMobile) {
       return (
         <TabsTrigger
-          className="p-0 grow data-[state=active]:bg-background-transparent"
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
           value={value}
           ref={ref}
         >
@@ -515,7 +515,7 @@ const MetricsNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
     if (isMobile) {
       return (
         <TabsTrigger
-          className="p-0 grow data-[state=active]:bg-background-transparent"
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
           value={value}
           ref={ref}
         >
@@ -559,7 +559,7 @@ const AboutNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
     if (isMobile) {
       return (
         <TabsTrigger
-          className="p-0 grow data-[state=active]:bg-background-transparent"
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
           value={value}
           ref={ref}
         >
@@ -605,7 +605,7 @@ const MarketplaceNavButton = React.forwardRef<
   if (isMobile) {
     return (
       <TabsTrigger
-        className="p-0 grow data-[state=active]:bg-background-transparent"
+        className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
         value={value}
         ref={ref}
       >
