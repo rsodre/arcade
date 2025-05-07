@@ -15,7 +15,7 @@ import { DEFAULT_NAMESPACE, DEFAULT_PROJECT } from "@/constants";
 
 // Wrapper component to apply sidebar effects
 const MainContent = ({ children }: { children: React.ReactNode }) => {
-  const { isOpen } = useSidebar();
+  const { isOpen, handleTouchStart, handleTouchMove } = useSidebar();
   const { isZero } = useAddress();
 
   return (
@@ -25,6 +25,8 @@ const MainContent = ({ children }: { children: React.ReactNode }) => {
         "transition-transform duration-300 ease-in-out",
         isOpen && "translate-x-[min(calc(100vw-64px),360px)]",
       )}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
     >
       <div className="lg:hidden w-full">
         <Header />
@@ -46,7 +48,7 @@ const AppContent = () => {
   const { isZero } = useAddress();
   const { games, editions, setProjects } = useArcade();
   const { gameId, project, namespace } = useProject();
-  const { isOpen, toggle } = useSidebar();
+  const { isOpen, toggle, handleTouchMove, handleTouchStart } = useSidebar();
 
   const game: GameModel | undefined = useMemo(() => {
     return Object.values(games).find((game) => game.id === gameId);
@@ -89,6 +91,8 @@ const AppContent = () => {
             !isOpen && "hidden",
           )}
           onClick={() => toggle()}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
         />
         <Games />
         <MainContent>

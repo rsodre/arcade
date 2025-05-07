@@ -22,7 +22,7 @@ export const Games = () => {
   const [search, setSearch] = useState("");
   const { games } = useArcade();
   const { ownerships } = useOwnerships();
-  const { isOpen } = useSidebar();
+  const { isOpen, handleTouchStart, handleTouchMove } = useSidebar();
   const isMobile = useMediaQuery("(max-width: 1024px)");
 
   const [searchParams] = useSearchParams();
@@ -45,6 +45,8 @@ export const Games = () => {
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0", // Slide in/out animation
         "transition-transform duration-300 ease-in-out", // Smooth transition
       )}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
     >
       <div className="flex flex-col gap-3 bg-background-100 p-4 grow">
         <Search search={search} setSearch={setSearch} />
@@ -79,7 +81,7 @@ export const Games = () => {
           </CardListContent>
         </div>
       </div>
-      <div className="flex items-center justify-center p-3 pb-[18px] lg:pb-3 gap-2.5 bg-background-100">
+      <div className="flex items-center justify-center p-3 pb-6 lg:pb-3 gap-2.5 bg-background-100">
         <Register />
       </div>
     </div>
