@@ -21,7 +21,7 @@ const MainContent = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className={cn(
-        "grow flex flex-col overflow-hidden px-3 pb-[84px] lg:px-0 lg:pb-0",
+        "grow flex flex-col overflow-hidden px-3 pb-[90px] lg:px-0 lg:pb-0",
         "transition-transform duration-300 ease-in-out",
         isOpen && "translate-x-[min(calc(100vw-64px),360px)]",
       )}
