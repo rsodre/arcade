@@ -94,16 +94,19 @@ function Item({
   const { connector } = useAccount();
   const [username, setUsername] = useState<string>("");
 
-  const chain: Chain = useMemo(() => {
-    const edition = editions.find(
+  const edition = useMemo(() => {
+    return editions.find(
       (edition) => edition.config.project === token.metadata.project,
     );
+  }, [editions, token]);
+
+  const chain: Chain = useMemo(() => {
     return (
       chains.find(
         (chain) => chain.rpcUrls.default.http[0] === edition?.config.rpc,
       ) || mainnet
     );
-  }, [chains]);
+  }, [chains, edition]);
 
   useEffect(() => {
     async function fetch() {
@@ -125,13 +128,20 @@ function Item({
       console.error("Connector not initialized");
       return;
     }
-    let path = `account/${username}/inventory/token/${token.metadata.address}`;
+    const preset = edition?.properties.preset;
+    let options = [];
     if (token.metadata.project && token.metadata.project !== "extra") {
-      path = `account/${username}/inventory/token/${token.metadata.address}?ps=${token.metadata.project}`;
+      options.push(`ps=${token.metadata.project}`);
     }
+    if (preset) {
+      options.push(`preset=${preset}`);
+    } else {
+      options.push(`preset=cartridge`);
+    }
+    const path = `account/${username}/inventory/token/${token.metadata.address}${options.length > 0 ? `?${options.join("&")}` : ""}`;
     controller.switchStarknetChain(`0x${chain.id.toString(16)}`);
     controller.openProfileAt(path);
-  }, [token, username, connector]);
+  }, [token, username, connector, edition]);
 
   return (
     <TokenCard

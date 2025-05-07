@@ -51,16 +51,19 @@ function Item({
   const { connector } = useAccount();
   const [username, setUsername] = useState<string>("");
 
-  const chain: Chain = useMemo(() => {
-    const edition = editions.find(
+  const edition = useMemo(() => {
+    return editions.find(
       (edition) => edition.config.project === collection.project,
     );
+  }, [editions, collection]);
+
+  const chain: Chain = useMemo(() => {
     return (
       chains.find(
         (chain) => chain.rpcUrls.default.http[0] === edition?.config.rpc,
       ) || mainnet
     );
-  }, [chains]);
+  }, [chains, edition]);
 
   useEffect(() => {
     async function fetch() {
@@ -95,10 +98,17 @@ function Item({
         return;
     }
     if (!subpath) return;
-    const path = `account/${username}/slot/${collection.project}/inventory/${subpath}/${collection.address}?ps=${collection.project}`;
+    const preset = edition?.properties.preset;
+    let options = [`ps=${collection.project}`];
+    if (preset) {
+      options.push(`preset=${preset}`);
+    } else {
+      options.push("preset=cartridge");
+    }
+    const path = `account/${username}/slot/${collection.project}/inventory/${subpath}/${collection.address}${options.length > 0 ? `?${options.join("&")}` : ""}`;
     controller.switchStarknetChain(`0x${chain.id.toString(16)}`);
     controller.openProfileAt(path);
-  }, [collection.address, username, connector, collection.type]);
+  }, [collection.address, username, connector, collection.type, edition]);
 
   return (
     <div className="w-full group select-none">
