@@ -25,8 +25,8 @@ export const useCollections = () => {
 
   const collections = useMemo(() => {
     if (!project) return allCollections;
-    return allCollections.filter((collection) =>
-      collection.imageUrl.includes(project),
+    return allCollections.filter(
+      (collection) => collection.project === project,
     );
   }, [project, allCollections]);
 

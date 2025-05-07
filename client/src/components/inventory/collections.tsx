@@ -6,7 +6,7 @@ import placeholder from "@/assets/placeholder.svg";
 import { useAccount } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";
 import { Chain, mainnet } from "@starknet-react/chains";
-import { Collection } from "@/context/collection";
+import { Collection, CollectionType } from "@/context/collection";
 import { useAddress } from "@/hooks/address";
 
 interface CollectionsProps {
@@ -82,10 +82,23 @@ function Item({
       console.error("Connector not initialized");
       return;
     }
-    const path = `account/${username}/slot/${collection.project}/inventory/collection/${collection.address}?ps=${collection.project}`;
+    let subpath;
+    switch (collection.type) {
+      case CollectionType.ERC721:
+        subpath = "collection";
+        break;
+      case CollectionType.ERC1155:
+        subpath = "collectible";
+        break;
+      default:
+        console.error("Unknown collection type");
+        return;
+    }
+    if (!subpath) return;
+    const path = `account/${username}/slot/${collection.project}/inventory/${subpath}/${collection.address}?ps=${collection.project}`;
     controller.switchStarknetChain(`0x${chain.id.toString(16)}`);
     controller.openProfileAt(path);
-  }, [collection.address, username, connector]);
+  }, [collection.address, username, connector, collection.type]);
 
   return (
     <div className="w-full group select-none">
