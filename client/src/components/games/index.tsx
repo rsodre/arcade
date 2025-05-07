@@ -79,7 +79,7 @@ export const Games = () => {
           </CardListContent>
         </div>
       </div>
-      <div className="flex items-center justify-center p-3 gap-2.5 bg-background-100">
+      <div className="flex items-center justify-center p-3 pb-[18px] lg:pb-3 gap-2.5 bg-background-100">
         <Register />
       </div>
     </div>
