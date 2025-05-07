@@ -1,3 +1,4 @@
+import { getDuration } from "@/helpers";
 import { CardTitle, cn, Thumbnail } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo, HTMLAttributes, useState, useEffect } from "react";
@@ -10,6 +11,7 @@ export interface ArcadeDiscoveryEventProps
   timestamp: number;
   Icon: React.ReactNode;
   actions: string[];
+  duration: number;
   achievements: {
     title: string;
     icon: string;
@@ -45,6 +47,7 @@ export const ArcadeDiscoveryEvent = ({
   name,
   timestamp,
   Icon,
+  duration,
   actions,
   achievements,
   logo,
@@ -76,10 +79,11 @@ export const ArcadeDiscoveryEvent = ({
     >
       <div className="flex items-center gap-x-1.5">
         {Icon}
-        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-44 lg:max-w-56 lg:truncate-none">
+        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-32 lg:truncate-none">
           {name}
         </CardTitle>
         <DiscoveryEvent
+          duration={duration}
           actions={actions}
           points={points}
           className={className}
@@ -95,12 +99,14 @@ export const ArcadeDiscoveryEvent = ({
 };
 
 const DiscoveryEvent = ({
-  actions,
+  duration,
   points,
+  actions,
   achievements,
   className,
   color,
 }: {
+  duration: number;
   points: number;
   actions: string[];
   achievements?: { icon: string; title?: string }[];
@@ -116,9 +122,7 @@ const DiscoveryEvent = ({
       )}
       style={{ color }}
     >
-      <p className="hidden lg:block text-sm text-translucent-light-150">
-        performed
-      </p>
+      <Sentence content="performed" />
       <Card
         icon="fa-wave-pulse"
         short={`${actions.length}`}
@@ -128,11 +132,15 @@ const DiscoveryEvent = ({
             : `${actions.length} Actions`
         }
       />
+      <Sentence content="for" />
+      <Card
+        icon="fa-clock"
+        short={getDuration(duration)}
+        long={getDuration(duration)}
+      />
       {points > 0 && (
         <>
-          <p className="hidden lg:block text-sm text-translucent-light-150">
-            and earned
-          </p>
+          <Sentence content="and earned" />
           {(achievements || []).map((achievement, index) => {
             return (
               <Card
@@ -174,6 +182,14 @@ const Icon = ({ icon }: { icon: string }) => {
     <div className="w-4 h-4 p-[2.5px] flex justify-center items-center">
       <div className={cn(icon, "fa-solid w-full h-full")} />
     </div>
+  );
+};
+
+const Sentence = ({ content }: { content: string }) => {
+  return (
+    <p className="hidden lg:block text-sm text-translucent-light-150">
+      {content}
+    </p>
   );
 };
 

@@ -21,6 +21,7 @@ type Event = {
   name: string;
   address: string;
   Icon: React.ReactNode;
+  duration: number;
   actions: string[];
   achievements: {
     title: string;
@@ -124,6 +125,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                 name: username,
                 address: getChecksumAddress(activity.callerAddress),
                 Icon: <UserAvatar username={username} size="sm" />,
+                duration: activity.end - activity.start,
                 actions: activity.actions,
                 achievements: [...activity.achievements],
                 timestamp: Math.floor(activity.end / 1000),
