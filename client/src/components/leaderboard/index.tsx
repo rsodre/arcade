@@ -197,10 +197,10 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
               className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
               value="all"
             >
-              {isError || filteredData.all.length === 0 ? (
-                <EmptyState />
-              ) : isLoading && filteredData.all.length === 0 ? (
+              {isLoading && filteredData.all.length === 0 ? (
                 <LoadingState />
+              ) : isError || filteredData.all.length === 0 ? (
+                <EmptyState />
               ) : (
                 <LeaderboardTable className="h-full rounded">
                   {filteredData.all.map((item, index) => (
@@ -224,10 +224,10 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
             >
               {!isConnected ? (
                 <Connect />
-              ) : isError || filteredData.following.length === 0 ? (
-                <EmptyState />
               ) : isLoading && gamesData.following.length === 0 ? (
                 <LoadingState />
+              ) : isError || filteredData.following.length === 0 ? (
+                <EmptyState />
               ) : (
                 <LeaderboardTable>
                   {filteredData.following.map((item, index) => (
