@@ -12,5 +12,13 @@ export function Connect() {
 
   if (isConnected || !!account) return null;
 
-  return <Button onClick={connectWallet}>Connect</Button>;
+  return (
+    <Button
+      variant="secondary"
+      className="border border-primary-100 text-primary"
+      onClick={connectWallet}
+    >
+      Connect
+    </Button>
+  );
 }

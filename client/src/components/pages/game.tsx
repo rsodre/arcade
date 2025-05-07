@@ -57,7 +57,7 @@ export function GamePage({
 
   return (
     <>
-      <div className="flex items-start justify-between p-3 lg:p-6 lg:pb-0 border-b border-background-200 lg:border-none">
+      <div className="h-[88px] min-h-[88px] max-h-[88px] flex items-start justify-between p-3 lg:p-6 lg:pb-0 border-b border-background-200 lg:border-none">
         <div className="flex gap-3 items-center">
           <Thumbnail
             icon={
