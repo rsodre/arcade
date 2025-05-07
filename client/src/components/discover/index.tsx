@@ -16,39 +16,26 @@ import { useAccount } from "@starknet-react/core";
 import { UserAvatar } from "../user/avatar";
 import { useDiscovers } from "@/hooks/discovers";
 
+type Event = {
+  identifier: string;
+  name: string;
+  address: string;
+  Icon: React.ReactNode;
+  actions: string[];
+  achievements: {
+    title: string;
+    icon: string;
+    points: number;
+  }[];
+  timestamp: number;
+  logo: string | undefined;
+  color: string;
+  onClick: () => void;
+};
+
 type Events = {
-  all: {
-    identifier: string;
-    name: string;
-    address: string;
-    Icon: React.ReactNode;
-    data: {
-      title: string;
-      label: string;
-      icon: string;
-      count: number;
-    };
-    timestamp: number;
-    logo: string | undefined;
-    color: string;
-    onClick: () => void;
-  }[];
-  following: {
-    identifier: string;
-    name: string;
-    address: string;
-    Icon: React.ReactNode;
-    data: {
-      title: string;
-      label: string;
-      icon: string;
-      count: number;
-    };
-    timestamp: number;
-    logo: string | undefined;
-    color: string;
-    onClick: () => void;
-  }[];
+  all: Event[];
+  following: Event[];
 };
 
 export function Discover({ edition }: { edition?: EditionModel }) {
@@ -126,35 +113,32 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     if (!Object.entries(activitiesUsernames)) return;
     const data = filteredEditions
       .flatMap((edition) => {
-        const activities =
-          aggregates[edition?.config.project]?.map((activity) => {
-            const username =
-              activitiesUsernames[addAddressPadding(activity.callerAddress)];
-            if (!username) return null;
-            const count = activity.count;
-            return {
-              identifier: activity.identifier,
-              name: username,
-              address: getChecksumAddress(activity.callerAddress),
-              Icon: <UserAvatar username={username} size="sm" />,
-              data: {
-                title: count > 1 ? `Actions` : activity.entrypoint,
-                label: "performed",
-                icon: "fa-wave-pulse",
-                count,
-              },
-              timestamp: Math.floor(activity.timestamp / 1000),
-              logo: edition.properties.icon,
-              color: edition.color,
-              onClick: () =>
-                handleClick(
-                  edition.gameId,
-                  edition.id,
-                  getChecksumAddress(activity.callerAddress),
-                ),
-            };
-          }) || [];
-        return [...activities].filter((item) => item !== null);
+        return (
+          aggregates[edition?.config.project]
+            ?.map((activity) => {
+              const username =
+                activitiesUsernames[addAddressPadding(activity.callerAddress)];
+              if (!username) return null;
+              return {
+                identifier: activity.identifier,
+                name: username,
+                address: getChecksumAddress(activity.callerAddress),
+                Icon: <UserAvatar username={username} size="sm" />,
+                actions: activity.actions,
+                achievements: [...activity.achievements],
+                timestamp: Math.floor(activity.end / 1000),
+                logo: edition.properties.icon,
+                color: edition.color,
+                onClick: () =>
+                  handleClick(
+                    edition.gameId,
+                    edition.id,
+                    getChecksumAddress(activity.callerAddress),
+                  ),
+              };
+            })
+            .filter((item) => item !== null) || []
+        );
       })
       .sort((a, b) => b.timestamp - a.timestamp);
     if (!data) return;

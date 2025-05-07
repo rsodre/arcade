@@ -32,13 +32,13 @@ export function Provider({ children }: PropsWithChildren) {
                     <OwnershipProvider>
                       <CollectionProvider>
                         <TokenProvider>
-                          <DiscoversProvider>
-                            <AchievementProvider>
+                          <AchievementProvider>
+                            <DiscoversProvider>
                               <ActivitiesProvider>
                                 <MetricsProvider>{children}</MetricsProvider>
                               </ActivitiesProvider>
-                            </AchievementProvider>
-                          </DiscoversProvider>
+                            </DiscoversProvider>
+                          </AchievementProvider>
                         </TokenProvider>
                       </CollectionProvider>
                     </OwnershipProvider>

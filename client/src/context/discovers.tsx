@@ -3,6 +3,7 @@ import { useActivitiesQuery } from "@cartridge/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
 import { useUsernames } from "@/hooks/account";
 import { addAddressPadding } from "starknet";
+import { useAchievements } from "@/hooks/achievements";
 
 const SESSION_MAX_BREAK = 3600 * 1000; // 1 hour
 const LIMIT = 2000;
@@ -14,8 +15,14 @@ export type Discover = {
   contractAddress: string;
   transactionHash: string;
   entrypoint: string;
-  timestamp: number;
-  count: number;
+  start: number;
+  end: number;
+  actions: string[];
+  achievements: {
+    title: string;
+    icon: string;
+    points: number;
+  }[];
 };
 
 export type DiscoversContextType = {
@@ -31,6 +38,7 @@ export const DiscoversContext = createContext<DiscoversContextType | null>(
 
 export function DiscoversProvider({ children }: { children: ReactNode }) {
   const { projects: slots } = useArcade();
+  const { events: achievements } = useAchievements();
   const [activities, setDiscovers] = useState<{ [key: string]: Discover[] }>(
     {},
   );
@@ -84,8 +92,10 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
               contractAddress: activity.contractAddress,
               transactionHash: activity.transactionHash,
               entrypoint: activity.entrypoint,
-              timestamp: new Date(activity.executedAt).getTime(),
-              count: 1,
+              start: new Date(activity.executedAt).getTime(),
+              end: new Date(activity.executedAt).getTime(),
+              actions: [activity.entrypoint],
+              achievements: [],
             };
           });
         });
@@ -102,7 +112,7 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
       const aggregates: Discover[] = [];
       events.forEach((activity) => {
         const last = history[activity.callerAddress];
-        const currentTime = activity.timestamp;
+        const currentTime = activity.end;
         const deltaTime = !last?.time
           ? SESSION_MAX_BREAK
           : last.time > currentTime
@@ -110,20 +120,37 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
             : currentTime - last.time;
         if (deltaTime < SESSION_MAX_BREAK) {
           history[activity.callerAddress].time = currentTime;
-          aggregates[last.index].count += activity.count;
+          aggregates[last.index].actions.push(activity.entrypoint);
           aggregates[last.index].identifier = activity.identifier;
+          aggregates[last.index].start = activity.start;
         } else {
           history[activity.callerAddress] = {
             time: currentTime,
             index: aggregates.length,
           };
+          // Check previous activity if there are some achievements earned
+          if (last) {
+            aggregates[last.index].achievements = (achievements[project] || [])
+              .filter((item) => {
+                const isPlayer =
+                  BigInt(item.player) ===
+                  BigInt(aggregates[last.index].callerAddress);
+                const timestamp = new Date(item.timestamp * 1000).getTime();
+                const inSession =
+                  timestamp >= aggregates[last.index].start &&
+                  timestamp <= aggregates[last.index].end;
+                return isPlayer && inSession;
+              })
+              .map((item) => item.achievement);
+          }
+          // Push new activity
           aggregates.push({ ...activity });
         }
       });
       result[project] = aggregates;
     });
     return result;
-  }, [activities]);
+  }, [activities, achievements]);
 
   return (
     <DiscoversContext.Provider

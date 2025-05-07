@@ -1,10 +1,4 @@
-import {
-  CardTitle,
-  cn,
-  SpaceInvaderIcon,
-  SparklesIcon,
-  Thumbnail,
-} from "@cartridge/ui-next";
+import { CardTitle, cn, Thumbnail } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo, HTMLAttributes, useState, useEffect } from "react";
 
@@ -14,17 +8,16 @@ export interface ArcadeDiscoveryEventProps
   identifier: string;
   name: string;
   timestamp: number;
-  Icon?: React.ReactNode;
-  data?: {
+  Icon: React.ReactNode;
+  actions: string[];
+  achievements: {
     title: string;
-    label: string;
     icon: string;
-    count?: number;
-  };
+    points: number;
+  }[];
   loading?: boolean;
   color?: string;
   logo?: string;
-  points?: number;
 }
 
 export const arcadeDiscoveryEventVariants = cva(
@@ -52,10 +45,10 @@ export const ArcadeDiscoveryEvent = ({
   name,
   timestamp,
   Icon,
-  data,
+  actions,
+  achievements,
   logo,
   color,
-  points,
   variant,
   className,
   ...props
@@ -64,6 +57,15 @@ export const ArcadeDiscoveryEvent = ({
     () => `color-mix(in srgb, ${color} 1%, transparent 100%)`,
     [color],
   );
+
+  const { points } = useMemo(() => {
+    const points = (achievements || []).reduce(
+      (acc, achievement) => acc + (achievement.points || 0),
+      0,
+    );
+    return { points };
+  }, [achievements]);
+
   return (
     <div
       className={cn(arcadeDiscoveryEventVariants({ variant }), className)}
@@ -73,21 +75,16 @@ export const ArcadeDiscoveryEvent = ({
       {...props}
     >
       <div className="flex items-center gap-x-1.5">
-        {Icon ? Icon : <SpaceInvaderIcon size="sm" variant="solid" />}
-        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-20 lg:max-w-none lg:truncate-none">
+        {Icon}
+        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-44 lg:max-w-56 lg:truncate-none">
           {name}
         </CardTitle>
-        {data && (
-          <DiscoveryEvent
-            title={data.title}
-            label={data.label}
-            icon={data.icon}
-            count={data.count}
-            className={className}
-            color={color}
-            points={points}
-          />
-        )}
+        <DiscoveryEvent
+          actions={actions}
+          points={points}
+          className={className}
+          color={color}
+        />
       </div>
       <div className="flex items-center gap-2">
         <Timestamp timestamp={timestamp} />
@@ -98,21 +95,17 @@ export const ArcadeDiscoveryEvent = ({
 };
 
 const DiscoveryEvent = ({
-  title,
-  label,
-  icon,
-  count,
+  actions,
+  points,
+  achievements,
   className,
   color,
-  points,
 }: {
-  title: string;
-  label: string;
-  icon: string;
-  count?: number;
+  points: number;
+  actions: string[];
+  achievements?: { icon: string; title?: string }[];
   className?: string;
   color?: string;
-  points?: number;
 }) => {
   return (
     <div
@@ -123,33 +116,63 @@ const DiscoveryEvent = ({
       )}
       style={{ color }}
     >
-      <p className="text-sm text-[#FFFFFF29]">{label}</p>
-      <div className="flex items-center lg:gap-0.5 p-1 rounded-sm bg-[#00000029]">
-        <div className="w-4 h-4 p-[2.5px] flex justify-center items-center">
-          <div className={cn(icon, "fa-solid w-full h-full")} />
-        </div>
-        <p
-          className={cn(
-            "text-xs px-px flex lg:gap-1",
-            !count && "hidden lg:block",
-          )}
-        >
-          {!!count && (
-            <span className={cn("block", count <= 1 && "lg:hidden")}>
-              {count}
-            </span>
-          )}
-          <span className="capitalize hidden lg:block">
-            {title.replace(/_/g, " ")}
-          </span>
-        </p>
-      </div>
-      {!!points && (
-        <div className="flex items-center gap-0.5 p-1 rounded-sm bg-[#00000029]">
-          <SparklesIcon variant="solid" size="xs" />
-          <p className="text-xs px-px">{points}</p>
-        </div>
+      <p className="hidden lg:block text-sm text-translucent-light-150">
+        performed
+      </p>
+      <Card
+        icon="fa-wave-pulse"
+        short={`${actions.length}`}
+        long={
+          actions.length === 1
+            ? actions[0].replace(/_/g, " ")
+            : `${actions.length} Actions`
+        }
+      />
+      {points > 0 && (
+        <>
+          <p className="hidden lg:block text-sm text-translucent-light-150">
+            and earned
+          </p>
+          {(achievements || []).map((achievement, index) => {
+            return (
+              <Card
+                key={index}
+                icon={achievement.icon}
+                long={achievement.title}
+              />
+            );
+          })}
+          <Card icon="fa-sparkles" short={`${points}`} long={`${points}`} />
+        </>
       )}
+    </div>
+  );
+};
+
+const Card = ({
+  icon,
+  short,
+  long,
+}: {
+  icon: string;
+  short?: string;
+  long?: string;
+}) => {
+  return (
+    <div className="flex items-center gap-0.5 p-1 rounded-sm bg-translucent-dark-100">
+      <Icon icon={icon} />
+      {!!short && <p className="text-xs px-px capitalize lg:hidden">{short}</p>}
+      {!!long && (
+        <p className="text-xs px-px capitalize hidden lg:block">{long}</p>
+      )}
+    </div>
+  );
+};
+
+const Icon = ({ icon }: { icon: string }) => {
+  return (
+    <div className="w-4 h-4 p-[2.5px] flex justify-center items-center">
+      <div className={cn(icon, "fa-solid w-full h-full")} />
     </div>
   );
 };
@@ -198,7 +221,7 @@ const Timestamp = ({ timestamp }: { timestamp: number }) => {
   }, [state]);
 
   return (
-    <p className="text-xs text-[#FFFFFF29] flex gap-1">
+    <p className="text-xs text-translucent-light-150 flex gap-1">
       {label}
       <span className="hidden lg:block">{" ago"}</span>
     </p>
