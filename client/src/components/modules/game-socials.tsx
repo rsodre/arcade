@@ -6,7 +6,7 @@ import {
   useMediaQuery,
 } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, useMemo } from "react";
 import {
   GameSocialDiscord,
   GameSocialGithub,
@@ -54,8 +54,22 @@ const GameSocials = ({
   ...props
 }: GameSocialsProps) => {
   const isMobile = useMediaQuery("(max-width: 1024px)");
+
+  const isEmpty = useMemo(() => {
+    if (!socials) return true;
+    const { website, discord, telegram, twitter, github } = socials;
+    return !website && !discord && !telegram && !twitter && !github;
+  }, [socials]);
+
   return (
-    <div className={cn(gameSocialsVariants({ variant }), className)} {...props}>
+    <div
+      className={cn(
+        gameSocialsVariants({ variant }),
+        isEmpty && "hidden",
+        className,
+      )}
+      {...props}
+    >
       <Select>
         <div className="grow flex justify-end items-center self-center">
           <ArcadeMenuButton
