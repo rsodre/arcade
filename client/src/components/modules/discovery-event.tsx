@@ -79,7 +79,7 @@ export const ArcadeDiscoveryEvent = ({
     >
       <div className="flex items-center gap-x-1.5">
         {Icon}
-        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-32 lg:truncate-none">
+        <CardTitle className="text-sm font-normal tracking-normal text-foreground-100 truncate max-w-24 lg:max-w-32 lg:truncate-none">
           {name}
         </CardTitle>
         <DiscoveryEvent
@@ -137,6 +137,7 @@ const DiscoveryEvent = ({
         icon="fa-clock"
         short={getDuration(duration)}
         long={getDuration(duration)}
+        className="hidden lg:flex"
       />
       {points > 0 && (
         <>
@@ -161,13 +162,20 @@ const Card = ({
   icon,
   short,
   long,
+  className,
 }: {
   icon: string;
   short?: string;
   long?: string;
+  className?: string;
 }) => {
   return (
-    <div className="flex items-center gap-0.5 p-1 rounded-sm bg-translucent-dark-100">
+    <div
+      className={cn(
+        "flex items-center gap-0.5 p-1 rounded-sm bg-translucent-dark-100",
+        className,
+      )}
+    >
       <Icon icon={icon} />
       {!!short && <p className="text-xs px-px capitalize lg:hidden">{short}</p>}
       {!!long && (
