@@ -17,8 +17,10 @@ import { useSidebar } from "@/hooks/sidebar";
 import { cn } from "@cartridge/ui-next";
 import { Update } from "./update";
 import { useOwnerships } from "@/hooks/ownerships";
+import { useAccount } from "@starknet-react/core";
 
 export const Games = () => {
+  const { address } = useAccount();
   const [search, setSearch] = useState("");
   const { games } = useArcade();
   const { ownerships } = useOwnerships();
@@ -75,7 +77,13 @@ export const Games = () => {
                 icon={game.properties.icon ?? ""}
                 cover={game.properties.cover}
                 active={BigInt(selected || "0x0") === BigInt(game.id)}
-                owner={ownerships[BigInt(game.id).toString()]}
+                owner={
+                  BigInt(
+                    ownerships.find(
+                      (ownership) => ownership.tokenId === BigInt(game.id),
+                    )?.accountAddress || "0x0",
+                  ) === BigInt(address || "0x0")
+                }
                 game={game}
               />
             ))}

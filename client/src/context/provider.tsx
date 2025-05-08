@@ -13,7 +13,7 @@ import { TokenProvider } from "./token";
 import { ActivitiesProvider } from "./activities";
 import { DiscoversProvider } from "./discovers";
 import { MetricsProvider } from "./metrics";
-import { OwnershipProvider } from "./ownership";
+import { OwnershipsProvider } from "./ownerships";
 
 export function Provider({ children }: PropsWithChildren) {
   const queryClient = new QueryClient();
@@ -29,7 +29,7 @@ export function Provider({ children }: PropsWithChildren) {
               <StarknetProvider>
                 <ProjectProvider>
                   <ThemeProvider defaultScheme="dark">
-                    <OwnershipProvider>
+                    <OwnershipsProvider>
                       <CollectionProvider>
                         <TokenProvider>
                           <AchievementProvider>
@@ -41,7 +41,7 @@ export function Provider({ children }: PropsWithChildren) {
                           </AchievementProvider>
                         </TokenProvider>
                       </CollectionProvider>
-                    </OwnershipProvider>
+                    </OwnershipsProvider>
                   </ThemeProvider>
                 </ProjectProvider>
               </StarknetProvider>

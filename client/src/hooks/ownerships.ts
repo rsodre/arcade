@@ -1,7 +1,5 @@
-import { useContext, useMemo } from "react";
-import { useProject } from "./project";
-import { useArcade } from "./arcade";
-import { OwnershipContext } from "@/context/ownership";
+import { useContext } from "react";
+import { OwnershipContext } from "@/context/ownerships";
 
 /**
  * Custom hook to access the Ownerships context and account information.
@@ -14,8 +12,6 @@ import { OwnershipContext } from "@/context/ownership";
  */
 export const useOwnerships = () => {
   const context = useContext(OwnershipContext);
-  const { games, editions } = useArcade();
-  const { project } = useProject();
 
   if (!context) {
     throw new Error(
@@ -23,20 +19,7 @@ export const useOwnerships = () => {
     );
   }
 
-  const { collection, status } = context;
-
-  const ownerships: { [key: string]: boolean } = useMemo(() => {
-    if (!collection) return {};
-    const tokenIds = collection.tokenIds.map((tokenId) => BigInt(tokenId));
-    const editionIds = editions.map((edition) => BigInt(edition.id));
-    const gameIds = games.map((game) => BigInt(game.id));
-    const ids = [...editionIds, ...gameIds];
-    const ownerships: { [key: string]: boolean } = {};
-    ids.forEach((id) => {
-      ownerships[id.toString()] = tokenIds.includes(id);
-    });
-    return ownerships;
-  }, [collection, project]);
+  const { ownerships, status } = context;
 
   return { ownerships, status };
 };

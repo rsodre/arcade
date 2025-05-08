@@ -7,8 +7,10 @@ import EditionActions from "../modules/edition-actions";
 import EditionAction from "../modules/edition-item";
 import { useProject } from "@/hooks/project";
 import { useOwnerships } from "@/hooks/ownerships";
+import { useAccount } from "@starknet-react/core";
 
 export const Editions = () => {
+  const { address } = useAccount();
   const { games, editions } = useArcade();
   const { gameId, namespace, project } = useProject();
   const { ownerships } = useOwnerships();
@@ -27,8 +29,12 @@ export const Editions = () => {
 
   const owner = useMemo(() => {
     if (!edition) return false;
-    return ownerships[BigInt(edition.id).toString()];
-  }, [edition, ownerships]);
+    const ownership = ownerships.find(
+      (ownership) => ownership.tokenId === BigInt(edition.id),
+    );
+    if (!ownership) return false;
+    return BigInt(ownership.accountAddress) === BigInt(address || "0x0");
+  }, [edition, ownerships, address]);
 
   const gameEditions = useMemo(() => {
     if (!game) return [];
@@ -37,10 +43,18 @@ export const Editions = () => {
 
   const certifieds: { [key: string]: boolean } = useMemo(() => {
     if (!game) return {};
-    const owner = ownerships[BigInt(game.id).toString()];
+    const gameOwnership = ownerships.find(
+      (ownership) => ownership.tokenId === BigInt(game.id),
+    );
+    if (!gameOwnership) return {};
     const values: { [key: string]: boolean } = {};
     gameEditions.forEach((edition) => {
-      values[edition.id] = owner && ownerships[BigInt(edition.id).toString()];
+      const ownership = ownerships.find(
+        (ownership) => ownership.tokenId === BigInt(edition.id),
+      );
+      if (!ownership) return;
+      values[edition.id] =
+        gameOwnership.accountAddress == ownership.accountAddress;
     });
     return values;
   }, [gameEditions, game]);
