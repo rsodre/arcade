@@ -4,13 +4,13 @@ import { DiscoverScene } from "../scenes/discover";
 import { LeaderboardScene } from "../scenes/leaderboard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { EditionModel, GameModel, Socials } from "@bal7hazar/arcade-sdk";
-import cartridge from "@/assets/cartridge-logo.png";
 import { ArcadeTabs } from "../modules";
 import { MarketplaceScene } from "../scenes/marketplace";
 import { GuildsScene } from "../scenes/guild";
 import { AboutScene } from "../scenes/about";
 import GameSocials from "../modules/game-socials";
 import { Editions } from "../editions";
+import arcade from "@/assets/arcade-logo.svg";
 
 export function GamePage({
   game,
@@ -60,15 +60,13 @@ export function GamePage({
       <div className="h-[88px] min-h-[88px] max-h-[88px] flex items-start justify-between p-3 lg:p-6 lg:pb-0 border-b border-background-200 lg:border-none">
         <div className="flex gap-3 items-center">
           <Thumbnail
-            icon={
-              edition?.properties.icon || game?.properties.icon || cartridge
-            }
+            icon={edition?.properties.icon || game?.properties.icon || arcade}
             size="xl"
             className="w-16 h-16"
           />
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-xl/[24px] text-foreground-100">
-              {game?.name ?? "All Games"}
+              {game?.name ?? "Arcade Dashboard"}
             </p>
             <Editions />
           </div>

@@ -10,7 +10,7 @@ import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { Register } from "./register";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import cartridge from "@/assets/cartridge-logo.png";
+import arcade from "@/assets/arcade-logo.svg";
 import banner from "@/assets/banner.png";
 import ArcadeGameSelect from "../modules/game-select";
 import { useSidebar } from "@/hooks/sidebar";
@@ -54,8 +54,8 @@ export const Games = () => {
         <div className="flex flex-col gap-1">
           <Game
             id={0}
-            name="All Games"
-            icon={cartridge}
+            name="Arcade"
+            icon={arcade}
             cover={banner}
             active={!selected}
             owner={false}

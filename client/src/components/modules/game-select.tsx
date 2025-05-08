@@ -20,7 +20,7 @@ export const arcadeGameSelectVariants = cva(
         darkest: "bg-background-100 hover:bg-background-150",
         darker: "bg-background-100 hover:bg-background-150",
         dark: "bg-background-100 hover:bg-background-150",
-        default: "bg-background-200 hover:bg-background-200",
+        default: "bg-background-100 hover:bg-background-150",
         light: "bg-background-200 hover:bg-background-200",
         lighter: "bg-background-200 hover:bg-background-200",
         lightest: "bg-background-200 hover:bg-background-200",
@@ -53,11 +53,7 @@ export const ArcadeGameSelect = ({
       onMouseLeave={() => setHover(false)}
       {...props}
     >
-      <Thumbnail
-        icon={logo}
-        size="sm"
-        variant={active || hover ? "lightest" : "light"}
-      />
+      <Thumbnail icon={logo} size="sm" variant="default" />
       <p
         className={cn(
           "grow text-sm font-normal text-foreground-100 transition-colors duration-150 ease-in-out truncate whitespace-nowrap",

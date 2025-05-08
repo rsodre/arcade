@@ -1,4 +1,4 @@
-import { cn } from "@cartridge/ui-next";
+import { CartridgeIcon, cn } from "@cartridge/ui-next";
 import { HTMLAttributes, SVGProps } from "react";
 import { SidebarToggle } from "../sidebar-toggle";
 import { useMediaQuery } from "@cartridge/ui-next";
@@ -32,7 +32,7 @@ export const ArcadeHeader = ({
           )}
           onClick={onClick}
         >
-          <ArcadeIcon className="w-8 h-8 transition-colors duration-300" />
+          <CartridgeIcon className="w-8 h-8 transition-colors duration-300" />
         </div>
       )}
       <div className="grow flex justify-end items-center gap-2 lg:px-3 py-2 select-none">
