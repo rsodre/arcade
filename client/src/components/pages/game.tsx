@@ -10,7 +10,7 @@ import { GuildsScene } from "../scenes/guild";
 import { AboutScene } from "../scenes/about";
 import GameSocials from "../modules/game-socials";
 import { Editions } from "../editions";
-import arcade from "@/assets/arcade-logo.svg";
+import arcade from "@/assets/arcade-logo.png";
 
 export function GamePage({
   game,

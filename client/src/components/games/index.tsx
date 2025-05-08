@@ -10,7 +10,7 @@ import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { Register } from "./register";
 import { GameModel } from "@bal7hazar/arcade-sdk";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import arcade from "@/assets/arcade-logo.svg";
+import arcade from "@/assets/arcade-logo.png";
 import banner from "@/assets/banner.png";
 import ArcadeGameSelect from "../modules/game-select";
 import { useSidebar } from "@/hooks/sidebar";
