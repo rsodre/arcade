@@ -47,9 +47,8 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     following: [],
   });
 
-  const [cap, setCap] = useState(14);
+  const [cap, setCap] = useState(30);
   const parentRef = useRef<HTMLDivElement>(null);
-  const childRef = useRef<HTMLDivElement>(null);
 
   const [searchParams] = useSearchParams();
   const { isConnected, address } = useAccount();
@@ -167,13 +166,12 @@ export function Discover({ edition }: { edition?: EditionModel }) {
 
   const handleScroll = useCallback(() => {
     const parent = parentRef.current;
-    const child = childRef.current;
-    if (!parent || !child) return;
+    if (!parent) return;
     const height = parent.clientHeight;
     const newCap = Math.ceil((height + parent.scrollTop) / ROW_HEIGHT);
     if (newCap < cap) return;
     setCap(newCap + 1);
-  }, [parentRef, childRef, cap, setCap]);
+  }, [parentRef, cap, setCap]);
 
   useEffect(() => {
     const parent = parentRef.current;
@@ -213,7 +211,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
               ) : activitiesStatus === "error" || events.all.length === 0 ? (
                 <EmptyState />
               ) : (
-                <div ref={childRef} className="pb-3 lg:pb-6">
+                <div className="pb-3 lg:pb-6">
                   <ArcadeDiscoveryGroup
                     events={events.all.slice(0, cap)}
                     rounded
