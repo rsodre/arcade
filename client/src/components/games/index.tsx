@@ -82,7 +82,7 @@ export const Games = () => {
                     ownerships.find(
                       (ownership) => ownership.tokenId === BigInt(game.id),
                     )?.accountAddress || "0x0",
-                  ) === BigInt(address || "0x0")
+                  ) === BigInt(address || "0x1")
                 }
                 game={game}
               />
