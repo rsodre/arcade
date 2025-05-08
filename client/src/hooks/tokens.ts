@@ -38,7 +38,7 @@ export const useTokens = () => {
 
   const creditBalance = useCreditBalance({
     username,
-    interval: 3000,
+    interval: 30000,
   });
   const credits: Token = useMemo(() => {
     return {

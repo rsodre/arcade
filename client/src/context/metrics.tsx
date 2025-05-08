@@ -25,13 +25,11 @@ export function MetricsProvider({ children }: { children: ReactNode }) {
   const { projects: slots } = useArcade();
   const [metrics, setMetrics] = useState<Metrics[]>([]);
 
-  const projects: MetricsProject[] = useMemo(
-    () =>
-      slots.map((slot) => ({
-        project: slot.project,
-      })),
-    [slots],
-  );
+  const projects: MetricsProject[] = useMemo(() => {
+    return slots.map((slot) => ({
+      project: slot.project,
+    }));
+  }, [slots]);
 
   const { status } = useMetricsQuery(
     {
@@ -40,6 +38,7 @@ export function MetricsProvider({ children }: { children: ReactNode }) {
     {
       queryKey: ["Metricss", projects],
       enabled: projects.length > 0,
+      refetchOnWindowFocus: false,
       onSuccess: ({ metrics }) => {
         const newMetrics: { [key: string]: Metrics } = {};
         metrics?.items.forEach((item) => {

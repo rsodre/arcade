@@ -49,7 +49,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
     {
       queryKey: ["collections", projects, offset, address],
       enabled: projects.length > 0 && !!address && BigInt(address) !== 0n,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
       onSuccess: ({ collections }) => {
         const newCollections: { [key: string]: Collection } = {};
         collections?.edges.forEach((e) => {
@@ -94,7 +94,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
     {
       queryKey: ["collections", projects, offset, address],
       enabled: projects.length > 0 && !!address && BigInt(address) !== 0n,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
       onSuccess: ({ collectibles }) => {
         const newCollections: { [key: string]: Collection } = {};
         collectibles?.edges.forEach((e) => {

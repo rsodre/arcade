@@ -5,28 +5,22 @@ import { useArcade } from "@/hooks/arcade";
 import { erc20Metadata } from "@cartridge/presets";
 import { getChecksumAddress, RpcProvider } from "starknet";
 import {
-  DAI_CONTRACT_ADDRESS,
   ETH_CONTRACT_ADDRESS,
   STRK_CONTRACT_ADDRESS,
-  USDC_CONTRACT_ADDRESS,
-  USDT_CONTRACT_ADDRESS,
   useCountervalue,
   useERC20Balance,
   UseERC20BalanceResponse,
 } from "@cartridge/utils";
 import { formatEther } from "viem";
+import makeBlockie from "ethereum-blockies-base64";
 
 const LIMIT = 1000;
 
-const DEFAULT_ERC20_ADDRESSES = [ETH_CONTRACT_ADDRESS, STRK_CONTRACT_ADDRESS];
+const DEFAULT_ERC20_ADDRESSES: string[] = [];
 
-const EXTRA_ERC20_ADDRESSES = [
-  USDC_CONTRACT_ADDRESS,
-  USDT_CONTRACT_ADDRESS,
-  DAI_CONTRACT_ADDRESS,
-  "0x0124aeb495b947201f5fac96fd1138e326ad86195b98df6dec9009158a533b49", // LORDS
-  "0x01bfe97d729138fc7c2d93c77d6d1d8a24708d5060608017d9b384adf38f04c7", // FLIP
-  "0x00e5f10eddc01699dc899a30dbc3c9858148fa4aa0a47c0ffd85f887ffc4653e", // NUMS
+const EXTRA_ERC20_ADDRESSES: string[] = [
+  STRK_CONTRACT_ADDRESS,
+  ETH_CONTRACT_ADDRESS,
 ];
 
 export type Balance = {
@@ -80,6 +74,7 @@ export function TokenProvider({ children }: { children: ReactNode }) {
     {
       queryKey: ["balances", offset, address],
       enabled: projects.length > 0 && !!address,
+      refetchOnWindowFocus: false,
       onSuccess: ({ balances }) => {
         const newTokens: { [key: string]: Token } = {};
         balances?.edges.forEach((e) => {
@@ -95,11 +90,12 @@ export function TokenProvider({ children }: { children: ReactNode }) {
           } = meta;
           const previous = price !== 0 ? (value * periodPrice) / price : 0;
           const change = value - previous;
-          const image = erc20Metadata.find(
-            (m) =>
-              getChecksumAddress(m.l2_token_address) ===
-              getChecksumAddress(contractAddress),
-          )?.logo_url;
+          const image =
+            erc20Metadata.find(
+              (m) =>
+                getChecksumAddress(m.l2_token_address) ===
+                getChecksumAddress(contractAddress),
+            )?.logo_url || makeBlockie(contractAddress);
           const token: Token = {
             balance: {
               amount: amount,

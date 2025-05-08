@@ -33,6 +33,7 @@
     "compare-versions": "^6.1.1",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "ethereum-blockies-base64": "^1.0.2",
     "framer-motion": "^12.9.4",
     "lodash": "^4.17.21",
     "lucide-react": "^0.479.0",

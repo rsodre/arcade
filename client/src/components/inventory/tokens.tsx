@@ -24,17 +24,13 @@ interface TokensProps {
   status: "loading" | "error" | "idle" | "success";
 }
 
-export const Tokens = ({ tokens, credits, status }: TokensProps) => {
+export const Tokens = ({ tokens, credits }: TokensProps) => {
   const { editions, chains } = useArcade();
   const [unfolded, setUnfolded] = useState(false);
 
   const filteredTokens = useMemo(() => {
     return tokens.filter((token) => token.balance.amount > 0);
   }, [tokens]);
-
-  if (status === "loading") {
-    return <LoadingState />;
-  }
 
   return (
     <div
@@ -170,7 +166,7 @@ function Item({
   );
 }
 
-const LoadingState = () => {
+export const LoadingState = () => {
   return (
     <div className="flex flex-col gap-y-px overflow-hidden h-full">
       {Array.from({ length: 4 }).map((_, index) => (

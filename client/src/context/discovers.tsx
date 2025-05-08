@@ -80,6 +80,7 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
       queryKey: ["activities", projects],
       enabled: projects.length > 0,
       refetchInterval: 30 * 1000, // 30 seconds
+      refetchOnWindowFocus: false,
       onSuccess: ({ activities }) => {
         const newDiscovers: { [key: string]: Discover[] } = {};
         activities?.items.forEach((item) => {

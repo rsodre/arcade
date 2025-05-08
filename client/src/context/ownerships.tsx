@@ -39,7 +39,7 @@ export function OwnershipsProvider({ children }: { children: ReactNode }) {
     {
       queryKey: ["collections", projects],
       enabled: projects.length > 0,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
       onSuccess: ({ ownerships }) => {
         const newOwnerships: Ownership[] =
           ownerships?.items.flatMap((item) => {

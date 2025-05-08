@@ -171,8 +171,6 @@ export function PlayerPage({ edition }: { edition: EditionModel | undefined }) {
     [account, connector, setLoading],
   );
 
-  console.log({ isSelf });
-
   return (
     <>
       <AchievementPlayerHeader
