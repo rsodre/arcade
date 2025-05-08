@@ -16,6 +16,8 @@ import { useAccount } from "@starknet-react/core";
 import { UserAvatar } from "../user/avatar";
 import { useDiscovers } from "@/hooks/discovers";
 
+const DEFAULT_CAP = 50;
+
 type Event = {
   identifier: string;
   name: string;
@@ -145,10 +147,10 @@ export function Discover({ edition }: { edition?: EditionModel }) {
       .sort((a, b) => b.timestamp - a.timestamp);
     if (!data) return;
     const newEvents: Events = {
-      all: data.slice(0, 100),
+      all: data.slice(0, DEFAULT_CAP),
       following: data
         .filter((event) => following.includes(event.address))
-        .slice(0, 100),
+        .slice(0, DEFAULT_CAP),
     };
     if (newEvents.all.length === 0) return;
     setEvents(newEvents);

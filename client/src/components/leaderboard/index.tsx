@@ -16,6 +16,8 @@ import LeaderboardRow from "../modules/leaderboard-row";
 import { useAccount } from "@starknet-react/core";
 import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
 
+const DEFAULT_CAP = 50;
+
 export function Leaderboard({ edition }: { edition?: EditionModel }) {
   const [searchParams] = useSearchParams();
   const { isConnected, address } = useAccount();
@@ -100,14 +102,14 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         following: following.includes(getChecksumAddress(player.address)),
       };
     });
-    if (rank <= 100) {
+    if (rank <= DEFAULT_CAP) {
       return {
-        all: data.slice(0, 100),
+        all: data.slice(0, DEFAULT_CAP),
         following: data
           .filter((player) =>
             following.includes(getChecksumAddress(player.address)),
           )
-          .slice(0, 100),
+          .slice(0, DEFAULT_CAP),
       };
     }
     const selfData = data.find(
@@ -115,23 +117,23 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
     );
     return selfData
       ? {
-          all: [...data.slice(0, 99), selfData],
+          all: [...data.slice(0, DEFAULT_CAP - 1), selfData],
           following: [
             ...data
               .filter((player) =>
                 following.includes(getChecksumAddress(player.address)),
               )
-              .slice(0, 99),
+              .slice(0, DEFAULT_CAP - 1),
             selfData,
           ],
         }
       : {
-          all: data.slice(0, 100),
+          all: data.slice(0, DEFAULT_CAP),
           following: data
             .filter((player) =>
               following.includes(getChecksumAddress(player.address)),
             )
-            .slice(0, 100),
+            .slice(0, DEFAULT_CAP),
         };
   }, [gamePlayers, gameAchievements, address, pins, usernames, following]);
 
@@ -150,14 +152,14 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         following: following.includes(getChecksumAddress(player.address)),
       };
     });
-    if (rank <= 100) {
+    if (rank <= DEFAULT_CAP) {
       return {
-        all: data.slice(0, 100),
+        all: data.slice(0, DEFAULT_CAP),
         following: data
           .filter((player) =>
             following.includes(getChecksumAddress(player.address)),
           )
-          .slice(0, 100),
+          .slice(0, DEFAULT_CAP),
       };
     }
     const selfData =
@@ -165,9 +167,9 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         (player) => BigInt(player.address) === BigInt(address || "0x0"),
       ) || data[0];
     return {
-      all: [...data.slice(0, 99), selfData],
-      following: [...data.slice(0, 99), selfData].filter((player) =>
-        following.includes(getChecksumAddress(player.address)),
+      all: [...data.slice(0, DEFAULT_CAP - 1), selfData],
+      following: [...data.slice(0, DEFAULT_CAP - 1), selfData].filter(
+        (player) => following.includes(getChecksumAddress(player.address)),
       ),
     };
   }, [globals, address, usernames, following]);
