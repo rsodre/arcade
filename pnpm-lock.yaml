@@ -149,6 +149,9 @@ importers:
       vite-plugin-wasm:
         specifier: ^3.3.0
         version: 3.4.1(vite@5.4.19(@types/node@20.17.41)(terser@5.39.0))
+      workbox-window:
+        specifier: ^7.3.0
+        version: 7.3.0
       zod:
         specifier: ^3.24.1
         version: 3.24.4
