@@ -24,6 +24,7 @@ export const Games = () => {
   const { ownerships } = useOwnerships();
   const { isOpen, handleTouchStart, handleTouchMove } = useSidebar();
   const isMobile = useMediaQuery("(max-width: 1024px)");
+  const isPWA = useMediaQuery("(display-mode: standalone)");
 
   const [searchParams] = useSearchParams();
   const selected: number = useMemo(() => {
@@ -81,7 +82,12 @@ export const Games = () => {
           </CardListContent>
         </div>
       </div>
-      <div className="flex items-center justify-center p-3 pb-6 lg:pb-3 gap-2.5 bg-background-100">
+      <div
+        className={cn(
+          "flex items-center justify-center p-3 lg:pb-3 gap-2.5 bg-background-100",
+          isPWA ? "pb-6" : "pb-3",
+        )}
+      >
         <Register />
       </div>
     </div>

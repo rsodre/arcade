@@ -88,6 +88,7 @@ export const ArcadeTabs = ({
   );
 
   const isMobile = useMediaQuery("(max-width: 1024px)");
+  const isPWA = useMediaQuery("(display-mode: standalone)");
 
   useEffect(() => {
     if (isMobile) return;
@@ -170,7 +171,12 @@ export const ArcadeTabs = ({
       className="h-full flex flex-col overflow-hidden"
     >
       {isMobile ? (
-        <LayoutBottomTabs className="fixed bottom-0 left-0 right-0 z-50 w-full h-[78px]">
+        <LayoutBottomTabs
+          className={cn(
+            "fixed bottom-0 left-0 right-0 z-50 w-full",
+            isPWA ? "h-[78px]" : "h-[72px]",
+          )}
+        >
           <TabsList className="h-full w-full p-0 flex gap-2 items-start justify-around">
             {order.map((tab) => (
               <Tab

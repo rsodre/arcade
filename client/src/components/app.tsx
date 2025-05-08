@@ -5,7 +5,7 @@ import { useEffect, useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { useAddress } from "@/hooks/address";
 import { PlayerPage } from "./pages/player";
-import { cn } from "@cartridge/ui-next";
+import { cn, useMediaQuery } from "@cartridge/ui-next";
 import { EditionModel, GameModel } from "@bal7hazar/arcade-sdk";
 import { useProject } from "@/hooks/project";
 import { SidebarProvider } from "@/context/sidebar";
@@ -17,12 +17,14 @@ import { DEFAULT_NAMESPACE, DEFAULT_PROJECT } from "@/constants";
 const MainContent = ({ children }: { children: React.ReactNode }) => {
   const { isOpen, handleTouchStart, handleTouchMove } = useSidebar();
   const { isZero } = useAddress();
+  const isPWA = useMediaQuery("(display-mode: standalone)");
 
   return (
     <div
       className={cn(
-        "grow flex flex-col overflow-hidden px-3 pb-[90px] lg:px-0 lg:pb-0",
+        "grow flex flex-col overflow-hidden px-3 lg:px-0 lg:pb-0",
         "transition-transform duration-300 ease-in-out",
+        isPWA ? "pb-[90px]" : "pb-[84px]",
         isOpen && "translate-x-[min(calc(100vw-64px),360px)]",
       )}
       onTouchStart={handleTouchStart}
