@@ -4,7 +4,7 @@ import {
   Skeleton,
   TabsContent,
 } from "@cartridge/ui-next";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { EditionModel } from "@bal7hazar/arcade-sdk";
 import { Connect } from "../errors";
@@ -16,7 +16,7 @@ import { useAccount } from "@starknet-react/core";
 import { UserAvatar } from "../user/avatar";
 import { useDiscovers } from "@/hooks/discovers";
 
-const DEFAULT_CAP = 50;
+const ROW_HEIGHT = 44;
 
 type Event = {
   identifier: string;
@@ -46,6 +46,11 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     all: [],
     following: [],
   });
+
+  const [cap, setCap] = useState(14);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const childRef = useRef<HTMLDivElement>(null);
+
   const [searchParams] = useSearchParams();
   const { isConnected, address } = useAccount();
   const {
@@ -147,10 +152,8 @@ export function Discover({ edition }: { edition?: EditionModel }) {
       .sort((a, b) => b.timestamp - a.timestamp);
     if (!data) return;
     const newEvents: Events = {
-      all: data.slice(0, DEFAULT_CAP),
-      following: data
-        .filter((event) => following.includes(event.address))
-        .slice(0, DEFAULT_CAP),
+      all: data,
+      following: data.filter((event) => following.includes(event.address)),
     };
     if (newEvents.all.length === 0) return;
     setEvents(newEvents);
@@ -161,6 +164,28 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     following,
     handleClick,
   ]);
+
+  const handleScroll = useCallback(() => {
+    const parent = parentRef.current;
+    const child = childRef.current;
+    if (!parent || !child) return;
+    const height = parent.clientHeight;
+    const newCap = Math.ceil((height + parent.scrollTop) / ROW_HEIGHT);
+    if (newCap < cap) return;
+    setCap(newCap + 1);
+  }, [parentRef, childRef, cap, setCap]);
+
+  useEffect(() => {
+    const parent = parentRef.current;
+    if (parent) {
+      parent.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (parent) {
+        parent.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [cap]);
 
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
@@ -175,6 +200,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
           className="mb-3 lg:mb-4"
         >
           <div
+            ref={parentRef}
             className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
             style={{ scrollbarWidth: "none" }}
           >
@@ -187,9 +213,9 @@ export function Discover({ edition }: { edition?: EditionModel }) {
               ) : activitiesStatus === "error" || events.all.length === 0 ? (
                 <EmptyState />
               ) : (
-                <div className="pb-3 lg:pb-6">
+                <div ref={childRef} className="pb-3 lg:pb-6">
                   <ArcadeDiscoveryGroup
-                    events={events.all}
+                    events={events.all.slice(0, cap)}
                     rounded
                     identifier={
                       filteredEditions.length === 1
@@ -216,7 +242,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
               ) : (
                 <div className="pb-3 lg:pb-6">
                   <ArcadeDiscoveryGroup
-                    events={events.following}
+                    events={events.following.slice(0, cap)}
                     rounded
                     identifier={
                       filteredEditions.length === 1
