@@ -15,6 +15,8 @@ interface AchievementPlayerHeaderProps
   followingCount?: number;
   followers?: string[];
   compacted?: boolean;
+  onFollowersClick?: () => void;
+  onFollowingClick?: () => void;
 }
 
 const achievementPlayerHeaderVariants = cva("flex flex-col gap-y-4", {
@@ -54,6 +56,8 @@ export const AchievementPlayerHeader = ({
   compacted,
   variant,
   rank,
+  onFollowersClick,
+  onFollowingClick,
   className,
   ...props
 }: AchievementPlayerHeaderProps) => {
@@ -74,16 +78,30 @@ export const AchievementPlayerHeader = ({
       />
       <div className="flex flex-col px-2">
         <div className="h-6 flex items-center gap-x-2">
-          <p className="text-xs text-foreground-300 flex items-center gap-x-1">
+          <p
+            className={cn(
+              "text-xs text-foreground-300 transition-colors",
+              !!onFollowersClick &&
+                "hover:underline hover:text-foreground-100 cursor-pointer",
+            )}
+            onClick={onFollowersClick}
+          >
             <strong className="font-medium text-foreground-100">
               {followerCount?.toLocaleString() || 0}
-            </strong>
+            </strong>{" "}
             Followers
           </p>
-          <p className="text-xs text-foreground-300 flex items-center gap-x-1">
+          <p
+            className={cn(
+              "text-xs text-foreground-300 transition-colors",
+              !!onFollowingClick &&
+                "hover:underline hover:text-foreground-100 cursor-pointer",
+            )}
+            onClick={onFollowingClick}
+          >
             <strong className="font-medium text-foreground-100">
               {followingCount?.toLocaleString() || 0}
-            </strong>
+            </strong>{" "}
             Following
           </p>
           <p className="text-xs text-foreground-300 flex items-center gap-x-1">
