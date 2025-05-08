@@ -22,10 +22,10 @@ const MainContent = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className={cn(
-        "grow flex flex-col overflow-hidden px-3 lg:px-0 lg:pb-0",
+        "fixed lg:relative h-full w-full flex flex-col overflow-hidden px-3 lg:px-0 lg:pb-0",
         "transition-transform duration-300 ease-in-out",
         isPWA ? "pb-[90px]" : "pb-[84px]",
-        isOpen && "translate-x-[min(calc(100vw-64px),360px)]",
+        isOpen ? "translate-x-[min(calc(100vw-64px),360px)]" : "translate-x-0",
       )}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
