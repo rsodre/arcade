@@ -1,4 +1,4 @@
-import { getDuration } from "@/helpers";
+import { getDuration, getTime } from "@/helpers";
 import { CardTitle, cn, Thumbnail } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo, HTMLAttributes, useState, useEffect } from "react";
@@ -209,27 +209,11 @@ const Timestamp = ({ timestamp }: { timestamp: number }) => {
     days: number;
     months: number;
     years: number;
-  }>({
-    seconds: 0,
-    minutes: 0,
-    hours: 0,
-    days: 0,
-    months: 0,
-    years: 0,
-  });
+  }>(getTime(timestamp));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const diff = now - timestamp * 1000;
-      setState({
-        seconds: Math.floor(diff / 1000),
-        minutes: Math.floor(diff / (1000 * 60)),
-        hours: Math.floor(diff / (1000 * 60 * 60)),
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        months: Math.floor(diff / (1000 * 60 * 60 * 24 * 30)),
-        years: Math.floor(diff / (1000 * 60 * 60 * 24 * 30 * 12)),
-      });
+      setState(getTime(timestamp));
     }, 1000);
 
     return () => clearInterval(interval);

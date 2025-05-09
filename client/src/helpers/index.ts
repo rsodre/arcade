@@ -38,3 +38,17 @@ export const getDuration = (deltatime: number) => {
   if (state.minutes > 0) return `${state.minutes}m`;
   return `< 1m`;
 };
+
+export const getTime = (timestamp: number) => {
+  const now = new Date().getTime();
+  const diff = now - timestamp * 1000;
+  const state = {
+    seconds: Math.floor(diff / 1000),
+    minutes: Math.floor(diff / (1000 * 60)),
+    hours: Math.floor(diff / (1000 * 60 * 60)),
+    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+    months: Math.floor(diff / (1000 * 60 * 60 * 24 * 30)),
+    years: Math.floor(diff / (1000 * 60 * 60 * 24 * 30 * 12)),
+  };
+  return state;
+};
