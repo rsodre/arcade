@@ -50,7 +50,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       if (gameEditions.length === 0)
         return { game: newGame, edition: undefined };
       const defaultEdition = gameEditions
-        .sort((a, b) => a.id - b.id)
+        .sort((a, b) => b.id - a.id)
         .sort((a, b) => b.priority - a.priority)[0];
       return { game: newGame, edition: defaultEdition };
     }, [games, editions, searchParams]);
