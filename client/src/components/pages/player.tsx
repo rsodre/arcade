@@ -194,7 +194,7 @@ export function PlayerPage({ edition }: { edition: EditionModel | undefined }) {
         }
         onFollowersClick={isSelf ? handleFollowers : undefined}
         onFollowingClick={isSelf ? handleFollowing : undefined}
-        className="relative p-3 pb-2 lg:p-6 lg:pb-0 gap-y-2 border-b border-background-200 lg:border-none"
+        className="relative p-3 pb-2 lg:p-6 lg:pb-0 gap-y-2 border-b border-background-200 lg:border-none pr-16"
       />
       <div className="absolute flex gap-3 top-3 right-3 lg:top-6 lg:right-6">
         {!isSelf && isConnected && (

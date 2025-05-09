@@ -57,11 +57,11 @@ export const AchievementPlayerLabel = ({
   const TagIcon = useMemo(() => {
     switch (rank) {
       case "gold":
-        return <GoldTagIcon size="default" />;
+        return <GoldTagIcon size="default" className="min-h-6 min-w-6" />;
       case "silver":
-        return <SilverTagIcon size="default" />;
+        return <SilverTagIcon size="default" className="min-h-6 min-w-6" />;
       case "bronze":
-        return <BronzeTagIcon size="default" />;
+        return <BronzeTagIcon size="default" className="min-h-6 min-w-6" />;
       case "default":
       default:
         return null;
@@ -79,9 +79,9 @@ export const AchievementPlayerLabel = ({
         rank={rank}
         size="3xl"
       />
-      <div className="flex flex-col gap-y-2 justify-between h-[60px] self-end">
+      <div className="flex flex-col gap-y-2 justify-between h-[60px] self-end overflow-hidden">
         <div className="flex items-center gap-x-2">
-          <p className="text-xl/[24px] font-semibold text-foreground-100">
+          <p className="text-xl/[24px] font-semibold text-foreground-100 truncate">
             {username}
           </p>
           {TagIcon}
