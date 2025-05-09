@@ -25,7 +25,7 @@ export const GameSocialWebsite = ({
       href={website}
       label={label ? "Play" : undefined}
       variant={variant}
-      className="text-primary"
+      className="text-primary justify-center text-base/[20px] tracking-wide px-2 py-2.5 h-10"
     />
   );
 };
@@ -112,7 +112,7 @@ export const GameSocialTelegram = ({
 };
 
 const GameSocialVariants = cva(
-  "flex items-center gap-x-0.5 rounded-full p-2 lg:px-3 cursor-pointer text-foreground-100",
+  "flex items-center gap-x-0.5 rounded-full p-2 lg:px-3 cursor-pointer text-foreground-100 text-xs",
   {
     variants: {
       variant: {
@@ -149,9 +149,7 @@ const GameSocial = ({
       className={cn(GameSocialVariants({ variant }), className)}
     >
       {icon}
-      {label && (
-        <p className="px-0.5 text-xs font-medium truncate max-w-32">{label}</p>
-      )}
+      {label && <p className="px-0.5 truncate max-w-32">{label}</p>}
     </a>
   );
 };

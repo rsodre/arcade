@@ -112,8 +112,8 @@ const GameSocials = ({
         {socials?.github && !isMobile && (
           <GameSocialGithub github={socials.github} variant="dark" />
         )}
-        {socials?.website && (
-          <GameSocialWebsite website={socials.website} label={!isMobile} />
+        {socials?.website && !isMobile && (
+          <GameSocialWebsite website={socials.website} label />
         )}
       </Select>
     </div>

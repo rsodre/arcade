@@ -11,6 +11,7 @@ import { AboutScene } from "../scenes/about";
 import GameSocials from "../modules/game-socials";
 import { Editions } from "../editions";
 import arcade from "@/assets/arcade-logo.png";
+import { GameSocialWebsite } from "../modules/game-social";
 
 export function GamePage({
   game,
@@ -55,23 +56,34 @@ export function GamePage({
     }
   }, [searchParams, order, navigate]);
 
+  const socials = useMemo(() => {
+    return Socials.merge(edition?.socials, game?.socials);
+  }, [edition, game]);
+
   return (
     <>
-      <div className="h-[88px] min-h-[88px] max-h-[88px] flex items-start justify-between p-3 lg:p-6 lg:pb-0 border-b border-background-200 lg:border-none">
-        <div className="flex gap-3 items-center">
-          <Thumbnail
-            icon={edition?.properties.icon || game?.properties.icon || arcade}
-            size="xl"
-            className="w-16 h-16"
-          />
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold text-xl/[24px] text-foreground-100">
-              {game?.name ?? "Arcade Dashboard"}
-            </p>
-            <Editions />
+      <div className="h-[153px] lg:h-[88px] w-full flex flex-col p-4 gap-4 lg:p-6 lg:pb-0 border-b border-background-200 lg:border-none">
+        <div className="flex items-start justify-between">
+          <div className="flex gap-3 items-center">
+            <Thumbnail
+              icon={edition?.properties.icon || game?.properties.icon || arcade}
+              size="xl"
+              className="w-16 h-16"
+            />
+            <div className="flex flex-col gap-2">
+              <p className="font-semibold text-xl/[24px] text-foreground-100">
+                {game?.name ?? "Arcade Dashboard"}
+              </p>
+              <Editions />
+            </div>
           </div>
+          <GameSocials socials={socials} />
         </div>
-        <GameSocials socials={Socials.merge(edition?.socials, game?.socials)} />
+        {socials.website && (
+          <div className="lg:hidden">
+            <GameSocialWebsite website={socials.website} label />
+          </div>
+        )}
       </div>
       <ArcadeTabs
         order={order}
