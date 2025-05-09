@@ -16,6 +16,7 @@ import { useAccount } from "@starknet-react/core";
 import { UserAvatar } from "../user/avatar";
 import { useDiscovers } from "@/hooks/discovers";
 
+const DEFAULT_CAP = 30;
 const ROW_HEIGHT = 44;
 
 type Event = {
@@ -47,7 +48,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     following: [],
   });
 
-  const [cap, setCap] = useState(30);
+  const [cap, setCap] = useState(DEFAULT_CAP);
   const parentRef = useRef<HTMLDivElement>(null);
 
   const [searchParams] = useSearchParams();
@@ -183,7 +184,17 @@ export function Discover({ edition }: { edition?: EditionModel }) {
         parent.removeEventListener("scroll", handleScroll);
       }
     };
-  }, [cap]);
+  }, [cap, defaultValue, parentRef, handleScroll]);
+
+  useEffect(() => {
+    // Reset scroll and cap on filter change
+    const parent = parentRef.current;
+    if (!parent) return;
+    parent.scrollTop = 0;
+    const height = parent.clientHeight;
+    const cap = Math.ceil(height / ROW_HEIGHT);
+    setCap(cap);
+  }, [parentRef, edition, setCap, defaultValue]);
 
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">

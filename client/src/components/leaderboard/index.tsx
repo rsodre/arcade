@@ -2,11 +2,10 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Empty,
   LayoutContent,
-  LeaderboardTable,
   Skeleton,
   TabsContent,
 } from "@cartridge/ui-next";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { EditionModel } from "@bal7hazar/arcade-sdk";
 import { addAddressPadding, getChecksumAddress } from "starknet";
@@ -16,7 +15,8 @@ import LeaderboardRow from "../modules/leaderboard-row";
 import { useAccount } from "@starknet-react/core";
 import ArcadeSubTabs, { SubTabValue } from "../modules/sub-tabs";
 
-const DEFAULT_CAP = 50;
+const DEFAULT_CAP = 30;
+const ROW_HEIGHT = 44;
 
 export function Leaderboard({ edition }: { edition?: EditionModel }) {
   const [searchParams] = useSearchParams();
@@ -24,6 +24,8 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
   const { achievements, globals, players, usernames, isLoading, isError } =
     useAchievements();
   const { pins, follows } = useArcade();
+  const [cap, setCap] = useState(DEFAULT_CAP);
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const following = useMemo(() => {
     if (!address) return [];
@@ -102,40 +104,28 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         following: following.includes(getChecksumAddress(player.address)),
       };
     });
-    if (rank <= DEFAULT_CAP) {
-      return {
-        all: data.slice(0, DEFAULT_CAP),
-        following: data
-          .filter((player) =>
-            following.includes(getChecksumAddress(player.address)),
-          )
-          .slice(0, DEFAULT_CAP),
-      };
-    }
     const selfData = data.find(
       (player) => BigInt(player.address) === BigInt(address || "0x0"),
     );
-    return selfData
-      ? {
-          all: [...data.slice(0, DEFAULT_CAP - 1), selfData],
-          following: [
-            ...data
-              .filter((player) =>
-                following.includes(getChecksumAddress(player.address)),
-              )
-              .slice(0, DEFAULT_CAP - 1),
-            selfData,
-          ],
-        }
-      : {
-          all: data.slice(0, DEFAULT_CAP),
-          following: data
-            .filter((player) =>
-              following.includes(getChecksumAddress(player.address)),
-            )
-            .slice(0, DEFAULT_CAP),
-        };
-  }, [gamePlayers, gameAchievements, address, pins, usernames, following]);
+    const newAll =
+      rank < cap || !selfData
+        ? data.slice(0, cap)
+        : [...data.slice(0, cap - 1), selfData];
+    const filtereds = data.filter((player) =>
+      following.includes(getChecksumAddress(player.address)),
+    );
+    const position = filtereds.findIndex(
+      (player) => BigInt(player.address) === BigInt(address || "0x0"),
+    );
+    const newFollowings =
+      position < cap || !selfData
+        ? filtereds.slice(0, cap)
+        : [...filtereds.slice(0, cap - 1), selfData];
+    return {
+      all: newAll,
+      following: newFollowings,
+    };
+  }, [gamePlayers, gameAchievements, address, pins, usernames, following, cap]);
 
   const gamesData = useMemo(() => {
     let rank = 0;
@@ -152,32 +142,64 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         following: following.includes(getChecksumAddress(player.address)),
       };
     });
-    if (rank <= DEFAULT_CAP) {
-      return {
-        all: data.slice(0, DEFAULT_CAP),
-        following: data
-          .filter((player) =>
-            following.includes(getChecksumAddress(player.address)),
-          )
-          .slice(0, DEFAULT_CAP),
-      };
-    }
-    const selfData =
-      data.find(
-        (player) => BigInt(player.address) === BigInt(address || "0x0"),
-      ) || data[0];
+    const selfData = data.find(
+      (player) => BigInt(player.address) === BigInt(address || "0x0"),
+    );
+    const newAll =
+      rank < cap || !selfData
+        ? data.slice(0, cap)
+        : [...data.slice(0, cap - 1), selfData];
+    const filtereds = data.filter((player) =>
+      following.includes(getChecksumAddress(player.address)),
+    );
+    const position = filtereds.findIndex(
+      (player) => BigInt(player.address) === BigInt(address || "0x0"),
+    );
+    const newFollowings =
+      position < cap || !selfData
+        ? filtereds.slice(0, cap)
+        : [...filtereds.slice(0, cap - 1), selfData];
     return {
-      all: [...data.slice(0, DEFAULT_CAP - 1), selfData],
-      following: [...data.slice(0, DEFAULT_CAP - 1), selfData].filter(
-        (player) => following.includes(getChecksumAddress(player.address)),
-      ),
+      all: newAll,
+      following: newFollowings,
     };
-  }, [globals, address, usernames, following]);
+  }, [globals, address, usernames, following, cap]);
 
   const filteredData = useMemo(() => {
     if (!edition) return gamesData;
     return gameData;
   }, [edition, gamesData, gameData]);
+
+  const handleScroll = useCallback(() => {
+    const parent = parentRef.current;
+    if (!parent) return;
+    const height = parent.clientHeight;
+    const newCap = Math.ceil((height + parent.scrollTop) / ROW_HEIGHT);
+    if (newCap < cap) return;
+    setCap(newCap + 3);
+  }, [parentRef, cap, setCap]);
+
+  useEffect(() => {
+    const parent = parentRef.current;
+    if (parent) {
+      parent.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (parent) {
+        parent.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [cap, defaultValue, parentRef, handleScroll]);
+
+  useEffect(() => {
+    // Reset scroll and cap on filter change
+    const parent = parentRef.current;
+    if (!parent) return;
+    parent.scrollTop = 0;
+    const height = parent.clientHeight;
+    const cap = Math.ceil((height + parent.scrollTop) / ROW_HEIGHT);
+    setCap(cap);
+  }, [parentRef, edition, setCap, defaultValue]);
 
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
@@ -204,7 +226,11 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
               ) : isError || filteredData.all.length === 0 ? (
                 <EmptyState />
               ) : (
-                <LeaderboardTable className="h-full rounded">
+                <div
+                  ref={parentRef}
+                  className="relative flex flex-col gap-y-px h-full rounded overflow-y-scroll"
+                  style={{ scrollbarWidth: "none" }}
+                >
                   {filteredData.all.map((item, index) => (
                     <LeaderboardRow
                       key={index}
@@ -217,7 +243,7 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
                       onClick={() => handleClick(item.address)}
                     />
                   ))}
-                </LeaderboardTable>
+                </div>
               )}
             </TabsContent>
             <TabsContent
@@ -231,7 +257,11 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
               ) : isError || filteredData.following.length === 0 ? (
                 <EmptyState />
               ) : (
-                <LeaderboardTable>
+                <div
+                  ref={parentRef}
+                  className="relative flex flex-col gap-y-px h-full rounded overflow-y-scroll"
+                  style={{ scrollbarWidth: "none" }}
+                >
                   {filteredData.following.map((item, index) => (
                     <LeaderboardRow
                       key={index}
@@ -243,7 +273,7 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
                       onClick={() => handleClick(item.address)}
                     />
                   ))}
-                </LeaderboardTable>
+                </div>
               )}
             </TabsContent>
           </div>
