@@ -1,88 +1,86 @@
-import { createContext, useState, ReactNode, useEffect, useMemo } from "react";
+import { createContext, ReactNode, useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { EditionModel, GameModel } from "@bal7hazar/arcade-sdk";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useAddressByUsernameQuery } from "@cartridge/utils/api/cartridge";
+import { getChecksumAddress } from "starknet";
 
 type ProjectContextType = {
-  gameId: number;
-  project: string;
-  namespace: string;
-  setGameId: (gameId: number) => void;
-  setProject: (project: string) => void;
-  setNamespace: (namespace: string) => void;
+  game?: GameModel;
+  edition?: EditionModel;
+  player?: string;
+  tab?: string;
 };
 
-const initialState: ProjectContextType = {
-  gameId: 0,
-  project: "",
-  namespace: "",
-  setGameId: () => {},
-  setProject: () => {},
-  setNamespace: () => {},
-};
-
-export const ProjectContext = createContext<ProjectContextType>(initialState);
+export const ProjectContext = createContext<ProjectContextType>({});
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
-  const [gameId, setGameId] = useState<number>(initialState.gameId);
-  const [project, setProject] = useState<string>(initialState.project);
-  const [namespace, setNamespace] = useState<string>(initialState.namespace);
-
-  const [searchParams] = useSearchParams();
   const { games, editions } = useArcade();
 
   const {
-    game,
-    edition,
-  }: { game: GameModel | undefined; edition: EditionModel | undefined } =
-    useMemo(() => {
-      const newGame = games.find(
-        (game) => game.id.toString() === searchParams.get("game"),
-      );
-      if (!newGame) return { game: undefined, edition: undefined };
-      const newEdition = editions.find(
-        (edition) => edition.id.toString() === searchParams.get("edition"),
-      );
-      if (newEdition) return { game: newGame, edition: newEdition };
-      const gameEditions = editions.filter(
-        (edition) => edition.gameId === newGame.id,
-      );
-      if (gameEditions.length === 0)
-        return { game: newGame, edition: undefined };
-      const defaultEdition = gameEditions
+    game: gameParam,
+    edition: editionParam,
+    player: playerParam,
+    tab,
+  } = useParams<{
+    game: string;
+    edition: string;
+    player: string;
+    tab: string;
+  }>();
+
+  const { data } = useAddressByUsernameQuery(
+    {
+      username: playerParam?.toLowerCase() || "",
+    },
+    {
+      enabled: !!playerParam && !playerParam.match(/^0x[0-9a-fA-F]+$/),
+    },
+  );
+
+  const game = useMemo(() => {
+    if (!gameParam || games.length === 0) return;
+    return games.find(
+      (game) =>
+        game.id.toString() === gameParam ||
+        game.name.toLowerCase().replace(/ /g, "-") === gameParam.toLowerCase(),
+    );
+  }, [gameParam, games]);
+
+  const edition = useMemo(() => {
+    if (!game || editions.length === 0) return;
+    const gameEditions = editions.filter(
+      (edition) => edition.gameId === game.id,
+    );
+    if (gameEditions.length === 0) return;
+    if (!editionParam) {
+      return gameEditions
         .sort((a, b) => b.id - a.id)
         .sort((a, b) => b.priority - a.priority)[0];
-      return { game: newGame, edition: defaultEdition };
-    }, [games, editions, searchParams]);
+    }
+    return gameEditions.find(
+      (edition) =>
+        edition.id.toString() === editionParam ||
+        edition.name.toLowerCase().replace(/ /g, "-") ===
+          editionParam.toLowerCase(),
+    );
+  }, [game, editionParam, editions]);
 
-  useEffect(() => {
-    if (game && edition) {
-      setGameId(game.id);
-      setProject(edition.config.project);
-      setNamespace(edition.namespace);
-      return;
-    }
-    if (game && !edition) {
-      setGameId(game.id);
-      setProject(initialState.project);
-      setNamespace(initialState.namespace);
-      return;
-    }
-    setGameId(initialState.gameId);
-    setProject(initialState.project);
-    setNamespace(initialState.namespace);
-    return;
-  }, [game, edition, setGameId, setProject, setNamespace]);
+  const player = useMemo(() => {
+    if (!playerParam) return;
+    const address = data?.account?.controllers?.edges?.[0]?.node?.address;
+    if (!!address) return address;
+    if (!playerParam.match(/^0x[0-9a-fA-F]+$/)) return;
+    return getChecksumAddress(playerParam);
+  }, [playerParam, data]);
 
   return (
     <ProjectContext.Provider
       value={{
-        gameId,
-        project,
-        namespace,
-        setGameId,
-        setProject,
-        setNamespace,
+        tab,
+        game,
+        edition,
+        player,
       }}
     >
       {children}
