@@ -6,7 +6,7 @@ import { getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 
 const SESSION_MAX_BREAK = 3600 * 1000; // 1 hour
-const LIMIT = 2000;
+const LIMIT = 10000;
 
 export type Discover = {
   identifier: string;
