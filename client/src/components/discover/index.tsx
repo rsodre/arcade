@@ -167,7 +167,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     const height = parent.clientHeight;
     const newCap = Math.ceil((height + parent.scrollTop) / ROW_HEIGHT);
     if (newCap < cap) return;
-    setCap(newCap + 1);
+    setCap(newCap + 5);
   }, [parentRef, cap, setCap]);
 
   useEffect(() => {
