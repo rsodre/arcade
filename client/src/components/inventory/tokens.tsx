@@ -29,12 +29,10 @@ export const Tokens = ({ tokens, credits }: TokensProps) => {
   const [unfolded, setUnfolded] = useState(false);
 
   const filteredTokens = useMemo(() => {
-    const cap = unfolded ? tokens.length : DEFAULT_TOKENS_COUNT;
     return tokens
       .filter((token) => token.balance.amount > 0)
-      .sort((a, b) => b.balance.value - a.balance.value)
-      .slice(0, unfolded ? cap : DEFAULT_TOKENS_COUNT);
-  }, [tokens, unfolded]);
+      .sort((a, b) => b.balance.value - a.balance.value);
+  }, [tokens]);
 
   return (
     <div
@@ -48,14 +46,16 @@ export const Tokens = ({ tokens, credits }: TokensProps) => {
         chains={chains}
         clickable={false}
       />
-      {filteredTokens.map((token) => (
-        <Item
-          key={token.metadata.address}
-          token={token}
-          editions={editions}
-          chains={chains}
-        />
-      ))}
+      {filteredTokens
+        .slice(0, unfolded ? filteredTokens.length : DEFAULT_TOKENS_COUNT)
+        .map((token) => (
+          <Item
+            key={token.metadata.address}
+            token={token}
+            editions={editions}
+            chains={chains}
+          />
+        ))}
       <div
         className={cn(
           "flex justify-center items-center gap-1 p-2 rounded-b cursor-pointer",
