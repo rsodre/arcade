@@ -136,9 +136,9 @@ export function usePlayerGameStats(projects: string[]) {
         (player) => BigInt(player.address || 0) === BigInt(address),
       ) + 1;
     const earnings =
-      gamePlayers.find(
-        (player) => BigInt(player.address || 0) === BigInt(address),
-      )?.earnings || 0;
+      gamePlayers
+        .filter((player) => BigInt(player.address || 0) === BigInt(address))
+        ?.reduce((acc, player) => acc + player.earnings, 0) || 0;
     return { rank, earnings };
   }, [address, gamePlayers]);
 
