@@ -129,24 +129,19 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
             time: currentTime,
             index: aggregates.length,
           };
-          // Check previous activity if there are some achievements earned
-          if (last) {
-            aggregates[last.index].achievements = (achievements[project] || [])
-              .filter((item) => {
-                const isPlayer =
-                  BigInt(item.player) ===
-                  BigInt(aggregates[last.index].callerAddress);
-                const timestamp = new Date(item.timestamp * 1000).getTime();
-                const inSession =
-                  timestamp >= aggregates[last.index].start &&
-                  timestamp <= aggregates[last.index].end;
-                return isPlayer && inSession;
-              })
-              .map((item) => item.achievement);
-          }
-          // Push new activity
           aggregates.push({ ...activity });
         }
+      });
+      const projectAchievements = achievements[project] || [];
+      aggregates.forEach((session) => {
+        session.achievements = projectAchievements.filter((item) => {
+          const isPlayer =
+            BigInt(item.player) === BigInt(session.callerAddress);
+          const timestamp = new Date(item.timestamp * 1000).getTime();
+          const inSession =
+            timestamp >= session.start && timestamp <= session.end;
+          return isPlayer && inSession;
+        }).map((item) => item.achievement);
       });
       result[project] = aggregates;
     });
