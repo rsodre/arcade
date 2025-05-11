@@ -25,9 +25,7 @@ export function User() {
     pathname = pathname.replace(/\/tab\/[^/]+/, "");
     pathname = joinPaths(pathname, `/player/${playerName}`);
     navigate(pathname);
-    // Close sidebar on mobile when a game is selected
-    close();
-  }, [name, address, navigate, close]);
+  }, [name, address, navigate]);
 
   useEffect(() => {
     async function fetch() {

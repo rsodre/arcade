@@ -83,11 +83,11 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
       refetchOnWindowFocus: false,
       onSuccess: ({ activities }) => {
         const newDiscovers: { [key: string]: Discover[] } = {};
-        activities?.items.forEach((item) => {
+        activities?.items.forEach((item, index) => {
           const project = item.meta.project;
           newDiscovers[project] = item.activities.map((activity) => {
             return {
-              identifier: activity.transactionHash,
+              identifier: `${activity.transactionHash}-${activity.entrypoint}-${index}`,
               project: project,
               callerAddress: activity.callerAddress,
               contractAddress: activity.contractAddress,

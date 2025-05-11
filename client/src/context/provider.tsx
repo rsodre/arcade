@@ -1,12 +1,10 @@
 import { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ArcadeProvider } from "./arcade";
-import { ThemeProvider } from "./theme";
 import { CartridgeAPIProvider } from "@cartridge/utils/api/cartridge";
 import { IndexerAPIProvider } from "@cartridge/utils/api/indexer";
 import { AchievementProvider } from "./achievement";
 import { StarknetProvider } from "./starknet";
-import { ProjectProvider } from "./project";
 import { CollectionProvider } from "./collection";
 import { TokenProvider } from "./token";
 import { ActivitiesProvider } from "./activities";
@@ -26,25 +24,21 @@ export function Provider({ children }: PropsWithChildren) {
         <QueryClientProvider client={queryClient}>
           <ArcadeProvider>
             <StarknetProvider>
-              <ProjectProvider>
-                <ThemeProvider defaultScheme="dark">
-                  <OwnershipsProvider>
-                    <CollectionProvider>
-                      <TokenProvider>
-                        <AchievementProvider>
-                          <DiscoversProvider>
-                            <ActivitiesProvider>
-                              <MetricsProvider>
-                                <SidebarProvider>{children}</SidebarProvider>
-                              </MetricsProvider>
-                            </ActivitiesProvider>
-                          </DiscoversProvider>
-                        </AchievementProvider>
-                      </TokenProvider>
-                    </CollectionProvider>
-                  </OwnershipsProvider>
-                </ThemeProvider>
-              </ProjectProvider>
+              <OwnershipsProvider>
+                <CollectionProvider>
+                  <TokenProvider>
+                    <AchievementProvider>
+                      <DiscoversProvider>
+                        <ActivitiesProvider>
+                          <MetricsProvider>
+                            <SidebarProvider>{children}</SidebarProvider>
+                          </MetricsProvider>
+                        </ActivitiesProvider>
+                      </DiscoversProvider>
+                    </AchievementProvider>
+                  </TokenProvider>
+                </CollectionProvider>
+              </OwnershipsProvider>
             </StarknetProvider>
           </ArcadeProvider>
         </QueryClientProvider>

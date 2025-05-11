@@ -57,12 +57,12 @@ export function Activity() {
             </p>
             {events
               .filter(({ date }) => date === current)
-              .map((props: CardProps, index: number) => {
+              .map((props: CardProps) => {
                 switch (props.variant) {
                   case "token":
                     return (
                       <Link
-                        key={index}
+                        key={props.key}
                         to={toExplorer(props.transactionHash, props.chainId)}
                         target="_blank"
                       >
@@ -78,7 +78,7 @@ export function Activity() {
                   case "collectible":
                     return (
                       <Link
-                        key={index}
+                        key={props.key}
                         to={toExplorer(props.transactionHash, props.chainId)}
                         target="_blank"
                       >
@@ -94,7 +94,7 @@ export function Activity() {
                   case "game":
                     return (
                       <Link
-                        key={index}
+                        key={props.key}
                         to={toExplorer(props.transactionHash, props.chainId)}
                         target="_blank"
                       >
@@ -109,7 +109,7 @@ export function Activity() {
                   case "achievement":
                     return (
                       <ActivityAchievementCard
-                        key={index}
+                        key={props.key}
                         title={"Achievement"}
                         image={props.image}
                         certified={props.certified}

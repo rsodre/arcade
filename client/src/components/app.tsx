@@ -10,6 +10,7 @@ import { useSidebar } from "@/hooks/sidebar";
 import { Header } from "./header";
 import { DEFAULT_NAMESPACE, DEFAULT_PROJECT } from "@/constants";
 import { useProject } from "@/hooks/project";
+import { ThemeProvider } from "@/context/theme";
 
 export function App() {
   const { isZero } = useAddress();
@@ -33,54 +34,56 @@ export function App() {
   }, [editions, setProjects]);
 
   return (
-    <SceneLayout>
-      <div
-        className={cn("h-full w-full overflow-y-scroll lg:px-0")}
-        style={{ scrollbarWidth: "none" }}
-      >
+    <ThemeProvider defaultScheme="dark">
+      <SceneLayout>
         <div
-          className={cn(
-            "lg:w-[1112px] lg:pt-8 lg:pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
-            "transition-all duration-300 ease-in-out",
-          )}
+          className={cn("h-full w-full overflow-y-scroll lg:px-0")}
+          style={{ scrollbarWidth: "none" }}
         >
           <div
             className={cn(
-              "absolute inset-0 bg-transparent z-10",
-              !isOpen && "hidden",
+              "lg:w-[1112px] lg:pt-8 lg:pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
+              "transition-all duration-300 ease-in-out",
             )}
-            onClick={() => toggle()}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-          />
-          <Games />
-          <div
-            className={cn(
-              "fixed lg:relative h-full w-full flex flex-col overflow-hidden px-3 lg:px-0 lg:pb-0",
-              "transition-transform duration-300 ease-in-out",
-              isPWA ? "pb-[90px]" : "pb-[84px]",
-              isOpen
-                ? "translate-x-[min(calc(100vw-64px),360px)]"
-                : "translate-x-0",
-            )}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
           >
-            <div className="lg:hidden w-full">
-              <Header />
-            </div>
             <div
               className={cn(
-                "relative grow h-full flex flex-col rounded-xl lg:gap-2 overflow-hidden border border-background-200 bg-background-100",
-                !isZero &&
-                  "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
+                "absolute inset-0 bg-transparent z-10",
+                !isOpen && "hidden",
               )}
+              onClick={() => toggle()}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+            />
+            <Games />
+            <div
+              className={cn(
+                "fixed lg:relative h-full w-full flex flex-col overflow-hidden px-3 lg:px-0 lg:pb-0",
+                "transition-transform duration-300 ease-in-out",
+                isPWA ? "pb-[90px]" : "pb-[84px]",
+                isOpen
+                  ? "translate-x-[min(calc(100vw-64px),360px)]"
+                  : "translate-x-0",
+              )}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
             >
-              {!player ? <GamePage /> : <PlayerPage />}
+              <div className="lg:hidden w-full">
+                <Header />
+              </div>
+              <div
+                className={cn(
+                  "relative grow h-full flex flex-col rounded-xl lg:gap-2 overflow-hidden border border-background-200 bg-background-100",
+                  !isZero &&
+                    "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
+                )}
+              >
+                {!player ? <GamePage /> : <PlayerPage />}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </SceneLayout>
+      </SceneLayout>
+    </ThemeProvider>
   );
 }
