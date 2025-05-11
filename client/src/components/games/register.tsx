@@ -280,7 +280,7 @@ export function Register() {
               <Topic label="Config" />
               <Field
                 name="project"
-                label="Project *"
+                label="Project (slot namespace) *"
                 placeholder="dojogame"
                 form={form}
               />
