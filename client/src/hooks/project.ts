@@ -70,12 +70,15 @@ export const useProject = () => {
   }, [game, editionParam, editions]);
 
   const player = useMemo(() => {
-    if (!playerParam) return;
+    if (playerParam && playerParam.match(/^0x[0-9a-fA-F]+$/)) {
+      return getChecksumAddress(playerParam);
+    }
     const address = data?.account?.controllers?.edges?.[0]?.node?.address;
-    if (!!address) return address;
-    if (!playerParam.match(/^0x[0-9a-fA-F]+$/)) return;
-    return getChecksumAddress(playerParam);
-  }, [playerParam, data]);
+    if (address) {
+      return getChecksumAddress(address);
+    }
+    return;
+  }, [data, playerParam]);
 
   return {
     game,

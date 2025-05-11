@@ -37,16 +37,26 @@ export function AchievementProvider({ children }: { children: ReactNode }) {
     {},
   );
 
-  const { projects } = useArcade();
+  const { editions } = useArcade();
   const { address } = useAddress();
 
   const trophiesProps = useMemo(
-    () => projects.map((prop) => ({ ...prop, name: TROPHY })),
-    [projects],
+    () =>
+      editions.map((edition) => ({
+        project: edition.config.project,
+        namespace: edition.namespace,
+        name: TROPHY,
+      })),
+    [editions],
   );
   const progressProps = useMemo(
-    () => projects.map((prop) => ({ ...prop, name: PROGRESS })),
-    [projects],
+    () =>
+      editions.map((edition) => ({
+        project: edition.config.project,
+        namespace: edition.namespace,
+        name: PROGRESS,
+      })),
+    [editions],
   );
 
   const {

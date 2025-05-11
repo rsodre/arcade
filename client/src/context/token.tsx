@@ -1,6 +1,5 @@
 import { createContext, useState, ReactNode, useMemo } from "react";
 import { useBalancesQuery } from "@cartridge/utils/api/cartridge";
-import { useAddress } from "@/hooks/address";
 import { useArcade } from "@/hooks/arcade";
 import { erc20Metadata } from "@cartridge/presets";
 import { getChecksumAddress, RpcProvider } from "starknet";
@@ -51,8 +50,7 @@ export type TokenContextType = {
 export const TokenContext = createContext<TokenContextType | null>(null);
 
 export function TokenProvider({ children }: { children: ReactNode }) {
-  const { address } = useAddress();
-  const { projects: slots } = useArcade();
+  const { editions, player: address } = useArcade();
 
   const [offset, setOffset] = useState(0);
   const [toriiData, setToriiData] = useState<{ [key: string]: Token }>({});
@@ -61,12 +59,15 @@ export function TokenProvider({ children }: { children: ReactNode }) {
     () => new RpcProvider({ nodeUrl: import.meta.env.VITE_RPC_URL }),
     [],
   );
-  const projects = useMemo(() => slots.map((slot) => slot.project), [slots]);
+  const projects = useMemo(
+    () => editions.map((edition) => edition.config.project),
+    [editions],
+  );
 
   // Query ERC20 balances from torii projects
   const { status } = useBalancesQuery(
     {
-      accountAddress: address,
+      accountAddress: address || "",
       projects: projects,
       limit: LIMIT,
       offset: offset,

@@ -37,7 +37,7 @@ export const DiscoversContext = createContext<DiscoversContextType | null>(
 );
 
 export function DiscoversProvider({ children }: { children: ReactNode }) {
-  const { projects: slots } = useArcade();
+  const { editions } = useArcade();
   const { events: achievements } = useAchievements();
   const [activities, setDiscovers] = useState<{ [key: string]: Discover[] }>(
     {},
@@ -63,14 +63,14 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
   }, [usernames, addresses]);
 
   const projects = useMemo(() => {
-    return slots.map((slot) => {
+    return editions.map((edition) => {
       return {
-        project: slot.project,
+        project: edition.config.project,
         address: "",
         limit: LIMIT,
       };
     });
-  }, [slots]);
+  }, [editions]);
 
   const { status } = useActivitiesQuery(
     {

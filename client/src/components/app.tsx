@@ -2,36 +2,24 @@ import { Games } from "@/components/games";
 import { SceneLayout } from "@/components/scenes/layout";
 import { GamePage } from "./pages/game";
 import { useEffect } from "react";
-import { useArcade } from "@/hooks/arcade";
-import { useAddress } from "@/hooks/address";
 import { PlayerPage } from "./pages/player";
 import { cn, useMediaQuery } from "@cartridge/ui-next";
 import { useSidebar } from "@/hooks/sidebar";
 import { Header } from "./header";
-import { DEFAULT_NAMESPACE, DEFAULT_PROJECT } from "@/constants";
 import { useProject } from "@/hooks/project";
 import { ThemeProvider } from "@/context/theme";
+import { useArcade } from "@/hooks/arcade";
 
 export function App() {
-  const { isZero } = useAddress();
-  const { editions, setProjects } = useArcade();
   const { isOpen, toggle, handleTouchMove, handleTouchStart } = useSidebar();
+  const { setPlayer } = useArcade();
   const { player } = useProject();
 
   const isPWA = useMediaQuery("(display-mode: standalone)");
 
   useEffect(() => {
-    setProjects([
-      {
-        namespace: DEFAULT_NAMESPACE,
-        project: DEFAULT_PROJECT,
-      },
-      ...editions.map((edition) => ({
-        namespace: edition.namespace,
-        project: edition.config.project,
-      })),
-    ]);
-  }, [editions, setProjects]);
+    setPlayer(player);
+  }, [player, setPlayer]);
 
   return (
     <ThemeProvider defaultScheme="dark">
@@ -74,7 +62,7 @@ export function App() {
               <div
                 className={cn(
                   "relative grow h-full flex flex-col rounded-xl lg:gap-2 overflow-hidden border border-background-200 bg-background-100",
-                  !isZero &&
+                  player &&
                     "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
                 )}
               >
