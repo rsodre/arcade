@@ -134,14 +134,16 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
       });
       const projectAchievements = achievements[project] || [];
       aggregates.forEach((session) => {
-        session.achievements = projectAchievements.filter((item) => {
-          const isPlayer =
-            BigInt(item.player) === BigInt(session.callerAddress);
-          const timestamp = new Date(item.timestamp * 1000).getTime();
-          const inSession =
-            timestamp >= session.start && timestamp <= session.end;
-          return isPlayer && inSession;
-        }).map((item) => item.achievement);
+        session.achievements = projectAchievements
+          .filter((item) => {
+            const isPlayer =
+              BigInt(item.player) === BigInt(session.callerAddress);
+            const timestamp = new Date(item.timestamp * 1000).getTime();
+            const inSession =
+              timestamp >= session.start && timestamp <= session.end;
+            return isPlayer && inSession;
+          })
+          .map((item) => item.achievement);
       });
       result[project] = aggregates;
     });
