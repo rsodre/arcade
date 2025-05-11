@@ -14,7 +14,6 @@ import {
 import { ActivityScene } from "../scenes/activity";
 import { ArcadeTabs } from "../modules";
 import { useLocation, useNavigate } from "react-router-dom";
-import { EditionModel } from "@bal7hazar/arcade-sdk";
 import { useUsername, useUsernames } from "@/hooks/account";
 import { useAddress } from "@/hooks/address";
 import AchievementPlayerHeader from "../modules/player-header";
@@ -29,13 +28,13 @@ import { joinPaths } from "@/helpers";
 
 const TABS_ORDER = ["inventory", "achievements", "activity"] as TabValue[];
 
-export function PlayerPage({ edition }: { edition?: EditionModel }) {
+export function PlayerPage() {
   const { address, isSelf, self } = useAddress();
   const { usernames, globals, players } = useAchievements();
   const [loading, setLoading] = useState(false);
   const { account, connector, isConnected } = useAccount();
   const { provider, follows } = useArcade();
-  const { tab } = useProject();
+  const { edition, tab } = useProject();
 
   const defaultValue = useMemo(() => {
     if (!TABS_ORDER.includes(tab as TabValue)) return "inventory";
