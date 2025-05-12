@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { useAccount } from "@starknet-react/core";
 import { getChecksumAddress } from "starknet";
-import { useProject } from "./project";
+import { useArcade } from "./arcade";
 
 export function useAddress() {
   const { isConnected, address: self } = useAccount();
-  const { player } = useProject();
+  const { player } = useArcade();
 
   const address = useMemo(() => {
     return getChecksumAddress(player || self || "0x0");
