@@ -1,3 +1,4 @@
+import { RpcProvider } from "starknet";
 import { z } from "zod";
 
 export const formSchema = z.object({
@@ -26,7 +27,24 @@ export const formSchema = z.object({
         message: "Torii instance not found",
       },
     ),
-  rpc: z.string().min(2, { message: "RPC is required" }),
+  rpc: z
+    .string()
+    .min(2, { message: "RPC is required" })
+    .refine(
+      async (val) => {
+        try {
+          const provider = new RpcProvider({ nodeUrl: val });
+          const response = await provider.getChainId();
+          return !!response;
+        } catch (error) {
+          console.log("Error querying RPC:", error);
+          return false;
+        }
+      },
+      {
+        message: "Torii instance not found",
+      },
+    ),
   // Properties
   color: z.string().startsWith("#", { message: "Invalid Color" }),
   preset: z.string().min(2, { message: "Preset is required" }),

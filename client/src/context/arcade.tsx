@@ -84,7 +84,12 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
       const chains: Chain[] = await Promise.all(
         Object.values(editions).map(async (edition) => {
           const provider = new RpcProvider({ nodeUrl: edition.config.rpc });
-          const id = await provider.getChainId();
+          let id = "0x0";
+          try {
+            id = await provider.getChainId();
+          } catch (e) {
+            // Skip
+          }
           return {
             id: BigInt(id),
             name: shortString.decodeShortString(id),
@@ -104,7 +109,9 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
       );
       // Deduplicate chains
       const uniques = chains.filter(
-        (chain, index) => index === chains.findIndex((t) => t.id === chain.id),
+        (chain, index) =>
+          chain.id !== 0n &&
+          index === chains.findIndex((t) => t.id === chain.id),
       );
       setChains(uniques);
     }
