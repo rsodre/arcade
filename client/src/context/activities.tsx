@@ -62,15 +62,10 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
 
   const { data: transfers, status: transfersStatus } = useTransfersQuery(
     {
-      projects: projects
-        .map((project) => ({
-          ...project,
-          date: "",
-        }))
-        .filter(
-          ({ project }) =>
-            !project.includes("eternum") && !project.includes("pistols"),
-        ), // FIXME: remove this filter once it doesnt block query
+      projects: projects.map((project) => ({
+        ...project,
+        date: "",
+      })),
     },
     {
       queryKey: ["transfers", address, projects],
