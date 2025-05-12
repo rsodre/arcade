@@ -16,7 +16,7 @@ pub mod RegisterableComponent {
 
     use registry::constants::COLLECTION_ID;
     use registry::store::{Store, StoreTrait};
-    use registry::models::access::{AccessAssert};
+    use registry::models::access::{AccessAssert, AccessTrait};
     use registry::models::game::{GameTrait, GameAssert};
     use registry::models::edition::{EditionTrait, EditionAssert};
     use registry::models::collection::{CollectionTrait, CollectionAssert};
@@ -77,6 +77,40 @@ pub mod RegisterableComponent {
                 },
                 Option::None => Default::default(),
             }
+        }
+
+        fn grant_role(
+            self: @ComponentState<TContractState>,
+            world: WorldStorage,
+            account: ContractAddress,
+            role_id: u8,
+        ) {
+            // [Setup] Datastore
+            let mut store: Store = StoreTrait::new(world);
+            // [Check] Caller is allowed
+            let caller_access = store.get_access(starknet::get_caller_address().into());
+            let role: Role = role_id.into();
+            caller_access.assert_is_allowed(role);
+            // [Effect] Grant role
+            let mut access = store.get_access(account.into());
+            access.grant(role);
+            // [Effect] Store access
+            store.set_access(@access);
+        }
+
+        fn revoke_role(
+            self: @ComponentState<TContractState>, world: WorldStorage, account: ContractAddress,
+        ) {
+            // [Setup] Datastore
+            let mut store: Store = StoreTrait::new(world);
+            // [Check] Caller is allowed
+            let caller_access = store.get_access(starknet::get_caller_address().into());
+            caller_access.assert_is_allowed(Role::Owner);
+            // [Effect] Grant role
+            let mut access = store.get_access(account.into());
+            access.revoke();
+            // [Effect] Store access
+            store.set_access(@access);
         }
     }
 

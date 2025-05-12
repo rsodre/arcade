@@ -1,7 +1,6 @@
-import { useArcade } from "@/hooks/arcade";
 import { Chain, mainnet, sepolia } from "@starknet-react/chains";
 import { jsonRpcProvider, StarknetConfig, voyager } from "@starknet-react/core";
-import { PropsWithChildren, useMemo, useRef } from "react";
+import { PropsWithChildren, useContext, useMemo, useRef } from "react";
 import { constants } from "starknet";
 import ControllerConnector from "@cartridge/connector/controller";
 import {
@@ -11,6 +10,7 @@ import {
 } from "@cartridge/controller";
 import { getSocialPolicies, getRegistryPolicies } from "@bal7hazar/arcade-sdk";
 import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
+import { ArcadeContext } from "./arcade";
 
 const chainId = constants.StarknetChainId.SN_MAIN;
 
@@ -29,7 +29,15 @@ const profile: ProfileOptions = {
 };
 
 export function StarknetProvider({ children }: PropsWithChildren) {
-  const { chains } = useArcade();
+  const context = useContext(ArcadeContext);
+
+  if (!context) {
+    throw new Error(
+      "The `useArcade` hook must be used within a `ArcadeProvider`",
+    );
+  }
+
+  const { chains } = context;
   const controllerRef = useRef<ControllerConnector | null>(null);
 
   const jsonProvider = useMemo(() => {

@@ -12,6 +12,7 @@ import {
   Registry,
   Social,
   PinEvent,
+  AccessModel,
   GameModel,
   RegistryModel,
   SocialModel,
@@ -44,6 +45,7 @@ interface ArcadeContextType {
   provider: ExternalProvider;
   pins: { [playerId: string]: string[] };
   follows: { [playerId: string]: string[] };
+  accesses: AccessModel[];
   games: GameModel[];
   editions: EditionModel[];
   chains: Chain[];
@@ -67,6 +69,9 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
   const currentValue = useContext(ArcadeContext);
   const [pins, setPins] = useState<{ [playerId: string]: string[] }>({});
   const [follows, setFollows] = useState<{ [playerId: string]: string[] }>({});
+  const [accesses, setAccesses] = useState<{ [gameId: string]: AccessModel }>(
+    {},
+  );
   const [games, setGames] = useState<{ [gameId: string]: GameModel }>({});
   const [editions, setEditions] = useState<{
     [editionId: string]: EditionModel;
@@ -180,7 +185,21 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
 
   const handleRegistryModels = useCallback((models: RegistryModel[]) => {
     models.forEach(async (model: RegistryModel) => {
-      if (GameModel.isType(model as GameModel)) {
+      if (AccessModel.isType(model as AccessModel)) {
+        const access = model as AccessModel;
+        if (!access.exists()) {
+          setAccesses((prevAccesses) => {
+            const newAccesses = { ...prevAccesses };
+            delete newAccesses[access.identifier];
+            return newAccesses;
+          });
+          return;
+        }
+        setAccesses((prevAccesses) => ({
+          ...prevAccesses,
+          [access.identifier]: access,
+        }));
+      } else if (GameModel.isType(model as GameModel)) {
         const game = model as GameModel;
         if (!game.exists()) {
           setGames((prevGames) => {
@@ -234,13 +253,23 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!initialized) return;
-    const options: RegistryOptions = { game: true, edition: true };
+    const options: RegistryOptions = {
+      access: true,
+      game: true,
+      edition: true,
+    };
     Registry.fetch(handleRegistryModels, options);
     Registry.sub(handleRegistryModels, options);
     return () => {
       Registry.unsub();
     };
   }, [initialized, handleRegistryModels]);
+
+  const sortedAccesses = useMemo(() => {
+    return Object.values(accesses).sort((a, b) =>
+      a.identifier.localeCompare(b.identifier),
+    );
+  }, [accesses]);
 
   const sortedGames = useMemo(() => {
     return Object.values(games).sort((a, b) => a.name.localeCompare(b.name));
@@ -259,6 +288,7 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
         provider,
         pins,
         follows,
+        accesses: sortedAccesses,
         games: sortedGames,
         editions: sortedEditions,
         chains,

@@ -25,10 +25,11 @@ export const Editions = () => {
   const editionOwner = useMemo(() => {
     if (!edition) return false;
     const ownership = ownerships.find(
-      (ownership) => ownership.tokenId === BigInt(edition.id),
+      (ownership) =>
+        ownership.tokenId === BigInt(edition.id) &&
+        BigInt(ownership.accountAddress) === BigInt(address || "0x0"),
     );
-    if (!ownership) return false;
-    return BigInt(ownership.accountAddress) === BigInt(address || "0x0");
+    return !!ownership;
   }, [edition, ownerships, address]);
 
   const gameOwner = useMemo(() => {
@@ -107,7 +108,7 @@ export const Editions = () => {
     setEdition(original.clone());
   }, [original]);
 
-  if (!game) return null;
+  if (!game || gameEditions.length === 0) return null;
 
   return (
     <div className="flex items-stretch gap-2 h-8">
@@ -115,6 +116,8 @@ export const Editions = () => {
         disabled={gameEditions.length < 2}
         label={edition?.name || ""}
         certified={certifieds[BigInt(edition?.id || 0).toString()]}
+        whitelisted={edition?.whitelisted}
+        published={edition?.published}
       >
         {gameEditions.map((item) => (
           <EditionAction
@@ -122,6 +125,8 @@ export const Editions = () => {
             active={item.id === edition?.id}
             label={item.name}
             certified={certifieds[BigInt(item.id).toString()]}
+            whitelisted={item.whitelisted}
+            published={item.published}
             onClick={() => onClick(item)}
           />
         ))}

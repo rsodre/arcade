@@ -27,12 +27,16 @@ interface EditionActionsProps
     VariantProps<typeof editionActionsVariants> {
   label: string;
   certified?: boolean;
+  whitelisted?: boolean;
+  published?: boolean;
   disabled?: boolean;
 }
 
 const EditionActions = ({
   label,
   certified,
+  whitelisted,
+  published,
   disabled,
   variant,
   className,
@@ -55,10 +59,24 @@ const EditionActions = ({
               "bg-background-150 hover:bg-background-200 data-[disabled=true]:hover:bg-background-150 text-foreground-300 hover:text-foreground-200 data-[disabled=true]:hover:text-foreground-300 data-[disabled=true]:cursor-default border border-background-200 h-8 w-full flex items-center justify-start gap-1 px-1",
             )}
           >
-            {certified ? (
+            {certified && whitelisted ? (
               <VerifiedIcon size="sm" />
-            ) : (
+            ) : whitelisted ? (
               <BranchIcon className="w-5 h-5 p-0.25" />
+            ) : published ? (
+              <div
+                key="published"
+                className="h-5 w-5 p-[3px] flex items-center justify-center"
+              >
+                <i className="fa-rocket fa-solid h-full w-full" />
+              </div>
+            ) : (
+              <div
+                key="default"
+                className="h-5 w-5 p-[3px] flex items-center justify-center"
+              >
+                <i className="fa-eye-slash fa-solid h-full w-full" />
+              </div>
             )}
             <p className="text-sm text-start font-normal truncate hidden lg:block lg:w-[120px]">
               {label}

@@ -10,6 +10,8 @@ interface ArcadeGameSelectProps
   cover?: string;
   points?: number;
   active?: boolean;
+  downlighted?: boolean;
+  icon?: string;
 }
 
 export const arcadeGameSelectVariants = cva(
@@ -39,6 +41,8 @@ export const ArcadeGameSelect = ({
   cover,
   points,
   active,
+  downlighted,
+  icon,
   variant,
   className,
   ...props
@@ -54,14 +58,27 @@ export const ArcadeGameSelect = ({
       {...props}
     >
       <Thumbnail icon={logo} size="sm" variant="default" />
-      <p
-        className={cn(
-          "grow text-sm font-normal text-foreground-100 transition-colors duration-150 ease-in-out truncate whitespace-nowrap",
-          active && "text-primary",
+      <div className="grow flex items-center gap-2">
+        <p
+          className={cn(
+            "text-sm font-normal text-foreground-100 transition-colors duration-150 ease-in-out truncate whitespace-nowrap",
+            downlighted && "text-foreground-300",
+            active && "text-primary",
+          )}
+        >
+          {name}
+        </p>
+        {icon && (
+          <div
+            key={icon}
+            className="h-5 w-5 p-[3px] flex items-center justify-center"
+          >
+            <i
+              className={cn("fa-solid h-full w-full text-foreground-300", icon)}
+            />
+          </div>
         )}
-      >
-        {name}
-      </p>
+      </div>
       {!!points && (
         <ArcadePoints
           label={points.toLocaleString()}

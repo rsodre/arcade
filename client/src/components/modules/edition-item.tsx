@@ -31,6 +31,8 @@ interface EditionActionProps
   label: string;
   active?: boolean;
   certified?: boolean;
+  published?: boolean;
+  whitelisted?: boolean;
 }
 
 const EditionAction = ({
@@ -39,6 +41,8 @@ const EditionAction = ({
   label,
   active,
   certified,
+  published,
+  whitelisted,
   ...props
 }: EditionActionProps) => {
   return (
@@ -47,10 +51,24 @@ const EditionAction = ({
       className={cn(editionActionVariants({ variant }), className)}
       {...props}
     >
-      {certified ? (
+      {certified && whitelisted ? (
         <VerifiedIcon size="sm" />
-      ) : (
+      ) : whitelisted ? (
         <BranchIcon className="w-5 h-5 p-0.25" />
+      ) : published ? (
+        <div
+          key="published"
+          className="h-5 w-5 p-[3px] flex items-center justify-center"
+        >
+          <i className="fa-rocket fa-solid h-full w-full" />
+        </div>
+      ) : (
+        <div
+          key="default"
+          className="h-5 w-5 p-[3px] flex items-center justify-center"
+        >
+          <i className="fa-eye-slash fa-solid h-full w-full" />
+        </div>
       )}
       <p className="text-sm font-medium">{label}</p>
     </div>

@@ -2,6 +2,7 @@ import { constants } from "starknet";
 import { configs } from "../../configs";
 import { NAMESPACE } from "../../constants";
 import { getContractByName } from "../../provider/helpers";
+import { Access } from "./access";
 import { Game } from "./game";
 import { Edition } from "./edition";
 import { DefaultRegistryOptions, RegistryOptions } from "./options";
@@ -21,7 +22,7 @@ export const getRegistryPolicies = (
       [address]: {
         name: CONTRACT_NAME,
         description: CONTRACT_DESCRIPTION,
-        methods: [...(options.game ? Game.getMethods() : []), ...(options.edition ? Edition.getMethods() : [])],
+        methods: [...(options.access ? Access.getMethods() : []), ...(options.game ? Game.getMethods() : []), ...(options.edition ? Edition.getMethods() : []),],
       },
     },
   };

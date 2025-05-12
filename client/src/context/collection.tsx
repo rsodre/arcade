@@ -4,6 +4,7 @@ import {
   useCollectionsQuery,
 } from "@cartridge/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
+import { DEFAULT_PROJECT } from "@/constants";
 
 const LIMIT = 10000;
 
@@ -38,7 +39,10 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
   const [erc1155s, setErc1155s] = useState<Collection[]>([]);
 
   const projects = useMemo(
-    () => editions.map((edition) => edition.config.project),
+    () => [
+      DEFAULT_PROJECT,
+      ...editions.map((edition) => edition.config.project),
+    ],
     [editions],
   );
 

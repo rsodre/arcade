@@ -7,6 +7,13 @@ use starknet::ContractAddress;
 #[starknet::interface]
 pub trait IRegistry<TContractState> {
     fn token_uri(self: @TContractState, token_id: u256) -> ByteArray;
+    fn grant(
+        self: @TContractState,
+        world_address: ContractAddress,
+        account: ContractAddress,
+        role_id: u8,
+    );
+    fn revoke(self: @TContractState, world_address: ContractAddress, account: ContractAddress);
     fn register_game(
         self: @TContractState,
         world_address: ContractAddress,
@@ -164,6 +171,21 @@ pub mod Registry {
         fn token_uri(self: @ContractState, token_id: u256) -> ByteArray {
             let world = self.world_storage();
             RegisterableImpl::token_uri(self.registerable, world, token_id)
+        }
+
+        fn grant(
+            self: @ContractState,
+            world_address: ContractAddress,
+            account: ContractAddress,
+            role_id: u8,
+        ) {
+            let world = self.world_storage();
+            RegisterableImpl::grant_role(self.registerable, world, account, role_id);
+        }
+
+        fn revoke(self: @ContractState, world_address: ContractAddress, account: ContractAddress) {
+            let world = self.world_storage();
+            RegisterableImpl::revoke_role(self.registerable, world, account);
         }
 
         fn register_game(

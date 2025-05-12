@@ -11,7 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { Register } from "./register";
-import { GameModel } from "@bal7hazar/arcade-sdk";
+import { GameModel, RoleType } from "@bal7hazar/arcade-sdk";
 import { useLocation, useNavigate } from "react-router-dom";
 import arcade from "@/assets/arcade-logo.png";
 import banner from "@/assets/banner.png";
@@ -69,6 +69,8 @@ export const Games = () => {
             cover={banner}
             active={!selected}
             owner={false}
+            whitelisted={true}
+            published={true}
           />
           <p className="font-semibold text-xs tracking-wider text-foreground-400 px-2 py-3">
             Games
@@ -93,6 +95,8 @@ export const Games = () => {
                   ) === BigInt(address || "0x1")
                 }
                 original={game}
+                whitelisted={game.whitelisted}
+                published={game.published}
               />
             ))}
           </CardListContent>
@@ -146,6 +150,8 @@ export const Game = ({
   cover,
   active,
   owner,
+  whitelisted,
+  published,
   original,
 }: {
   id: number;
@@ -154,10 +160,26 @@ export const Game = ({
   cover?: string;
   active: boolean;
   owner: boolean;
+  whitelisted: boolean;
+  published: boolean;
   original?: GameModel;
 }) => {
-  const { editions } = useArcade();
+  const { address } = useAccount();
+  const { accesses, editions } = useArcade();
   const [game, setGame] = useState<GameModel | null>(null);
+
+  const access = useMemo(() => {
+    return accesses.find(
+      (access) => BigInt(access.address) === BigInt(address || "0x1"),
+    );
+  }, [accesses, address]);
+
+  const admin = useMemo(() => {
+    return (
+      access?.role?.value === RoleType.Owner ||
+      access?.role.value === RoleType.Admin
+    );
+  }, [access]);
 
   const projects = useMemo(() => {
     return editions
@@ -181,8 +203,6 @@ export const Game = ({
     // Close sidebar on mobile when a game is selected
     close();
   }, [game, location, navigate, close]);
-
-  const admin = owner;
 
   const setWhitelisted = useCallback(
     (status: boolean) => {
@@ -212,6 +232,8 @@ export const Game = ({
     setGame(original.clone());
   }, [original]);
 
+  if (!!game && !whitelisted && !owner && !admin) return null;
+
   return (
     <div className="flex items-center gap-2">
       <div
@@ -226,6 +248,10 @@ export const Game = ({
           active={active}
           onClick={handleClick}
           variant="darkest"
+          downlighted={!whitelisted}
+          icon={
+            whitelisted ? undefined : published ? "fa-rocket" : "fa-eye-slash"
+          }
           className="grow rounded"
         />
       </div>

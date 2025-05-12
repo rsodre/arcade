@@ -1,5 +1,6 @@
 import { initSDK } from "..";
 import { constants } from "starknet";
+import { Access, AccessModel } from "./access";
 import { Game, GameModel } from "./game";
 import { Edition, EditionModel } from "./edition";
 import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
@@ -8,8 +9,8 @@ import { NAMESPACE } from "../../constants";
 import { RegistryOptions, DefaultRegistryOptions } from "./options";
 
 export * from "./policies";
-export { GameModel, EditionModel, RegistryOptions };
-export type RegistryModel = GameModel | EditionModel;
+export { AccessModel, GameModel, EditionModel, RegistryOptions };
+export type RegistryModel = AccessModel | GameModel | EditionModel;
 
 export const Registry = {
   sdk: undefined as SDK<SchemaType> | undefined,
@@ -20,11 +21,12 @@ export const Registry = {
   },
 
   isEntityQueryable(options: RegistryOptions) {
-    return options.game || options.edition;
+    return options.game || options.edition || options.access;
   },
 
   getEntityQuery: (options: RegistryOptions = DefaultRegistryOptions) => {
     const keys: `${string}-${string}`[] = [];
+    if (options.access) keys.push(`${NAMESPACE}-${Access.getModelName()}`);
     if (options.game) keys.push(`${NAMESPACE}-${Game.getModelName()}`);
     if (options.edition) keys.push(`${NAMESPACE}-${Edition.getModelName()}`);
     const clauses = new ClauseBuilder().keys(keys, []);
@@ -40,11 +42,14 @@ export const Registry = {
       if (!entities) return;
       const models: RegistryModel[] = [];
       (entities as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
-        if (entity.models[NAMESPACE][Edition.getModelName()]) {
-          models.push(Edition.parse(entity));
+        if (entity.models[NAMESPACE][Access.getModelName()]) {
+          models.push(Access.parse(entity));
         }
         if (entity.models[NAMESPACE][Game.getModelName()]) {
           models.push(Game.parse(entity));
+        }
+        if (entity.models[NAMESPACE][Edition.getModelName()]) {
+          models.push(Edition.parse(entity));
         }
       });
       callback(models);
@@ -74,13 +79,17 @@ export const Registry = {
       if (!data || data.length === 0 || BigInt((data[0] as ParsedEntity<SchemaType>).entityId) === 0n) return;
       const entity = (data as ParsedEntity<SchemaType>[])[0];
       const eraseable = !entity.models[NAMESPACE];
-      if (!!entity.models[NAMESPACE]?.[Edition.getModelName()] || eraseable) {
-        const edition = Edition.parse(entity);
-        callback([edition]);
+      if (!!entity.models[NAMESPACE]?.[Access.getModelName()] || eraseable) {
+        const access = Access.parse(entity);
+        callback([access]);
       }
       if (!!entity.models[NAMESPACE]?.[Game.getModelName()] || eraseable) {
         const game = Game.parse(entity);
         callback([game]);
+      }
+      if (!!entity.models[NAMESPACE]?.[Edition.getModelName()] || eraseable) {
+        const edition = Edition.parse(entity);
+        callback([edition]);
       }
     };
 
