@@ -131,6 +131,31 @@ export class EditionModel {
   exists() {
     return this.worldAddress !== "0x0";
   }
+
+  clone(): EditionModel {
+    return new EditionModel(
+      this.identifier,
+      this.id,
+      this.worldAddress,
+      this.namespace,
+      this.published,
+      this.whitelisted,
+      this.priority,
+      this.gameId,
+      this.config,
+      this.color,
+      this.image,
+      this.image_data,
+      this.external_url,
+      this.description,
+      this.name,
+      this.animation_url,
+      this.youtube_url,
+      this.attributes.clone(),
+      this.properties.clone(),
+      this.socials.clone(),
+    );
+  }
 }
 
 export const Edition = {

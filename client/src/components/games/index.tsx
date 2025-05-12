@@ -1,10 +1,13 @@
 import {
   CardListContent,
+  DotsIcon,
   Input,
   SearchIcon,
+  Select,
+  SelectContent,
   useMediaQuery,
 } from "@cartridge/ui-next";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { Register } from "./register";
@@ -20,6 +23,9 @@ import { useOwnerships } from "@/hooks/ownerships";
 import { useAccount } from "@starknet-react/core";
 import { useProject } from "@/hooks/project";
 import { joinPaths } from "@/helpers";
+import ArcadeMenuButton from "../modules/menu-button";
+import { Publish } from "./publish";
+import { Whitelist } from "./whitelist";
 
 export const Games = () => {
   const { address } = useAccount();
@@ -86,7 +92,7 @@ export const Games = () => {
                     )?.accountAddress || "0x0",
                   ) === BigInt(address || "0x1")
                 }
-                game={game}
+                original={game}
               />
             ))}
           </CardListContent>
@@ -140,7 +146,7 @@ export const Game = ({
   cover,
   active,
   owner,
-  game,
+  original,
 }: {
   id: number;
   name: string;
@@ -148,9 +154,11 @@ export const Game = ({
   cover?: string;
   active: boolean;
   owner: boolean;
-  game?: GameModel;
+  original?: GameModel;
 }) => {
   const { editions } = useArcade();
+  const [game, setGame] = useState<GameModel | null>(null);
+
   const projects = useMemo(() => {
     return editions
       .filter((edition) => edition.gameId === game?.id)
@@ -174,6 +182,36 @@ export const Game = ({
     close();
   }, [game, location, navigate, close]);
 
+  const admin = owner;
+
+  const setWhitelisted = useCallback(
+    (status: boolean) => {
+      if (!game) return;
+      const newEdition = game.clone();
+      newEdition.whitelisted = status;
+      setGame(newEdition);
+    },
+    [game],
+  );
+
+  const setPublished = useCallback(
+    (status: boolean) => {
+      if (!game) return;
+      const newEdition = game.clone();
+      newEdition.published = status;
+      setGame(newEdition);
+    },
+    [game],
+  );
+
+  useEffect(() => {
+    if (!original) {
+      setGame(null);
+      return;
+    }
+    setGame(original.clone());
+  }, [original]);
+
   return (
     <div className="flex items-center gap-2">
       <div
@@ -191,7 +229,37 @@ export const Game = ({
           className="grow rounded"
         />
       </div>
-      {owner && !!game && <Update game={game} />}
+      {game && (admin || owner) && (
+        <Select>
+          <div className="flex justify-end items-center self-center">
+            <ArcadeMenuButton
+              active={false}
+              className="bg-background-150 border border-background-200 hover:text-foreground-100"
+            >
+              <DotsIcon size="sm" />
+            </ArcadeMenuButton>
+          </div>
+          <SelectContent className="bg-background-100">
+            {game && owner && <Update key={game.id} game={game} />}
+            {game && owner && (
+              <Publish
+                key={game.published ? "hide" : "publish"}
+                game={game}
+                action={game.published ? "hide" : "publish"}
+                setPublished={setPublished}
+              />
+            )}
+            {game && admin && (
+              <Whitelist
+                key={game.whitelisted ? "blacklist" : "whitelist"}
+                game={game}
+                action={game.whitelisted ? "blacklist" : "whitelist"}
+                setWhitelisted={setWhitelisted}
+              />
+            )}
+          </SelectContent>
+        </Select>
+      )}
     </div>
   );
 };

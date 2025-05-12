@@ -36,79 +36,8 @@ import {
 } from "@bal7hazar/arcade-sdk";
 import ControllerConnector from "@cartridge/connector/controller";
 import { MetadataHelper } from "@/helpers/metadata";
-
-const formSchema = z.object({
-  // Configuration
-  worldAddress: z
-    .string()
-    .min(20)
-    .max(66, { message: "World Address is required" }),
-  namespace: z.string().min(2).max(31, { message: "Namespace is required" }),
-  project: z
-    .string()
-    .min(2, { message: "Project is required" })
-    .refine(
-      async (val) => {
-        const response = await fetch(`https://api.cartridge.gg/x/${val}/torii`);
-        return !!response && response.status !== 404;
-      },
-      {
-        message: "Torii instance not found",
-      },
-    ),
-  rpc: z
-    .string()
-    .min(2, { message: "RPC is required" })
-    .refine(
-      async (val) => {
-        const response = await fetch(val);
-        return !!response && response.status !== 404;
-      },
-      {
-        message: "RPC cannot be reached",
-      },
-    ),
-  policies: z.string().refine((val) => val.startsWith("{") || !val, {
-    message: "Invalid Policies",
-  }),
-  // Properties
-  preset: z.string().min(2, { message: "Preset is required" }),
-  name: z.string().min(2, { message: "Name is required" }),
-  description: z.string().min(2, { message: "Description is required" }),
-  // Assets
-  image: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Image URL",
-    })
-    .refine(
-      async (val) => {
-        const response = await fetch(val);
-        return !!response && response.status !== 404;
-      },
-      {
-        message: "Asset not found",
-      },
-    ),
-  // Socials
-  website: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Website URL",
-  }),
-  github: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Github URL",
-  }),
-  // Gallery
-  videos: z
-    .string()
-    .refine((val) => val.split("\n").every((v) => v.startsWith("http") || !v), {
-      message: "Invalid Video URL",
-    }),
-  images: z
-    .string()
-    .refine((val) => val.split("\n").every((v) => v.startsWith("http") || !v), {
-      message: "Invalid Image URL",
-    }),
-});
+import { formSchema } from "./form";
+import ControllerAction from "../modules/controller-action";
 
 export function Register({
   game,
@@ -248,14 +177,11 @@ export function Register({
             <PlusIcon size="sm" variant="solid" />
           </Button>
         ) : (
-          <Button
-            variant="secondary"
-            size="icon"
-            className="w-8 h-8 bg-background-150 hover:bg-background-200 text-foreground-300 hover:text-foreground-100 border border-background-200"
+          <ControllerAction
             disabled={!account}
-          >
-            <GearIcon size="sm" />
-          </Button>
+            label={"Update"}
+            Icon={<GearIcon size="sm" />}
+          />
         )}
       </SheetTrigger>
       <SheetContent className="border-background-300 overflow-clip flex flex-col">

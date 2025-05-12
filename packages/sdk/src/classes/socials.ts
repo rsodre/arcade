@@ -80,4 +80,17 @@ export class Socials {
     if (this.images) json.images = this.images;
     return byteArray.byteArrayFromString(JSON.stringify(json));
   }
+
+  clone(): Socials {
+    return new Socials({
+      discord: this.discord,
+      telegram: this.telegram,
+      twitter: this.twitter,
+      youtube: this.youtube,
+      website: this.website,
+      github: this.github,
+      videos: this.videos,
+      images: this.images,
+    });
+  }
 }

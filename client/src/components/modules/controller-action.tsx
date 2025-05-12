@@ -1,9 +1,9 @@
-import { cn } from "@cartridge/ui-next";
+import { cn, SpinnerIcon } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
-import { HTMLAttributes } from "react";
+import React, { HTMLAttributes } from "react";
 
 const controllerActionVariants = cva(
-  "flex items-center gap-1.5 px-3 py-2 h-10 min-w-48 cursor-pointer",
+  "flex items-center gap-1.5 px-3 py-2 h-10 min-w-48 cursor-pointer data-[disabled=true]:cursor-default",
   {
     variants: {
       variant: {
@@ -11,7 +11,7 @@ const controllerActionVariants = cva(
         darker: "",
         dark: "",
         default:
-          "bg-background-300 hover:bg-background-400 lg:bg-background-200 lg:hover:bg-background-300",
+          "bg-background-300 hover:bg-background-400 lg:bg-background-200 lg:hover:bg-background-300 data-[disabled=true]:hover:bg-background-300 data-[disabled=true]:lg:hover:bg-background-200 data-[disabled=true]:text-foreground-300",
         light: "",
         lighter: "",
         lightest: "",
@@ -29,24 +29,25 @@ interface ControllerActionProps
     VariantProps<typeof controllerActionVariants> {
   label: string;
   Icon?: React.ReactNode;
+  disabled?: boolean;
+  loading?: boolean;
 }
 
-const ControllerAction = ({
-  variant,
-  className,
-  label,
-  Icon,
-  ...props
-}: ControllerActionProps) => {
+const ControllerAction = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & ControllerActionProps
+>(({ variant, className, label, Icon, disabled, loading, ...props }, ref) => {
   return (
     <div
+      ref={ref}
+      data-disabled={disabled}
       className={cn(controllerActionVariants({ variant }), className)}
       {...props}
     >
-      {Icon}
-      <p className="text-foreground-100 text-sm font-medium">{label}</p>
+      {loading ? <SpinnerIcon size="sm" className="animate-spin" /> : Icon}
+      <p className="text-sm font-medium">{label}</p>
     </div>
   );
-};
+});
 
 export default ControllerAction;

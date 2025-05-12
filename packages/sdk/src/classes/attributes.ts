@@ -48,4 +48,12 @@ export class Attributes {
     if (this.game) attributes.push({ trait_type: "game", value: this.game });
     return byteArray.byteArrayFromString(JSON.stringify(attributes));
   }
+
+  clone(): Attributes {
+    return new Attributes({
+      preset: this.preset,
+      color: this.color,
+      game: this.game,
+    });
+  }
 }

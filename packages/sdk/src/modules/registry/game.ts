@@ -104,6 +104,26 @@ export class GameModel {
   exists() {
     return this.name !== "";
   }
+
+  clone(): GameModel {
+    return new GameModel(
+      this.identifier,
+      this.id,
+      this.published,
+      this.whitelisted,
+      this.color,
+      this.image,
+      this.image_data,
+      this.external_url,
+      this.description,
+      this.name,
+      this.animation_url,
+      this.youtube_url,
+      this.attributes.clone(),
+      this.properties.clone(),
+      this.socials.clone(),
+    );
+  }
 }
 
 export const Game = {

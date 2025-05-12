@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Register } from "./register";
@@ -9,14 +9,20 @@ import { useProject } from "@/hooks/project";
 import { useOwnerships } from "@/hooks/ownerships";
 import { useAccount } from "@starknet-react/core";
 import { joinPaths } from "@/helpers";
+import { Publish } from "./publish";
+import { Whitelist } from "./whitelist";
+import { Prioritize } from "./prioritize";
+import { Select, SelectContent, DotsIcon } from "@cartridge/ui-next";
+import ArcadeMenuButton from "../modules/menu-button";
 
 export const Editions = () => {
   const { address } = useAccount();
   const { editions } = useArcade();
-  const { game, edition } = useProject();
+  const { game, edition: original } = useProject();
   const { ownerships } = useOwnerships();
+  const [edition, setEdition] = useState<EditionModel | null>(null);
 
-  const owner = useMemo(() => {
+  const editionOwner = useMemo(() => {
     if (!edition) return false;
     const ownership = ownerships.find(
       (ownership) => ownership.tokenId === BigInt(edition.id),
@@ -24,6 +30,15 @@ export const Editions = () => {
     if (!ownership) return false;
     return BigInt(ownership.accountAddress) === BigInt(address || "0x0");
   }, [edition, ownerships, address]);
+
+  const gameOwner = useMemo(() => {
+    if (!game) return false;
+    const ownership = ownerships.find(
+      (ownership) => ownership.tokenId === BigInt(game.id),
+    );
+    if (!ownership) return false;
+    return BigInt(ownership.accountAddress) === BigInt(address || "0x0");
+  }, [game, ownerships, address]);
 
   const gameEditions = useMemo(() => {
     if (!game) return [];
@@ -64,6 +79,34 @@ export const Editions = () => {
     [location, navigate, game],
   );
 
+  const setWhitelisted = useCallback(
+    (status: boolean) => {
+      if (!edition) return;
+      const newEdition = edition.clone();
+      newEdition.whitelisted = status;
+      setEdition(newEdition);
+    },
+    [edition],
+  );
+
+  const setPublished = useCallback(
+    (status: boolean) => {
+      if (!edition) return;
+      const newEdition = edition.clone();
+      newEdition.published = status;
+      setEdition(newEdition);
+    },
+    [edition],
+  );
+
+  useEffect(() => {
+    if (!original) {
+      setEdition(null);
+      return;
+    }
+    setEdition(original.clone());
+  }, [original]);
+
   if (!game) return null;
 
   return (
@@ -83,10 +126,56 @@ export const Editions = () => {
           />
         ))}
       </EditionActions>
-      {owner && !!edition && (
-        <Register key={edition.id} game={game} edition={edition} />
+      <Register game={game} />
+      {edition && (editionOwner || gameOwner) && (
+        <Select>
+          <div className="grow flex justify-end items-center self-center">
+            <ArcadeMenuButton
+              active={false}
+              className="bg-background-150 border border-background-200 hover:text-foreground-100"
+            >
+              <DotsIcon size="sm" />
+            </ArcadeMenuButton>
+          </div>
+          <SelectContent className="bg-background-100">
+            {edition && editionOwner && (
+              <Register key={edition.id} game={game} edition={edition} />
+            )}
+            {edition && editionOwner && (
+              <Publish
+                key={edition.published ? "hide" : "publish"}
+                edition={edition}
+                action={edition.published ? "hide" : "publish"}
+                setPublished={setPublished}
+              />
+            )}
+            {edition && gameOwner && (
+              <Whitelist
+                key={edition.whitelisted ? "blacklist" : "whitelist"}
+                edition={edition}
+                action={edition.whitelisted ? "blacklist" : "whitelist"}
+                setWhitelisted={setWhitelisted}
+              />
+            )}
+            {edition && gameOwner && (
+              <Prioritize
+                key="up"
+                edition={edition}
+                editions={gameEditions}
+                direction="up"
+              />
+            )}
+            {edition && gameOwner && (
+              <Prioritize
+                key="down"
+                edition={edition}
+                editions={gameEditions}
+                direction="down"
+              />
+            )}
+          </SelectContent>
+        </Select>
       )}
-      <Register key={game.id} game={game} />
     </div>
   );
 };

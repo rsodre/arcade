@@ -47,4 +47,13 @@ export class Properties {
     if (this.cover) json.cover = this.cover;
     return byteArray.byteArrayFromString(JSON.stringify(json));
   }
+
+  clone(): Properties {
+    return new Properties({
+      preset: this.preset,
+      icon: this.icon,
+      banner: this.banner,
+      cover: this.cover,
+    });
+  }
 }

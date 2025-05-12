@@ -3,7 +3,6 @@ import {
   Button,
   GearIcon,
   Input,
-  PlusIcon,
   Separator,
   Sheet,
   SheetContent,
@@ -35,86 +34,8 @@ import {
 } from "@bal7hazar/arcade-sdk";
 import ControllerConnector from "@cartridge/connector/controller";
 import { MetadataHelper } from "@/helpers/metadata";
-
-const formSchema = z.object({
-  color: z.string().startsWith("#", { message: "Invalid Color" }),
-  preset: z.string().min(2, { message: "Preset is required" }),
-  name: z.string().min(2, { message: "Name is required" }),
-  description: z.string().min(2, { message: "Description is required" }),
-  // Assets
-  // Fetch to ensure the image is valid
-  image: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Image URL",
-    })
-    .refine(
-      async (val) => {
-        const response = await fetch(val);
-        return !!response && response.status !== 404;
-      },
-      {
-        message: "Asset not found",
-      },
-    ),
-  banner: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Banner URL",
-    })
-    .refine(
-      async (val) => {
-        const response = await fetch(val);
-        return !!response && response.status !== 404;
-      },
-      {
-        message: "Asset not found",
-      },
-    ),
-  cover: z
-    .string()
-    .refine((val) => val.startsWith("http") || !val, {
-      message: "Invalid Cover URL",
-    })
-    .refine(
-      async (val) => {
-        const response = await fetch(val);
-        return !!response && response.status !== 404;
-      },
-      {
-        message: "Asset not found",
-      },
-    ),
-  // Socials
-  discord: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Discord URL",
-  }),
-  telegram: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Telegram URL",
-  }),
-  twitter: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Twitter URL",
-  }),
-  youtube: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Youtube URL",
-  }),
-  website: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Website URL",
-  }),
-  github: z.string().refine((val) => val.startsWith("http") || !val, {
-    message: "Invalid Github URL",
-  }),
-  videos: z
-    .string()
-    .refine((val) => val.split("\n").every((v) => v.startsWith("http") || !v), {
-      message: "Invalid Video URL",
-    }),
-  images: z
-    .string()
-    .refine((val) => val.split("\n").every((v) => v.startsWith("http") || !v), {
-      message: "Invalid Image URL",
-    }),
-});
+import ControllerAction from "../modules/controller-action";
+import { formSchema } from "./update-form";
 
 export function Update({ game }: { game: GameModel }) {
   const { account, connector } = useAccount();
@@ -237,25 +158,11 @@ export function Update({ game }: { game: GameModel }) {
   return (
     <Sheet open={close} onOpenChange={setClose}>
       <SheetTrigger asChild>
-        {!game ? (
-          <Button
-            className="normal-case text-sm font-medium text-foreground-300 tracking-normal font-sans grow"
-            variant="secondary"
-            disabled={!account}
-          >
-            <PlusIcon size="xs" variant="solid" />
-            Register Game
-          </Button>
-        ) : (
-          <Button
-            variant="secondary"
-            size="icon"
-            className="w-8 h-8 bg-background-150 hover:bg-background-200 text-foreground-300 hover:text-foreground-100 border border-background-200"
-            disabled={!account}
-          >
-            <GearIcon size="sm" />
-          </Button>
-        )}
+        <ControllerAction
+          disabled={!account}
+          label={"Update"}
+          Icon={<GearIcon size="sm" />}
+        />
       </SheetTrigger>
       <SheetContent className="border-background-300 overflow-clip flex flex-col">
         <SheetHeader>
