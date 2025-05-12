@@ -7,10 +7,10 @@ export function useUsername({ address }: { address: string }) {
   const { data } = useAccountNameQuery(
     { address: `0x${BigInt(address).toString(16)}` },
     {
-      enabled: true,
       queryKey: ["username", address],
       cacheTime: 1000 * 60 * 60 * 24,
       refetchOnWindowFocus: false,
+      enabled: !!address && BigInt(address) !== 0n,
     },
   );
 
@@ -24,6 +24,7 @@ export function useUsernames({ addresses }: { addresses: string[] }) {
       queryKey: ["usernames", addresses],
       cacheTime: 1000 * 60 * 60 * 24,
       refetchOnWindowFocus: false,
+      enabled: addresses.length > 0,
     },
   );
 

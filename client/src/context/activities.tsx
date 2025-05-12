@@ -4,7 +4,7 @@ import {
   useTransfersQuery,
 } from "@cartridge/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
-import { constants, getChecksumAddress } from "starknet";
+import { addAddressPadding, constants, getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { erc20Metadata } from "@cartridge/presets";
 import { getDate } from "@cartridge/utils";
@@ -168,6 +168,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
             (edition) => edition.config.project === item.meta.project,
           );
           const chainId = getChainId(edition?.config.rpc);
+          const image = `https://api.cartridge.gg/x/${item.meta.project}/torii/static/0x${BigInt(transfer.contractAddress).toString(16)}/${addAddressPadding(transfer.tokenId)}/image`;
           const card: CardProps = {
             variant: "collectible",
             key: `${transfer.transactionHash}-${transfer.eventId}`,
@@ -182,7 +183,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
                 ? getChecksumAddress(transfer.toAddress)
                 : getChecksumAddress(transfer.fromAddress),
             value: "",
-            image: metadata.image || "",
+            image: image,
             action:
               BigInt(transfer.fromAddress) === 0n
                 ? "mint"

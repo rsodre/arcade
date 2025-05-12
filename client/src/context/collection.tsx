@@ -64,6 +64,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
           const count = e.node.meta.assetCount;
           const first = e.node.assets.length > 0 ? e.node.assets[0] : undefined;
           let metadata: { image?: string } = {};
+
           try {
             metadata = JSON.parse(!first?.metadata ? "{}" : first?.metadata);
           } catch (error) {
@@ -72,7 +73,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
           const project = e.node.meta.project;
           newCollections[`${contractAddress}`] = {
             address: contractAddress,
-            imageUrl: metadata?.image ?? imagePath,
+            imageUrl: imagePath ?? metadata?.image,
             name: name ? name : "---",
             totalCount: count,
             type: CollectionType.ERC721,
