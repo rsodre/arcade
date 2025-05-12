@@ -38,6 +38,7 @@ export const useProject = () => {
     },
     {
       enabled: !!playerParam && !playerParam.match(/^0x[0-9a-fA-F]+$/),
+      refetchOnWindowFocus: false,
     },
   );
 
