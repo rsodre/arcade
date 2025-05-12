@@ -46,24 +46,6 @@ export const Editions = () => {
     return editions.filter((edition) => edition.gameId === game.id);
   }, [editions, game]);
 
-  const certifieds: { [key: string]: boolean } = useMemo(() => {
-    if (!game) return {};
-    const gameOwnership = ownerships.find(
-      (ownership) => ownership.tokenId === BigInt(game.id),
-    );
-    if (!gameOwnership) return {};
-    const values: { [key: string]: boolean } = {};
-    gameEditions.forEach((edition) => {
-      const ownership = ownerships.find(
-        (ownership) => ownership.tokenId === BigInt(edition.id),
-      );
-      if (!ownership) return;
-      values[edition.id] =
-        gameOwnership.accountAddress == ownership.accountAddress;
-    });
-    return values;
-  }, [gameEditions, game]);
-
   const location = useLocation();
   const navigate = useNavigate();
   const onClick = useCallback(
@@ -115,7 +97,7 @@ export const Editions = () => {
       <EditionActions
         disabled={gameEditions.length < 2}
         label={edition?.name || ""}
-        certified={certifieds[BigInt(edition?.id || 0).toString()]}
+        certified={edition?.certified}
         whitelisted={edition?.whitelisted}
         published={edition?.published}
       >
@@ -124,7 +106,7 @@ export const Editions = () => {
             key={item?.id}
             active={item.id === edition?.id}
             label={item.name}
-            certified={certifieds[BigInt(item.id).toString()]}
+            certified={item.certified}
             whitelisted={item.whitelisted}
             published={item.published}
             onClick={() => onClick(item)}

@@ -31,6 +31,7 @@ export class EditionModel {
     public attributes: Attributes,
     public properties: Properties,
     public socials: Socials,
+    public certified?: boolean,
   ) {
     this.identifier = identifier;
     this.id = id;
@@ -52,6 +53,7 @@ export class EditionModel {
     this.attributes = attributes;
     this.properties = properties;
     this.socials = socials;
+    this.certified = !!certified;
   }
 
   static from(identifier: string, model: any) {
@@ -154,6 +156,7 @@ export class EditionModel {
       this.attributes.clone(),
       this.properties.clone(),
       this.socials.clone(),
+      this.certified,
     );
   }
 }

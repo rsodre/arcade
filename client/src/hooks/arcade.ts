@@ -65,26 +65,42 @@ export const useArcade = () => {
   }, [games, ownerships, admin, address]);
 
   const filteredEditions = useMemo(() => {
-    return editions.filter((edition) => {
-      const gameOwner = ownerships.find(
-        (ownership) => ownership.tokenId === BigInt(edition.gameId),
-      );
-      const editionOwner = ownerships.find(
-        (ownership) => ownership.tokenId === BigInt(edition.id),
-      );
-      const isGameOwner =
-        BigInt(gameOwner?.accountAddress || "0x0") === BigInt(address || "0x1");
-      const isEditionOwner =
-        BigInt(editionOwner?.accountAddress || "0x0") ===
-        BigInt(address || "0x1");
-      return (
-        admin ||
-        isGameOwner ||
-        isEditionOwner ||
-        (edition.whitelisted && edition.published)
-      );
-    });
-  }, [editions, ownerships, admin, address]);
+    return editions
+      .filter((edition) => {
+        const gameOwner = ownerships.find(
+          (ownership) => ownership.tokenId === BigInt(edition.gameId),
+        );
+        const editionOwner = ownerships.find(
+          (ownership) => ownership.tokenId === BigInt(edition.id),
+        );
+        const isGameOwner =
+          BigInt(gameOwner?.accountAddress || "0x0") ===
+          BigInt(address || "0x1");
+        const isEditionOwner =
+          BigInt(editionOwner?.accountAddress || "0x0") ===
+          BigInt(address || "0x1");
+        return (
+          admin ||
+          isGameOwner ||
+          isEditionOwner ||
+          (edition.whitelisted && edition.published)
+        );
+      })
+      .map((edition) => {
+        const game = games.find((game) => game.id === edition.gameId);
+        const gameOwnership = ownerships.find(
+          (ownership) => ownership.tokenId === BigInt(game?.id || "0x0"),
+        );
+        if (!gameOwnership) return edition;
+        const editionOwnership = ownerships.find(
+          (ownership) => ownership.tokenId === BigInt(edition.id),
+        );
+        if (!editionOwnership) return edition;
+        edition.certified =
+          gameOwnership.accountAddress == editionOwnership.accountAddress;
+        return edition.clone();
+      });
+  }, [editions, games, ownerships, admin, address]);
 
   return {
     chainId,
