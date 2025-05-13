@@ -213,7 +213,7 @@ export function PlayerPage() {
         onFollowingClick={isSelf ? handleFollowing : undefined}
         className="relative p-3 pb-2 lg:p-6 lg:pb-0 gap-y-2 border-b border-background-200 lg:border-none pr-16"
       />
-      <div className="absolute flex gap-3 top-3 right-3 lg:top-6 lg:right-6">
+      <div className="absolute flex flex-col-reverse lg:flex-row gap-3 top-3 right-3 lg:top-6 lg:right-6">
         {!isSelf && isConnected && (
           <FollowButton
             following={following}
@@ -289,7 +289,7 @@ function FollowButton({
         isLoading={loading}
         className={cn(
           "bg-background-200 hover:opacity-80 disabled:bg-background-125 normal-case font-normal tracking-normal font-sans text-sm transition-opacity",
-          "h-9 px-4 py-2 rounded-full",
+          "h-9 px-2 lg:px-4 py-2 rounded-full",
         )}
       >
         <p className="hidden lg:block">Follow</p>

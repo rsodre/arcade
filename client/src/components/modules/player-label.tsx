@@ -86,7 +86,7 @@ export const AchievementPlayerLabel = ({
           </p>
           {TagIcon}
         </div>
-        <div className="bg-background-150 border border-background-200">
+        <div className="bg-background-150 border border-background-200 w-fit">
           <CopyAddress
             address={address}
             size="xs"
