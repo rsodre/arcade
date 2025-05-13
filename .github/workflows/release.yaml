@@ -60,6 +60,7 @@ jobs:
         with:
           name: v${{ github.event.client_payload.version }}
           tag_name: v${{ github.event.client_payload.version }}
+          prerelease: ${{ github.event.client_payload.tag == 'prerelease' }}
           files: |
             arcade/pkg/*.wasm
             arcade/pkg/*.js
