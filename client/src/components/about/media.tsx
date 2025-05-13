@@ -11,13 +11,7 @@ import ReactPlayer from "react-player/lazy";
 import { cn } from "@cartridge/ui-next";
 import { YoutubeEmbedIcon } from "./youtube-icon";
 
-export function Media({
-  videos,
-  images,
-}: {
-  videos: string[];
-  images: string[];
-}) {
+export function Media({ items }: { items: string[] }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
@@ -35,7 +29,7 @@ export function Media({
     });
   }, [api]);
 
-  if (!videos.length && !images.length) return null;
+  if (items.length === 0) return null;
 
   return (
     <div className="relative flex flex-col gap-2">
@@ -86,79 +80,99 @@ export function Media({
             }}
           />
           <CarouselContent className="flex gap-4">
-            {videos.map((video, index) => (
-              <CarouselItem
-                key={index}
-                className="basis-[295px] lg:basis-[600px]"
-              >
-                <div
-                  className={cn(
-                    "relative rounded-lg overflow-hidden w-[295px] h-[160px] lg:w-[600px] lg:h-[320px]",
-                    index === videos.length - 1 && !images.length && "pr-4",
-                  )}
+            {items.map((item, index) =>
+              item.includes("youtu") ? (
+                <CarouselItem
+                  key={item}
+                  className="basis-[295px] lg:basis-[600px]"
                 >
-                  <ReactPlayer
-                    url={video}
-                    width="100%"
-                    height="100%"
-                    loop={true}
-                    controls={false}
-                    muted={true}
-                    playing={current === index + 1}
-                    config={{
-                      // attempting to remove recommendation(not working)
-                      youtube: {
-                        playerVars: {
-                          modestbranding: 1,
-                          rel: 0,
-                          showinfo: 0,
-                          iv_load_policy: 3,
-                        },
-                      },
-                    }}
+                  <Video
+                    video={item}
+                    active={current === index + 1}
+                    shift={index === items.length - 1}
                   />
-                  <div className="absolute inset-0 z-10">
-                    <a
-                      href={video}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute bottom-5 right-5"
-                    >
-                      <YoutubeEmbedIcon
-                        className="hover:scale-110 transition-all duration-300"
-                        width={100}
-                        height={24}
-                        fill="white"
-                      />
-                    </a>
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-            {images.map((image, index) => (
-              <CarouselItem
-                key={index}
-                className="basis-[295px] lg:basis-[600px]"
-              >
-                <div
-                  className={cn(
-                    "rounded-lg overflow-hidden w-[295px] h-[160px] lg:w-[600px] lg:h-[320px]",
-                    index === images.length - 1 && "pr-4",
-                  )}
+                </CarouselItem>
+              ) : (
+                <CarouselItem
+                  key={item}
+                  className="basis-[295px] lg:basis-[600px]"
                 >
-                  <img
-                    className="w-full h-full object-cover"
-                    src={image}
-                    alt={`Image ${index}`}
-                  />
-                </div>
-              </CarouselItem>
-            ))}
+                  <Image image={item} shift={index === items.length - 1} />
+                </CarouselItem>
+              ),
+            )}
           </CarouselContent>
         </div>
       </Carousel>
     </div>
   );
 }
+
+const Image = ({ image, shift }: { image: string; shift: boolean }) => {
+  return (
+    <div
+      className={cn(
+        "rounded-lg overflow-hidden w-[295px] h-[160px] lg:w-[600px] lg:h-[320px]",
+        shift && "pr-4",
+      )}
+    >
+      <img className="w-full h-full object-cover" src={image} alt="Image" />
+    </div>
+  );
+};
+
+const Video = ({
+  video,
+  active,
+  shift,
+}: {
+  video: string;
+  active: boolean;
+  shift: boolean;
+}) => {
+  return (
+    <div
+      className={cn(
+        "relative rounded-lg overflow-hidden w-[295px] h-[160px] lg:w-[600px] lg:h-[320px]",
+        shift && "pr-4",
+      )}
+    >
+      <ReactPlayer
+        url={video}
+        width="100%"
+        height="100%"
+        loop={true}
+        controls={false}
+        muted={true}
+        playing={active}
+        config={{
+          youtube: {
+            playerVars: {
+              modestbranding: 1,
+              rel: 0,
+              showinfo: 0,
+              iv_load_policy: 3,
+            },
+          },
+        }}
+      />
+      <div className="absolute inset-0 z-10">
+        <a
+          href={video}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-5 right-5"
+        >
+          <YoutubeEmbedIcon
+            className="hover:scale-110 transition-all duration-300"
+            width={100}
+            height={24}
+            fill="white"
+          />
+        </a>
+      </div>
+    </div>
+  );
+};
 
 export default Media;
