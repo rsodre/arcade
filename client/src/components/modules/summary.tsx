@@ -114,12 +114,7 @@ export const AchievementSummary = ({
           color={color}
         />
         {!header && (
-          <AchievementPinIcons
-            theme={active}
-            pins={pins}
-            variant="default"
-            size="lg"
-          />
+          <AchievementPinIcons theme={active} pins={pins} variant="default" />
         )}
       </CardContent>
     </Card>

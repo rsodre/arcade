@@ -94,6 +94,11 @@ export const ArcadeGameHeader = ({
     [color],
   );
 
+  const style = useMemo(() => {
+    if (variant !== "default") return;
+    return { backgroundImage: `linear-gradient(0deg, ${colorMix})` };
+  }, [variant, colorMix]);
+
   return (
     <div
       data-clickable={clickable}
@@ -101,9 +106,7 @@ export const ArcadeGameHeader = ({
       onClick={onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{
-        backgroundImage: `linear-gradient(0deg, ${colorMix})`,
-      }}
+      style={style}
       {...props}
     >
       <div className="flex items-center gap-3 grow overflow-hidden">
@@ -133,7 +136,6 @@ export const ArcadeGameHeader = ({
           theme={active}
           pins={pins}
           variant={variant}
-          size="lg"
           className={className}
           color={color}
         />

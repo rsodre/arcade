@@ -2,7 +2,7 @@ import { cn } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 
 const achievementPinIconVariants = cva(
-  "p-2 rounded flex justify-center items-center data-[theme=true]:text-primary transition-colors",
+  "p-1.5 lg:p-2 rounded flex justify-center items-center data-[theme=true]:text-primary transition-colors",
   {
     variants: {
       variant: {
@@ -23,10 +23,7 @@ const achievementPinIconVariants = cva(
           "bg-transparent text-foreground-100 data-[empty=true]:text-foreground-400",
       },
       size: {
-        xs: "w-5 h-5",
-        default: "w-5 h-5 sm:w-6 sm:h-6",
-        md: "w-6 h-6",
-        lg: "w-8 h-8",
+        default: "w-6 h-6 lg:w-8 lg:h-8",
       },
     },
     defaultVariants: {
@@ -62,14 +59,9 @@ export const AchievementPinIcon = ({
       style={{ color: theme ? color : undefined }}
     >
       {empty ? (
-        <div className="max-w-[15px] max-h-[15px] fa-spider-web fa-thin" />
+        <div className="h-full w-full fa-spider-web fa-thin" />
       ) : (
-        <div
-          className={cn(
-            "max-w-[15px] max-h-[15px] fa-solid",
-            icon || "fa-trophy",
-          )}
-        />
+        <div className={cn("h-full w-full fa-solid", icon || "fa-trophy")} />
       )}
     </div>
   );

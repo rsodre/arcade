@@ -1,7 +1,7 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { AchievementPinIcon } from "./achievement-pin-icon";
 
-const achievementPinsVariants = cva("flex items-center gap-1.5", {
+const achievementPinsVariants = cva("flex items-center gap-2", {
   variants: {
     variant: {
       darkest: "",
@@ -13,16 +13,9 @@ const achievementPinsVariants = cva("flex items-center gap-1.5", {
       lightest: "",
       ghost: "",
     },
-    size: {
-      xs: "",
-      default: "",
-      md: "",
-      lg: "",
-    },
   },
   defaultVariants: {
     variant: "default",
-    size: "default",
   },
 });
 
@@ -38,18 +31,16 @@ export const AchievementPinIcons = ({
   pins,
   theme,
   variant,
-  size,
   className,
   color,
 }: AchievementPinIconsProps) => {
   return (
-    <div className={achievementPinsVariants({ variant, size })}>
+    <div className={achievementPinsVariants({ variant })}>
       {pins.map((value) => (
         <AchievementPinIcon
           key={value.id}
           icon={value.icon}
           variant={variant}
-          size={size}
           theme={theme}
           className={className}
           color={color}
@@ -60,7 +51,6 @@ export const AchievementPinIcons = ({
           key={index}
           empty
           variant={variant}
-          size={size}
           theme={false}
           className={className}
         />
