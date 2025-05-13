@@ -71,7 +71,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
             console.warn(error, { data: first?.metadata });
           }
           const project = e.node.meta.project;
-          newCollections[`${contractAddress}`] = {
+          newCollections[`${project}-${contractAddress}`] = {
             address: contractAddress,
             imageUrl: imagePath ?? metadata?.image,
             name: name ? name : "---",
@@ -98,7 +98,7 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
       projects: projects,
     },
     {
-      queryKey: ["collections", projects, offset, address],
+      queryKey: ["collectibles", projects, offset, address],
       enabled: projects.length > 0 && !!address && BigInt(address) !== 0n,
       refetchOnWindowFocus: false,
       onSuccess: ({ collectibles }) => {
@@ -116,9 +116,9 @@ export function CollectionProvider({ children }: { children: ReactNode }) {
             console.warn(error, { data: first?.metadata });
           }
           const project = e.node.meta.project;
-          newCollections[`${contractAddress}`] = {
+          newCollections[`${project}-${contractAddress}`] = {
             address: contractAddress,
-            imageUrl: metadata?.image ?? imagePath,
+            imageUrl: imagePath ?? metadata?.image,
             name: name ? name : "---",
             totalCount: count,
             type: CollectionType.ERC1155,
