@@ -8,7 +8,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -21,10 +22,15 @@ jobs:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org/"
 
+      - name: Install NPM Package
+        run: |
+          cd packages/sdk
+          pnpm install
+
       - name: Build NPM Package
         run: |
           cd packages/sdk
-          npm run build
+          pnpm run build build
 
       - name: Prepare NPM Package
         run: |
