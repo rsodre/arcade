@@ -39,7 +39,7 @@ jobs:
       - name: Prepare NPM Package
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          npm pkg set name=@cartridge/arcade-sdk
+          npm pkg set name=@cartridge/arcade
           npm pkg set version=${{ github.event.client_payload.version }}
           npm pkg set files='["*.js", "*.wasm", "*.d.ts"]'
           npm pkg set main=arcade.js
