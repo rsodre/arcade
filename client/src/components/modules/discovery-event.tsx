@@ -1,4 +1,4 @@
-import { getDuration, getTime } from "@/helpers";
+import { getTime } from "@/helpers";
 import { CardTitle, cn, Thumbnail } from "@cartridge/ui-next";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo, HTMLAttributes, useState, useEffect } from "react";
@@ -99,7 +99,7 @@ export const ArcadeDiscoveryEvent = ({
 };
 
 const DiscoveryEvent = ({
-  duration,
+  // duration,
   points,
   actions,
   achievements,
@@ -132,13 +132,13 @@ const DiscoveryEvent = ({
             : `${actions.length} Actions`
         }
       />
-      <Sentence content="for" />
+      {/* <Sentence content="for" />
       <Card
         icon="fa-clock"
         short={getDuration(duration)}
         long={getDuration(duration)}
         className="hidden lg:flex"
-      />
+      /> */}
       {points > 0 && (
         <>
           <Sentence content="and earned" />
