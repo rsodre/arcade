@@ -3,7 +3,7 @@ import { constants } from "starknet";
 import { Access, AccessModel } from "./access";
 import { Game, GameModel } from "./game";
 import { Edition, EditionModel } from "./edition";
-import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
+import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, SubscriptionCallbackArgs, ToriiQueryBuilder, ToriiResponse } from "@dojoengine/sdk";
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { RegistryOptions, DefaultRegistryOptions } from "./options";
@@ -37,11 +37,12 @@ export const Registry = {
     if (!Registry.sdk) return;
 
     const wrappedCallback = (
-      entities?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[],
+      entities?: ToriiResponse<SchemaType>,
     ) => {
       if (!entities) return;
       const models: RegistryModel[] = [];
-      (entities as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
+      const items = entities?.getItems();
+      items.forEach((entity: ParsedEntity<SchemaType>) => {
         if (entity.models[NAMESPACE][Access.getModelName()]) {
           models.push(Access.parse(entity));
         }
@@ -68,16 +69,13 @@ export const Registry = {
     const wrappedCallback = ({
       data,
       error,
-    }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
-      error?: Error | undefined;
-    }) => {
+    }: SubscriptionCallbackArgs<StandardizedQueryResult<SchemaType>, Error>) => {
       if (error) {
         console.error("Error subscribing to entities:", error);
         return;
       }
-      if (!data || data.length === 0 || BigInt((data[0] as ParsedEntity<SchemaType>).entityId) === 0n) return;
-      const entity = (data as ParsedEntity<SchemaType>[])[0];
+      if (!data || data.length === 0 || BigInt(data[0].entityId) === 0n) return;
+      const entity = data[0];
       const eraseable = !entity.models[NAMESPACE];
       if (!!entity.models[NAMESPACE]?.[Access.getModelName()] || eraseable) {
         const access = Access.parse(entity);

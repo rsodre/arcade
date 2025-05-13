@@ -5,7 +5,7 @@ import { Follow, FollowEvent } from "./follow";
 import { Guild, GuildModel } from "./guild";
 import { Alliance, AllianceModel } from "./alliance";
 import { Member, MemberModel } from "./member";
-import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder } from "@dojoengine/sdk";
+import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, ToriiQueryBuilder, ToriiResponse } from "@dojoengine/sdk";
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { SocialOptions, DefaultSocialOptions } from "./options";
@@ -51,10 +51,11 @@ export const Social = {
   fetchEntities: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {
     if (!Social.sdk) return;
 
-    const wrappedCallback = (entities: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[]) => {
+    const wrappedCallback = (entities: ToriiResponse<SchemaType>) => {
       if (!entities) return;
       const models: SocialModel[] = [];
-      (entities as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
+      const items = entities?.getItems();
+      items.forEach((entity: ParsedEntity<SchemaType>) => {
         if (entity.models[NAMESPACE][Alliance.getModelName()]) {
           models.push(Alliance.parse(entity));
         }
@@ -78,10 +79,11 @@ export const Social = {
 
   fetchEvents: async (callback: (models: SocialModel[]) => void, options: SocialOptions) => {
     if (!Social.sdk) return;
-    const wrappedCallback = (entities: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[]) => {
+    const wrappedCallback = (entities: ToriiResponse<SchemaType>) => {
       if (!entities) return;
       const events: SocialModel[] = [];
-      (entities as ParsedEntity<SchemaType>[]).forEach((entity: ParsedEntity<SchemaType>) => {
+      const items = entities?.getItems();
+      items.forEach((entity: ParsedEntity<SchemaType>) => {
         if (entity.models[NAMESPACE][Pin.getModelName()]) {
           events.push(Pin.parse(entity));
         }
@@ -107,7 +109,7 @@ export const Social = {
       data,
       error,
     }: {
-      data?: StandardizedQueryResult<SchemaType> | StandardizedQueryResult<SchemaType>[] | undefined;
+      data?: StandardizedQueryResult<SchemaType> | undefined;
       error?: Error | undefined;
     }) => {
       if (error) {
