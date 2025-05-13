@@ -1,7 +1,6 @@
 import {
   ArcadeMenuButton,
   ArcadeMenuItem,
-  ArcadeTab,
   BottomTab,
   ChestIcon,
   cn,
@@ -22,6 +21,7 @@ import {
 } from "@cartridge/ui-next";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
+import ArcadeTab from "./tab";
 
 const arcadeTabsVariants = cva(
   "flex justify-start items-end w-full p-0 px-4 border-b rounded-none",

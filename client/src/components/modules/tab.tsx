@@ -38,7 +38,7 @@ export const ArcadeTab = React.forwardRef<HTMLButtonElement, ArcadeTabProps>(
       <TabsTrigger
         value={value}
         className={cn(
-          "p-0 flex flex-col items-center cursor-pointer select-none transition-colors",
+          "p-0 flex flex-col items-center cursor-pointer select-none transition-colors data-[state=active]:bg-transparent data-[state=active]:shadow-none  data-[state=active]:drop-shadow-none",
           className,
         )}
         onClick={onClick}
