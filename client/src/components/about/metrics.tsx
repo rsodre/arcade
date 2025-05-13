@@ -206,6 +206,7 @@ export function Metrics() {
     return {
       clip: false,
       responsive: true,
+      clip: 5,
       interaction: {
         intersect: false,
         mode: "index",
