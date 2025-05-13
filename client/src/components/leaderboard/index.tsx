@@ -184,7 +184,7 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
     parent.scrollTop = 0;
     const height = parent.clientHeight;
     const cap = Math.ceil((height + parent.scrollTop) / ROW_HEIGHT);
-    setCap(cap);
+    setCap(cap + 5);
   }, [parentRef, edition, setCap]);
 
   return (

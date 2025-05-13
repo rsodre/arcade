@@ -189,13 +189,13 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     parent.scrollTop = 0;
     const height = parent.clientHeight;
     const cap = Math.ceil(height / ROW_HEIGHT);
-    setCap(cap);
+    setCap(cap + 5);
   }, [parentRef, edition, setCap]);
 
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
       <div
-        className="p-0 pt-3 lg:pt-6 mt-0 h-full overflow-y-scroll"
+        className="p-0 my-3 lg:my-6 mt-0 h-full overflow-hidden rounded"
         style={{ scrollbarWidth: "none" }}
       >
         <ArcadeSubTabs tabs={["all", "following"]} className="mb-3 lg:mb-4">
@@ -204,32 +204,24 @@ export function Discover({ edition }: { edition?: EditionModel }) {
             className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
             style={{ scrollbarWidth: "none" }}
           >
-            <TabsContent
-              className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
-              value="all"
-            >
+            <TabsContent className="p-0 mt-0 grow w-full" value="all">
               {activitiesStatus === "loading" && events.all.length === 0 ? (
                 <LoadingState />
               ) : activitiesStatus === "error" || events.all.length === 0 ? (
                 <EmptyState />
               ) : (
-                <div className="pb-3 lg:pb-6">
-                  <ArcadeDiscoveryGroup
-                    events={events.all.slice(0, cap)}
-                    rounded
-                    identifier={
-                      filteredEditions.length === 1
-                        ? filteredEditions[0].id
-                        : undefined
-                    }
-                  />
-                </div>
+                <ArcadeDiscoveryGroup
+                  events={events.all.slice(0, cap)}
+                  rounded
+                  identifier={
+                    filteredEditions.length === 1
+                      ? filteredEditions[0].id
+                      : undefined
+                  }
+                />
               )}
             </TabsContent>
-            <TabsContent
-              className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
-              value="following"
-            >
+            <TabsContent className="p-0 mt-0 grow w-full" value="following">
               {!isConnected ? (
                 <Connect />
               ) : activitiesStatus === "error" ||
@@ -240,17 +232,15 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                 events.following.length === 0 ? (
                 <LoadingState />
               ) : (
-                <div className="pb-3 lg:pb-6">
-                  <ArcadeDiscoveryGroup
-                    events={events.following.slice(0, cap)}
-                    rounded
-                    identifier={
-                      filteredEditions.length === 1
-                        ? filteredEditions[0].id
-                        : undefined
-                    }
-                  />
-                </div>
+                <ArcadeDiscoveryGroup
+                  events={events.following.slice(0, cap)}
+                  rounded
+                  identifier={
+                    filteredEditions.length === 1
+                      ? filteredEditions[0].id
+                      : undefined
+                  }
+                />
               )}
             </TabsContent>
           </div>
