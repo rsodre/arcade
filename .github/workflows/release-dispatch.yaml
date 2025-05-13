@@ -30,4 +30,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: release
-          client-payload: '{"version": "${{ github.event.inputs.version }}", "tag": ${{ github.event.inputs.tag }}  "dry_run": ${{ github.event.inputs.dry_run }}}'
+          client-payload: '{"version": "${{ github.event.inputs.version }}", "tag": "${{ github.event.inputs.tag }}",  "dry_run": ${{ github.event.inputs.dry_run }}}'
