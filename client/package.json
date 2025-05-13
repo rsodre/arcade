@@ -1,6 +1,6 @@
 {
-  "name": "@cartridge/arcade",
-  "version": "0.5.9",
+  "name": "@cartridge/client",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
