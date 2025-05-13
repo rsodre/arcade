@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: [release]
 
+env:
+  WORKING_DIRECTORY: ./packages/sdk
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -23,18 +26,16 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
 
       - name: Install NPM Package
-        run: |
-          cd packages/sdk
-          pnpm install
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: pnpm install
 
       - name: Build NPM Package
-        run: |
-          cd packages/sdk
-          pnpm run build
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: pnpm run build
 
       - name: Prepare NPM Package
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          cd packages/sdk
           npm pkg set name=@cartridge/arcade
           npm pkg set version=${{ github.event.client_payload.version }}
           npm pkg set files='["*.js", "*.wasm", "*.d.ts"]'
@@ -45,9 +46,8 @@ jobs:
 
       - name: Publish to NPM
         if: ${{ !github.event.client_payload.dry_run }}
-        run: |
-          cd arcade/pkg
-          npm publish --access public --tag ${{ !github.event.client_payload.tag }}
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm publish --access public --tag ${{ !github.event.client_payload.tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
