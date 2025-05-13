@@ -8,19 +8,19 @@ import {
   ProfileOptions,
   ProviderOptions,
 } from "@cartridge/controller";
-import { getSocialPolicies, getRegistryPolicies } from "@bal7hazar/arcade-sdk";
+// import { getSocialPolicies, getRegistryPolicies } from "@bal7hazar/arcade-sdk";
 import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
 import { ArcadeContext } from "./arcade";
 
 const chainId = constants.StarknetChainId.SN_MAIN;
 
 const keychain: KeychainOptions = {
-  policies: {
-    contracts: {
-      ...getSocialPolicies(chainId).contracts,
-      ...getRegistryPolicies(chainId).contracts,
-    },
-  },
+  // policies: {
+  //   contracts: {
+  //     ...getSocialPolicies(chainId).contracts,
+  //     ...getRegistryPolicies(chainId).contracts,
+  //   },
+  // },
 };
 
 const profile: ProfileOptions = {
