@@ -133,9 +133,9 @@ function Item({
       return;
     }
     const preset = edition?.properties.preset;
-    let options = [];
+    let options = ["closable=true"];
     if (token.metadata.project && token.metadata.project !== "extra") {
-      options.push(`ps=${token.metadata.project}`, "closable=true");
+      options.push(`ps=${token.metadata.project}`);
     }
     if (preset) {
       options.push(`preset=${preset}`);
