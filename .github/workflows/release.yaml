@@ -21,6 +21,11 @@ jobs:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org/"
 
+      - name: Build NPM Package
+        run: |
+          cd packages/sdk
+          npm run build
+
       - name: Prepare NPM Package
         run: |
           cd packages/sdk
