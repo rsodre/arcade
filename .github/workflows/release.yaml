@@ -30,7 +30,7 @@ jobs:
       - name: Build NPM Package
         run: |
           cd packages/sdk
-          pnpm run build build
+          pnpm run build
 
       - name: Prepare NPM Package
         run: |
