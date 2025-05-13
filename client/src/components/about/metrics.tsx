@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef } from "react";
-import { cn } from "@cartridge/ui-next";
+import { cn, useMediaQuery } from "@cartridge/ui-next";
 import { useMetrics } from "@/hooks/metrics";
 import { useTheme } from "@/hooks/context";
 import {
@@ -36,6 +36,7 @@ export function Metrics() {
   const { theme } = useTheme();
   const { metrics: allMetrics, status } = useMetrics();
   const chartRef = useRef<ChartJS<"line">>(null);
+  const isMobile = useMediaQuery("(max-width: 1024px)");
 
   const [activeTab, setActiveTab] = useState<"txs" | "players">("txs");
 
@@ -100,6 +101,9 @@ export function Metrics() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Variable to track the most recent date with data
+    let mostRecentDateWithData: number | null = null;
+
     // Process all data points
     allMetrics.forEach((metrics) => {
       metrics.data.forEach(({ date, transactionCount, callerCount }) => {
@@ -123,16 +127,32 @@ export function Metrics() {
           const dayData = dailyData.get(dayKey);
           dayData.transactionCount += transactionCount;
           dayData.callerCount += callerCount;
+
+          // Update the most recent date that has data
+          if (
+            mostRecentDateWithData === null ||
+            dayDiff < mostRecentDateWithData
+          ) {
+            mostRecentDateWithData = dayDiff;
+          }
         }
       });
     });
+
+    // If we didn't find any data, set a default (show last 30 days)
+    if (mostRecentDateWithData === null) {
+      mostRecentDateWithData = 0;
+    }
 
     // Convert to arrays for chart
     const dayLabels = [];
     const counts = [];
 
-    // Process days in reverse order (most recent first)
-    for (let i = 0; i < 49; i++) {
+    // Get the furthest we want to go back (up to 49 days)
+    const oldestDayToInclude = 49;
+
+    // Process days in reverse order (oldest to newest)
+    for (let i = oldestDayToInclude; i >= mostRecentDateWithData; i--) {
       if (dailyData.has(i)) {
         const dayData = dailyData.get(i);
         const date = dayData.date;
@@ -140,21 +160,24 @@ export function Metrics() {
         // Format date as "M/D" (e.g., "2/20")
         const month = date.getMonth() + 1; // JavaScript months are 0-indexed
         const day = date.getDate();
-        dayLabels.unshift(`${month}/${day}`);
+        dayLabels.push(`${month}/${day}`);
 
-        counts.unshift(
+        counts.push(
           activeTab === "txs" ? dayData.transactionCount : dayData.callerCount,
         );
       } else {
-        // If no data for a day, use placeholder
+        // If no data for a day, use placeholder with 0 value
         const date = new Date(today);
         date.setDate(date.getDate() - i);
         const month = date.getMonth() + 1;
         const day = date.getDate();
-        dayLabels.unshift(`${month}/${day}`);
-        counts.unshift(0);
+        dayLabels.push(`${month}/${day}`);
+        counts.push(0);
       }
     }
+    const pointBorderWidth = isMobile ? 1 : 2;
+    const pointRadius = isMobile ? 2 : 4;
+    const pointHoverRadius = isMobile ? 3 : 6;
 
     const datasets = [
       {
@@ -170,16 +193,18 @@ export function Metrics() {
           return `${theme?.colors?.primary}` || "#fbcb4a";
         },
         pointBackgroundColor: "#242824",
-        pointBorderWidth: 1,
-        pointRadius: 2,
+        pointBorderWidth,
+        pointRadius,
+        pointHoverRadius,
         tension: 0.4,
       },
     ] satisfies ChartDataset<"line", unknown>[];
-    return { labels: dayLabels, datasets };
-  }, [theme, allMetrics, activeTab]);
+    return { labels: dayLabels, datasets, mostRecentDateWithData };
+  }, [theme, allMetrics, activeTab, isMobile]);
 
   const options = useMemo(() => {
     return {
+      clip: false,
       responsive: true,
       interaction: {
         intersect: false,
@@ -241,15 +266,22 @@ export function Metrics() {
             autoSkip: true,
             maxTicksLimit: 7, // Show only 7 labels on the x-axis
           },
-          min: chartData.labels.length - 6, // Start showing from the last 6 points
-          max: chartData.labels.length - 1, // Show up to the latest point
+          // Only show the last 6 points or fewer if there's less data
+          min: Math.max(0, chartData.labels.length - 6),
+          // Only show up to the last data point we have
+          max: chartData.labels.length - 1,
         },
         y: {
           border: {
             display: false,
           },
+          // Explicitly set the minimum to 0
+          min: 0,
           ticks: {
-            stepSize: activeTab === "txs" ? 200 : 20,
+            // Calculate step size based on max data value
+            callback: function (value) {
+              return Math.round(Number(value));
+            },
           },
           grid: {
             display: true,
@@ -259,7 +291,7 @@ export function Metrics() {
         },
       },
     } satisfies ChartOptions<"line">;
-  }, [theme, activeTab, chartData]);
+  }, [theme, chartData]);
 
   if (allMetrics.length === 0) return null;
 
@@ -270,7 +302,7 @@ export function Metrics() {
           Metrics
         </p>
       </div>
-      <div className="flex flex-col gap-3 lg:gap-4 w-full">
+      <div className="flex flex-col gap-4 w-full">
         <div className="flex gap-3 lg:gap-4 w-full">
           <Tab
             label="Daily Transactions"
@@ -305,7 +337,7 @@ export function Metrics() {
             </p>
           </div>
         )}
-        <div className="bg-background-200 rounded p-4">
+        <div className="bg-background-200 rounded p-1 sm:p-4">
           <Line ref={chartRef} data={chartData} options={options} />
         </div>
       </div>
