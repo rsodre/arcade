@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { cn, useMediaQuery } from "@cartridge/ui-next";
 import { useMetrics } from "@/hooks/metrics";
 import { useTheme } from "@/hooks/context";
@@ -36,9 +36,52 @@ export function Metrics() {
   const { theme } = useTheme();
   const { metrics: allMetrics, status } = useMetrics();
   const chartRef = useRef<ChartJS<"line">>(null);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width: 1024px)");
 
   const [activeTab, setActiveTab] = useState<"txs" | "players">("txs");
+
+  // Add useEffect to handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartRef.current) {
+        // Force the chart to resize
+        chartRef.current.resize();
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Set up a resize observer for more reliable detection
+    let resizeObserver: ResizeObserver | null = null;
+    if (chartContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        if (chartRef.current) {
+          // Properly resize the chart when container changes size
+          setTimeout(() => {
+            chartRef.current?.resize();
+          }, 0);
+        }
+      });
+      resizeObserver.observe(chartContainerRef.current);
+    }
+
+    // Clean up
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, []);
+
+  // Also add dependency to re-initialize chart when relevant states change
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.update();
+    }
+  }, [activeTab, isMobile, allMetrics, theme]);
 
   const avgDailyTxs = useMemo(() => {
     let totalTxs = 0;
@@ -193,6 +236,7 @@ export function Metrics() {
           return `${theme?.colors?.primary}` || "#fbcb4a";
         },
         pointBackgroundColor: "#242824",
+        pointHoverBackgroundColor: `${theme?.colors?.primary}` || "#fbcb4a",
         pointBorderWidth,
         pointRadius,
         pointHoverRadius,
@@ -203,9 +247,35 @@ export function Metrics() {
   }, [theme, allMetrics, activeTab, isMobile]);
 
   const options = useMemo(() => {
+    const clipSize = isMobile ? 5 : 8;
+
+    // Calculate visible range based on the x-axis min and max
+    const visibleMin = Math.max(0, chartData.labels.length - 6);
+    const visibleMax = chartData.labels.length - 1;
+
+    // Extract only the visible data points
+    const visibleData = (chartData.datasets[0].data as number[]).slice(
+      visibleMin,
+      visibleMax + 1,
+    );
+
+    // Find the maximum value in the visible data
+    const maxValue = visibleData.length > 0 ? Math.max(...visibleData) : 0;
+
+    // If max value is less than 10, set rounded max to 10, otherwise round up
+    const roundedMax = maxValue < 10 ? 10 : Math.ceil(maxValue);
+
+    // Calculate the step size to have just 2 grid steps
+    const stepSize = roundedMax / 2;
+
+    // Set different aspect ratio based on screen size
+    const aspectRatio = isMobile ? 1.5 : 2.5;
+
     return {
       responsive: true,
-      clip: 5,
+      maintainAspectRatio: true,
+      aspectRatio,
+      clip: clipSize,
       interaction: {
         intersect: false,
         mode: "index",
@@ -262,11 +332,9 @@ export function Metrics() {
           },
           // Explicitly set the minimum to 0
           min: 0,
+          max: roundedMax,
           ticks: {
-            // Calculate step size based on max data value
-            callback: function (value) {
-              return Math.round(Number(value));
-            },
+            stepSize,
           },
           grid: {
             display: true,
@@ -276,7 +344,7 @@ export function Metrics() {
         },
       },
     } satisfies ChartOptions<"line">;
-  }, [theme, chartData]);
+  }, [theme, chartData, isMobile]);
 
   if (allMetrics.length === 0) return null;
 
@@ -322,7 +390,10 @@ export function Metrics() {
             </p>
           </div>
         )}
-        <div className="bg-background-200 rounded p-1 sm:p-4">
+        <div
+          ref={chartContainerRef}
+          className="bg-background-200 rounded p-1 sm:p-4 h-[240px] sm:h-auto"
+        >
           <Line ref={chartRef} data={chartData} options={options} />
         </div>
       </div>
