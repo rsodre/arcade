@@ -16,6 +16,7 @@ import { Chain, mainnet } from "@starknet-react/chains";
 import { EditionModel } from "@bal7hazar/arcade-sdk";
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
+import { DEFAULT_TOKENS_PROJECT } from "@/constants";
 
 const DEFAULT_TOKENS_COUNT = 3;
 
@@ -134,7 +135,10 @@ function Item({
     }
     const preset = edition?.properties.preset;
     let options = ["closable=true"];
-    if (token.metadata.project && token.metadata.project !== "extra") {
+    if (
+      token.metadata.project &&
+      token.metadata.project !== DEFAULT_TOKENS_PROJECT
+    ) {
       options.push(`ps=${token.metadata.project}`);
     }
     if (preset) {

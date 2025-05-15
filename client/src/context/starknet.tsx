@@ -26,6 +26,9 @@ const keychain: KeychainOptions = {
 const profile: ProfileOptions = {
   preset: DEFAULT_PRESET,
   slot: DEFAULT_PROJECT,
+  tokens: {
+    erc20: ["eth", "strk", "usdc", "usdt"],
+  },
 };
 
 export function StarknetProvider({ children }: PropsWithChildren) {

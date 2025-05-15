@@ -13,6 +13,7 @@ import {
   UseERC20BalanceResponse,
 } from "@cartridge/utils";
 import makeBlockie from "ethereum-blockies-base64";
+import { DEFAULT_TOKENS_PROJECT } from "@/constants";
 
 const LIMIT = 1000;
 
@@ -169,8 +170,10 @@ export function TokenProvider({ children }: { children: ReactNode }) {
           change,
         },
         metadata: {
-          project: EXTRA_ERC20_ADDRESSES.includes(contractAddress)
-            ? "extra"
+          project: EXTRA_ERC20_ADDRESSES.includes(
+            getChecksumAddress(contractAddress),
+          )
+            ? DEFAULT_TOKENS_PROJECT
             : undefined,
           name: token.meta.name,
           symbol: token.meta.symbol,
