@@ -510,7 +510,7 @@ export function Metrics() {
           ref={chartContainerRef}
           className={cn(
             "bg-background-200 rounded p-1 sm:p-4 h-[240px] sm:h-auto",
-            isPanning ? "cursor-grabbing" : "cursor-grab",
+            isPanning ? "cursor-grabbing" : "cursor-default",
           )}
         >
           <Line ref={chartRef} data={chartData} options={options} />
