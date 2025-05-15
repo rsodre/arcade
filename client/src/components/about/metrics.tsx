@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { cn, useMediaQuery } from "@cartridge/ui-next";
 import { useMetrics } from "@/hooks/metrics";
 import { useTheme } from "@/hooks/context";
@@ -16,6 +16,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
+import { useSidebar } from "@/hooks/sidebar";
 
 ChartJS.register(
   CategoryScale,
@@ -36,61 +37,161 @@ export function Metrics() {
   const { theme } = useTheme();
   const { metrics: allMetrics, status } = useMetrics();
   const chartRef = useRef<ChartJS<"line">>(null);
+  const chartContainerRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width: 1024px)");
+  const { setDisableSwipe } = useSidebar();
 
   const [activeTab, setActiveTab] = useState<"txs" | "players">("txs");
+  const [isPanning, setIsPanning] = useState(false);
+  const [visibleRange, setVisibleRange] = useState<{
+    min: number;
+    max: number;
+  } | null>(null);
 
-  const avgDailyTxs = useMemo(() => {
-    let totalTxs = 0;
-    let dayCount = 0;
+  // Add useEffect to handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartRef.current) {
+        // Force the chart to resize
+        chartRef.current.resize();
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Set up a resize observer for more reliable detection
+    let resizeObserver: ResizeObserver | null = null;
+    if (chartContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        if (chartRef.current) {
+          // Properly resize the chart when container changes size
+          setTimeout(() => {
+            chartRef.current?.resize();
+          }, 0);
+        }
+      });
+      resizeObserver.observe(chartContainerRef.current);
+    }
+
+    // Clean up
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, []);
+
+  // Also add dependency to re-initialize chart when relevant states change
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.update();
+    }
+  }, [activeTab, isMobile, allMetrics, theme]);
+
+  // Effect to handle panning cursor state
+  useEffect(() => {
+    const chartContainer = chartContainerRef.current;
+    if (!chartContainer) return;
+
+    // Timer to detect long press
+    let longPressTimer: ReturnType<typeof setTimeout>;
+    const longPressDuration = 300; // ms
+
+    const handleMouseDown = () => {
+      longPressTimer = setTimeout(() => {
+        setIsPanning(true);
+      }, longPressDuration);
+
+      // Disable sidebar swipe while interacting with chart
+      setDisableSwipe(true);
+    };
+
+    const handleMouseUp = () => {
+      clearTimeout(longPressTimer);
+      setIsPanning(false);
+
+      // Re-enable sidebar swipe after interaction
+      setDisableSwipe(false);
+    };
+
+    const handleMouseLeave = () => {
+      clearTimeout(longPressTimer);
+      setIsPanning(false);
+
+      // Re-enable sidebar swipe after interaction
+      setDisableSwipe(false);
+    };
+
+    // Add event listeners
+    chartContainer.addEventListener("mousedown", handleMouseDown);
+    chartContainer.addEventListener("touchstart", handleMouseDown, {
+      passive: true,
+    });
+    chartContainer.addEventListener("mouseup", handleMouseUp);
+    chartContainer.addEventListener("touchend", handleMouseUp);
+    chartContainer.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      // Clean up
+      chartContainer.removeEventListener("mousedown", handleMouseDown);
+      chartContainer.removeEventListener("touchstart", handleMouseDown);
+      chartContainer.removeEventListener("mouseup", handleMouseUp);
+      chartContainer.removeEventListener("touchend", handleMouseUp);
+      chartContainer.removeEventListener("mouseleave", handleMouseLeave);
+      clearTimeout(longPressTimer);
+    };
+  }, []);
+
+  // Get the latest transaction count
+  const latestDailyTxs = useMemo(() => {
+    if (allMetrics.length === 0) return 0;
 
     // Get today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Process all data points
+    // Find the most recent data point
+    let mostRecentDate: Date | null = null;
+    let mostRecentTxCount = 0;
+
     allMetrics.forEach((metrics) => {
       metrics.data.forEach(({ date, transactionCount }) => {
-        // Calculate days difference
-        const dayDiff = Math.floor(
-          (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000),
-        );
-
-        // Only include data from the last 49 days (7 weeks)
-        if (dayDiff >= 0 && dayDiff < 49) {
-          totalTxs += transactionCount;
-          dayCount++;
+        // If we don't have a date yet, or if this date is more recent
+        if (!mostRecentDate || date > mostRecentDate) {
+          mostRecentDate = date;
+          mostRecentTxCount = transactionCount;
         }
       });
     });
 
-    return dayCount > 0 ? totalTxs / dayCount : 0;
+    return mostRecentTxCount;
   }, [allMetrics]);
 
-  const avgDailyPlayers = useMemo(() => {
-    let totalPlayers = 0;
-    let dayCount = 0;
+  // Get the latest player count
+  const latestDailyPlayers = useMemo(() => {
+    if (allMetrics.length === 0) return 0;
 
     // Get today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Process all data points
+    // Find the most recent data point
+    let mostRecentDate: Date | null = null;
+    let mostRecentPlayerCount = 0;
+
     allMetrics.forEach((metrics) => {
       metrics.data.forEach(({ date, callerCount }) => {
-        // Calculate days difference
-        const dayDiff = Math.floor(
-          (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000),
-        );
-        // Only include data from the last 49 days (7 weeks)
-        if (dayDiff >= 0 && dayDiff < 49) {
-          totalPlayers += callerCount;
-          dayCount++;
+        // If we don't have a date yet, or if this date is more recent
+        if (!mostRecentDate || date > mostRecentDate) {
+          mostRecentDate = date;
+          mostRecentPlayerCount = callerCount;
         }
       });
     });
 
-    return dayCount > 0 ? totalPlayers / dayCount : 0;
+    return mostRecentPlayerCount;
   }, [allMetrics]);
 
   const chartData = useMemo(() => {
@@ -193,6 +294,7 @@ export function Metrics() {
           return `${theme?.colors?.primary}` || "#fbcb4a";
         },
         pointBackgroundColor: "#242824",
+        pointHoverBackgroundColor: `${theme?.colors?.primary}` || "#fbcb4a",
         pointBorderWidth,
         pointRadius,
         pointHoverRadius,
@@ -203,15 +305,93 @@ export function Metrics() {
   }, [theme, allMetrics, activeTab, isMobile]);
 
   const options = useMemo(() => {
+    const clipSize = isMobile ? 5 : 8;
+
+    // Use stored visibleRange if available, otherwise calculate default
+    const defaultMin = Math.max(0, chartData.labels.length - 6);
+    const defaultMax = chartData.labels.length - 1;
+
+    const visibleMin = visibleRange?.min ?? defaultMin;
+    const visibleMax = visibleRange?.max ?? defaultMax;
+
+    // Extract only the visible data points
+    const visibleData = (chartData.datasets[0].data as number[]).slice(
+      visibleMin,
+      visibleMax + 1,
+    );
+
+    // Find the maximum value in the visible data
+    const maxValue = visibleData.length > 0 ? Math.max(...visibleData) : 0;
+
+    // If max value is less than 10, set rounded max to 10, otherwise round up
+    const roundedMax = maxValue < 10 ? 10 : Math.ceil(maxValue);
+
+    // Calculate the step size to have just 2 grid steps
+    const stepSize = roundedMax / 2;
+
+    // Set different aspect ratio based on screen size
+    const aspectRatio = isMobile ? 1.5 : 2.5;
+
     return {
       responsive: true,
-      clip: 5,
+      maintainAspectRatio: true,
+      aspectRatio,
+      clip: clipSize,
       interaction: {
-        intersect: false,
-        mode: "index",
+        intersect: isPanning,
+        mode: isPanning ? "nearest" : "index",
       },
+      animation: isPanning
+        ? false
+        : {
+            duration: 300,
+          },
+      events: isPanning
+        ? []
+        : ["mousemove", "mouseout", "click", "touchstart", "touchmove"],
       plugins: {
+        zoom: {
+          pan: {
+            enabled: true,
+            mode: "x",
+            threshold: 10, // minimum distance required to trigger pan
+            // Custom options
+            onPanStart: () => {
+              setIsPanning(true);
+              if (chartRef.current) {
+                // Force update to apply the new interaction mode
+                chartRef.current.update();
+              }
+              return true; // continue with the pan
+            },
+            onPan: ({ chart }) => {
+              // Get the current range from the chart
+              const min = chart.scales.x.min;
+              const max = chart.scales.x.max;
+
+              // If the range changed significantly, update our state
+              if (
+                !visibleRange ||
+                Math.abs(min - visibleRange.min) > 0.5 ||
+                Math.abs(max - visibleRange.max) > 0.5
+              ) {
+                setVisibleRange({
+                  min: Math.floor(min),
+                  max: Math.ceil(max),
+                });
+              }
+            },
+            onPanComplete: () => {
+              setIsPanning(false);
+              if (chartRef.current) {
+                // Force update to apply the new interaction mode
+                chartRef.current.update();
+              }
+            },
+          },
+        },
         tooltip: {
+          enabled: !isPanning,
           backgroundColor: "transparent",
           borderWidth: 1,
           borderColor: `${theme?.colors?.primary}` || "#fbcb4a",
@@ -252,9 +432,9 @@ export function Metrics() {
             maxTicksLimit: 7, // Show only 7 labels on the x-axis
           },
           // Only show the last 6 points or fewer if there's less data
-          min: Math.max(0, chartData.labels.length - 6),
+          min: visibleMin,
           // Only show up to the last data point we have
-          max: chartData.labels.length - 1,
+          max: visibleMax,
         },
         y: {
           border: {
@@ -262,11 +442,9 @@ export function Metrics() {
           },
           // Explicitly set the minimum to 0
           min: 0,
+          max: roundedMax,
           ticks: {
-            // Calculate step size based on max data value
-            callback: function (value) {
-              return Math.round(Number(value));
-            },
+            stepSize,
           },
           grid: {
             display: true,
@@ -276,7 +454,7 @@ export function Metrics() {
         },
       },
     } satisfies ChartOptions<"line">;
-  }, [theme, chartData]);
+  }, [theme, chartData, isMobile, visibleRange, isPanning]);
 
   if (allMetrics.length === 0) return null;
 
@@ -294,20 +472,26 @@ export function Metrics() {
             value={
               status === "loading"
                 ? "0"
-                : Math.round(avgDailyTxs).toLocaleString()
+                : Math.round(latestDailyTxs).toLocaleString()
             }
             active={activeTab === "txs"}
-            onClick={() => setActiveTab("txs")}
+            onClick={() => {
+              setActiveTab("txs");
+              setVisibleRange(null);
+            }}
           />
           <Tab
             label="Daily Active Players"
             value={
               status === "loading"
                 ? "0"
-                : Math.round(avgDailyPlayers).toLocaleString()
+                : Math.round(latestDailyPlayers).toLocaleString()
             }
             active={activeTab === "players"}
-            onClick={() => setActiveTab("players")}
+            onClick={() => {
+              setActiveTab("players");
+              setVisibleRange(null);
+            }}
           />
         </div>
         {status === "loading" && (
@@ -322,7 +506,13 @@ export function Metrics() {
             </p>
           </div>
         )}
-        <div className="bg-background-200 rounded p-1 sm:p-4">
+        <div
+          ref={chartContainerRef}
+          className={cn(
+            "bg-background-200 rounded p-1 sm:p-4 h-[240px] sm:h-auto",
+            isPanning ? "cursor-grabbing" : "cursor-grab",
+          )}
+        >
           <Line ref={chartRef} data={chartData} options={options} />
         </div>
       </div>
