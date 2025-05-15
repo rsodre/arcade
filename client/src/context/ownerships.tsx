@@ -42,20 +42,22 @@ export function OwnershipsProvider({ children }: { children: ReactNode }) {
       refetchOnWindowFocus: false,
       onSuccess: ({ ownerships }) => {
         const newOwnerships: Ownership[] =
-          ownerships?.items.flatMap((item) => {
-            return item.ownerships.map((ownership) => {
-              const contractAddress = ownership.contractAddress;
-              const accountAddress = ownership.accountAddress;
-              const tokenId = BigInt(ownership.tokenId);
-              const balance = BigInt(ownership.balance);
-              return {
-                contractAddress,
-                accountAddress,
-                tokenId,
-                balance,
-              };
-            });
-          }) || [];
+          ownerships?.items
+            .flatMap((item) => {
+              return item.ownerships.map((ownership) => {
+                const contractAddress = ownership.contractAddress;
+                const accountAddress = ownership.accountAddress;
+                const tokenId = BigInt(ownership.tokenId);
+                const balance = BigInt(ownership.balance);
+                return {
+                  contractAddress,
+                  accountAddress,
+                  tokenId,
+                  balance,
+                };
+              });
+            })
+            .filter((item) => BigInt(item.balance) != 0n) || [];
         setOwnerships(newOwnerships);
       },
     },
