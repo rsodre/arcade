@@ -93,7 +93,7 @@ export function DiscoversProvider({ children }: { children: ReactNode }) {
               })
               .map((item) => item.achievement);
             return {
-              identifier: `${playthrough.callerAddress}-${playthrough.sessionStart}`,
+              identifier: `${project}-${playthrough.callerAddress}-${playthrough.sessionStart}`,
               project: project,
               callerAddress: playthrough.callerAddress,
               start: start,
