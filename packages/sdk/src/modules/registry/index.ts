@@ -7,6 +7,7 @@ import { ClauseBuilder, ParsedEntity, SDK, StandardizedQueryResult, Subscription
 import { SchemaType } from "../../bindings";
 import { NAMESPACE } from "../../constants";
 import { RegistryOptions, DefaultRegistryOptions } from "./options";
+import { Helpers } from "../../helpers";
 
 export * from "./policies";
 export { AccessModel, GameModel, EditionModel, RegistryOptions };
@@ -36,29 +37,32 @@ export const Registry = {
   fetchEntities: async (callback: (models: RegistryModel[]) => void, options: RegistryOptions) => {
     if (!Registry.sdk) return;
 
-    const wrappedCallback = (
+    const wrappedCallback = async (
       entities?: ToriiResponse<SchemaType>,
     ) => {
       if (!entities) return;
       const models: RegistryModel[] = [];
       const items = entities?.getItems();
-      items.forEach((entity: ParsedEntity<SchemaType>) => {
+      await Promise.all(items.map(async (entity: ParsedEntity<SchemaType>) => {
         if (entity.models[NAMESPACE][Access.getModelName()]) {
           models.push(Access.parse(entity));
         }
         if (entity.models[NAMESPACE][Game.getModelName()]) {
-          models.push(Game.parse(entity));
+          const game = Game.parse(entity);
+          game.image = await Helpers.getImage(game.image, game.properties.preset);
+          models.push(game);
         }
         if (entity.models[NAMESPACE][Edition.getModelName()]) {
           models.push(Edition.parse(entity));
         }
-      });
+        return entity;
+      }));
       callback(models);
     };
     const query = Registry.getEntityQuery(options);
     try {
       const entities = await Registry.sdk.getEntities({ query });
-      wrappedCallback(entities);
+      await wrappedCallback(entities);
     } catch (error) {
       console.error("Error fetching entities:", error);
     }
