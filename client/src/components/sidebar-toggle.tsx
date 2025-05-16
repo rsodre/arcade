@@ -1,6 +1,6 @@
-import { Button } from "@cartridge/ui-next";
+import { Button } from "@cartridge/ui";
 import { useSidebar } from "@/hooks/sidebar";
-import { cn } from "@cartridge/ui-next";
+import { cn } from "@cartridge/ui/utils";
 import { SVGProps } from "react";
 
 type SidebarToggleProps = {

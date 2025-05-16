@@ -1,13 +1,8 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Empty,
-  LayoutContent,
-  Skeleton,
-  TabsContent,
-} from "@cartridge/ui-next";
+import { Empty, LayoutContent, Skeleton, TabsContent } from "@cartridge/ui";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
-import { EditionModel } from "@bal7hazar/arcade-sdk";
+import { EditionModel } from "@cartridge/arcade";
 import { getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { Connect } from "../errors";

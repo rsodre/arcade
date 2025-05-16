@@ -1,5 +1,4 @@
 import {
-  cn,
   SparklesIcon,
   Thumbnail,
   ThumbnailsSubIcon,
@@ -7,7 +6,8 @@ import {
   ActivityCard,
   ActivitySocialWebsite,
   activityCardVariants,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
 

@@ -6,18 +6,18 @@ import {
   Select,
   SelectContent,
   useMediaQuery,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { Register } from "./register";
-import { GameModel, RoleType } from "@bal7hazar/arcade-sdk";
+import { GameModel, RoleType } from "@cartridge/arcade";
 import { useLocation, useNavigate } from "react-router-dom";
 import arcade from "@/assets/arcade-logo.png";
 import banner from "@/assets/banner.png";
 import ArcadeGameSelect from "../modules/game-select";
 import { useSidebar } from "@/hooks/sidebar";
-import { cn } from "@cartridge/ui-next";
+import { cn } from "@cartridge/ui/utils";
 import { Update } from "./update";
 import { useOwnerships } from "@/hooks/ownerships";
 import { useAccount } from "@starknet-react/core";

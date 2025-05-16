@@ -1,4 +1,4 @@
-import { Button } from "@cartridge/ui-next";
+import { Button } from "@cartridge/ui";
 import { useAccount, useConnect } from "@starknet-react/core";
 import { useCallback } from "react";
 

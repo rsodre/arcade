@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode, useMemo } from "react";
-import { useBalancesQuery } from "@cartridge/utils/api/cartridge";
+import { useBalancesQuery } from "@cartridge/ui/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
 import { erc20Metadata } from "@cartridge/presets";
 import { getChecksumAddress, RpcProvider } from "starknet";
@@ -11,7 +11,7 @@ import {
   useCountervalue,
   useERC20Balance,
   UseERC20BalanceResponse,
-} from "@cartridge/utils";
+} from "@cartridge/ui/utils";
 import makeBlockie from "ethereum-blockies-base64";
 import { DEFAULT_TOKENS_PROJECT } from "@/constants";
 

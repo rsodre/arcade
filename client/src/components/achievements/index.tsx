@@ -1,13 +1,8 @@
-import {
-  Empty,
-  LayoutContent,
-  Skeleton,
-  useMediaQuery,
-} from "@cartridge/ui-next";
+import { Empty, LayoutContent, Skeleton, useMediaQuery } from "@cartridge/ui";
 import { useMemo } from "react";
 import { Trophies } from "./trophies";
 import { useArcade } from "@/hooks/arcade";
-import { EditionModel, GameModel, Socials } from "@bal7hazar/arcade-sdk";
+import { EditionModel, GameModel, Socials } from "@cartridge/arcade";
 import { getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { Item } from "@/helpers/achievements";

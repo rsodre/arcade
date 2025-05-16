@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
   cn,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 export interface AchievementCardProps

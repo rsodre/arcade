@@ -2,7 +2,7 @@ import { createContext, useState, ReactNode, useMemo } from "react";
 import {
   useCollectiblesQuery,
   useCollectionsQuery,
-} from "@cartridge/utils/api/cartridge";
+} from "@cartridge/ui/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
 import { DEFAULT_PROJECT } from "@/constants";
 

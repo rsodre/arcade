@@ -20,7 +20,7 @@ import {
   RegistryOptions,
   FollowEvent,
   EditionModel,
-} from "@bal7hazar/arcade-sdk";
+} from "@cartridge/arcade";
 import {
   constants,
   getChecksumAddress,

@@ -1,8 +1,9 @@
-import { formatAddress, FormatAddressOptions } from "@cartridge/utils";
+import { formatAddress, FormatAddressOptions } from "@cartridge/ui/utils";
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { getChecksumAddress } from "starknet";
-import { cn, CopyIcon } from "@cartridge/ui-next";
+import { CopyIcon } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 
 type AddressProps = {
   address: string;

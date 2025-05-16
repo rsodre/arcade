@@ -2,12 +2,12 @@ import { createContext, ReactNode, useMemo } from "react";
 import {
   useActivitiesQuery,
   useTransfersQuery,
-} from "@cartridge/utils/api/cartridge";
+} from "@cartridge/ui/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
 import { addAddressPadding, constants, getChecksumAddress } from "starknet";
 import { useAchievements } from "@/hooks/achievements";
 import { erc20Metadata } from "@cartridge/presets";
-import { getDate } from "@cartridge/utils";
+import { getDate } from "@cartridge/ui/utils";
 import { getChainId } from "@/helpers";
 
 export interface CardProps {

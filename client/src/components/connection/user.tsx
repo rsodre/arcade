@@ -1,5 +1,5 @@
 import ControllerConnector from "@cartridge/connector/controller";
-import { Button, GearIcon, SignOutIcon } from "@cartridge/ui-next";
+import { Button, GearIcon, SignOutIcon } from "@cartridge/ui";
 import { useAccount, useDisconnect } from "@starknet-react/core";
 import { useCallback, useEffect, useState } from "react";
 import { UserAvatar } from "../user/avatar";

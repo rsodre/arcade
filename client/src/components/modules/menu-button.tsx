@@ -1,4 +1,5 @@
-import { cn, SelectTrigger } from "@cartridge/ui-next";
+import { SelectTrigger } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import React, { HTMLAttributes } from "react";
 

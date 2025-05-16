@@ -1,4 +1,4 @@
-import { cn } from "@cartridge/ui-next";
+import { cn } from "@cartridge/ui/utils";
 import { useEffect, useRef, useState } from "react";
 
 export function Details({ content }: { content: string }) {

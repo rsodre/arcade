@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode, useMemo } from "react";
-import { useOwnershipsQuery } from "@cartridge/utils/api/cartridge";
+import { useOwnershipsQuery } from "@cartridge/ui/utils/api/cartridge";
 import { DEFAULT_PROJECT } from "@/constants";
 
 export type Ownership = {

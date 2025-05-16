@@ -1,4 +1,4 @@
-import { cn } from "@cartridge/ui-next";
+import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
 const achievementPinIconVariants = cva(

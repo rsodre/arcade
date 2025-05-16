@@ -18,7 +18,7 @@ import {
   TabsTrigger,
   TrophyIcon,
   useMediaQuery,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import ArcadeTab from "./tab";

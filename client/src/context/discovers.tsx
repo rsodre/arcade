@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode, useMemo } from "react";
-import { useActivitiesQuery } from "@cartridge/utils/api/cartridge";
+import { useActivitiesQuery } from "@cartridge/ui/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
 import { useUsernames } from "@/hooks/account";
 import { getChecksumAddress } from "starknet";

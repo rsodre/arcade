@@ -1,7 +1,7 @@
 import { useContext, useMemo } from "react";
 import { ArcadeContext } from "../context/arcade";
 import { useAccount } from "@starknet-react/core";
-import { RoleType } from "@bal7hazar/arcade-sdk";
+import { RoleType } from "@cartridge/arcade";
 import { useOwnerships } from "./ownerships";
 
 /**

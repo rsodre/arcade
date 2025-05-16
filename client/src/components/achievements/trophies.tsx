@@ -1,7 +1,7 @@
 import { AchievementCard } from "@/components/modules/achievement-card";
 import { Item } from "@/hooks/achievements";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Socials } from "@bal7hazar/arcade-sdk";
+import { Socials } from "@cartridge/arcade";
 import { useArcade } from "@/hooks/arcade";
 import { constants } from "starknet";
 import { toast } from "sonner";

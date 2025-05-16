@@ -1,4 +1,4 @@
-import { Empty } from "@cartridge/ui-next";
+import { Empty } from "@cartridge/ui";
 
 export function Guilds() {
   return <EmptyState />;

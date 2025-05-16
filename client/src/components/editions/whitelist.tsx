@@ -1,4 +1,4 @@
-import { EditionModel } from "@bal7hazar/arcade-sdk";
+import { EditionModel } from "@cartridge/arcade";
 import { useAccount } from "@starknet-react/core";
 import { useArcade } from "@/hooks/arcade";
 import { useCallback, useMemo, useState } from "react";

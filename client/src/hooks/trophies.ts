@@ -1,5 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
-import { Project, useAchievementsQuery } from "@cartridge/utils/api/cartridge";
+import {
+  Project,
+  useAchievementsQuery,
+} from "@cartridge/ui/utils/api/cartridge";
 import { RawTrophy, Trophy, getSelectorFromTag } from "@/models";
 
 interface Response {

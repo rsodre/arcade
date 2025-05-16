@@ -2,7 +2,7 @@ import { createContext, useState, ReactNode, useMemo } from "react";
 import {
   MetricsProject,
   useMetricsQuery,
-} from "@cartridge/utils/api/cartridge";
+} from "@cartridge/ui/utils/api/cartridge";
 import { useArcade } from "@/hooks/arcade";
 
 export type Metrics = {

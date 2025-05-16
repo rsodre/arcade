@@ -5,7 +5,7 @@ import {
   Card,
   CardContent,
   Socials,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { AchievementPinIcons } from "./achievement-pin-icons";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes, useMemo } from "react";

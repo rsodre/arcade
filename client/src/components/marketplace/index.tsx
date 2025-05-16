@@ -1,4 +1,4 @@
-import { Empty } from "@cartridge/ui-next";
+import { Empty } from "@cartridge/ui";
 
 export function Marketplace() {
   return <EmptyState />;

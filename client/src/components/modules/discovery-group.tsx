@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@cartridge/ui-next";
+import { cn } from "@cartridge/ui/utils";
 import {
   ArcadeDiscoveryEvent,
   ArcadeDiscoveryEventProps,

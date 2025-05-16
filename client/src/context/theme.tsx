@@ -1,6 +1,6 @@
 import { useProject } from "@/hooks/project";
 import { defaultTheme, ControllerTheme } from "@cartridge/presets";
-import { useThemeEffect } from "@cartridge/ui-next";
+import { useThemeEffect } from "@cartridge/ui";
 import { createContext, useCallback, useEffect, useState } from "react";
 
 type ColorScheme = "dark" | "light" | "system";

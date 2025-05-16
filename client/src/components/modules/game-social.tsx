@@ -1,11 +1,11 @@
 import {
-  cn,
   DiscordIcon,
   GitHubIcon,
   PlayIcon,
   TelegramIcon,
   XIcon,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes } from "react";
 

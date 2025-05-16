@@ -6,7 +6,7 @@ import {
   DojoIcon,
   Thumbnail,
   VerifiedIcon,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { AchievementPinIcons } from "./achievement-pin-icons";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes, useMemo, useState } from "react";

@@ -1,7 +1,7 @@
-import { CollectibleAsset, Skeleton } from "@cartridge/ui-next";
+import { CollectibleAsset, Skeleton } from "@cartridge/ui";
 import { useArcade } from "@/hooks/arcade";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { EditionModel } from "@bal7hazar/arcade-sdk";
+import { EditionModel } from "@cartridge/arcade";
 import placeholder from "@/assets/placeholder.svg";
 import { useAccount } from "@starknet-react/core";
 import ControllerConnector from "@cartridge/connector/controller";

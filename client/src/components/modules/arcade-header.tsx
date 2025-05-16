@@ -1,7 +1,8 @@
-import { CartridgeIcon, cn } from "@cartridge/ui-next";
+import { CartridgeIcon } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { HTMLAttributes, SVGProps } from "react";
 import { SidebarToggle } from "../sidebar-toggle";
-import { useMediaQuery } from "@cartridge/ui-next";
+import { useMediaQuery } from "@cartridge/ui";
 
 export interface ArcadeHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 

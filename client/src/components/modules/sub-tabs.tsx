@@ -1,4 +1,5 @@
-import { cn, Tabs, TabsList, UsersIcon } from "@cartridge/ui-next";
+import { Tabs, TabsList, UsersIcon } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import React, { useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import ArcadeSubTab from "./sub-tab";

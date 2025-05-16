@@ -10,7 +10,7 @@ import {
   TimesIcon,
   UserAddIcon,
   UserCheckIcon,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { ActivityScene } from "../scenes/activity";
 import { ArcadeTabs } from "../modules";
 import { useLocation, useNavigate } from "react-router-dom";

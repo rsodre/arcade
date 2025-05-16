@@ -4,7 +4,7 @@ import {
   GoldTagIcon,
   SilverTagIcon,
   SparklesIcon,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import LeaderboardUsername from "./leaderboard-username";
 import AchievementFollowTag from "./follow-tag";

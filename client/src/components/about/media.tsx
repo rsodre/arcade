@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 import ReactPlayer from "react-player/lazy";
-import { cn } from "@cartridge/ui-next";
+import { cn } from "@cartridge/ui/utils";
 import { YoutubeEmbedIcon } from "./youtube-icon";
 
 export function Media({ items }: { items: string[] }) {

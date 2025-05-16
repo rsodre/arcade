@@ -1,4 +1,4 @@
-import { OlmechIcon } from "@cartridge/ui-next";
+import { OlmechIcon } from "@cartridge/ui";
 import { VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
 

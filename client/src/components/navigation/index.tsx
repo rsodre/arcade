@@ -4,7 +4,7 @@ import {
   CoinsIcon,
   StateIconProps,
   TrophyIcon,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 

@@ -1,11 +1,11 @@
 import {
-  cn,
   EmptyStateAchievementIcon,
   EmptyStateActivityIcon,
   EmptyStateGuildIcon,
   EmptyStateIcon,
   EmptyStateInventoryIcon,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { Connection } from "../connection";
 
 export function Wrapper({

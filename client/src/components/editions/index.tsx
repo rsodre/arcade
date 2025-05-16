@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Register } from "./register";
-import { EditionModel } from "@bal7hazar/arcade-sdk";
+import { EditionModel } from "@cartridge/arcade";
 import EditionActions from "../modules/edition-actions";
 import EditionAction from "../modules/edition-item";
 import { useProject } from "@/hooks/project";
@@ -12,7 +12,7 @@ import { joinPaths } from "@/helpers";
 import { Publish } from "./publish";
 import { Whitelist } from "./whitelist";
 import { Prioritize } from "./prioritize";
-import { Select, SelectContent, DotsIcon } from "@cartridge/ui-next";
+import { Select, SelectContent, DotsIcon } from "@cartridge/ui";
 import ArcadeMenuButton from "../modules/menu-button";
 
 export const Editions = () => {

@@ -1,8 +1,8 @@
 import { PropsWithChildren } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ArcadeProvider } from "./arcade";
-import { CartridgeAPIProvider } from "@cartridge/utils/api/cartridge";
-import { IndexerAPIProvider } from "@cartridge/utils/api/indexer";
+import { CartridgeAPIProvider } from "@cartridge/ui/utils/api/cartridge";
+import { IndexerAPIProvider } from "@cartridge/ui/utils/api/indexer";
 import { AchievementProvider } from "./achievement";
 import { StarknetProvider } from "./starknet";
 import { CollectionProvider } from "./collection";

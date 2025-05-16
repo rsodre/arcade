@@ -1,10 +1,5 @@
-import {
-  cn,
-  DotsIcon,
-  Select,
-  SelectContent,
-  useMediaQuery,
-} from "@cartridge/ui-next";
+import { DotsIcon, Select, SelectContent, useMediaQuery } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes, useMemo } from "react";
 import {

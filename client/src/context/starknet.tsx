@@ -8,7 +8,7 @@ import {
   ProfileOptions,
   ProviderOptions,
 } from "@cartridge/controller";
-// import { getSocialPolicies, getRegistryPolicies } from "@bal7hazar/arcade-sdk";
+// import { getSocialPolicies, getRegistryPolicies } from "@cartridge/arcade";
 import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
 import { ArcadeContext } from "./arcade";
 

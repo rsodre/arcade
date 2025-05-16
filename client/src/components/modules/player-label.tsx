@@ -4,7 +4,7 @@ import {
   SilverTagIcon,
   AchievementPlayerBadge,
   cn,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo } from "react";
 import { CopyAddress } from "./copy-address";

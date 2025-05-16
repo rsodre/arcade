@@ -1,7 +1,7 @@
 import {
   useAccountNameQuery,
   useAccountNamesQuery,
-} from "@cartridge/utils/api/cartridge";
+} from "@cartridge/ui/utils/api/cartridge";
 
 export function useUsername({ address }: { address: string }) {
   const { data } = useAccountNameQuery(

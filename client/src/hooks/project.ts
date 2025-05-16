@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useArcade } from "./arcade";
 import { useParams } from "react-router-dom";
-import { useAddressByUsernameQuery } from "@cartridge/utils/api/cartridge";
+import { useAddressByUsernameQuery } from "@cartridge/ui/utils/api/cartridge";
 import { getChecksumAddress } from "starknet";
 
 /**

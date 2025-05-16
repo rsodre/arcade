@@ -1,6 +1,6 @@
 import { UserCheckIcon } from "lucide-react";
 import { cva, VariantProps } from "class-variance-authority";
-import { cn } from "@cartridge/ui-next";
+import { cn } from "@cartridge/ui/utils";
 
 export const achievementFollowTagVariants = cva(
   "h-6 w-7 flex items-center justify-center rounded",

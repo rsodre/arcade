@@ -1,6 +1,7 @@
 import { HTMLAttributes, useMemo } from "react";
 import { cva, VariantProps } from "class-variance-authority";
-import { cn, FollowerTag } from "@cartridge/ui-next";
+import { FollowerTag } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import AchievementPlayerLabel from "./player-label";
 
 interface AchievementPlayerHeaderProps

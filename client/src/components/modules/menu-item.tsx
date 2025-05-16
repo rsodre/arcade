@@ -1,4 +1,5 @@
-import { cn, SelectItem, TabsTrigger } from "@cartridge/ui-next";
+import { SelectItem, TabsTrigger } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import React, { useCallback } from "react";
 

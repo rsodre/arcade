@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { SonnerToaster } from "@cartridge/ui-next";
+import { SonnerToaster } from "@cartridge/ui";
 import { App } from "@/components/app";
 import { Provider } from "@/context";
 import { registerSW } from "virtual:pwa-register";

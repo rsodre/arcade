@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from "react";
-import { TabsContent, Thumbnail, TabValue, cn } from "@cartridge/ui-next";
+import { TabsContent, Thumbnail, TabValue } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { DiscoverScene } from "../scenes/discover";
 import { LeaderboardScene } from "../scenes/leaderboard";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Socials } from "@bal7hazar/arcade-sdk";
+import { Socials } from "@cartridge/arcade";
 import { ArcadeTabs } from "../modules";
 import { MarketplaceScene } from "../scenes/marketplace";
 import { GuildsScene } from "../scenes/guild";

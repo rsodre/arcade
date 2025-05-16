@@ -1,4 +1,5 @@
-import { cn, SparklesIcon, Thumbnail } from "@cartridge/ui-next";
+import { SparklesIcon, Thumbnail } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes, useState } from "react";
 

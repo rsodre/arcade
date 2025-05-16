@@ -1,4 +1,5 @@
-import { cn, TabsTrigger } from "@cartridge/ui-next";
+import { TabsTrigger } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 

@@ -1,10 +1,5 @@
-import {
-  cn,
-  MinusIcon,
-  PlusIcon,
-  Skeleton,
-  TokenCard,
-} from "@cartridge/ui-next";
+import { MinusIcon, PlusIcon, Skeleton, TokenCard } from "@cartridge/ui";
+import { cn } from "@cartridge/ui/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ControllerConnector from "@cartridge/connector/controller";
 import { useAccount } from "@starknet-react/core";
@@ -13,7 +8,7 @@ import placeholder from "@/assets/placeholder.svg";
 import { useAddress } from "@/hooks/address";
 import { Token } from "@/context/token";
 import { Chain, mainnet } from "@starknet-react/chains";
-import { EditionModel } from "@bal7hazar/arcade-sdk";
+import { EditionModel } from "@cartridge/arcade";
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
 import { DEFAULT_TOKENS_PROJECT } from "@/constants";

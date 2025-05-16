@@ -12,7 +12,7 @@ import {
   SheetTrigger,
   Textarea,
   TrashIcon,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { useAccount } from "@starknet-react/core";
 import { useCallback, useMemo, useState } from "react";
 import { AllowArray, byteArray, Call, constants } from "starknet";
@@ -33,7 +33,7 @@ import {
   GameModel,
   Properties,
   Socials,
-} from "@bal7hazar/arcade-sdk";
+} from "@cartridge/arcade";
 import ControllerConnector from "@cartridge/connector/controller";
 import { MetadataHelper } from "@/helpers/metadata";
 import { formSchema } from "./form";

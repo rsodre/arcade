@@ -9,11 +9,11 @@ import {
   LayoutContent,
   PlusIcon,
   Skeleton,
-} from "@cartridge/ui-next";
+} from "@cartridge/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import ActivityAchievementCard from "../modules/activity-achievement-card";
 import { Link } from "react-router-dom";
-import { VoyagerUrl } from "@cartridge/utils";
+import { VoyagerUrl } from "@cartridge/ui/utils";
 import { constants } from "starknet";
 import { CardProps } from "@/context/activities";
 import { useProject } from "@/hooks/project";

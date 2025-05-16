@@ -1,5 +1,5 @@
 import { getTime } from "@/helpers";
-import { CardTitle, cn, Thumbnail } from "@cartridge/ui-next";
+import { CardTitle, cn, Thumbnail } from "@cartridge/ui";
 import { cva, VariantProps } from "class-variance-authority";
 import { useMemo, HTMLAttributes, useState, useEffect } from "react";
 

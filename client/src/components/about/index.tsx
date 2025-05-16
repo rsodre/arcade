@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import Details from "./details";
 import Media from "./media";
 import Metrics from "./metrics";
-import { EditionModel } from "@bal7hazar/arcade-sdk";
+import { EditionModel } from "@cartridge/arcade";
 
 export function About({ edition }: { edition: EditionModel }) {
   const items = useMemo(() => {
