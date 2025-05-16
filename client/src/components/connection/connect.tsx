@@ -15,7 +15,7 @@ export function Connect() {
   return (
     <Button
       variant="secondary"
-      className="border border-primary-100 text-primary"
+      className="border border-primary-100 text-primary bg-background-100 hover:background-150 transition-colors"
       onClick={connectWallet}
     >
       Connect
