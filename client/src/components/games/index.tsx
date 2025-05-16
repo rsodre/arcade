@@ -59,9 +59,9 @@ export const Games = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
-      <div className="flex flex-col gap-3 bg-background-100 p-4 grow">
+      <div className="flex flex-col gap-3 bg-background-100 p-4 pb-0 grow overflow-hidden">
         <Search search={search} setSearch={setSearch} />
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 grow overflow-hidden">
           <Game
             id={0}
             name="Arcade"
@@ -76,7 +76,7 @@ export const Games = () => {
             Games
           </p>
           <CardListContent
-            className="p-0 overflow-y-auto grow"
+            className="p-0 pb-4 overflow-y-auto"
             style={{ scrollbarWidth: "none" }}
           >
             {filteredGames.map((game) => (
