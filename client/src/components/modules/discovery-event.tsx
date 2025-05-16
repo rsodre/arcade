@@ -10,6 +10,7 @@ export interface ArcadeDiscoveryEventProps
   name: string;
   timestamp: number;
   Icon: React.ReactNode;
+  count: number;
   actions: string[];
   duration: number;
   achievements: {
@@ -48,6 +49,7 @@ export const ArcadeDiscoveryEvent = ({
   timestamp,
   Icon,
   duration,
+  count,
   actions,
   achievements,
   logo,
@@ -84,6 +86,7 @@ export const ArcadeDiscoveryEvent = ({
         </CardTitle>
         <DiscoveryEvent
           duration={duration}
+          count={count}
           actions={actions}
           points={points}
           className={className}
@@ -101,6 +104,7 @@ export const ArcadeDiscoveryEvent = ({
 const DiscoveryEvent = ({
   // duration,
   points,
+  count,
   actions,
   achievements,
   className,
@@ -108,6 +112,7 @@ const DiscoveryEvent = ({
 }: {
   duration: number;
   points: number;
+  count: number;
   actions: string[];
   achievements?: { icon: string; title?: string }[];
   className?: string;
@@ -125,12 +130,8 @@ const DiscoveryEvent = ({
       <Sentence content="performed" />
       <Card
         icon="fa-wave-pulse"
-        short={`${actions.length}`}
-        long={
-          actions.length === 1
-            ? actions[0].replace(/_/g, " ")
-            : `${actions.length} Actions`
-        }
+        short={`${count}`}
+        long={count === 1 ? actions[0].replace(/_/g, " ") : `${count} Actions`}
       />
       {/* <Sentence content="for" />
       <Card

@@ -21,6 +21,7 @@ type Event = {
   address: string;
   Icon: React.ReactNode;
   duration: number;
+  count: number;
   actions: string[];
   achievements: {
     title: string;
@@ -49,7 +50,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
 
   const { isConnected, address } = useAccount();
   const {
-    aggregates,
+    playthroughs,
     usernames: activitiesUsernames,
     status: activitiesStatus,
   } = useDiscovers();
@@ -106,12 +107,12 @@ export function Discover({ edition }: { edition?: EditionModel }) {
 
   useEffect(() => {
     if (!filteredEditions) return;
-    if (!Object.entries(aggregates)) return;
+    if (!Object.entries(playthroughs)) return;
     if (!Object.entries(activitiesUsernames)) return;
     const data = filteredEditions
       .flatMap((edition) => {
         return (
-          aggregates[edition?.config.project]
+          playthroughs[edition?.config.project]
             ?.map((activity) => {
               const username =
                 activitiesUsernames[getChecksumAddress(activity.callerAddress)];
@@ -124,6 +125,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
                 address: getChecksumAddress(activity.callerAddress),
                 Icon: <UserAvatar username={username} size="sm" />,
                 duration: activity.end - activity.start,
+                count: activity.count,
                 actions: activity.actions,
                 achievements: [...activity.achievements],
                 timestamp: Math.floor(activity.end / 1000),
@@ -149,7 +151,7 @@ export function Discover({ edition }: { edition?: EditionModel }) {
     if (newEvents.all.length === 0) return;
     setEvents(newEvents);
   }, [
-    aggregates,
+    playthroughs,
     filteredEditions,
     activitiesUsernames,
     following,

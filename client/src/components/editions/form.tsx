@@ -42,7 +42,7 @@ export const formSchema = z.object({
         }
       },
       {
-        message: "Torii instance not found",
+        message: "RPC cannot be reached",
       },
     ),
   policies: z.string().refine((val) => val.startsWith("{") || !val, {

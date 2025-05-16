@@ -1,5 +1,4 @@
-import { useContext, useMemo } from "react";
-import { useProject } from "./project";
+import { useContext } from "react";
 import { DiscoversContext } from "@/context";
 
 /**
@@ -13,7 +12,6 @@ import { DiscoversContext } from "@/context";
  */
 export const useDiscovers = () => {
   const context = useContext(DiscoversContext);
-  const { edition } = useProject();
 
   if (!context) {
     throw new Error(
@@ -21,17 +19,10 @@ export const useDiscovers = () => {
     );
   }
 
-  const { discovers, aggregates, usernames, status } = context;
-
-  const filteredDiscovers = useMemo(() => {
-    if (!edition)
-      return Object.values(discovers).flatMap((activities) => activities);
-    return discovers[edition.config.project];
-  }, [edition, discovers]);
+  const { playthroughs, usernames, status } = context;
 
   return {
-    discovers: filteredDiscovers,
-    aggregates,
+    playthroughs,
     usernames,
     status,
   };
