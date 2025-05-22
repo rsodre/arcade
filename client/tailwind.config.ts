@@ -8,10 +8,6 @@ const config = {
   ],
   presets: [cartridgeTWPreset],
   theme: {
-    screens: {
-      // https://v3.tailwindcss.com/docs/responsive-design#customizing-your-theme
-      lg: "1160px",
-    },
     extend: {
       width: {
         desktop: "432px",
