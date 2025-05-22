@@ -1,8 +1,8 @@
 import { cn } from "@cartridge/ui/utils";
 import { HTMLAttributes, SVGProps } from "react";
 import { SidebarToggle } from "../sidebar-toggle";
-import { useMediaQuery } from "@cartridge/ui";
 import { useTheme } from "@/hooks/context";
+import { useDevice } from "@/hooks/device";
 
 export interface ArcadeHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -11,12 +11,12 @@ export const ArcadeHeader = ({
   onClick,
   ...props
 }: ArcadeHeaderProps) => {
-  const isMobile = useMediaQuery("(max-width: 1024px)");
+  const { isMobile } = useDevice();
 
   return (
     <div
       className={cn(
-        "w-full flex items-center gap-x-px h-16 lg:h-14",
+        "w-full flex items-center gap-x-px",
         "transition-transform duration-300 ease-in-out will-change-transform",
       )}
       {...props}
@@ -28,7 +28,7 @@ export const ArcadeHeader = ({
       ) : (
         <div
           className={cn(
-            "flex items-center justify-center text-primary w-auto p-6",
+            "flex items-center justify-center text-primary w-auto",
             onClick && "cursor-pointer",
           )}
           onClick={onClick}
@@ -36,7 +36,7 @@ export const ArcadeHeader = ({
           <ArcadeIcon className="w-28" />
         </div>
       )}
-      <div className="grow flex justify-end items-center gap-2 lg:px-3 py-2 select-none">
+      <div className="grow flex justify-end items-center gap-3 select-none">
         {children}
       </div>
     </div>

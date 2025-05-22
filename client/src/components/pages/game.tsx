@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { TabsContent, Thumbnail, TabValue } from "@cartridge/ui";
 import { cn } from "@cartridge/ui/utils";
 import { DiscoverScene } from "../scenes/discover";
@@ -15,10 +15,12 @@ import arcade from "@/assets/arcade-logo.png";
 import { GameSocialWebsite } from "../modules/game-social";
 import { useProject } from "@/hooks/project";
 import { joinPaths } from "@/helpers";
+import { useDevice } from "@/hooks/device";
 
 export function GamePage() {
   const { game, edition } = useProject();
   const { tab } = useProject();
+  const { isMobile } = useDevice();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,23 +48,56 @@ export function GamePage() {
     return Socials.merge(edition?.socials, game?.socials);
   }, [edition, game]);
 
+  const isDashboard = !(edition && game);
+
+  useEffect(() => {
+    console.log("edition: ", edition);
+    console.log("game: ", game);
+    console.log("isMobile: ", isMobile);
+  }, [edition, game, isMobile]);
+
   return (
     <>
-      <div className="lg:h-[88px] w-full flex flex-col p-4 gap-4 lg:p-6 lg:pb-0 border-b border-background-200 lg:border-none">
+      <div
+        className={cn(
+          "lg:h-[88px] w-full flex flex-col gap-4 lg:p-6 lg:pb-0 border-b border-background-200 lg:border-none",
+          isDashboard ? "p-0" : "p-4",
+        )}
+      >
         <div className="flex items-start justify-between">
-          <div className="flex gap-3 items-center overflow-hidden">
-            <Thumbnail
-              icon={edition?.properties.icon || game?.properties.icon || arcade}
-              size="xl"
-              className="min-w-16 min-h-16"
-            />
-            <div className="flex flex-col gap-2 overflow-hidden">
-              <p className="font-semibold text-xl/[24px] text-foreground-100 truncate">
-                {game?.name ?? "Arcade Dashboard"}
-              </p>
-              <Editions />
-            </div>
-          </div>
+          {
+            isMobile && !isDashboard ? ( // Mobile view + not dashboard
+              <div className="flex gap-3 items-center overflow-hidden">
+                <Thumbnail
+                  icon={edition?.properties.icon || game?.properties.icon}
+                  size="xl"
+                  className="min-w-16 min-h-16"
+                />
+                <div className="flex flex-col gap-2 overflow-hidden">
+                  <p className="font-semibold text-xl/[24px] text-foreground-100 truncate">
+                    {game?.name || "Dashboard"}
+                  </p>
+                  <Editions />
+                </div>
+              </div>
+            ) : !isMobile ? ( // Desktop View
+              <div className="flex gap-3 items-center overflow-hidden">
+                <Thumbnail
+                  icon={
+                    edition?.properties.icon || game?.properties.icon || arcade
+                  }
+                  size="xl"
+                  className="min-w-16 min-h-16"
+                />
+                <div className="flex flex-col gap-2 overflow-hidden">
+                  <p className="font-semibold text-xl/[24px] text-foreground-100 truncate">
+                    {game?.name || "Dashboard"}
+                  </p>
+                  <Editions />
+                </div>
+              </div>
+            ) : null // Mobile view + is dashboard
+          }
           <GameSocials socials={socials} />
         </div>
         <div className={cn("lg:hidden", !socials?.website && "hidden")}>
@@ -79,31 +114,31 @@ export function GamePage() {
           style={{ scrollbarWidth: "none" }}
         >
           <TabsContent
-            className="p-0 px-3 lg:px-6 mt-0 grow w-full"
+            className="p-0 px-4 lg:px-6 mt-0 grow w-full"
             value="activity"
           >
             <DiscoverScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-3 lg:px-6 mt-0 grow w-full"
+            className="p-0 px-4 lg:px-6 mt-0 grow w-full"
             value="leaderboard"
           >
             <LeaderboardScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-3 lg:px-6 mt-0 grow w-full"
+            className="p-0 px-4 lg:px-6 mt-0 grow w-full"
             value="marketplace"
           >
             <MarketplaceScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-3 lg:px-6 mt-0 grow w-full"
+            className="p-0 px-4 lg:px-6 mt-0 grow w-full"
             value="guilds"
           >
             <GuildsScene />
           </TabsContent>
           <TabsContent
-            className="p-0 px-3 lg:px-6 mt-0 grow w-full"
+            className="p-0 px-4 lg:px-6 mt-0 grow w-full"
             value="about"
           >
             <AboutScene />
