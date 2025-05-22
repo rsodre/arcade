@@ -26,7 +26,6 @@ import { joinPaths } from "@/helpers";
 import ArcadeMenuButton from "../modules/menu-button";
 import { Publish } from "./publish";
 import { Whitelist } from "./whitelist";
-import { useDevice } from "@/hooks/device";
 
 export const Games = () => {
   const { address } = useAccount();
@@ -35,7 +34,7 @@ export const Games = () => {
   const { game } = useProject();
   const { ownerships } = useOwnerships();
   const { isOpen, handleTouchStart, handleTouchMove } = useSidebar();
-  const { isMobile } = useDevice();
+  const isMobile = useMediaQuery("(max-width: 1024px)");
   const isPWA = useMediaQuery("(display-mode: standalone)");
 
   const selected: number = useMemo(() => {

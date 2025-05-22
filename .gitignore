@@ -9,4 +9,3 @@ server/*
 vite.config.ts.*
 
 .zed
-.rules

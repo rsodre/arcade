@@ -3,6 +3,7 @@ import { SceneLayout } from "@/components/scenes/layout";
 import { GamePage } from "./pages/game";
 import { useEffect } from "react";
 import { PlayerPage } from "./pages/player";
+import { useMediaQuery } from "@cartridge/ui";
 import { cn } from "@cartridge/ui/utils";
 import { useSidebar } from "@/hooks/sidebar";
 import { Header } from "./header";
@@ -14,6 +15,8 @@ export function App() {
   const { isOpen, toggle, handleTouchMove, handleTouchStart } = useSidebar();
   const { setPlayer } = useArcade();
   const { player } = useProject();
+
+  const isPWA = useMediaQuery("(display-mode: standalone)");
 
   useEffect(() => {
     setPlayer(player);
@@ -28,7 +31,7 @@ export function App() {
         >
           <div
             className={cn(
-              "lg:w-[1112px] lg:pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
+              "lg:w-[1112px] lg:pt-8 lg:pb-6 gap-3 lg:gap-8 flex items-stretch m-auto h-full overflow-clip",
               "transition-all duration-300 ease-in-out",
             )}
           >
@@ -44,8 +47,9 @@ export function App() {
             <Games />
             <div
               className={cn(
-                "fixed lg:relative h-full w-full flex flex-col overflow-hidden",
+                "fixed lg:relative h-full w-full flex flex-col overflow-hidden px-3 lg:px-0 lg:pb-0",
                 "transition-transform duration-300 ease-in-out",
+                isPWA ? "pb-[90px]" : "pb-[84px]",
                 isOpen
                   ? "translate-x-[min(calc(100vw-64px),360px)]"
                   : "translate-x-0",
@@ -53,12 +57,12 @@ export function App() {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
             >
-              <div className="lg:hidden w-full p-3">
+              <div className="lg:hidden w-full">
                 <Header />
               </div>
               <div
                 className={cn(
-                  "relative grow h-full flex flex-col rounded-none lg:rounded-xl lg:gap-2 overflow-hidden border border-background-200 bg-background-100",
+                  "relative grow h-full flex flex-col rounded-xl lg:gap-2 overflow-hidden border border-background-200 bg-background-100",
                   player &&
                     "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
                 )}

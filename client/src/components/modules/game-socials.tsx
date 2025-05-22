@@ -1,4 +1,4 @@
-import { DotsIcon, Select, SelectContent } from "@cartridge/ui";
+import { DotsIcon, Select, SelectContent, useMediaQuery } from "@cartridge/ui";
 import { cn } from "@cartridge/ui/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import { HTMLAttributes, useMemo } from "react";
@@ -10,7 +10,6 @@ import {
   GameSocialWebsite,
 } from "./game-social";
 import ArcadeMenuButton from "./menu-button";
-import { useDevice } from "@/hooks/device";
 
 const gameSocialsVariants = cva("flex gap-2", {
   variants: {
@@ -49,7 +48,7 @@ const GameSocials = ({
   socials,
   ...props
 }: GameSocialsProps) => {
-  const { isMobile } = useDevice();
+  const isMobile = useMediaQuery("(max-width: 1024px)");
 
   const isEmpty = useMemo(() => {
     if (!socials) return true;

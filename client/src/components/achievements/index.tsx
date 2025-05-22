@@ -1,4 +1,4 @@
-import { Empty, LayoutContent, Skeleton } from "@cartridge/ui";
+import { Empty, LayoutContent, Skeleton, useMediaQuery } from "@cartridge/ui";
 import { useMemo } from "react";
 import { Trophies } from "./trophies";
 import { useArcade } from "@/hooks/arcade";
@@ -12,7 +12,6 @@ import { useAddress } from "@/hooks/address";
 import { useLocation, useNavigate } from "react-router-dom";
 import { joinPaths } from "@/helpers";
 import { useOwnerships } from "@/hooks/ownerships";
-import { useDevice } from "@/hooks/device";
 
 export function Achievements({
   game,
@@ -26,7 +25,7 @@ export function Achievements({
   const { pins, games, editions } = useArcade();
   const { ownerships } = useOwnerships();
 
-  const { isMobile } = useDevice();
+  const isMobile = useMediaQuery("(max-width: 1024px)");
 
   const gamePlayers = useMemo(() => {
     return players[edition?.config.project || ""] || [];
@@ -104,7 +103,7 @@ export function Achievements({
           className="p-0 mt-0 overflow-y-scroll"
           style={{ scrollbarWidth: "none" }}
         >
-          <div className="flex flex-col gap-3 lg:gap-4 py-4 pb-[88px] lg:py-6">
+          <div className="flex flex-col gap-3 lg:gap-4 py-3 lg:py-6">
             <div className="flex flex-col gap-y-3 lg:gap-y-4">
               {filteredEditions.map((item, index) => (
                 <Row
@@ -271,7 +270,7 @@ const EmptyState = () => {
     <Empty
       title="No achievements exist for this game."
       icon="achievement"
-      className="h-full pt-4 pb-[88px] lg:py-6"
+      className="h-full py-3 lg:py-6"
     />
   );
 };

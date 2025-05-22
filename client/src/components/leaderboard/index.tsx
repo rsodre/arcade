@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { cn, Empty, LayoutContent, Skeleton, TabsContent } from "@cartridge/ui";
+import { Empty, LayoutContent, Skeleton, TabsContent } from "@cartridge/ui";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useArcade } from "@/hooks/arcade";
 import { EditionModel } from "@cartridge/arcade";
@@ -10,14 +10,12 @@ import LeaderboardRow from "../modules/leaderboard-row";
 import { useAccount } from "@starknet-react/core";
 import ArcadeSubTabs from "../modules/sub-tabs";
 import { joinPaths } from "@/helpers";
-import { useUsername } from "@/hooks/account";
 
 const DEFAULT_CAP = 30;
 const ROW_HEIGHT = 44;
 
 export function Leaderboard({ edition }: { edition?: EditionModel }) {
   const { isConnected, address } = useAccount();
-  const { username } = useUsername({ address: address || "" });
   const { achievements, globals, players, usernames, isLoading, isError } =
     useAchievements();
   const { pins, follows } = useArcade();
@@ -87,38 +85,13 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         following: following.includes(getChecksumAddress(player.address)),
       };
     });
-
-    // Check if the user is in the data list
     const selfData = data.find(
       (player) => BigInt(player.address) === BigInt(address || "0x0"),
     );
-
-    // If the user isn't in the list but has an address, create a placeholder entry for them
-    const userPlaceholder =
-      !selfData && address
-        ? {
-            address: getChecksumAddress(address),
-            name: username || address.slice(0, 9),
-            rank: data.length + 1, // Rank them at the bottom
-            points: 0, // Zero points
-            highlight: true,
-            pins: [],
-            following: false,
-          }
-        : null;
-
-    // Always include user at the bottom if they have an address
     const newAll =
-      !address || rank < cap || !selfData
+      rank < cap || !selfData
         ? data.slice(0, cap)
         : [...data.slice(0, cap - 1), selfData];
-
-    // Add user placeholder if they're not in the list but have an address
-    const finalAll =
-      userPlaceholder && !newAll.some((p) => p.highlight)
-        ? [...newAll.slice(0, cap - 1), userPlaceholder]
-        : newAll;
-
     const filtereds = data.filter((player) =>
       following.includes(getChecksumAddress(player.address)),
     );
@@ -130,19 +103,10 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         ? filtereds.slice(0, cap)
         : [...filtereds.slice(0, cap - 1), selfData];
     return {
-      all: finalAll,
+      all: newAll,
       following: newFollowings,
     };
-  }, [
-    gamePlayers,
-    gameAchievements,
-    address,
-    pins,
-    usernames,
-    following,
-    cap,
-    username,
-  ]);
+  }, [gamePlayers, gameAchievements, address, pins, usernames, following, cap]);
 
   const gamesData = useMemo(() => {
     let rank = 0;
@@ -159,37 +123,13 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         following: following.includes(getChecksumAddress(player.address)),
       };
     });
-
-    // Check if the user is in the data list
     const selfData = data.find(
       (player) => BigInt(player.address) === BigInt(address || "0x0"),
     );
-
-    // If the user isn't in the list but has an address, create a placeholder entry
-    const userPlaceholder =
-      !selfData && address
-        ? {
-            address: getChecksumAddress(address),
-            name: username || address.slice(0, 9),
-            rank: data.length + 1, // Rank them at the bottom
-            points: 0, // Zero points
-            highlight: true,
-            following: false,
-          }
-        : null;
-
-    // Always include user at the bottom if they have an address
     const newAll =
-      !address || rank < cap || !selfData
+      rank < cap || !selfData
         ? data.slice(0, cap)
         : [...data.slice(0, cap - 1), selfData];
-
-    // Add user placeholder if they're not in the list but have an address
-    const finalAll =
-      userPlaceholder && !newAll.some((p) => p.highlight)
-        ? [...newAll.slice(0, cap - 1), userPlaceholder]
-        : newAll;
-
     const filtereds = data.filter((player) =>
       following.includes(getChecksumAddress(player.address)),
     );
@@ -201,10 +141,10 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
         ? filtereds.slice(0, cap)
         : [...filtereds.slice(0, cap - 1), selfData];
     return {
-      all: finalAll,
+      all: newAll,
       following: newFollowings,
     };
-  }, [globals, address, usernames, following, cap, username]);
+  }, [globals, address, usernames, following, cap]);
 
   const filteredData = useMemo(() => {
     if (!edition) return gamesData;
@@ -245,19 +185,16 @@ export function Leaderboard({ edition }: { edition?: EditionModel }) {
   return (
     <LayoutContent className="select-none h-full overflow-clip p-0">
       <div
-        className="p-0 pt-4 lg:pt-6 mt-0 h-full overflow-y-scroll"
+        className="p-0 pt-3 lg:pt-6 mt-0 h-full overflow-y-scroll"
         style={{ scrollbarWidth: "none" }}
       >
-        <ArcadeSubTabs tabs={["all", "following"]} className="mb-4">
+        <ArcadeSubTabs tabs={["all", "following"]} className="mb-3 lg:mb-4">
           <div
             className="flex justify-center gap-8 w-full h-full overflow-y-scroll"
             style={{ scrollbarWidth: "none" }}
           >
             <TabsContent
-              className={cn(
-                "p-0 mt-0 pb-3 lg:pb-6 grow w-full",
-                isConnected ? "pb-[88px]" : "pb-3",
-              )}
+              className="p-0 mt-0 pb-3 lg:pb-6 grow w-full"
               value="all"
             >
               {isLoading && filteredData.all.length === 0 ? (
@@ -337,7 +274,7 @@ const EmptyState = () => {
     <Empty
       title="No leaderboard available for this game."
       icon="leaderboard"
-      className="h-full lg:py-6"
+      className="h-full"
     />
   );
 };
