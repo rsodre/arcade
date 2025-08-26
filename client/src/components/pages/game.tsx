@@ -38,11 +38,13 @@ export function GamePage() {
 
   const order: TabValue[] = useMemo(() => {
     const tabs: TabValue[] = game
-      ? ["activity", "leaderboard", "marketplace", "guilds", "about"]
-      : ["activity", "leaderboard", "marketplace"];
+      ? ["activity", "leaderboard", "marketplace", "guilds", "predict", "about"]
+      : ["activity", "leaderboard", "marketplace", "predict"];
 
-    if (process.env.NODE_ENV === "development") {
-      tabs.push("predict");
+    if (process.env.NODE_ENV !== "development") {
+      // Remove predict tab in production for now
+      const predictIndex = tabs.indexOf("predict");
+      tabs.splice(predictIndex, 1);
     }
 
     return tabs;
