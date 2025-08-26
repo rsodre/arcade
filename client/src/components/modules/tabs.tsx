@@ -18,7 +18,6 @@ import {
   TabsList,
   TabsTrigger,
   TrophyIcon,
-  useMediaQuery,
   UsersIcon,
   LightbulbIcon,
 } from "@cartridge/ui";
