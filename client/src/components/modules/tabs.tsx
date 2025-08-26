@@ -20,11 +20,11 @@ import {
   TrophyIcon,
   useMediaQuery,
   UsersIcon,
+  LightbulbIcon,
 } from "@cartridge/ui";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import ArcadeTab from "./tab";
-import { LightbulbIcon } from "../predict/predict-icon";
 
 const arcadeTabsVariants = cva(
   "flex justify-start items-end w-full p-0 px-4 border-b rounded-none",
@@ -56,7 +56,8 @@ export type TabValue =
   | "marketplace"
   | "items"
   | "holders"
-  | "predict";
+  | "predict"
+  | "positions";
 
 export interface ArcadeTabsProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -76,6 +77,7 @@ export const ArcadeTabs = ({
     "marketplace",
     "inventory",
     "achievements",
+    "positions",
     "guilds",
     "items",
     "holders",
@@ -294,6 +296,8 @@ const Tab = ({
       return <HoldersNavButton key={tab} {...props} />;
     case "predict":
       return <PredictNavButton key={tab} {...props} />;
+    case "positions":
+      return <PositionsNavButton {...props} />;
     default:
       return null;
   }
@@ -787,6 +791,50 @@ const PredictNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
         value={value}
         Icon={<LightbulbIcon variant="solid" size="sm" />}
         label="Predict"
+        active={active}
+        size={size}
+        onClick={onClick}
+      />
+    );
+  },
+);
+
+const PositionsNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <LightbulbIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<LightbulbIcon variant="solid" size="sm" />}
+          label="Positions"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
+    return (
+      <ArcadeTab
+        ref={ref}
+        value={value}
+        Icon={<LightbulbIcon variant="solid" size="sm" />}
+        label="Positions"
         active={active}
         size={size}
         onClick={onClick}
