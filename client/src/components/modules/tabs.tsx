@@ -25,6 +25,7 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import ArcadeTab from "./tab";
+import { useDevice } from "@/hooks/device";
 
 const arcadeTabsVariants = cva(
   "flex justify-start items-end w-full p-0 px-4 border-b rounded-none",
@@ -97,8 +98,7 @@ export const ArcadeTabs = ({
     new Map<TabValue, { width: number; visible: boolean }>(),
   );
 
-  const isMobile = useMediaQuery("(max-width: 1024px)");
-  const isPWA = useMediaQuery("(display-mode: standalone)");
+  const { isMobile, isPWA } = useDevice();
 
   useEffect(() => {
     if (isMobile) return;
