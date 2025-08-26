@@ -18,7 +18,7 @@ export function App() {
   const { setPlayer } = useArcade();
   const { player, collection } = useProject();
 
-  const isPWA = useDevice();
+  const { isPWA } = useDevice();
 
   useEffect(() => {
     setPlayer(player);
