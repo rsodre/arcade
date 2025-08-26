@@ -16,6 +16,7 @@ import { GameSocialWebsite } from "../modules/game-social";
 import { useProject } from "@/hooks/project";
 import { joinPaths } from "@/helpers";
 import { useDevice } from "@/hooks/device";
+import { PredictScene } from "../scenes/predict";
 
 export function GamePage() {
   const { game, edition } = useProject();
@@ -133,6 +134,12 @@ export function GamePage() {
             value="about"
           >
             <AboutScene />
+          </TabsContent>
+          <TabsContent
+            className="p-0 px-3 lg:px-6 mt-0 grow w-full"
+            value="predict"
+          >
+            <PredictScene />
           </TabsContent>
         </div>
       </ArcadeTabs>
