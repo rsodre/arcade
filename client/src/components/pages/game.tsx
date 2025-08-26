@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
-import { TabsContent, Thumbnail, TabValue, Empty } from "@cartridge/ui";
+import { TabsContent, Thumbnail, Empty } from "@cartridge/ui";
 import { cn } from "@cartridge/ui/utils";
 import { DiscoverScene } from "../scenes/discover";
 import { LeaderboardScene } from "../scenes/leaderboard";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Socials } from "@cartridge/arcade";
-import { ArcadeTabs } from "../modules";
+import { ArcadeTabs, TabValue } from "../modules";
 import { MarketplaceScene } from "../scenes/marketplace";
 import { GuildsScene } from "../scenes/guild";
 import { AboutScene } from "../scenes/about";
@@ -36,7 +36,7 @@ export function GamePage() {
   );
 
   const order: TabValue[] = useMemo(() => {
-    if (!game) return ["activity", "leaderboard", "marketplace"];
+    if (!game) return ["activity", "leaderboard", "marketplace", "predict"];
     return ["activity", "leaderboard", "marketplace", "guilds", "about"];
   }, [game]);
 
