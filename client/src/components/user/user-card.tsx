@@ -30,6 +30,8 @@ export const UserCard = React.forwardRef<
   const { earnings: totalEarnings } = usePlayerStats();
   const { earnings: gameEarnings } = usePlayerGameStats(projects);
 
+  if (!username) return null;
+
   return (
     <div
       id="user-card"
