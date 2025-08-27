@@ -18,12 +18,13 @@ import {
   TabsList,
   TabsTrigger,
   TrophyIcon,
-  useMediaQuery,
   UsersIcon,
+  LightbulbIcon,
 } from "@cartridge/ui";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 import ArcadeTab from "./tab";
+import { useDevice } from "@/hooks/device";
 
 const arcadeTabsVariants = cva(
   "flex justify-start items-end w-full p-0 px-4 border-b rounded-none",
@@ -54,7 +55,9 @@ export type TabValue =
   | "about"
   | "marketplace"
   | "items"
-  | "holders";
+  | "holders"
+  | "predict"
+  | "positions";
 
 export interface ArcadeTabsProps
   extends React.HTMLAttributes<HTMLDivElement>,
@@ -74,6 +77,7 @@ export const ArcadeTabs = ({
     "marketplace",
     "inventory",
     "achievements",
+    "positions",
     "guilds",
     "items",
     "holders",
@@ -93,8 +97,7 @@ export const ArcadeTabs = ({
     new Map<TabValue, { width: number; visible: boolean }>(),
   );
 
-  const isMobile = useMediaQuery("(max-width: 1024px)");
-  const isPWA = useMediaQuery("(display-mode: standalone)");
+  const { isMobile, isPWA } = useDevice();
 
   useEffect(() => {
     if (isMobile) return;
@@ -290,6 +293,10 @@ const Tab = ({
       return <ItemsNavButton key={tab} {...props} />;
     case "holders":
       return <HoldersNavButton key={tab} {...props} />;
+    case "predict":
+      return <PredictNavButton key={tab} {...props} />;
+    case "positions":
+      return <PositionsNavButton {...props} />;
     default:
       return null;
   }
@@ -739,6 +746,94 @@ const HoldersNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
         value={value}
         Icon={<UsersIcon variant="solid" size="sm" />}
         label="Holders"
+        active={active}
+        size={size}
+        onClick={onClick}
+      />
+    );
+  },
+);
+
+const PredictNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <LightbulbIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<LightbulbIcon variant="solid" size="sm" />}
+          label="Predict"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
+    return (
+      <ArcadeTab
+        ref={ref}
+        value={value}
+        Icon={<LightbulbIcon variant="solid" size="sm" />}
+        label="Predict"
+        active={active}
+        size={size}
+        onClick={onClick}
+      />
+    );
+  },
+);
+
+const PositionsNavButton = React.forwardRef<HTMLButtonElement, NavButtonProps>(
+  ({ value, active, size, onClick, item, isMobile }, ref) => {
+    if (isMobile) {
+      return (
+        <TabsTrigger
+          className="p-0 grow data-[state=active]:bg-background-transparent data-[state=active]:shadow-none"
+          value={value}
+          ref={ref}
+        >
+          <BottomTab status={active ? "active" : null} onClick={onClick}>
+            <LightbulbIcon variant="solid" size="lg" />
+          </BottomTab>
+        </TabsTrigger>
+      );
+    }
+
+    if (item) {
+      return (
+        <ArcadeMenuItem
+          ref={ref}
+          value={value}
+          Icon={<LightbulbIcon variant="solid" size="sm" />}
+          label="Positions"
+          active={active}
+          size={size}
+          onClick={onClick}
+        />
+      );
+    }
+
+    return (
+      <ArcadeTab
+        ref={ref}
+        value={value}
+        Icon={<LightbulbIcon variant="solid" size="sm" />}
+        label="Positions"
         active={active}
         size={size}
         onClick={onClick}

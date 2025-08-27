@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { TabsContent, Thumbnail, TabValue, Empty } from "@cartridge/ui";
+import { TabsContent, Thumbnail, Empty, TabValue } from "@cartridge/ui";
 import { cn } from "@cartridge/ui/utils";
 import { DiscoverScene } from "../scenes/discover";
 import { LeaderboardScene } from "../scenes/leaderboard";
@@ -16,6 +16,7 @@ import { GameSocialWebsite } from "../modules/game-social";
 import { useProject } from "@/hooks/project";
 import { joinPaths } from "@/helpers";
 import { useDevice } from "@/hooks/device";
+import { PredictScene } from "../scenes/predict";
 
 export function GamePage() {
   const { game, edition } = useProject();
@@ -36,8 +37,17 @@ export function GamePage() {
   );
 
   const order: TabValue[] = useMemo(() => {
-    if (!game) return ["activity", "leaderboard", "marketplace"];
-    return ["activity", "leaderboard", "marketplace", "guilds", "about"];
+    const tabs: TabValue[] = game
+      ? ["activity", "leaderboard", "marketplace", "guilds", "predict", "about"]
+      : ["activity", "leaderboard", "marketplace", "predict"];
+
+    if (process.env.NODE_ENV !== "development") {
+      // Remove predict tab in production for now
+      const predictIndex = tabs.indexOf("predict");
+      tabs.splice(predictIndex, 1);
+    }
+
+    return tabs;
   }, [game]);
 
   const defaultValue = useMemo(() => {
@@ -133,6 +143,12 @@ export function GamePage() {
             value="about"
           >
             <AboutScene />
+          </TabsContent>
+          <TabsContent
+            className="p-0 px-3 lg:px-6 mt-0 grow w-full"
+            value="predict"
+          >
+            <PredictScene />
           </TabsContent>
         </div>
       </ArcadeTabs>
