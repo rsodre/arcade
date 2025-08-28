@@ -60,7 +60,7 @@ export const Games = () => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
-      <UserCard className="bg-background-100 -mb-px" />
+      {isMobile && <UserCard className="bg-background-100 -mb-px" />}
       <div className="flex flex-col gap-3 bg-background-100 p-4 pb-0 grow overflow-hidden">
         <Search search={search} setSearch={setSearch} />
         <div className="flex flex-col gap-1 grow overflow-hidden">
