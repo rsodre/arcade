@@ -1,6 +1,6 @@
 import { useAddress } from "@/hooks/address";
 import { cn } from "@/lib/utils";
-import React, { memo, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { UserAvatar } from "./avatar";
 import { useUsername } from "@/hooks/account";
 import { AchievementPlayerBadge, SparklesIcon } from "@cartridge/ui";
