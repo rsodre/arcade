@@ -19,7 +19,7 @@ export function App() {
   const { setPlayer } = useArcade();
   const { player, collection } = useProject();
 
-  const { isPWA } = useDevice();
+  const { isPWA, isMobile } = useDevice();
 
   useEffect(() => {
     setPlayer(player);
@@ -47,10 +47,12 @@ export function App() {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
             />
-            <div className="space-y-4">
-              <UserCard />
+
+            <div className="lg:space-y-4">
+              {!isMobile && <UserCard />}
               {!collection ? <Games /> : <Filters />}
             </div>
+
             <div
               className={cn(
                 "fixed lg:relative h-full w-full flex flex-col overflow-hidden px-3 lg:px-0 lg:pb-0",
