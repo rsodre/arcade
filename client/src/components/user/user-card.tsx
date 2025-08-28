@@ -1,21 +1,25 @@
 import { useAddress } from "@/hooks/address";
 import { cn } from "@/lib/utils";
-import React, { memo, useMemo } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import { UserAvatar } from "./avatar";
 import { useUsername } from "@/hooks/account";
 import { AchievementPlayerBadge, SparklesIcon } from "@cartridge/ui";
 import { usePlayerGameStats, usePlayerStats } from "@/hooks/achievements";
 import { useArcade } from "@/hooks/arcade";
 import { useProject } from "@/hooks/project";
+import { joinPaths } from "@/helpers";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const UserCard = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  HTMLButtonElement,
+  React.HTMLAttributes<HTMLButtonElement>
 >(({ className, ...props }, ref) => {
   const { address } = useAddress();
   const { username } = useUsername({ address });
   const { editions } = useArcade();
   const { game } = useProject();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const projects = useMemo(() => {
     return editions
@@ -30,16 +34,30 @@ export const UserCard = React.forwardRef<
   const { earnings: totalEarnings } = usePlayerStats();
   const { earnings: gameEarnings } = usePlayerGameStats(projects);
 
+  const handleClick = useCallback(() => {
+    if (!username && !address) return;
+    // Update the url params
+    let pathname = location.pathname;
+    const playerName = `${!username ? address?.toLowerCase() : username.toLowerCase()}`;
+    pathname = pathname.replace(/\/collection\/[^/]+/, "");
+    pathname = pathname.replace(/\/player\/[^/]+/, "");
+    pathname = pathname.replace(/\/tab\/[^/]+/, "");
+    pathname = joinPaths(pathname, `/player/${playerName}`);
+    navigate(pathname);
+  }, [address, navigate, username, location]);
+
   if (!username) return null;
 
   return (
-    <div
+    <button
       id="user-card"
+      type="button"
       ref={ref}
       className={cn(
-        "flex flex-col items-start p-4 gap-2 self-stretch bg-background-100 hover:bg-background-150 border border-background-200 hover:border-background-300 rounded-xl",
+        "flex flex-col items-start p-4 gap-2 self-stretch w-full bg-background-100 hover:bg-background-150 border border-background-200 hover:border-background-300 rounded-xl",
         className,
       )}
+      onClick={handleClick}
       {...props}
     >
       <div
@@ -66,7 +84,7 @@ export const UserCard = React.forwardRef<
           <p className="text-xs font-normal text-foreground-200">Points</p>
         </div>
       </div>
-    </div>
+    </button>
   );
 });
 
