@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { MarketCollectionContext } from "@/context/market-collection";
 import { useArcade } from "./arcade";
+import { useProject } from "./project";
 import { Token, ToriiClient, TokenBalance } from "@dojoengine/torii-wasm";
 export type { Collection, Collections } from "@/context/market-collection";
 
@@ -109,6 +110,7 @@ export function useCollection(
   initialCursor?: string,
 ) {
   const { clients } = useArcade();
+  const { edition } = useProject();
   const [cursor, setCursor] = useState<string | undefined>(initialCursor);
   const [prevCursors, setPrevCursors] = useState<string[]>([]);
   const [client, setClient] = useState<string | undefined>(undefined);
@@ -131,37 +133,21 @@ export function useCollection(
         );
       }
 
-      const collections = await Promise.all(
-        Object.keys(clients).map(async (project) => {
-          try {
-            return await fetchCollectionFromClient(
-              clients,
-              project,
-              address,
-              count,
-              cursor,
-            );
-          } catch (err) {
-            console.error(err);
-          }
-        }),
-      );
-      const filteredCollections = collections.filter(
-        (c) => c && c.items && c.items.length > 0,
-      );
-
-      if (filteredCollections.length === 0) {
-        return { items: [], cursor: undefined, client: undefined };
+      // Only fetch from current edition's client
+      if (edition?.config.project && clients[edition.config.project]) {
+        return await fetchCollectionFromClient(
+          clients,
+          edition.config.project,
+          address,
+          count,
+          cursor,
+        );
       }
-      return (
-        filteredCollections[0] ?? {
-          items: [],
-          cursor: undefined,
-          client: undefined,
-        }
-      );
+
+      // If no edition is selected, return empty (don't search other projects)
+      return { items: [], cursor: undefined, client: undefined };
     },
-    [clients, client],
+    [clients, client, edition],
   );
 
   const loadPage = useCallback(
@@ -259,6 +245,7 @@ export const useBalances = (
   initialCursor?: string,
 ) => {
   const { clients } = useArcade();
+  const { edition } = useProject();
   const [cursor, setCursor] = useState<string | undefined>(initialCursor);
   const [prevCursors, setPrevCursors] = useState<string[]>([]);
   const [client, setClient] = useState<string | undefined>(undefined);
@@ -281,37 +268,21 @@ export const useBalances = (
         );
       }
 
-      const balances = await Promise.all(
-        Object.keys(clients).map(async (project) => {
-          try {
-            return await fetchBalancesFromClient(
-              clients,
-              project,
-              address,
-              count,
-              cursor,
-            );
-          } catch (err) {
-            console.error(err);
-          }
-        }),
-      );
-      const filteredBalances = balances.filter(
-        (b) => b && b.items && b.items.length > 0,
-      );
-
-      if (filteredBalances.length === 0) {
-        return { items: [], cursor: undefined, client: undefined };
+      // Only fetch from current edition's client
+      if (edition?.config.project && clients[edition.config.project]) {
+        return await fetchBalancesFromClient(
+          clients,
+          edition.config.project,
+          address,
+          count,
+          cursor,
+        );
       }
-      return (
-        filteredBalances[0] ?? {
-          items: [],
-          cursor: undefined,
-          client: undefined,
-        }
-      );
+
+      // If no edition is selected, return empty (don't search other projects)
+      return { items: [], cursor: undefined, client: undefined };
     },
-    [clients, client],
+    [clients, client, edition],
   );
 
   const loadPage = useCallback(
