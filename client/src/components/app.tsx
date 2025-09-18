@@ -34,7 +34,7 @@ export function App() {
         >
           <div
             className={cn(
-              "lg:max-w-[1320px] w-full px-0 lg:px-6 lg:pb-6 gap-3 lg:gap-6 xl:gap-10 flex items-stretch m-auto h-full overflow-clip",
+              "2xl:max-w-[1320px] w-full px-0 lg:px-6 lg:pb-6 gap-3 lg:gap-6 2xl:gap-10 flex items-stretch m-auto h-full overflow-clip",
               "transition-all duration-300 ease-in-out",
             )}
           >
