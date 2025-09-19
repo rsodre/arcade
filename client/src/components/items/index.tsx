@@ -285,7 +285,7 @@ export function Items({ edition, collectionAddress }: { edition: EditionModel, c
                   transform: `translateY(${virtualRow.start}px)`,
                 }}
               >
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                   {rowTokens.map((token) => {
                     // Get orders for this specific token
                     const tokenId = token.token_id?.toString();
