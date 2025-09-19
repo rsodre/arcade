@@ -74,7 +74,7 @@ const PLAYTHROUGH_SQL = (limit: number = 1000, offset:number =0,daysBack: number
   filtered_transactions AS (
       SELECT DISTINCT t.transaction_hash, t.executed_at
       FROM transactions t
-      WHERE t.executed_at >= datetime('now', '-${daysBack} days')
+      WHERE t.executed_at >= datetime('now', '-${daysBack} hours')
   ),
   recent_actions AS (
       SELECT
@@ -211,7 +211,7 @@ export function useDiscoversFetcher({
         const stream = fetchToriisStream(
           projects.map((p) => p.project),
           {
-            sql: PLAYTHROUGH_SQL(100000, 0, daysBack),
+            sql: PLAYTHROUGH_SQL(1000, 0, daysBack),
           },
         );
 
