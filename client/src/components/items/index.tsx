@@ -268,7 +268,7 @@ export function Items({ edition, collectionAddress }: { edition: EditionModel, c
           {virtualizer.getVirtualItems().map((virtualRow) => {
             const startIndex = virtualRow.index * 3;
             const endIndex = Math.min(
-              startIndex + 3,
+              startIndex + 4,
               searchFilteredTokens.length
             );
             const rowTokens = searchFilteredTokens.slice(startIndex, endIndex);
