@@ -50,7 +50,7 @@ export const Marketplace = () => {
 
   return (
     <div
-      className="py-6 grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 place-items-center select-none overflow-y-scroll"
+      className="py-6 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 place-items-center select-none overflow-y-scroll"
       style={{ scrollbarWidth: "none" }}
     >
       {fileteredCollections.map((collection) => (
