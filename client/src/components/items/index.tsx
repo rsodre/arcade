@@ -507,7 +507,7 @@ const LoadingState = () => {
         <Skeleton className="min-h-10 w-1/5" />
         <Skeleton className="min-h-10 w-1/3" />
       </div>
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 place-items-center select-none overflow-hidden h-full">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 place-items-center select-none overflow-hidden h-full">
         {Array.from({ length: 20 }).map((_, index) => (
           <Skeleton key={index} className="min-h-[218px] w-full" />
         ))}
