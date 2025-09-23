@@ -326,7 +326,7 @@ export function Items({
           })}
         </div>
       </div>
-      {isConnected && (
+      {isConnected && selection.length > 0 ? (
         <>
           <Separator className="w-full h-px bg-background-200" />
           <div className="w-full flex justify-end items-center p-4">
@@ -339,7 +339,7 @@ export function Items({
             </Button>
           </div>
         </>
-      )}
+      ) : null}
       <FloatingLoadingSpinner
         isLoading={status === "loading" && tokens && tokens.length > 0}
         loadingProgress={loadingProgress}
@@ -376,15 +376,15 @@ function Item({
   }, [selection, token]);
 
   const selectable = useMemo(() => {
-    if (
-      selection.length === 0 ||
-      selection[0].orders.length === 0 ||
-      !token.orders.length
-    )
-      return token.orders.length > 0;
-    const tokenCurrency = token.orders[0].currency;
-    const selectionCurrency = selection[0].orders[0].currency;
-    return tokenCurrency === selectionCurrency;
+      if (
+        selection.length === 0 ||
+        selection[0].orders.length === 0 ||
+        !token.orders.length
+      )
+        return token.orders.length > 0;
+      const tokenCurrency = token.orders[0].currency;
+      const selectionCurrency = selection[0].orders[0].currency;
+      return tokenCurrency === selectionCurrency;
   }, [token.orders, selection]);
 
   const openable = useMemo(() => {
