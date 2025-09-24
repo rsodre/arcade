@@ -30,7 +30,6 @@ import { UserCard } from "../user/user-card";
 
 export const Games = () => {
   const { address } = useAccount();
-  const [search, setSearch] = useState("");
   const { games } = useArcade();
   const { game } = useProject();
   const { ownerships } = useOwnerships();
@@ -41,12 +40,6 @@ export const Games = () => {
   const selected: number = useMemo(() => {
     return game?.id || 0;
   }, [game]);
-
-  const filteredGames = useMemo(() => {
-    return games.filter((game) =>
-      game.name.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [games, search]);
 
   return (
     <div
@@ -77,7 +70,7 @@ export const Games = () => {
               whitelisted={true}
               published={true}
             />
-            {filteredGames.map((game) => (
+            {games.map((game) => (
               <Game
                 key={`${game.identifier}`}
                 id={game.id}
