@@ -229,7 +229,7 @@ export const Game = ({
     <div className="flex items-center gap-2">
       <div
         data-active={active}
-        className="grow rounded border border-transparent data-[active=true]:border-primary transition-colors duration-300 ease-in-out"
+        className="grow rounded border border-transparent transition-colors duration-300 ease-in-out"
       >
         <ArcadeGameSelect
           name={name}
@@ -238,11 +238,11 @@ export const Game = ({
           points={game ? gameEarnings : totalEarnings}
           active={active}
           onClick={handleClick}
-          variant="darkest"
           downlighted={!whitelisted}
           icon={
             whitelisted ? undefined : published ? "fa-rocket" : "fa-eye-slash"
           }
+          gameColor={game?.color}
           className="grow rounded"
         />
       </div>
