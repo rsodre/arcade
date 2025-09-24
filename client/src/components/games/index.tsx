@@ -44,7 +44,7 @@ export const Games = () => {
 
   const filteredGames = useMemo(() => {
     return games.filter((game) =>
-      game.name.toLowerCase().includes(search.toLowerCase()),
+      game.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [games, search]);
 
@@ -55,35 +55,28 @@ export const Games = () => {
         "h-full w-[calc(100vw-64px)] max-w-[360px] lg:flex lg:min-w-[360px]",
         isMobile && "fixed z-50 top-0 left-0", // Fixed position for mobile
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0", // Slide in/out animation
-        "transition-transform duration-300 ease-in-out", // Smooth transition
+        "transition-transform duration-300 ease-in-out" // Smooth transition
       )}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
     >
       {isMobile && <UserCard className="bg-background-100 -mb-px" />}
       <div className="flex flex-col gap-3 bg-background-100 p-4 pb-0 grow overflow-hidden">
-        <Search search={search} setSearch={setSearch} />
         <div className="flex flex-col gap-1 grow overflow-hidden">
-          <p className="font-semibold text-xs tracking-wider text-foreground-400 px-2 py-3">
-            Arcade
-          </p>
-          <Game
-            id={0}
-            name="Arcade"
-            icon={arcade}
-            cover={banner}
-            active={!selected}
-            owner={false}
-            whitelisted={true}
-            published={true}
-          />
-          <p className="font-semibold text-xs tracking-wider text-foreground-400 px-2 py-3">
-            Games
-          </p>
           <CardListContent
             className="p-0 pb-4 overflow-y-auto"
             style={{ scrollbarWidth: "none" }}
           >
+            <Game
+              id={0}
+              name="All Games"
+              icon={arcade}
+              cover={banner}
+              active={!selected}
+              owner={false}
+              whitelisted={true}
+              published={true}
+            />
             {filteredGames.map((game) => (
               <Game
                 key={`${game.identifier}`}
@@ -95,8 +88,8 @@ export const Games = () => {
                 owner={
                   BigInt(
                     ownerships.find(
-                      (ownership) => ownership.tokenId === BigInt(game.id),
-                    )?.accountAddress || "0x0",
+                      (ownership) => ownership.tokenId === BigInt(game.id)
+                    )?.accountAddress || "0x0"
                   ) === BigInt(address || "0x1")
                 }
                 original={game}
@@ -110,7 +103,7 @@ export const Games = () => {
       <div
         className={cn(
           "flex items-center justify-center p-3 lg:pb-3 gap-2.5 bg-background-100",
-          isPWA ? "pb-6" : "pb-3",
+          isPWA ? "pb-6" : "pb-3"
         )}
       >
         <Register />
@@ -175,7 +168,7 @@ export const Game = ({
 
   const access = useMemo(() => {
     return accesses.find(
-      (access) => BigInt(access.address) === BigInt(address || "0x1"),
+      (access) => BigInt(access.address) === BigInt(address || "0x1")
     );
   }, [accesses, address]);
 
@@ -216,7 +209,7 @@ export const Game = ({
       newEdition.whitelisted = status;
       setGame(newEdition);
     },
-    [game],
+    [game]
   );
 
   const setPublished = useCallback(
@@ -226,7 +219,7 @@ export const Game = ({
       newEdition.published = status;
       setGame(newEdition);
     },
-    [game],
+    [game]
   );
 
   useEffect(() => {
