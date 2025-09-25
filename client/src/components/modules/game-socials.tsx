@@ -87,14 +87,6 @@ const GameSocials = ({
         ),
       });
     }
-    if (socials?.github) {
-      platforms.push({
-        key: "github",
-        component: (
-          <GameSocialGithub github={socials.github} label variant="dark" />
-        ),
-      });
-    }
 
     return platforms;
   }, [socials]);
