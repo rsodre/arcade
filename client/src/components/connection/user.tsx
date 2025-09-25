@@ -32,7 +32,7 @@ export function User() {
       console.error("Connector not initialized");
       return;
     }
-    controller.openProfileTo("inventory");
+    controller.openProfile();
   }, [connector]);
 
   const handleDisconnect = useCallback(() => {
