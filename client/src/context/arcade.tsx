@@ -1,6 +1,6 @@
 import {
   createContext,
-  ReactNode,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -14,10 +14,10 @@ import {
   PinEvent,
   AccessModel,
   GameModel,
-  RegistryModel,
-  SocialModel,
-  SocialOptions,
-  RegistryOptions,
+  type RegistryModel,
+  type SocialModel,
+  type SocialOptions,
+  type RegistryOptions,
   FollowEvent,
   EditionModel,
 } from "@cartridge/arcade";
@@ -27,8 +27,8 @@ import {
   RpcProvider,
   shortString,
 } from "starknet";
-import { Chain } from "@starknet-react/chains";
-import * as torii from "@dojoengine/torii-wasm";
+import type { Chain } from "@starknet-react/chains";
+import type * as torii from "@dojoengine/torii-wasm";
 
 const CHAIN_ID = constants.StarknetChainId.SN_MAIN;
 const IGNORES = [
@@ -313,9 +313,9 @@ export const ArcadeProvider = ({ children }: { children: ReactNode }) => {
           }
         }),
       );
-      const arcade = "https://api.cartridge.gg/x/arcade-mainnet/torii";
+      const arcade = "https://api.cartridge.gg/x/arcade-main/torii";
       const client: torii.ToriiClient = await provider.getToriiClient(arcade);
-      clients["arcade-mainnet"] = client;
+      clients["arcade-main"] = client;
       setClients(clients);
     };
     getClients();
