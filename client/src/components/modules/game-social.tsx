@@ -146,6 +146,7 @@ const GameSocial = ({
       draggable={false}
       target="_blank"
       className={cn(GameSocialVariants({ variant }), className)}
+      rel="noreferrer"
     >
       <div className="flex gap-2 items-center">
         {icon}

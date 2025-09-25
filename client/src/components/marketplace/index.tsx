@@ -1,11 +1,11 @@
 import { CollectibleCard, Empty, Skeleton } from "@cartridge/ui";
 import { useCallback, useMemo } from "react";
 import { getChecksumAddress } from "starknet";
-import { OrderModel, StatusType } from "@cartridge/marketplace";
+import { type OrderModel, StatusType } from "@cartridge/arcade";
 import { useMarketplace } from "@/hooks/marketplace";
 import { useLocation, useNavigate } from "react-router-dom";
 import { joinPaths } from "@/helpers";
-import { EditionModel, GameModel } from "@cartridge/arcade";
+import type { EditionModel, GameModel } from "@cartridge/arcade";
 import { erc20Metadata } from "@cartridge/presets";
 import makeBlockie from "ethereum-blockies-base64";
 import { useMarketCollectionFetcher } from "@/hooks/marketplace-fetcher";

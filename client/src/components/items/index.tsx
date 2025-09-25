@@ -19,9 +19,8 @@ import {
 } from "starknet";
 import ControllerConnector from "@cartridge/connector/controller";
 import { useAccount, useConnect } from "@starknet-react/core";
-import { Chain, mainnet } from "@starknet-react/chains";
 import { useArcade } from "@/hooks/arcade";
-import { OrderModel, SaleEvent } from "@cartridge/marketplace";
+import { OrderModel, SaleEvent } from "@cartridge/arcade";
 import { erc20Metadata } from "@cartridge/presets";
 import makeBlockie from "ethereum-blockies-base64";
 import { EditionModel } from "@cartridge/arcade";
@@ -68,7 +67,7 @@ export function Items({
   const [search, setSearch] = useState<string>("");
   const [selection, setSelection] = useState<Asset[]>([]);
   const parentRef = useRef<HTMLDivElement>(null);
-  const { chains, provider } = useArcade();
+  const { provider } = useArcade();
 
   // Use the adapter hook which includes Buy Now/Show All functionality
   const {
@@ -105,14 +104,6 @@ export function Items({
     connect({ connector: connectors[0] });
   }, [connect, connectors]);
 
-  const chain: Chain = useMemo(() => {
-    return (
-      chains.find(
-        (chain) => chain.rpcUrls.default.http[0] === edition?.config.rpc,
-      ) || mainnet
-    );
-  }, [chains, edition]);
-
   const handleReset = useCallback(() => {
     setSelection([]);
   }, [setSelection]);
@@ -146,10 +137,9 @@ export function Items({
       options.push(`address=${getChecksumAddress(token.owner)}`);
       options.push("purchaseView=true");
       const path = `account/${username}/inventory/${subpath}/${contractAddress}/token/${token.token_id}${options.length > 0 ? `?${options.join("&")}` : ""}`;
-      controller.switchStarknetChain(`0x${chain.id.toString(16)}`);
       controller.openProfileAt(path);
     },
-    [connector, edition, chain, provider.provider],
+    [connector, edition, provider.provider],
   );
 
   const handlePurchase = useCallback(
@@ -194,10 +184,9 @@ export function Items({
         options.push(`tokenIds=${[token.token_id].join(",")}`);
         path = `account/${username}/inventory/${subpath}/${contractAddress}/token/${token.token_id}${options.length > 0 ? `?${options.join("&")}` : ""}`;
       }
-      controller.switchStarknetChain(`0x${chain.id.toString(16)}`);
       controller.openProfileAt(path);
     },
-    [connector, edition, chain, provider.provider],
+    [connector, edition, provider.provider],
   );
 
   // Set up virtualizer for rows
@@ -331,7 +320,7 @@ export function Items({
           "overflow-hidden transition-all duration-500 ease-out",
           isConnected && selection.length > 0
             ? " max-h-36 opacity-100"
-            : "max-h-0 opacity-0"
+            : "max-h-0 opacity-0",
         )}
       >
         <Separator className="w-full bg-background-200" />
@@ -454,7 +443,7 @@ function Item({
           (token.metadata as unknown as { name: string })?.name || token.name
         }
         // @ts-expect-error TODO: Fix this type to include image in metadata
-        image={token.metadata.image}
+        image={token.image ?? collection.image}
         listingCount={token.orders.length}
         onClick={
           selectable && openable && isConnected

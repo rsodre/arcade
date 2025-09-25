@@ -6,10 +6,9 @@ export const formatBalance = (balance: string, exludes?: string[]) => {
   // Exclude each substring from prefix
   const cleaned =
     exludes?.reduce((prev, curr) => prev.replace(curr, ""), prefix) ?? prefix;
-  return `${cleaned}${parseFloat(balance.replace(prefix, "")).toLocaleString(
-    undefined,
-    { maximumFractionDigits: 18 },
-  )}`;
+  return `${cleaned}${Number.parseFloat(
+    balance.replace(prefix, ""),
+  ).toLocaleString(undefined, { maximumFractionDigits: 18 })}`;
 };
 
 export const getChainId = (rpc: string | undefined) => {

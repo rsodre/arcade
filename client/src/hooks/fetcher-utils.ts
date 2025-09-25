@@ -1,4 +1,4 @@
-import { type EditionModel} from "@cartridge/arcade";
+import { type EditionModel } from "@cartridge/arcade";
 import { useState, useCallback, useRef } from "react";
 import { Token } from "@dojoengine/torii-wasm";
 import { MetadataHelper } from "@/helpers/metadata";
@@ -35,10 +35,12 @@ interface FetcherStateBase {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsError: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
-  setLoadingProgress: React.Dispatch<React.SetStateAction<{
-    completed: number;
-    total: number;
-  }>>;
+  setLoadingProgress: React.Dispatch<
+    React.SetStateAction<{
+      completed: number;
+      total: number;
+    }>
+  >;
   resetState: () => void;
   startLoading: () => void;
   setSuccess: () => void;
@@ -53,7 +55,9 @@ interface FetcherStateWithRetry extends FetcherStateBase {
 export function useFetcherState(): FetcherStateBase;
 export function useFetcherState(includeRetry: false): FetcherStateBase;
 export function useFetcherState(includeRetry: true): FetcherStateWithRetry;
-export function useFetcherState(includeRetry: boolean = false): FetcherStateBase | FetcherStateWithRetry {
+export function useFetcherState(
+  includeRetry: boolean = false,
+): FetcherStateBase | FetcherStateWithRetry {
   const [status, setStatus] = useState<FetcherStatus>("idle");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -99,7 +103,7 @@ export function useFetcherState(includeRetry: boolean = false): FetcherStateBase
     setIsLoading(false);
     setIsError(true);
     setErrorMessage(message || "An error occurred");
-    setEditionError(e => [...e, edition])
+    setEditionError((e) => [...e, edition]);
   }, []);
 
   const base = {
@@ -134,7 +138,7 @@ export function useFetcherState(includeRetry: boolean = false): FetcherStateBase
 export async function fetchTokenImage(
   token: Token,
   project: string,
-  useUnsafe: boolean = false
+  useUnsafe: boolean = false,
 ): Promise<string> {
   const getToriiImage = useUnsafe
     ? MetadataHelper.unsafeGetToriiImage
@@ -156,7 +160,7 @@ export async function fetchTokenImage(
 export function parseJsonSafe<T = any>(
   jsonString: string,
   fallback: T | null = null,
-  onError?: (error: Error) => void
+  onError?: (error: Error) => void,
 ): T | null {
   try {
     return JSON.parse(jsonString) as T;
@@ -169,12 +173,12 @@ export function parseJsonSafe<T = any>(
 }
 
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function withRetry<T>(
   fn: (attemptNumber: number) => Promise<T>,
-  options: RetryOptions = {}
+  options: RetryOptions = {},
 ): Promise<T> {
   const { maxAttempts = 3, baseDelay = 1000 } = options;
 
@@ -203,7 +207,7 @@ export interface StreamProcessorOptions<T> {
 
 export async function processToriiStream<T>(
   stream: AsyncIterable<any>,
-  options: StreamProcessorOptions<T>
+  options: StreamProcessorOptions<T>,
 ): Promise<boolean> {
   const { onData, onProgress, onError, onComplete } = options;
   let hasError = false;

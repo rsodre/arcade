@@ -3,12 +3,12 @@ import { MarketFiltersContext } from "@/context/market-filters";
 import { useProject } from "./project";
 import { useBalances, useCollection } from "./market-collections";
 import { SearchResult } from "@cartridge/ui";
-import { OrderModel, Token } from "@cartridge/marketplace";
+import { OrderModel, Token } from "@cartridge/arcade";
 import { useMarketplace } from "./marketplace";
-import { useUsernames } from "./account";
 import { getChecksumAddress } from "starknet";
 import { MetadataHelper } from "@/helpers/metadata";
 import { useSearchParams } from "react-router-dom";
+import { useAccounts } from "@/collections";
 
 export type Asset = Token & { orders: OrderModel[]; owner: string };
 
@@ -65,7 +65,13 @@ export const useMarketFilters = () => {
     return Array.from(new Set(owners));
   }, [balances, collectionAddress]);
 
-  const { usernames } = useUsernames({ addresses: accounts });
+  const { data } = useAccounts();
+  const usernames = useMemo(() => {
+    if (!data || accounts.length === 0) return [];
+    return accounts.map((address) => {
+      return { address: getChecksumAddress(address), username: data.get(address) || address.slice(0, 9) };
+    });
+  }, [data, accounts]);
 
   const tokens: (Token & { orders: OrderModel[]; owner: string })[] =
     useMemo(() => {
@@ -166,14 +172,12 @@ export const useMarketFilters = () => {
 
   useEffect(() => {
     if (!tokens) return;
-    // @ts-expect-error TODO: Fix this type
     setAllMetadata(MetadataHelper.extract(tokens as unknown as Token[]));
   }, [tokens, setAllMetadata]);
 
   useEffect(() => {
     if (!filteredTokens) return;
     setFilteredMetadata(
-    // @ts-expect-error TODO: Fix this type
       MetadataHelper.extract(filteredTokens as unknown as Token[]),
     );
   }, [filteredTokens, setFilteredMetadata]);

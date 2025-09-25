@@ -58,6 +58,8 @@ export function useMarketCollectionFetcher({
           console.error("failed to parse json metadata for ", project);
         }
 
+        const image = await fetchTokenImage(c as Token, project, false);
+
         collections[address] = {
           ...c,
           contract_address: address,
@@ -66,7 +68,7 @@ export function useMarketCollectionFetcher({
           token_id: c.token_id ?? null,
           metadata,
           project,
-          image: await fetchTokenImage(c as Token, project, false),
+          image,
         };
       }
 
@@ -85,11 +87,37 @@ export function useMarketCollectionFetcher({
         const limit = quickLoad ? 500 : 5000;
         const stream = fetchToriisStream(projects, {
           client: async function* ({ client }) {
-            const contracts = await client.getTokenContracts({ contract_addresses: [], contract_types: ['ERC721', 'ERC1155'], account_addresses: [], token_ids: [], pagination: { limit, cursor: undefined, direction: 'Forward', order_by: [] } });
+            const contracts = await client.getTokenContracts({
+              contract_addresses: [],
+              contract_types: ["ERC721", "ERC1155"],
+              account_addresses: [],
+              token_ids: [],
+              pagination: {
+                limit,
+                cursor: undefined,
+                direction: "Forward",
+                order_by: [],
+              },
+            });
             for (const c of contracts.items) {
-              const token = await client.getTokens({ contract_addresses: [c.contract_address], token_ids: [], attribute_filters: [], pagination: { limit: 1, cursor: undefined, direction: 'Forward', order_by: [] } })
+              const token = await client.getTokens({
+                contract_addresses: [c.contract_address],
+                token_ids: [],
+                attribute_filters: [],
+                pagination: {
+                  limit: 1,
+                  cursor: undefined,
+                  direction: "Forward",
+                  order_by: [],
+                },
+              });
               if (token.items.length > 0) {
-                c.metadata = token.items[0].metadata
+                const t = token.items[0];
+                if (c.metadata === "" && t.metadata !== "") {
+                  c.metadata = token.items[0].metadata;
+                }
+                // @ts-expect-error trust me i'm an engineer
+                c.token_id = token.items[0].token_id;
               }
             }
             yield contracts.items;
