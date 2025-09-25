@@ -45,8 +45,6 @@ const GameSocials = ({
   socials,
   ...props
 }: GameSocialsProps) => {
-  console.log(socials);
-
   // Create dynamic array of available social platforms
   const availableSocials = useMemo(() => {
     const platforms = [];
