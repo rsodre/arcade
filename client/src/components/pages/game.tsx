@@ -85,13 +85,13 @@ export function GamePage() {
               <Editions />
             </div>
           </div>
-          {!game ? (
+          {game ? (
             <div className=" hidden lg:block">
               <GameSocialWebsite website={socials?.website || ""} label />
             </div>
           ) : null}
         </div>
-        {!game ? (
+        {game ? (
           <div className="block lg:hidden">
             <GameSocialWebsite website={socials?.website || ""} label />
           </div>
