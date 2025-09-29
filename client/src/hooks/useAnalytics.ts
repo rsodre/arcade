@@ -51,7 +51,14 @@ export const AnalyticsEvents = {
   // Marketplace Events
   MARKETPLACE_COLLECTION_CLICKED: "marketplace_collection_clicked",
   MARKETPLACE_ITEM_CLICKED: "marketplace_item_clicked",
+  MARKETPLACE_ITEM_INSPECTED: "marketplace_item_inspected",
+  MARKETPLACE_PURCHASE_INITIATED: "marketplace_purchase_initiated",
+  MARKETPLACE_PURCHASE_COMPLETED: "marketplace_purchase_completed",
+  MARKETPLACE_PURCHASE_FAILED: "marketplace_purchase_failed",
+  MARKETPLACE_BULK_PURCHASE_INITIATED: "marketplace_bulk_purchase_initiated",
   MARKETPLACE_FILTER_APPLIED: "marketplace_filter_applied",
+  MARKETPLACE_SEARCH_PERFORMED: "marketplace_search_performed",
+  MARKETPLACE_TAB_SWITCHED: "marketplace_tab_switched",
 
   // Inventory Events
   INVENTORY_TOKEN_CLICKED: "inventory_token_clicked",
@@ -112,11 +119,23 @@ export interface EventProperties {
   // Marketplace properties
   collection_id?: string;
   collection_name?: string;
+  collection_address?: string;
   item_id?: string;
   item_name?: string;
   item_price?: number;
+  item_token_id?: string;
+  seller_address?: string;
+  buyer_address?: string;
+  order_id?: string;
+  order_ids?: string[];
+  purchase_type?: "single" | "bulk";
+  total_price?: number;
+  currency?: string;
+  items_count?: number;
   filter_type?: string;
   filter_value?: string;
+  search_query?: string;
+  marketplace_tab?: string;
 
   // Inventory properties
   token_address?: string;

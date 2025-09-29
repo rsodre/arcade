@@ -8,7 +8,7 @@ import {
   Separator,
   Skeleton,
 } from "@cartridge/ui";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { Token } from "@dojoengine/torii-wasm";
 import { useMarketplace } from "@/hooks/marketplace";
 import {
@@ -28,6 +28,7 @@ import { useMarketTokensFetcher } from "@/hooks/marketplace-tokens-fetcher";
 import { useMetadataFiltersAdapter } from "@/hooks/use-metadata-filters-adapter";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { FloatingLoadingSpinner } from "@/components/ui/floating-loading-spinner";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const ROW_HEIGHT = 218;
 const ERC1155_ENTRYPOINT = "balance_of_batch";
@@ -68,6 +69,8 @@ export function Items({
   const [selection, setSelection] = useState<Asset[]>([]);
   const parentRef = useRef<HTMLDivElement>(null);
   const { provider } = useArcade();
+  const { trackEvent, events } = useAnalytics();
+  const [lastSearch, setLastSearch] = useState<string>("");
 
   // Use the adapter hook which includes Buy Now/Show All functionality
   const {
@@ -100,6 +103,28 @@ export function Items({
     });
   }, [filteredTokens, search]);
 
+  // Track search with debouncing
+  useEffect(() => {
+    if (search && search !== lastSearch) {
+      const timer = setTimeout(() => {
+        trackEvent(events.MARKETPLACE_SEARCH_PERFORMED, {
+          search_query: search,
+          collection_address: collectionAddress,
+          results_count: searchFilteredTokens.length,
+        });
+        setLastSearch(search);
+      }, 500); // Debounce 500ms
+      return () => clearTimeout(timer);
+    }
+  }, [
+    search,
+    lastSearch,
+    searchFilteredTokens.length,
+    trackEvent,
+    events,
+    collectionAddress,
+  ]);
+
   const connectWallet = useCallback(async () => {
     connect({ connector: connectors[0] });
   }, [connect, connectors]);
@@ -111,6 +136,15 @@ export function Items({
   const handleInspect = useCallback(
     async (token: Token & { owner: string }) => {
       if (!edition || !isConnected || !connector) return;
+
+      // Track item inspection
+      trackEvent(events.MARKETPLACE_ITEM_INSPECTED, {
+        item_token_id: token.token_id,
+        item_name: (token.metadata as any)?.name || token.name || "",
+        collection_address: token.contract_address,
+        seller_address: token.owner,
+      });
+
       const contractAddress = token.contract_address;
       const controller = (connector as ControllerConnector)?.controller;
       const username = await controller?.username();
@@ -139,7 +173,7 @@ export function Items({
       const path = `account/${username}/inventory/${subpath}/${contractAddress}/token/${token.token_id}${options.length > 0 ? `?${options.join("&")}` : ""}`;
       controller.openProfileAt(path);
     },
-    [connector, edition, provider.provider],
+    [connector, edition, provider.provider, trackEvent, events, collection],
   );
 
   const handlePurchase = useCallback(
@@ -150,11 +184,31 @@ export function Items({
         tokens.map((token) => token.contract_address),
       );
       if (!edition || contractAddresses.size !== 1) return;
+
+      // Track purchase initiation
+      const eventType =
+        tokens.length > 1
+          ? events.MARKETPLACE_BULK_PURCHASE_INITIATED
+          : events.MARKETPLACE_PURCHASE_INITIATED;
+
+      trackEvent(eventType, {
+        purchase_type: tokens.length > 1 ? "bulk" : "single",
+        items_count: tokens.length,
+        order_ids: orders.map((o) => o.id.toString()),
+        collection_address: Array.from(contractAddresses)[0],
+        buyer_address: address,
+        item_token_ids: tokens.map((t) => t.token_id?.toString() || ""),
+      });
+
       const contractAddress = `0x${BigInt(Array.from(contractAddresses)[0]).toString(16)}`;
       const controller = (connector as ControllerConnector)?.controller;
       const username = await controller?.username();
       if (!controller || !username) {
         console.error("Connector not initialized");
+        trackEvent(events.MARKETPLACE_PURCHASE_FAILED, {
+          error_message: "Connector not initialized",
+          purchase_type: tokens.length > 1 ? "bulk" : "single",
+        });
         return;
       }
 
@@ -186,7 +240,7 @@ export function Items({
       }
       controller.openProfileAt(path);
     },
-    [connector, edition, provider.provider],
+    [connector, edition, provider.provider, address, trackEvent, events],
   );
 
   // Set up virtualizer for rows

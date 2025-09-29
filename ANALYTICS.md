@@ -70,7 +70,14 @@ Events follow the pattern: `category_action_target`
 ### Marketplace Events
 - `marketplace_collection_clicked` - Collection selected
 - `marketplace_item_clicked` - Item selected
+- `marketplace_item_inspected` - Item details viewed
+- `marketplace_purchase_initiated` - Single item purchase started
+- `marketplace_purchase_completed` - Purchase completed successfully
+- `marketplace_purchase_failed` - Purchase failed or cancelled
+- `marketplace_bulk_purchase_initiated` - Multiple items purchase started
 - `marketplace_filter_applied` - Filters applied
+- `marketplace_search_performed` - Search query executed
+- `marketplace_tab_switched` - Tab navigation (activity/items/holders)
 
 ### Inventory Events
 - `inventory_token_clicked` - Token card clicked
@@ -124,6 +131,22 @@ Common properties automatically added to all events:
 - `from_page` - Source page/route
 - `to_page` - Destination page/route
 - `tab_name` - Tab identifier
+
+**Marketplace Events:**
+- `collection_address` - NFT collection contract address
+- `collection_name` - Collection display name
+- `item_token_id` - Specific token ID
+- `item_name` - Item display name
+- `item_price` - Listed price
+- `seller_address` - Seller's wallet address
+- `buyer_address` - Buyer's wallet address
+- `order_id` - Single order identifier
+- `order_ids` - Array of order identifiers (bulk purchases)
+- `purchase_type` - "single" or "bulk"
+- `total_price` - Total transaction amount
+- `items_count` - Number of items in transaction
+- `search_query` - Marketplace search term
+- `marketplace_tab` - Current marketplace tab
 
 **Token Events:**
 - `token_address` - Token contract address
