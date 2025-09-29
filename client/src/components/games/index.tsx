@@ -27,6 +27,7 @@ import ArcadeMenuButton from "../modules/menu-button";
 import { Publish } from "./publish";
 import { Whitelist } from "./whitelist";
 import { UserCard } from "../user/user-card";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export const Games = () => {
   const { address } = useAccount();
@@ -48,7 +49,7 @@ export const Games = () => {
         "h-full w-[calc(100vw-64px)] max-w-[360px] lg:flex lg:min-w-[360px]",
         isMobile && "fixed z-50 top-0 left-0", // Fixed position for mobile
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0", // Slide in/out animation
-        "transition-transform duration-300 ease-in-out" // Smooth transition
+        "transition-transform duration-300 ease-in-out", // Smooth transition
       )}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -81,8 +82,8 @@ export const Games = () => {
                 owner={
                   BigInt(
                     ownerships.find(
-                      (ownership) => ownership.tokenId === BigInt(game.id)
-                    )?.accountAddress || "0x0"
+                      (ownership) => ownership.tokenId === BigInt(game.id),
+                    )?.accountAddress || "0x0",
                   ) === BigInt(address || "0x1")
                 }
                 original={game}
@@ -96,7 +97,7 @@ export const Games = () => {
       <div
         className={cn(
           "flex items-center justify-center p-3 lg:pb-3 gap-2.5 bg-background-100",
-          isPWA ? "pb-6" : "pb-3"
+          isPWA ? "pb-6" : "pb-3",
         )}
       >
         <Register />
@@ -161,7 +162,7 @@ export const Game = ({
 
   const access = useMemo(() => {
     return accesses.find(
-      (access) => BigInt(access.address) === BigInt(address || "0x1")
+      (access) => BigInt(access.address) === BigInt(address || "0x1"),
     );
   }, [accesses, address]);
 
@@ -180,10 +181,27 @@ export const Game = ({
   const { earnings: totalEarnings } = usePlayerStats();
   const { earnings: gameEarnings } = usePlayerGameStats(projects);
   const { close } = useSidebar();
+  const { trackGameInteraction } = useAnalytics();
 
   const location = useLocation();
   const navigate = useNavigate();
   const handleClick = useCallback(() => {
+    // Track game selection
+    trackGameInteraction(
+      "select",
+      {
+        id: id.toString(),
+        name: name,
+      },
+      {
+        is_all_games: id === 0,
+        is_owner: owner,
+        is_admin: admin,
+        is_whitelisted: whitelisted,
+        is_published: published,
+      },
+    );
+
     // Update the url params
     let pathname = location.pathname;
     const gameName = `${game?.name.toLowerCase().replace(/ /g, "-") || id}`;
@@ -193,7 +211,19 @@ export const Game = ({
     navigate(pathname || "/");
     // Close sidebar on mobile when a game is selected
     close();
-  }, [game, location, navigate, close]);
+  }, [
+    game,
+    location,
+    navigate,
+    close,
+    trackGameInteraction,
+    id,
+    name,
+    owner,
+    admin,
+    whitelisted,
+    published,
+  ]);
 
   const setWhitelisted = useCallback(
     (status: boolean) => {
@@ -201,8 +231,14 @@ export const Game = ({
       const newEdition = game.clone();
       newEdition.whitelisted = status;
       setGame(newEdition);
+
+      // Track whitelist action
+      trackGameInteraction(status ? "whitelist" : "blacklist", {
+        id: game.id.toString(),
+        name: game.name,
+      });
     },
-    [game]
+    [game, trackGameInteraction],
   );
 
   const setPublished = useCallback(
@@ -211,8 +247,14 @@ export const Game = ({
       const newEdition = game.clone();
       newEdition.published = status;
       setGame(newEdition);
+
+      // Track publish action
+      trackGameInteraction(status ? "publish" : "hide", {
+        id: game.id.toString(),
+        name: game.name,
+      });
     },
-    [game]
+    [game, trackGameInteraction],
   );
 
   useEffect(() => {

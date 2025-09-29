@@ -7,6 +7,7 @@ import {
 } from "@cartridge/ui";
 import { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 export function Navigation() {
   return (
@@ -30,11 +31,23 @@ function Item({
   disabled?: boolean;
 }) {
   const { pathname } = useLocation();
+  const { trackEvent, events } = useAnalytics();
 
   const isActive = useMemo(() => {
     if (pathname.split("/").includes(variant)) return true;
     return variant === "inventory" && pathname === "/";
   }, [pathname, variant]);
+
+  const handleClick = () => {
+    if (!disabled) {
+      trackEvent(events.NAVIGATION_TAB_CLICKED, {
+        tab_name: variant,
+        from_page: pathname,
+        to_page: `/${variant}`,
+        is_active: isActive,
+      });
+    }
+  };
 
   return (
     <Link
@@ -44,6 +57,7 @@ function Item({
         disabled && "opacity-50 cursor-not-allowed",
       )}
       to={disabled ? "#" : `/${variant}`}
+      onClick={handleClick}
     >
       <Icon size="sm" variant={isActive ? "solid" : "line"} />
       <span>{title}</span>
