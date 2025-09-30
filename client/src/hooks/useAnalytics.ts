@@ -242,17 +242,6 @@ export function useAnalytics() {
   }, [posthog]);
 
   // Helper functions for common tracking patterns
-  const trackNavigation = useCallback(
-    (from: string, to: string, properties?: EventProperties) => {
-      trackEvent(AnalyticsEvents.NAVIGATION_TAB_CLICKED, {
-        from_page: from,
-        to_page: to,
-        ...properties,
-      });
-    },
-    [trackEvent],
-  );
-
   const trackGameInteraction = useCallback(
     ({
       game,
@@ -289,38 +278,6 @@ export function useAnalytics() {
     [trackEvent],
   );
 
-  const trackAchievementInteraction = useCallback(
-    (
-      action: string,
-      achievementData: {
-        id?: string;
-        name?: string;
-        game?: string;
-        edition?: string;
-      },
-      properties?: EventProperties,
-    ) => {
-      const eventMap: Record<string, string> = {
-        view: AnalyticsEvents.ACHIEVEMENT_VIEWED,
-        click: AnalyticsEvents.ACHIEVEMENT_CARD_CLICKED,
-        pin: AnalyticsEvents.ACHIEVEMENT_PINNED,
-        unpin: AnalyticsEvents.ACHIEVEMENT_UNPINNED,
-        share: AnalyticsEvents.ACHIEVEMENT_SHARED,
-      };
-
-      const eventName = eventMap[action] || AnalyticsEvents.ACHIEVEMENT_VIEWED;
-
-      trackEvent(eventName, {
-        achievement_id: achievementData.id,
-        achievement_name: achievementData.name,
-        achievement_game: achievementData.game,
-        achievement_edition: achievementData.edition,
-        ...properties,
-      });
-    },
-    [trackEvent],
-  );
-
   const trackSocialClick = useCallback(
     (platform: string, url: string, properties?: EventProperties) => {
       const eventMap: Record<string, string> = {
@@ -344,21 +301,6 @@ export function useAnalytics() {
     [trackEvent],
   );
 
-  const trackError = useCallback(
-    (
-      errorContext: string,
-      error: Error | string,
-      properties?: EventProperties,
-    ) => {
-      trackEvent(`error_${errorContext}`, {
-        error_message: typeof error === "string" ? error : error.message,
-        error_stack: typeof error === "object" ? error.stack : undefined,
-        ...properties,
-      });
-    },
-    [trackEvent],
-  );
-
   return {
     // Core tracking functions
     trackEvent,
@@ -367,11 +309,8 @@ export function useAnalytics() {
     reset,
 
     // Helper functions
-    trackNavigation,
     trackGameInteraction,
-    trackAchievementInteraction,
     trackSocialClick,
-    trackError,
 
     // Export event names for direct use
     events: AnalyticsEvents,
