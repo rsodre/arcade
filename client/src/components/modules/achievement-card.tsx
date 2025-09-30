@@ -37,6 +37,7 @@ export const AchievementCard = ({
   const [page, setPage] = useState(0);
   const [pages, setPages] = useState<number[]>([]);
   const { trackEvent, events } = useAnalytics();
+  const [hasTrackedView, setHasTrackedView] = useState(false);
 
   const visibles = useMemo(() => {
     return (achievements || []).filter(
@@ -86,6 +87,20 @@ export const AchievementCard = ({
     const page = filtereds.find((a) => !a.completed);
     setPage(page ? page.index : pages[pages.length - 1]);
   }, [achievements]);
+
+  // Track achievement view when component first renders
+  useEffect(() => {
+    if (!hasTrackedView && visibles.length > 0) {
+      visibles.forEach((achievement) => {
+        trackEvent(events.ACHIEVEMENT_VIEWED, {
+          achievement_id: achievement.id,
+          achievement_name: name,
+          completed: achievement.completed,
+        });
+      });
+      setHasTrackedView(true);
+    }
+  }, [hasTrackedView, visibles, trackEvent, events, name]);
 
   if (visibles.length === 0) return null;
 
@@ -139,7 +154,17 @@ export const AchievementCard = ({
         )}
       </div>
       {visibles.map((achievement) => (
-        <div key={achievement.id} className="flex gap-x-px">
+        <div
+          key={achievement.id}
+          className="flex gap-x-px"
+          onClick={() => {
+            trackEvent(events.ACHIEVEMENT_CARD_CLICKED, {
+              achievement_id: achievement.id,
+              achievement_name: name,
+              completed: achievement.completed,
+            });
+          }}
+        >
           <AchievementContent {...achievement.content} />
           <div
             className={cn(
