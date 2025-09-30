@@ -73,8 +73,7 @@ export const AnalyticsEvents = {
   DISCOVERY_FEED_REFRESHED: "discovery_feed_refreshed",
 
   // Profile Events
-  PROFILE_VIEWED: "profile_viewed",
-  PROFILE_AVATAR_CLICKED: "profile_avatar_clicked",
+  PROFILE_BUTTON_CLICKED: "profile_button_clicked",
 
   // Social Events
   SOCIAL_DISCORD_CLICKED: "social_discord_clicked",

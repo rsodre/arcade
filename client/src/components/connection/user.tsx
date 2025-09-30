@@ -34,8 +34,13 @@ export function User() {
       console.error("Connector not initialized");
       return;
     }
+    // Track profile button click
+    trackEvent(events.PROFILE_BUTTON_CLICKED, {
+      username: name,
+      wallet_address: account?.address,
+    });
     controller.openProfile();
-  }, [connector]);
+  }, [connector, trackEvent, events, name, account?.address]);
 
   const handleDisconnect = useCallback(() => {
     // Track wallet disconnect
