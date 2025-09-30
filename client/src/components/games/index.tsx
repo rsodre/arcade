@@ -187,20 +187,22 @@ export const Game = ({
   const navigate = useNavigate();
   const handleClick = useCallback(() => {
     // Track game selection
-    trackGameInteraction(
-      "select",
-      {
-        id: id.toString(),
-        name: name,
+    trackGameInteraction({
+      game: {
+        action: "select",
+        data: {
+          id: id.toString(),
+          name: name,
+        },
       },
-      {
+      properties: {
         is_all_games: id === 0,
         is_owner: owner,
         is_admin: admin,
         is_whitelisted: whitelisted,
         is_published: published,
       },
-    );
+    });
 
     // Update the url params
     let pathname = location.pathname;
@@ -233,9 +235,14 @@ export const Game = ({
       setGame(newEdition);
 
       // Track whitelist action
-      trackGameInteraction(status ? "whitelist" : "blacklist", {
-        id: game.id.toString(),
-        name: game.name,
+      trackGameInteraction({
+        game: {
+          action: status ? "whitelist" : "blacklist",
+          data: {
+            id: game.id.toString(),
+            name: game.name,
+          },
+        },
       });
     },
     [game, trackGameInteraction],
@@ -249,9 +256,14 @@ export const Game = ({
       setGame(newEdition);
 
       // Track publish action
-      trackGameInteraction(status ? "publish" : "hide", {
-        id: game.id.toString(),
-        name: game.name,
+      trackGameInteraction({
+        game: {
+          action: status ? "publish" : "hide",
+          data: {
+            id: game.id.toString(),
+            name: game.name,
+          },
+        },
       });
     },
     [game, trackGameInteraction],

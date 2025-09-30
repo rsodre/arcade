@@ -90,6 +90,24 @@ export const AnalyticsEvents = {
   ONBOARDING_SKIPPED: "onboarding_skipped",
 } as const;
 
+// Game-specific types
+export type GameAction =
+  | "select"
+  | "play"
+  | "register"
+  | "publish"
+  | "hide"
+  | "update"
+  | "whitelist"
+  | "blacklist";
+
+export interface GameData {
+  id?: string;
+  name?: string;
+  namespace?: string;
+  worldAddress?: string;
+}
+
 // Type-safe event properties
 export interface EventProperties {
   // Common properties
@@ -236,34 +254,35 @@ export function useAnalytics() {
   );
 
   const trackGameInteraction = useCallback(
-    (
-      action: string,
-      gameData: {
-        id?: string;
-        name?: string;
-        namespace?: string;
-        worldAddress?: string;
-      },
-      properties?: EventProperties,
-    ) => {
-      const eventMap: Record<string, string> = {
+    ({
+      game,
+      properties,
+    }: {
+      game: {
+        action: GameAction;
+        data: GameData;
+      };
+      properties?: EventProperties;
+    }) => {
+      const eventMap: Record<GameAction, string> = {
         select: AnalyticsEvents.GAME_SELECTED,
         play: AnalyticsEvents.GAME_PLAY_CLICKED,
         register: AnalyticsEvents.GAME_REGISTER_STARTED,
         publish: AnalyticsEvents.GAME_PUBLISHED,
         hide: AnalyticsEvents.GAME_HIDDEN,
         update: AnalyticsEvents.GAME_UPDATED,
+        whitelist: AnalyticsEvents.GAME_MANAGEMENT_ACTION,
+        blacklist: AnalyticsEvents.GAME_MANAGEMENT_ACTION,
       };
 
-      const eventName =
-        eventMap[action] || AnalyticsEvents.GAME_MANAGEMENT_ACTION;
+      const eventName = eventMap[game.action];
 
       trackEvent(eventName, {
-        game_id: gameData.id,
-        game_name: gameData.name,
-        game_namespace: gameData.namespace,
-        game_world_address: gameData.worldAddress,
-        game_action: action,
+        game_id: game.data.id,
+        game_name: game.data.name,
+        game_namespace: game.data.namespace,
+        game_world_address: game.data.worldAddress,
+        game_action: game.action,
         ...properties,
       });
     },
