@@ -12,13 +12,11 @@ export const EventCategory = {
   SOCIAL: "social",
   DISCOVERY: "discovery",
   PROFILE: "profile",
-  ONBOARDING: "onboarding",
 } as const;
 
 // Event naming convention: category_action_target
 export const AnalyticsEvents = {
   // Navigation Events
-  NAVIGATION_TAB_CLICKED: "navigation_tab_clicked",
   NAVIGATION_HOME_CLICKED: "navigation_home_clicked",
   NAVIGATION_SIDEBAR_TOGGLED: "navigation_sidebar_toggled",
 
@@ -31,7 +29,6 @@ export const AnalyticsEvents = {
   // Game Events
   GAME_SELECTED: "game_selected",
   GAME_PLAY_CLICKED: "game_play_clicked",
-  GAME_SOCIAL_LINK_CLICKED: "game_social_link_clicked",
   GAME_REGISTER_STARTED: "game_register_started",
   GAME_REGISTER_SUBMITTED: "game_register_submitted",
   GAME_REGISTER_FAILED: "game_register_failed",
@@ -49,11 +46,8 @@ export const AnalyticsEvents = {
   ACHIEVEMENT_PAGE_CHANGED: "achievement_page_changed",
 
   // Marketplace Events
-  MARKETPLACE_COLLECTION_CLICKED: "marketplace_collection_clicked",
-  MARKETPLACE_ITEM_CLICKED: "marketplace_item_clicked",
   MARKETPLACE_ITEM_INSPECTED: "marketplace_item_inspected",
   MARKETPLACE_PURCHASE_INITIATED: "marketplace_purchase_initiated",
-  MARKETPLACE_PURCHASE_COMPLETED: "marketplace_purchase_completed",
   MARKETPLACE_PURCHASE_FAILED: "marketplace_purchase_failed",
   MARKETPLACE_BULK_PURCHASE_INITIATED: "marketplace_bulk_purchase_initiated",
   MARKETPLACE_FILTER_APPLIED: "marketplace_filter_applied",
@@ -68,9 +62,6 @@ export const AnalyticsEvents = {
 
   // Discovery Feed Events
   DISCOVERY_TAB_SWITCHED: "discovery_tab_switched",
-  DISCOVERY_EVENT_CLICKED: "discovery_event_clicked",
-  DISCOVERY_USER_CLICKED: "discovery_user_clicked",
-  DISCOVERY_FEED_REFRESHED: "discovery_feed_refreshed",
 
   // Profile Events
   PROFILE_BUTTON_CLICKED: "profile_button_clicked",
@@ -81,12 +72,6 @@ export const AnalyticsEvents = {
   SOCIAL_GITHUB_CLICKED: "social_github_clicked",
   SOCIAL_TELEGRAM_CLICKED: "social_telegram_clicked",
   SOCIAL_WEBSITE_CLICKED: "social_website_clicked",
-
-  // Onboarding Events
-  ONBOARDING_STARTED: "onboarding_started",
-  ONBOARDING_STEP_COMPLETED: "onboarding_step_completed",
-  ONBOARDING_COMPLETED: "onboarding_completed",
-  ONBOARDING_SKIPPED: "onboarding_skipped",
 } as const;
 
 // Game-specific types
@@ -161,8 +146,6 @@ export interface EventProperties {
 
   // Discovery properties
   discovery_tab?: "all" | "following";
-  event_type?: string;
-  event_id?: string;
 
   // Profile properties
   profile_address?: string;
@@ -171,10 +154,6 @@ export interface EventProperties {
   // Social properties
   social_platform?: string;
   social_url?: string;
-
-  // Onboarding properties
-  onboarding_step?: string;
-  onboarding_step_number?: number;
 
   // Error properties
   error_message?: string;
@@ -224,21 +203,6 @@ export function useAnalytics() {
     },
     [posthog],
   );
-
-  const identify = useCallback(
-    (userId: string, properties?: Record<string, any>) => {
-      if (!posthog) return;
-
-      posthog.identify(userId, properties);
-    },
-    [posthog],
-  );
-
-  const reset = useCallback(() => {
-    if (!posthog) return;
-
-    posthog.reset();
-  }, [posthog]);
 
   // Helper functions for common tracking patterns
   const trackGameInteraction = useCallback(
@@ -304,8 +268,6 @@ export function useAnalytics() {
     // Core tracking functions
     trackEvent,
     trackPageView,
-    identify,
-    reset,
 
     // Helper functions
     trackGameInteraction,
