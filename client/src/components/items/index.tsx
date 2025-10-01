@@ -8,7 +8,7 @@ import {
   Separator,
   Skeleton,
 } from "@cartridge/ui";
-import { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Token } from "@dojoengine/torii-wasm";
 import { useMarketplace } from "@/hooks/marketplace";
 import {
@@ -29,6 +29,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { FloatingLoadingSpinner } from "@/components/ui/floating-loading-spinner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
+import { useMarketplaceTokensStore } from "@/store";
 
 const ROW_HEIGHT = 218;
 const ERC1155_ENTRYPOINT = "balance_of_batch";
@@ -69,10 +70,12 @@ export function Items({
   const { provider } = useArcade();
   const { trackEvent, events } = useAnalytics();
   const [lastSearch, setLastSearch] = useState<string>("");
+  const getTokens = useMarketplaceTokensStore((s) => s.getTokens);
+  const tokens = getTokens(DEFAULT_PROJECT, collectionAddress);
 
   // Use the adapter hook which includes Buy Now/Show All functionality
   const {
-    tokens,
+    // tokens,
     filteredTokens,
     activeFilters,
     resetSelected: clearAllFilters,
@@ -84,9 +87,17 @@ export function Items({
   }, [getCollectionOrders, collectionAddress]);
 
   // Get collection info
-  const { collection, status, loadingProgress } = useMarketTokensFetcher({
+  const {
+    collection,
+    status,
+    loadingProgress,
+    hasMore,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useMarketTokensFetcher({
     project: [DEFAULT_PROJECT],
     address: collectionAddress,
+    attributeFilters: activeFilters,
   });
 
   // Apply search filtering on top of metadata filters
@@ -241,12 +252,28 @@ export function Items({
   );
 
   // Set up virtualizer for rows
+  const rowCount = Math.ceil(searchFilteredTokens.length / 4);
+
   const virtualizer = useVirtualizer({
-    count: searchFilteredTokens.length,
+    count: rowCount + 1,
     getScrollElement: () => parentRef.current,
     estimateSize: () => ROW_HEIGHT + 16, // ROW_HEIGHT + gap
     overscan: 2,
   });
+
+  useEffect(() => {
+    const [lastItem] = [...virtualizer.getVirtualItems()].reverse();
+
+    if (!lastItem) {
+      return;
+    }
+
+    if (lastItem.index >= rowCount - 1 && hasMore && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [rowCount, hasMore, fetchNextPage, isFetchingNextPage, virtualizer]);
+
+  const virtualItems = virtualizer.getVirtualItems();
 
   if (!collection && tokens.length === 0) return <EmptyState />;
 
@@ -276,7 +303,14 @@ export function Items({
               <p>{`${selection.length} / ${searchFilteredTokens.length} Selected`}</p>
             ) : (
               <>
-                <p>{`${searchFilteredTokens.length} ${tokens && searchFilteredTokens.length < tokens.length ? `of ${tokens.length}` : ""} Items`}</p>
+                <CollectionCount
+                  collectionCount={Number.parseInt(
+                    collection?.total_supply ?? "0x0",
+                    16,
+                  )}
+                  tokensCount={tokens.length}
+                  searchFilteredTokensCount={searchFilteredTokens.length}
+                />
                 {Object.keys(activeFilters).length > 0 && (
                   <Button
                     variant="ghost"
@@ -311,7 +345,33 @@ export function Items({
             position: "relative",
           }}
         >
-          {virtualizer.getVirtualItems().map((virtualRow) => {
+          {virtualItems.map((virtualRow) => {
+            const isLoaderRow = virtualRow.index >= rowCount;
+
+            if (isLoaderRow) {
+              return (
+                <div
+                  key={virtualRow.key}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: `${virtualRow.size}px`,
+                    transform: `translateY(${virtualRow.start}px)`,
+                  }}
+                >
+                  {hasMore && (
+                    <div className="w-full flex justify-center items-center py-6 text-sm text-foreground-300">
+                      {isFetchingNextPage
+                        ? "Loading more items…"
+                        : "Scroll to load more"}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             const startIndex = virtualRow.index * 4;
             const endIndex = Math.min(
               startIndex + 4,
@@ -545,3 +605,21 @@ const EmptyState = () => {
     />
   );
 };
+
+function CollectionCount({
+  collectionCount,
+  tokensCount,
+  searchFilteredTokensCount,
+}: {
+  collectionCount: number;
+  tokensCount: number;
+  searchFilteredTokensCount: number;
+}) {
+  if (0 === searchFilteredTokensCount) return <p>{collectionCount} Items</p>;
+
+  return (
+    <p>
+      {tokensCount} of {collectionCount} Items
+    </p>
+  );
+}
