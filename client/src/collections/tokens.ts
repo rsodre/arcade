@@ -15,7 +15,7 @@ import {
 } from "@dojoengine/torii-wasm";
 import { getChecksumAddress } from "starknet";
 import { BLACKLISTS, DEFAULT_PROJECT } from "@/constants";
-import { fetchTokenImage } from "@/hooks/fetcher-utils";
+import { fetchContractImage, fetchTokenImage } from "@/hooks/fetcher-utils";
 
 export type EnrichedTokenContract = TokenContract & {
   totalSupply: bigint;
@@ -86,11 +86,16 @@ export const tokenContractsCollection = createCollection(
             enrichedContract.token_id = token.items[0].token_id;
           }
 
-          const image = await fetchTokenImage(
-            enrichedContract as Token,
-            DEFAULT_PROJECT,
-            false,
-          );
+          let image = null;
+          if (!contract.metadata) {
+            image = await fetchTokenImage(
+              enrichedContract as Token,
+              DEFAULT_PROJECT,
+              false,
+            );
+          } else {
+            image = await fetchContractImage(contract, DEFAULT_PROJECT);
+          }
           const contractType = (contract as any).contract_type ?? "ERC721";
           return {
             ...enrichedContract,
@@ -99,7 +104,7 @@ export const tokenContractsCollection = createCollection(
             totalSupply: BigInt(enrichedContract.total_supply ?? "0x0"),
             token_id: enrichedContract.token_id ?? null,
             project: DEFAULT_PROJECT,
-            image,
+            image: image,
             contract_type: contractType as string,
           };
         }),
@@ -121,7 +126,6 @@ export function useTokenContracts() {
       .orderBy(({ collections }) => collections.name)
       .select(({ collections }) => ({ ...collections })),
   );
-
   if (!data) {
     return { data: [], ...rest };
   }

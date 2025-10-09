@@ -187,13 +187,28 @@ export const MetadataHelper = {
     const minified = data.replace(/\s+/g, " ").trim();
     return MetadataHelper.upload(minified);
   },
-
+  getToriiContractImage: async (
+    project: string,
+    contractAddress: string,
+  ): Promise<string | undefined> => {
+    if (!contractAddress) return;
+    const toriiImage = `https://api.cartridge.gg/x/${project}/torii/static/${addAddressPadding(contractAddress)}/image`;
+    // Fetch if the image exists
+    try {
+      const response = await fetch(toriiImage);
+      if (response.ok) {
+        return toriiImage;
+      }
+    } catch (error) {
+      console.error("Error fetching image:", error);
+    }
+  },
   getToriiImage: async (
     project: string,
     token: Token,
   ): Promise<string | undefined> => {
     if (!token.contract_address || !token.token_id) return;
-    const toriiImage = `https://api.cartridge.gg/x/${project}/torii/static/0x${BigInt(token.contract_address).toString(16)}/${addAddressPadding(token.token_id)}/image`;
+    const toriiImage = `https://api.cartridge.gg/x/${project}/torii/static/${addAddressPadding(token.contract_address)}/${addAddressPadding(token.token_id)}/image`;
     // Fetch if the image exists
     try {
       const response = await fetch(toriiImage);
@@ -209,7 +224,7 @@ export const MetadataHelper = {
     token: Token,
   ): Promise<string | undefined> => {
     if (!token.contract_address || !token.token_id) return;
-    return `https://api.cartridge.gg/x/${project}/torii/static/0x${BigInt(token.contract_address).toString(16)}/${addAddressPadding(token.token_id)}/image`;
+    return `https://api.cartridge.gg/x/${project}/torii/static/${addAddressPadding(token.contract_address)}/${addAddressPadding(token.token_id)}/image`;
   },
 
   getMetadataImage: async (token: Token): Promise<string | undefined> => {
