@@ -28,6 +28,7 @@ dependencies = [
  "provider",
  "registry",
  "social",
+ "starterpack",
 ]
 
 [[package]]
@@ -178,4 +179,14 @@ dependencies = [
  "dojo",
  "dojo_cairo_test",
  "registry",
+]
+
+[[package]]
+name = "starterpack"
+version = "0.0.0"
+dependencies = [
+ "dojo",
+ "dojo_cairo_test",
+ "models",
+ "openzeppelin_token",
 ]

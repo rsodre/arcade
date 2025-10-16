@@ -13,6 +13,7 @@ openzeppelin_token.workspace = true
 dojo.workspace = true
 starknet.workspace = true
 achievement = { path = ".." }
+starterpack = { path = ".." }
 collection = { path = ".." }
 controller = { path = ".." }
 models = { path = ".." }
@@ -57,6 +58,16 @@ build-external-contracts = [
     "social::models::index::m_Guild",
     "social::models::index::m_Member",
     "social::events::index::e_Follow",
+    "starterpack::models::index::m_Config",
+    "starterpack::models::index::m_Starterpack",
+    "starterpack::models::index::m_Issuance",
+    "starterpack::models::index::m_ReferralReward",
+    "starterpack::models::index::m_GroupReward",
+    "starterpack::events::index::e_StarterpackRegistered",
+    "starterpack::events::index::e_StarterpackUpdated",
+    "starterpack::events::index::e_StarterpackIssued",
+    "starterpack::events::index::e_StarterpackPaused",
+    "starterpack::events::index::e_StarterpackResumed",
     "models::rbac::models::index::m_Moderator",
 ]
 
