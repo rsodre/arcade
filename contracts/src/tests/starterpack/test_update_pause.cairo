@@ -1,9 +1,7 @@
 // Internal imports
 
-use arcade::systems::starterpack::{
-    IAdministrationDispatcherTrait, IStarterpackRegistryDispatcherTrait, StarterPackMetadata,
-};
-use arcade::tests::setup::setup::{OWNER, RECEIVER, spawn};
+use arcade::systems::starterpack::{IStarterpackRegistryDispatcherTrait, StarterPackMetadata};
+use arcade::tests::setup::setup::{OWNER, spawn};
 use starknet::testing;
 use starterpack::models::index::Starterpack;
 use starterpack::store::{StarterpackStoreTrait, StoreTrait};
@@ -24,9 +22,6 @@ fn test_sp_update() {
 
     // [Initialize]
     testing::set_contract_address(OWNER());
-    systems
-        .starterpack_admin
-        .initialize(protocol_fee: PROTOCOL_FEE, fee_receiver: RECEIVER(), owner: OWNER());
 
     // [Register]
     testing::set_contract_address(context.creator);
@@ -80,9 +75,6 @@ fn test_sp_update_unauthorized() {
 
     // [Initialize]
     testing::set_contract_address(OWNER());
-    systems
-        .starterpack_admin
-        .initialize(protocol_fee: PROTOCOL_FEE, fee_receiver: RECEIVER(), owner: OWNER());
 
     // [Register]
     testing::set_contract_address(context.creator);
@@ -125,9 +117,6 @@ fn test_sp_pause_resume() {
 
     // [Initialize]
     testing::set_contract_address(OWNER());
-    systems
-        .starterpack_admin
-        .initialize(protocol_fee: PROTOCOL_FEE, fee_receiver: RECEIVER(), owner: OWNER());
 
     // [Register]
     testing::set_contract_address(context.creator);
@@ -169,9 +158,6 @@ fn test_sp_pause_unauthorized() {
 
     // [Initialize]
     testing::set_contract_address(OWNER());
-    systems
-        .starterpack_admin
-        .initialize(protocol_fee: PROTOCOL_FEE, fee_receiver: RECEIVER(), owner: OWNER());
 
     // [Register]
     testing::set_contract_address(context.creator);
@@ -202,9 +188,6 @@ fn test_sp_resume_unauthorized() {
 
     // [Initialize]
     testing::set_contract_address(OWNER());
-    systems
-        .starterpack_admin
-        .initialize(protocol_fee: PROTOCOL_FEE, fee_receiver: RECEIVER(), owner: OWNER());
 
     // [Register]
     testing::set_contract_address(context.creator);
