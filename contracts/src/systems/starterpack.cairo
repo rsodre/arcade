@@ -24,6 +24,8 @@ pub trait IStarterpackRegistry<TContractState> {
         self: @TContractState, starterpack_id: u32, quantity: u32, has_referrer: bool,
     ) -> StarterpackQuote;
 
+    fn supply(self: @TContractState, starterpack_id: u32) -> Option<u32>;
+
     fn metadata(self: @TContractState, starterpack_id: u32) -> ByteArray;
 
     fn register(
@@ -75,6 +77,9 @@ pub mod StarterpackRegistry {
     use starterpack::components::manageable::ManageableComponent;
     use starterpack::components::registrable::RegistrableComponent;
     use starterpack::constants::CONFIG_ID;
+    use starterpack::interface::{
+        IStarterpackImplementationDispatcher, IStarterpackImplementationDispatcherTrait,
+    };
     use starterpack::models::config::ConfigTrait;
     use starterpack::store::{ConfigStoreTrait, StarterpackStoreTrait, StoreTrait};
     use super::{IAdministration, IStarterpackRegistry, StarterpackQuote};
@@ -182,6 +187,18 @@ pub mod StarterpackRegistry {
             let total_cost = base_price + protocol_fee;
 
             StarterpackQuote { base_price, referral_fee, protocol_fee, total_cost, payment_token }
+        }
+
+        fn supply(self: @ContractState, starterpack_id: u32) -> Option<u32> {
+            let world = self.world_storage();
+            let store = StoreTrait::new(world);
+
+            let starterpack = store.get_starterpack(starterpack_id);
+            let implementation = IStarterpackImplementationDispatcher {
+                contract_address: starterpack.implementation,
+            };
+
+            implementation.supply(starterpack_id)
         }
 
         fn metadata(self: @ContractState, starterpack_id: u32) -> ByteArray {
