@@ -8,13 +8,13 @@ import { filterTokensByMetadata } from "@cartridge/arcade/marketplace";
 import { useArcade } from "@/hooks/arcade";
 import { useMarketplace } from "@/hooks/marketplace";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { useMarketplaceTokensStore } from "@/store";
 import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
 import { useMetadataFilters } from "@/hooks/use-metadata-filters";
 import { useMarketTokensFetcher } from "@/hooks/marketplace-tokens-fetcher";
+import { useMarketplaceTokensStore } from "@/store";
 import { useListedTokensFetcher } from "@/hooks/use-listed-tokens-fetcher";
 
-const ERC1155_ENTRYPOINT = "balance_of_batch";
+export const ERC1155_ENTRYPOINT = "balance_of_batch";
 
 export type MarketplaceAsset = Token & { orders: OrderModel[]; owner: string };
 
@@ -51,7 +51,10 @@ interface MarketplaceItemsViewModel {
   rawTokens: Token[] | undefined;
 }
 
-const getEntrypoints = async (provider: RpcProvider, address: string) => {
+export const getEntrypoints = async (
+  provider: RpcProvider,
+  address: string,
+) => {
   try {
     const code = await provider.getClassAt(address);
     if (!code) return [];
@@ -83,12 +86,15 @@ export function useMarketplaceItemsViewModel({
   const [lastSearch, setLastSearch] = useState<string>("");
   const [selection, setSelection] = useState<MarketplaceAsset[]>([]);
 
-  const getTokens = useMarketplaceTokensStore((state) => state.getTokens);
-  const getListedTokens = useMarketplaceTokensStore(
-    (state) => state.getListedTokens,
+  const rawTokens = useMarketplaceTokensStore(
+    (s) => s.tokens[DEFAULT_PROJECT]?.[collectionAddress],
   );
-  const rawTokens = getTokens(DEFAULT_PROJECT, collectionAddress);
+  const rawListedTokens = useMarketplaceTokensStore(
+    (s) => s.listedTokens[DEFAULT_PROJECT]?.[collectionAddress],
+  );
+
   const tokens = rawTokens || [];
+  const listedTokens = rawListedTokens || [];
 
   const { activeFilters, clearAllFilters, statusFilter } = useMetadataFilters({
     tokens,
@@ -112,8 +118,6 @@ export function useMarketplaceItemsViewModel({
     tokenIds: listedTokenIds,
     enabled: listedTokenIds.length > 0,
   });
-
-  const listedTokens = getListedTokens(DEFAULT_PROJECT, collectionAddress);
 
   const getOrdersForToken = useCallback(
     (rawTokenId?: string | bigint) => {
@@ -185,14 +189,16 @@ export function useMarketplaceItemsViewModel({
   }, [statusFilter, listedTokens.length, hasMore]);
 
   const searchFilteredTokens = useMemo(() => {
-    if (!search.trim()) return statusFilteredTokens;
+    if (!search.trim()) return statusFilteredTokens ?? [];
 
     const searchLower = search.toLowerCase();
 
-    return statusFilteredTokens.filter((token) => {
-      const tokenName = (token.metadata as any)?.name || token.name || "";
-      return tokenName.toLowerCase().includes(searchLower);
-    });
+    return (
+      statusFilteredTokens.filter((token) => {
+        const tokenName = (token.metadata as any)?.name || token.name || "";
+        return tokenName.toLowerCase().includes(searchLower);
+      }) ?? []
+    );
   }, [statusFilteredTokens, search]);
 
   useEffect(() => {
@@ -258,44 +264,14 @@ export function useMarketplaceItemsViewModel({
 
   const handleInspect = useCallback(
     async (token: MarketplaceAsset) => {
-      if (!isConnected || !connector) return;
-
       trackEvent(events.MARKETPLACE_ITEM_INSPECTED, {
         item_token_id: token.token_id,
         item_name: (token.metadata as any)?.name || token.name || "",
         collection_address: token.contract_address,
         seller_address: token.owner,
       });
-
-      const controller = (connector as ControllerConnector)?.controller;
-      const username = await controller?.username();
-      if (!controller || !username) {
-        console.error("Connector not initialized");
-        return;
-      }
-
-      const entrypoints = await getEntrypoints(
-        provider.provider,
-        token.contract_address,
-      );
-      const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
-      const subpath = isERC1155 ? "collectible" : "collection";
-
-      const project = DEFAULT_PROJECT;
-      const preset = DEFAULT_PRESET;
-      const options = [`ps=${project}`];
-      if (preset) {
-        options.push(`preset=${preset}`);
-      } else {
-        options.push("preset=cartridge");
-      }
-      options.push(`address=${getChecksumAddress(token.owner)}`);
-      options.push("purchaseView=true");
-
-      const path = `account/${username}/inventory/${subpath}/${token.contract_address}/token/${token.token_id}${options.length > 0 ? `?${options.join("&")}` : ""}`;
-      controller.openProfileAt(path);
     },
-    [connector, isConnected, provider.provider, trackEvent, events],
+    [trackEvent, events],
   );
 
   const handlePurchase = useCallback(

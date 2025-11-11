@@ -33,6 +33,7 @@ import { Route as GameGameInventoryRouteImport } from './routes/game/$game/inven
 import { Route as GameGameGuildsRouteImport } from './routes/game/$game/guilds'
 import { Route as GameGameActivityRouteImport } from './routes/game/$game/activity'
 import { Route as GameGameAboutRouteImport } from './routes/game/$game/about'
+import { Route as CollectionCollectionTokenIdRouteImport } from './routes/collection/$collection_.$tokenId'
 import { Route as CollectionCollectionItemsRouteImport } from './routes/collection/$collection/items'
 import { Route as CollectionCollectionHoldersRouteImport } from './routes/collection/$collection/holders'
 import { Route as CollectionCollectionActivityRouteImport } from './routes/collection/$collection/activity'
@@ -52,6 +53,7 @@ import { Route as GameGameEditionEditionInventoryRouteImport } from './routes/ga
 import { Route as GameGameEditionEditionGuildsRouteImport } from './routes/game/$game/edition/$edition/guilds'
 import { Route as GameGameEditionEditionActivityRouteImport } from './routes/game/$game/edition/$edition/activity'
 import { Route as GameGameEditionEditionAboutRouteImport } from './routes/game/$game/edition/$edition/about'
+import { Route as GameGameCollectionCollectionTokenIdRouteImport } from './routes/game/$game/collection/$collection_.$tokenId'
 import { Route as GameGameCollectionCollectionItemsRouteImport } from './routes/game/$game/collection/$collection/items'
 import { Route as GameGameCollectionCollectionHoldersRouteImport } from './routes/game/$game/collection/$collection/holders'
 import { Route as GameGameCollectionCollectionActivityRouteImport } from './routes/game/$game/collection/$collection/activity'
@@ -63,6 +65,7 @@ import { Route as GameGameEditionEditionPlayerPlayerPositionsRouteImport } from 
 import { Route as GameGameEditionEditionPlayerPlayerInventoryRouteImport } from './routes/game/$game_/edition/$edition_/player/$player/inventory'
 import { Route as GameGameEditionEditionPlayerPlayerActivityRouteImport } from './routes/game/$game_/edition/$edition_/player/$player/activity'
 import { Route as GameGameEditionEditionPlayerPlayerAchievementsRouteImport } from './routes/game/$game_/edition/$edition_/player/$player/achievements'
+import { Route as GameGameEditionEditionCollectionCollectionTokenIdRouteImport } from './routes/game/$game_/edition/$edition_/collection/$collection_.$tokenId'
 import { Route as GameGameEditionEditionCollectionCollectionItemsRouteImport } from './routes/game/$game_/edition/$edition_/collection/$collection/items'
 import { Route as GameGameEditionEditionCollectionCollectionHoldersRouteImport } from './routes/game/$game_/edition/$edition_/collection/$collection/holders'
 import { Route as GameGameEditionEditionCollectionCollectionActivityRouteImport } from './routes/game/$game_/edition/$edition_/collection/$collection/activity'
@@ -189,6 +192,12 @@ const GameGameAboutRoute = GameGameAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => GameGameRoute,
 } as any)
+const CollectionCollectionTokenIdRoute =
+  CollectionCollectionTokenIdRouteImport.update({
+    id: '/collection/$collection_/$tokenId',
+    path: '/collection/$collection/$tokenId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CollectionCollectionItemsRoute =
   CollectionCollectionItemsRouteImport.update({
     id: '/items',
@@ -302,6 +311,12 @@ const GameGameEditionEditionAboutRoute =
     path: '/edition/$edition/about',
     getParentRoute: () => GameGameRoute,
   } as any)
+const GameGameCollectionCollectionTokenIdRoute =
+  GameGameCollectionCollectionTokenIdRouteImport.update({
+    id: '/collection/$collection_/$tokenId',
+    path: '/collection/$collection/$tokenId',
+    getParentRoute: () => GameGameRoute,
+  } as any)
 const GameGameCollectionCollectionItemsRoute =
   GameGameCollectionCollectionItemsRouteImport.update({
     id: '/items',
@@ -368,6 +383,12 @@ const GameGameEditionEditionPlayerPlayerAchievementsRoute =
     path: '/achievements',
     getParentRoute: () => GameGameEditionEditionPlayerPlayerRoute,
   } as any)
+const GameGameEditionEditionCollectionCollectionTokenIdRoute =
+  GameGameEditionEditionCollectionCollectionTokenIdRouteImport.update({
+    id: '/game/$game_/edition/$edition_/collection/$collection_/$tokenId',
+    path: '/game/$game/edition/$edition/collection/$collection/$tokenId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const GameGameEditionEditionCollectionCollectionItemsRoute =
   GameGameEditionEditionCollectionCollectionItemsRouteImport.update({
     id: '/items',
@@ -401,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/collection/$collection/activity': typeof CollectionCollectionActivityRoute
   '/collection/$collection/holders': typeof CollectionCollectionHoldersRoute
   '/collection/$collection/items': typeof CollectionCollectionItemsRoute
+  '/collection/$collection/$tokenId': typeof CollectionCollectionTokenIdRoute
   '/game/$game/about': typeof GameGameAboutRoute
   '/game/$game/activity': typeof GameGameActivityRoute
   '/game/$game/guilds': typeof GameGameGuildsRoute
@@ -420,6 +442,7 @@ export interface FileRoutesByFullPath {
   '/game/$game/collection/$collection/activity': typeof GameGameCollectionCollectionActivityRoute
   '/game/$game/collection/$collection/holders': typeof GameGameCollectionCollectionHoldersRoute
   '/game/$game/collection/$collection/items': typeof GameGameCollectionCollectionItemsRoute
+  '/game/$game/collection/$collection/$tokenId': typeof GameGameCollectionCollectionTokenIdRoute
   '/game/$game/edition/$edition/about': typeof GameGameEditionEditionAboutRoute
   '/game/$game/edition/$edition/activity': typeof GameGameEditionEditionActivityRoute
   '/game/$game/edition/$edition/guilds': typeof GameGameEditionEditionGuildsRoute
@@ -439,6 +462,7 @@ export interface FileRoutesByFullPath {
   '/game/$game/edition/$edition/collection/$collection/activity': typeof GameGameEditionEditionCollectionCollectionActivityRoute
   '/game/$game/edition/$edition/collection/$collection/holders': typeof GameGameEditionEditionCollectionCollectionHoldersRoute
   '/game/$game/edition/$edition/collection/$collection/items': typeof GameGameEditionEditionCollectionCollectionItemsRoute
+  '/game/$game/edition/$edition/collection/$collection/$tokenId': typeof GameGameEditionEditionCollectionCollectionTokenIdRoute
   '/game/$game/edition/$edition/player/$player/achievements': typeof GameGameEditionEditionPlayerPlayerAchievementsRoute
   '/game/$game/edition/$edition/player/$player/activity': typeof GameGameEditionEditionPlayerPlayerActivityRoute
   '/game/$game/edition/$edition/player/$player/inventory': typeof GameGameEditionEditionPlayerPlayerInventoryRoute
@@ -457,6 +481,7 @@ export interface FileRoutesByTo {
   '/collection/$collection/activity': typeof CollectionCollectionActivityRoute
   '/collection/$collection/holders': typeof CollectionCollectionHoldersRoute
   '/collection/$collection/items': typeof CollectionCollectionItemsRoute
+  '/collection/$collection/$tokenId': typeof CollectionCollectionTokenIdRoute
   '/game/$game/about': typeof GameGameAboutRoute
   '/game/$game/activity': typeof GameGameActivityRoute
   '/game/$game/guilds': typeof GameGameGuildsRoute
@@ -474,6 +499,7 @@ export interface FileRoutesByTo {
   '/game/$game/collection/$collection/activity': typeof GameGameCollectionCollectionActivityRoute
   '/game/$game/collection/$collection/holders': typeof GameGameCollectionCollectionHoldersRoute
   '/game/$game/collection/$collection/items': typeof GameGameCollectionCollectionItemsRoute
+  '/game/$game/collection/$collection/$tokenId': typeof GameGameCollectionCollectionTokenIdRoute
   '/game/$game/edition/$edition/about': typeof GameGameEditionEditionAboutRoute
   '/game/$game/edition/$edition/activity': typeof GameGameEditionEditionActivityRoute
   '/game/$game/edition/$edition/guilds': typeof GameGameEditionEditionGuildsRoute
@@ -491,6 +517,7 @@ export interface FileRoutesByTo {
   '/game/$game/edition/$edition/collection/$collection/activity': typeof GameGameEditionEditionCollectionCollectionActivityRoute
   '/game/$game/edition/$edition/collection/$collection/holders': typeof GameGameEditionEditionCollectionCollectionHoldersRoute
   '/game/$game/edition/$edition/collection/$collection/items': typeof GameGameEditionEditionCollectionCollectionItemsRoute
+  '/game/$game/edition/$edition/collection/$collection/$tokenId': typeof GameGameEditionEditionCollectionCollectionTokenIdRoute
   '/game/$game/edition/$edition/player/$player/achievements': typeof GameGameEditionEditionPlayerPlayerAchievementsRoute
   '/game/$game/edition/$edition/player/$player/activity': typeof GameGameEditionEditionPlayerPlayerActivityRoute
   '/game/$game/edition/$edition/player/$player/inventory': typeof GameGameEditionEditionPlayerPlayerInventoryRoute
@@ -513,6 +540,7 @@ export interface FileRoutesById {
   '/collection/$collection/activity': typeof CollectionCollectionActivityRoute
   '/collection/$collection/holders': typeof CollectionCollectionHoldersRoute
   '/collection/$collection/items': typeof CollectionCollectionItemsRoute
+  '/collection/$collection_/$tokenId': typeof CollectionCollectionTokenIdRoute
   '/game/$game/about': typeof GameGameAboutRoute
   '/game/$game/activity': typeof GameGameActivityRoute
   '/game/$game/guilds': typeof GameGameGuildsRoute
@@ -532,6 +560,7 @@ export interface FileRoutesById {
   '/game/$game/collection/$collection/activity': typeof GameGameCollectionCollectionActivityRoute
   '/game/$game/collection/$collection/holders': typeof GameGameCollectionCollectionHoldersRoute
   '/game/$game/collection/$collection/items': typeof GameGameCollectionCollectionItemsRoute
+  '/game/$game/collection/$collection_/$tokenId': typeof GameGameCollectionCollectionTokenIdRoute
   '/game/$game/edition/$edition/about': typeof GameGameEditionEditionAboutRoute
   '/game/$game/edition/$edition/activity': typeof GameGameEditionEditionActivityRoute
   '/game/$game/edition/$edition/guilds': typeof GameGameEditionEditionGuildsRoute
@@ -551,6 +580,7 @@ export interface FileRoutesById {
   '/game/$game_/edition/$edition_/collection/$collection/activity': typeof GameGameEditionEditionCollectionCollectionActivityRoute
   '/game/$game_/edition/$edition_/collection/$collection/holders': typeof GameGameEditionEditionCollectionCollectionHoldersRoute
   '/game/$game_/edition/$edition_/collection/$collection/items': typeof GameGameEditionEditionCollectionCollectionItemsRoute
+  '/game/$game_/edition/$edition_/collection/$collection_/$tokenId': typeof GameGameEditionEditionCollectionCollectionTokenIdRoute
   '/game/$game_/edition/$edition_/player/$player/achievements': typeof GameGameEditionEditionPlayerPlayerAchievementsRoute
   '/game/$game_/edition/$edition_/player/$player/activity': typeof GameGameEditionEditionPlayerPlayerActivityRoute
   '/game/$game_/edition/$edition_/player/$player/inventory': typeof GameGameEditionEditionPlayerPlayerInventoryRoute
@@ -574,6 +604,7 @@ export interface FileRouteTypes {
     | '/collection/$collection/activity'
     | '/collection/$collection/holders'
     | '/collection/$collection/items'
+    | '/collection/$collection/$tokenId'
     | '/game/$game/about'
     | '/game/$game/activity'
     | '/game/$game/guilds'
@@ -593,6 +624,7 @@ export interface FileRouteTypes {
     | '/game/$game/collection/$collection/activity'
     | '/game/$game/collection/$collection/holders'
     | '/game/$game/collection/$collection/items'
+    | '/game/$game/collection/$collection/$tokenId'
     | '/game/$game/edition/$edition/about'
     | '/game/$game/edition/$edition/activity'
     | '/game/$game/edition/$edition/guilds'
@@ -612,6 +644,7 @@ export interface FileRouteTypes {
     | '/game/$game/edition/$edition/collection/$collection/activity'
     | '/game/$game/edition/$edition/collection/$collection/holders'
     | '/game/$game/edition/$edition/collection/$collection/items'
+    | '/game/$game/edition/$edition/collection/$collection/$tokenId'
     | '/game/$game/edition/$edition/player/$player/achievements'
     | '/game/$game/edition/$edition/player/$player/activity'
     | '/game/$game/edition/$edition/player/$player/inventory'
@@ -630,6 +663,7 @@ export interface FileRouteTypes {
     | '/collection/$collection/activity'
     | '/collection/$collection/holders'
     | '/collection/$collection/items'
+    | '/collection/$collection/$tokenId'
     | '/game/$game/about'
     | '/game/$game/activity'
     | '/game/$game/guilds'
@@ -647,6 +681,7 @@ export interface FileRouteTypes {
     | '/game/$game/collection/$collection/activity'
     | '/game/$game/collection/$collection/holders'
     | '/game/$game/collection/$collection/items'
+    | '/game/$game/collection/$collection/$tokenId'
     | '/game/$game/edition/$edition/about'
     | '/game/$game/edition/$edition/activity'
     | '/game/$game/edition/$edition/guilds'
@@ -664,6 +699,7 @@ export interface FileRouteTypes {
     | '/game/$game/edition/$edition/collection/$collection/activity'
     | '/game/$game/edition/$edition/collection/$collection/holders'
     | '/game/$game/edition/$edition/collection/$collection/items'
+    | '/game/$game/edition/$edition/collection/$collection/$tokenId'
     | '/game/$game/edition/$edition/player/$player/achievements'
     | '/game/$game/edition/$edition/player/$player/activity'
     | '/game/$game/edition/$edition/player/$player/inventory'
@@ -685,6 +721,7 @@ export interface FileRouteTypes {
     | '/collection/$collection/activity'
     | '/collection/$collection/holders'
     | '/collection/$collection/items'
+    | '/collection/$collection_/$tokenId'
     | '/game/$game/about'
     | '/game/$game/activity'
     | '/game/$game/guilds'
@@ -704,6 +741,7 @@ export interface FileRouteTypes {
     | '/game/$game/collection/$collection/activity'
     | '/game/$game/collection/$collection/holders'
     | '/game/$game/collection/$collection/items'
+    | '/game/$game/collection/$collection_/$tokenId'
     | '/game/$game/edition/$edition/about'
     | '/game/$game/edition/$edition/activity'
     | '/game/$game/edition/$edition/guilds'
@@ -723,6 +761,7 @@ export interface FileRouteTypes {
     | '/game/$game_/edition/$edition_/collection/$collection/activity'
     | '/game/$game_/edition/$edition_/collection/$collection/holders'
     | '/game/$game_/edition/$edition_/collection/$collection/items'
+    | '/game/$game_/edition/$edition_/collection/$collection_/$tokenId'
     | '/game/$game_/edition/$edition_/player/$player/achievements'
     | '/game/$game_/edition/$edition_/player/$player/activity'
     | '/game/$game_/edition/$edition_/player/$player/inventory'
@@ -742,9 +781,11 @@ export interface RootRouteChildren {
   CollectionCollectionRoute: typeof CollectionCollectionRouteWithChildren
   GameGameRoute: typeof GameGameRouteWithChildren
   PlayerPlayerRoute: typeof PlayerPlayerRouteWithChildren
+  CollectionCollectionTokenIdRoute: typeof CollectionCollectionTokenIdRoute
   GameGamePlayerPlayerRoute: typeof GameGamePlayerPlayerRouteWithChildren
   GameGameEditionEditionCollectionCollectionRoute: typeof GameGameEditionEditionCollectionCollectionRouteWithChildren
   GameGameEditionEditionPlayerPlayerRoute: typeof GameGameEditionEditionPlayerPlayerRouteWithChildren
+  GameGameEditionEditionCollectionCollectionTokenIdRoute: typeof GameGameEditionEditionCollectionCollectionTokenIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -917,6 +958,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameGameAboutRouteImport
       parentRoute: typeof GameGameRoute
     }
+    '/collection/$collection_/$tokenId': {
+      id: '/collection/$collection_/$tokenId'
+      path: '/collection/$collection/$tokenId'
+      fullPath: '/collection/$collection/$tokenId'
+      preLoaderRoute: typeof CollectionCollectionTokenIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/collection/$collection/items': {
       id: '/collection/$collection/items'
       path: '/items'
@@ -1050,6 +1098,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameGameEditionEditionAboutRouteImport
       parentRoute: typeof GameGameRoute
     }
+    '/game/$game/collection/$collection_/$tokenId': {
+      id: '/game/$game/collection/$collection_/$tokenId'
+      path: '/collection/$collection/$tokenId'
+      fullPath: '/game/$game/collection/$collection/$tokenId'
+      preLoaderRoute: typeof GameGameCollectionCollectionTokenIdRouteImport
+      parentRoute: typeof GameGameRoute
+    }
     '/game/$game/collection/$collection/items': {
       id: '/game/$game/collection/$collection/items'
       path: '/items'
@@ -1127,6 +1182,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GameGameEditionEditionPlayerPlayerAchievementsRouteImport
       parentRoute: typeof GameGameEditionEditionPlayerPlayerRoute
     }
+    '/game/$game_/edition/$edition_/collection/$collection_/$tokenId': {
+      id: '/game/$game_/edition/$edition_/collection/$collection_/$tokenId'
+      path: '/game/$game/edition/$edition/collection/$collection/$tokenId'
+      fullPath: '/game/$game/edition/$edition/collection/$collection/$tokenId'
+      preLoaderRoute: typeof GameGameEditionEditionCollectionCollectionTokenIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/game/$game_/edition/$edition_/collection/$collection/items': {
       id: '/game/$game_/edition/$edition_/collection/$collection/items'
       path: '/items'
@@ -1202,6 +1264,7 @@ interface GameGameRouteChildren {
   GameGamePredictRoute: typeof GameGamePredictRoute
   GameGameIndexRoute: typeof GameGameIndexRoute
   GameGameCollectionCollectionRoute: typeof GameGameCollectionCollectionRouteWithChildren
+  GameGameCollectionCollectionTokenIdRoute: typeof GameGameCollectionCollectionTokenIdRoute
   GameGameEditionEditionAboutRoute: typeof GameGameEditionEditionAboutRoute
   GameGameEditionEditionActivityRoute: typeof GameGameEditionEditionActivityRoute
   GameGameEditionEditionGuildsRoute: typeof GameGameEditionEditionGuildsRoute
@@ -1223,6 +1286,8 @@ const GameGameRouteChildren: GameGameRouteChildren = {
   GameGameIndexRoute: GameGameIndexRoute,
   GameGameCollectionCollectionRoute:
     GameGameCollectionCollectionRouteWithChildren,
+  GameGameCollectionCollectionTokenIdRoute:
+    GameGameCollectionCollectionTokenIdRoute,
   GameGameEditionEditionAboutRoute: GameGameEditionEditionAboutRoute,
   GameGameEditionEditionActivityRoute: GameGameEditionEditionActivityRoute,
   GameGameEditionEditionGuildsRoute: GameGameEditionEditionGuildsRoute,
@@ -1340,11 +1405,14 @@ const rootRouteChildren: RootRouteChildren = {
   CollectionCollectionRoute: CollectionCollectionRouteWithChildren,
   GameGameRoute: GameGameRouteWithChildren,
   PlayerPlayerRoute: PlayerPlayerRouteWithChildren,
+  CollectionCollectionTokenIdRoute: CollectionCollectionTokenIdRoute,
   GameGamePlayerPlayerRoute: GameGamePlayerPlayerRouteWithChildren,
   GameGameEditionEditionCollectionCollectionRoute:
     GameGameEditionEditionCollectionCollectionRouteWithChildren,
   GameGameEditionEditionPlayerPlayerRoute:
     GameGameEditionEditionPlayerPlayerRouteWithChildren,
+  GameGameEditionEditionCollectionCollectionTokenIdRoute:
+    GameGameEditionEditionCollectionCollectionTokenIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
