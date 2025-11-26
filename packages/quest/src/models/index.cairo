@@ -17,7 +17,6 @@ pub struct QuestDefinition {
     pub interval: u64,
     pub tasks: Span<Task>,
     pub conditions: Span<felt252>,
-    pub metadata: ByteArray,
 }
 
 #[derive(Copy, Drop, Serde)]
