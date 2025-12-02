@@ -4,7 +4,6 @@ pub mod QuestableComponent {
 
     use dojo::world::WorldStorage;
     use starknet::ContractAddress;
-    use crate::interfaces::{IQuestRewarderDispatcher, IQuestRewarderDispatcherTrait};
     use crate::models::completion::{CompletionAssert, CompletionTrait};
     use crate::models::definition::DefinitionAssert;
     use crate::store::{Store, StoreTrait};
@@ -30,6 +29,60 @@ pub mod QuestableComponent {
     pub impl InternalImpl<
         TContractState, +HasComponent<TContractState>,
     > of InternalTrait<TContractState> {
+        /// Check if a quest is completed
+        ///
+        /// # Arguments
+        ///
+        /// * `self`: The component state.
+        /// * `world`: The world storage.
+        /// * `player_id`: The player identifier.
+        /// * `quest_id`: The quest identifier.
+        /// * `interval_id`: The interval identifier.
+        ///
+        /// # Returns
+        ///
+        /// * `true` if the quest is completed, `false` otherwise.
+        fn is_completed(
+            self: @ComponentState<TContractState>,
+            world: WorldStorage,
+            player_id: felt252,
+            quest_id: felt252,
+            interval_id: u64,
+        ) -> bool {
+            let store: Store = StoreTrait::new(world);
+            let completion = store.get_completion(player_id, quest_id, interval_id);
+            completion.is_completed()
+        }
+
+        /// Check if a set of quests are completed
+        ///
+        /// # Arguments
+        ///
+        /// * `self`: The component state.
+        /// * `world`: The world storage.
+        /// * `player_id`: The player identifier.
+        /// * `quest_ids`: The quest identifiers.
+        /// * `interval_id`: The interval identifier.
+        ///
+        /// # Returns
+        ///
+        /// * `true` if the quests are completed, `false` otherwise.
+        fn are_completed(
+            self: @ComponentState<TContractState>,
+            world: WorldStorage,
+            player_id: felt252,
+            mut quest_ids: Array<felt252>,
+            interval_id: u64,
+        ) -> bool {
+            let store: Store = StoreTrait::new(world);
+            let mut completed = true;
+            for quest_id in quest_ids {
+                let completion = store.get_completion(player_id, quest_id, interval_id);
+                completed = completed && completion.is_completed();
+            }
+            completed
+        }
+
         /// Create an quest
         ///
         /// # Arguments
@@ -135,12 +188,16 @@ pub mod QuestableComponent {
             completion.claim();
             store.set_completion(@completion);
 
-            // [Interaction] Reward player
-            let rewarder = IQuestRewarderDispatcher { contract_address: definition.rewarder };
-            rewarder.on_quest_claim(player_id.try_into().unwrap(), quest_id);
             // [Event] Emit quest claim
             let time: u64 = starknet::get_block_timestamp();
-            store.claim(player_id, quest_id, interval_id, time);
+            store
+                .claim(
+                    rewarder: definition.rewarder,
+                    player_id: player_id,
+                    quest_id: quest_id,
+                    interval_id: interval_id,
+                    time: time,
+                );
         }
     }
 }
