@@ -45,7 +45,7 @@ pub mod RankableComponent {
         }
 
         #[inline]
-        fn len(self: @ComponentState<TContractState>, leaderboard_id: felt252) -> u64 {
+        fn len(self: @ComponentState<TContractState>, leaderboard_id: felt252) -> u32 {
             self.len.entry(leaderboard_id).read().into()
         }
 
