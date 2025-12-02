@@ -11,7 +11,7 @@ pub fn NAMESPACE() -> ByteArray {
 #[starknet::interface]
 pub trait IRanker<TContractState> {
     fn set(ref self: TContractState, leaderboard_id: felt252, cap: u8);
-    fn len(self: @TContractState, leaderboard_id: felt252) -> u64;
+    fn len(self: @TContractState, leaderboard_id: felt252) -> u32;
     fn submit(
         ref self: TContractState,
         leaderboard_id: felt252,
@@ -55,7 +55,7 @@ pub mod Ranker {
             self.rankable.set(leaderboard_id, cap);
         }
 
-        fn len(self: @ContractState, leaderboard_id: felt252) -> u64 {
+        fn len(self: @ContractState, leaderboard_id: felt252) -> u32 {
             self.rankable.len(leaderboard_id)
         }
 
