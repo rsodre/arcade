@@ -21,20 +21,40 @@ vi.mock("@/collections", () => ({
   useTokenContracts: () => mockUseTokenContracts(),
 }));
 
+const mockCollectionEditionsAtom = vi.fn();
+
+vi.mock("@effect-atom/atom-react", () => ({
+  useAtomValue: () => ({
+    _tag: "Success",
+    value: mockCollectionEditionsAtom() ?? [],
+  }),
+}));
+
+vi.mock("@/effect", () => ({
+  collectionEditionsAtom: {},
+  unwrapOr: (result: any, defaultValue: any) =>
+    result._tag === "Success" ? result.value : defaultValue,
+  useTokenContracts: () => mockUseTokenContracts(),
+}));
+
 vi.mock("@/hooks/marketplace", () => ({
   useMarketplace: () => mockUseMarketplace(),
 }));
 
-vi.mock("@cartridge/presets", () => ({
-  erc20Metadata: [
-    {
-      l2_token_address:
-        "0x0000000000000000000000000000000000000000000000000000000000000001",
-      decimals: 2,
-      logo_url: "https://tokens.example/logo.png",
-    },
-  ],
-}));
+vi.mock("@cartridge/presets", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@cartridge/presets")>();
+  return {
+    ...actual,
+    erc20Metadata: [
+      {
+        l2_token_address:
+          "0x0000000000000000000000000000000000000000000000000000000000000001",
+        decimals: 2,
+        logo_url: "https://tokens.example/logo.png",
+      },
+    ],
+  };
+});
 
 vi.mock("ethereum-blockies-base64", () => ({
   __esModule: true,
@@ -71,8 +91,9 @@ describe("useMarketplaceCollectionsViewModel", () => {
     mockUseEditions.mockReturnValue([baseEdition]);
     mockUseGames.mockReturnValue([baseGame]);
     mockUseCollectionEditions.mockReturnValue(baseCollectionEdition);
+    mockCollectionEditionsAtom.mockReturnValue(baseCollectionEdition);
     mockUseTokenContracts.mockReturnValue({ data: [], status: "idle" });
-    mockUseMarketplace.mockReturnValue({ orders: {}, sales: {} });
+    mockUseMarketplace.mockReturnValue({ listings: {}, sales: {} });
   });
 
   afterEach(() => {
@@ -109,7 +130,7 @@ describe("useMarketplaceCollectionsViewModel", () => {
     });
 
     mockUseMarketplace.mockReturnValue({
-      orders: {
+      listings: {
         [COLLECTION_ADDRESS]: {
           "1": {
             orderA: {

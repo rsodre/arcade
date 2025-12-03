@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useAtomValue } from "@effect-atom/atom-react";
 import {
   StatusType,
   type EditionModel,
@@ -7,11 +8,8 @@ import {
   type SaleEvent,
 } from "@cartridge/arcade";
 import { useMarketplace } from "@/hooks/marketplace";
-import {
-  useCollectionEditions,
-  useTokenContracts,
-  type EnrichedTokenContract,
-} from "@/collections";
+import { useTokenContracts, type EnrichedTokenContract } from "@/effect";
+import { collectionEditionsAtom, unwrapOr } from "@/effect";
 import { resizeImage } from "@/lib/helpers";
 import {
   deriveBestPrice,
@@ -64,7 +62,7 @@ const buildListingCount = (
 const buildMarketplaceItems = (
   collections: EnrichedTokenContract[],
   options: {
-    orders: ReturnType<typeof useMarketplace>["orders"];
+    orders: ReturnType<typeof useMarketplace>["listings"];
     sales: ReturnType<typeof useMarketplace>["sales"];
     currentPathname: string;
     edition: EditionModel | undefined;
@@ -110,9 +108,10 @@ export function useMarketplaceCollectionsViewModel({
   game,
   currentPathname,
 }: UseMarketplaceCollectionsViewModelArgs): MarketplaceCollectionsViewModel {
-  const collectionEditions = useCollectionEditions();
+  const collectionEditionsResult = useAtomValue(collectionEditionsAtom);
+  const collectionEditions = unwrapOr(collectionEditionsResult, []);
   const { data: allCollections, status } = useTokenContracts();
-  const { orders, sales } = useMarketplace();
+  const { listings: orders, sales } = useMarketplace();
 
   const filteredCollections = useMemo(() => {
     if (!edition) return allCollections;

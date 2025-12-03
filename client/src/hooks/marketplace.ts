@@ -1,28 +1,23 @@
-import { useCallback, useContext, useMemo, useState } from "react";
+import { bookAtom, listingsAtom, ordersAtom, salesAtom } from "@/effect/atoms";
+import {
+  ArcadeProvider as ExternalProvider,
+  StatusType,
+} from "@cartridge/arcade";
+import type { OrderModel } from "@cartridge/arcade";
+import { useAtomValue } from "@effect-atom/atom-react";
 import { useRouterState, useSearch } from "@tanstack/react-router";
-import { getChecksumAddress } from "starknet";
-import { type OrderModel, StatusType } from "@cartridge/arcade";
-import { ArcadeContext } from "@/context";
+import { useCallback, useMemo, useState } from "react";
+import { constants, getChecksumAddress } from "starknet";
 import { parseRouteParams } from "./project";
 
-/**
- * Custom hook to access the Marketplace context and account information.
- * Must be used within a ArcadeProvider component.
- *
- * @returns An object containing:
- * - chainId: The chain id
- * - provider: The Marketplace provider instance
- * - orders: All the existing orders
- * @throws {Error} If used outside of a ArcadeProvider context
- */
 export const useMarketplace = () => {
-  const context = useContext(ArcadeContext);
+  const chainId = constants.StarknetChainId.SN_MAIN;
+  const provider = useMemo(() => new ExternalProvider(chainId), []);
 
-  if (!context) {
-    throw new Error(
-      "The `useMarketplace` hook must be used within a `ArcadeProvider`",
-    );
-  }
+  const book = useAtomValue(bookAtom);
+  const orders = useAtomValue(ordersAtom);
+  const listings = useAtomValue(listingsAtom);
+  const sales = useAtomValue(salesAtom);
 
   const routerState = useRouterState();
   const search = useSearch({ strict: false });
@@ -38,16 +33,6 @@ export const useMarketplace = () => {
     const value = (search as Record<string, unknown>).token;
     return typeof value === "string" ? value : undefined;
   }, [params.token, search]);
-  const {
-    chainId,
-    provider,
-    orders,
-    addOrder,
-    removeOrder,
-    listings,
-    sales,
-    book,
-  } = context;
   const [amount, setAmount] = useState<number>(0);
 
   const getCollectionOrders = useCallback(
@@ -56,8 +41,8 @@ export const useMarketplace = () => {
       const collectionOrders = orders[collection];
       if (!collectionOrders) return {};
       return Object.entries(collectionOrders).reduce(
-        (acc, [token, orders]) => {
-          const filtered = Object.values(orders).filter(
+        (acc, [token, tokenOrders]) => {
+          const filtered = Object.values(tokenOrders).filter(
             (order) => !!order && order.status.value === StatusType.Placed,
           );
           if (filtered.length === 0) return acc;
@@ -82,7 +67,7 @@ export const useMarketplace = () => {
     return Object.values(collectionOrders[token] || {}).filter(
       (order) => order.status.value === StatusType.Placed,
     );
-  }, [orders, tokenId]);
+  }, [orders, contractAddress, tokenId]);
 
   const order: OrderModel | undefined = useMemo(() => {
     if (!contractAddress || !tokenId) return;
@@ -109,8 +94,6 @@ export const useMarketplace = () => {
     sales,
     orders,
     marketplaceFee,
-    addOrder,
-    removeOrder,
     setAmount,
     order,
     collectionOrders,

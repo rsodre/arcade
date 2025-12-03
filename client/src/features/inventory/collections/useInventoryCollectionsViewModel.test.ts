@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
-import type { EnrichedTokenContract } from "@/collections";
+import type { EnrichedTokenContract } from "@/effect";
 import { useInventoryCollectionsViewModel } from "./useInventoryCollectionsViewModel";
 
 const mockUseArcade = vi.fn();
@@ -12,14 +12,21 @@ const mockUseAnalytics = vi.fn();
 const mockUseRouterState = vi.fn();
 const mockUseAccountByAddress = vi.fn();
 
+vi.mock("@/collections", () => ({
+  useAccountByAddress: (address: string) => mockUseAccountByAddress(address),
+}));
+
 vi.mock("@/hooks/arcade", () => ({
   useArcade: () => mockUseArcade(),
 }));
 
-vi.mock("@/hooks/collections", () => ({
-  useCollections: () => mockUseCollections(),
-  useAccountByAddress: (address: string) => mockUseAccountByAddress(address),
-}));
+vi.mock("@/hooks/collections", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/hooks/collections")>();
+  return {
+    ...actual,
+    useCollections: () => mockUseCollections(),
+  };
+});
 
 vi.mock("@/hooks/address", () => ({
   useAddress: () => mockUseAddress(),
