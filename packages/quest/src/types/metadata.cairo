@@ -25,6 +25,7 @@ pub mod Errors {
     pub const METADATA_INVALID_GROUP: felt252 = 'Metadata: invalid group';
     pub const METADATA_INVALID_ICON: felt252 = 'Metadata: invalid icon';
     pub const METADATA_INVALID_DATA: felt252 = 'Metadata: invalid data';
+    pub const METADATA_INVALID_REGISTRY: felt252 = 'Metadata: invalid registry';
 }
 
 // Implementations
@@ -43,6 +44,7 @@ pub impl QuestMetadataImpl of QuestMetadataTrait {
         MetadataAssert::assert_valid_name(@name);
         MetadataAssert::assert_valid_description(@description);
         MetadataAssert::assert_valid_icon(@icon);
+        MetadataAssert::assert_valid_registry(@registry);
         // [Return] Metadata
         QuestMetadata { name, description, icon, registry, rewards }
     }
@@ -54,10 +56,13 @@ pub impl QuestMetadataImpl of QuestMetadataTrait {
         while let Option::Some(reward) = self.rewards.pop_front() {
             rewards.append(reward.clone().jsonify());
         }
+        let registry: felt252 = self.registry.into();
+        let registry: u256 = registry.into();
         JsonImpl::new()
             .add("name", self.name)
             .add("description", self.description)
             .add("icon", self.icon)
+            .add("registry", format!("{}", registry))
             .add_array("rewards", rewards.span())
             .build()
     }
@@ -78,6 +83,11 @@ pub impl MetadataAssert of AssertTrait {
     #[inline]
     fn assert_valid_icon(icon: @ByteArray) {
         assert(icon.len() > 0, Errors::METADATA_INVALID_ICON);
+    }
+
+    #[inline]
+    fn assert_valid_registry(registry: @ContractAddress) {
+        assert(registry != @0.try_into().unwrap(), Errors::METADATA_INVALID_REGISTRY);
     }
 }
 
