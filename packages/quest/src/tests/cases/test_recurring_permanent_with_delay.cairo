@@ -13,12 +13,12 @@
 //! - Can be completed once per cycle (different interval_id per cycle)
 
 use starknet::testing::set_block_timestamp;
+use crate::interfaces::IQuestRegistryDispatcherTrait;
 use crate::models::completion::{CompletionAssert, CompletionTrait};
 use crate::models::definition::{DefinitionAssert, DefinitionTrait};
 use crate::store::StoreTrait;
 use crate::tests::mocks::quester::IQuesterDispatcherTrait;
-use crate::tests::setup::setup::spawn_game;
-use crate::types::metadata::{QuestMetadata, QuestMetadataTrait};
+use crate::tests::setup::setup::{METADATA, spawn_game};
 use crate::types::task::TaskTrait;
 
 // Constants
@@ -32,10 +32,6 @@ const ONE_WEEK: u64 = 7 * ONE_DAY;
 const START: u64 = 4 * ONE_WEEK; // 4 weeks
 const DURATION: u64 = 1 * ONE_DAY; // 1 day
 const INTERVAL: u64 = 1 * ONE_WEEK; // 1 week
-
-fn METADATA() -> QuestMetadata {
-    QuestMetadataTrait::new("NAME", "DESCRIPTION", "ICON", array![].span())
-}
 
 #[test]
 fn test_recurring_permanent_with_delay_quest_creation() {
@@ -165,8 +161,12 @@ fn test_recurring_permanent_with_delay_quest_claim_multiple_intervals() {
 
     // [Claim] First cycle
     systems
-        .quester
-        .claim(player_id: context.player_id, quest_id: QUEST_ID, interval_id: interval_id_0);
+        .registry
+        .quest_claim(
+            player: context.player_id.try_into().unwrap(),
+            quest_id: QUEST_ID,
+            interval_id: interval_id_0,
+        );
 
     // [Assert] First cycle claimed
     let completion_0 = store.get_completion(context.player_id, QUEST_ID, interval_id_0);
@@ -187,8 +187,12 @@ fn test_recurring_permanent_with_delay_quest_claim_multiple_intervals() {
 
     // [Claim] Second cycle
     systems
-        .quester
-        .claim(player_id: context.player_id, quest_id: QUEST_ID, interval_id: interval_id_1);
+        .registry
+        .quest_claim(
+            player: context.player_id.try_into().unwrap(),
+            quest_id: QUEST_ID,
+            interval_id: interval_id_1,
+        );
 
     // [Assert] Second cycle claimed
     let completion_1 = store.get_completion(context.player_id, QUEST_ID, interval_id_1);

@@ -12,13 +12,13 @@
 //! - Can only be completed once per player (interval_id is always 0)
 
 use starknet::testing::set_block_timestamp;
+use crate::interfaces::IQuestRegistryDispatcherTrait;
 use crate::models::advancement::AdvancementTrait;
 use crate::models::completion::{CompletionAssert, CompletionTrait};
 use crate::models::definition::{DefinitionAssert, DefinitionTrait};
 use crate::store::StoreTrait;
 use crate::tests::mocks::quester::IQuesterDispatcherTrait;
-use crate::tests::setup::setup::spawn_game;
-use crate::types::metadata::{QuestMetadata, QuestMetadataTrait};
+use crate::tests::setup::setup::{METADATA, spawn_game};
 use crate::types::task::TaskTrait;
 
 // Constants
@@ -27,10 +27,6 @@ const QUEST_ID: felt252 = 'PERMANENT';
 const TASK_ID: felt252 = 'TASK';
 const TOTAL: u128 = 100;
 const COUNT: u128 = 50;
-
-fn METADATA() -> QuestMetadata {
-    QuestMetadataTrait::new("NAME", "DESCRIPTION", "ICON", array![].span())
-}
 
 #[test]
 fn test_permanent_quest_creation() {
@@ -161,8 +157,12 @@ fn test_permanent_quest_claim() {
 
     // [Claim] Quest
     systems
-        .quester
-        .claim(player_id: context.player_id, quest_id: QUEST_ID, interval_id: interval_id);
+        .registry
+        .quest_claim(
+            player: context.player_id.try_into().unwrap(),
+            quest_id: QUEST_ID,
+            interval_id: interval_id,
+        );
 
     // [Assert] Quest is claimed
     let completion = store.get_completion(context.player_id, QUEST_ID, interval_id);
