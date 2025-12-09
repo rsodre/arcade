@@ -29,10 +29,7 @@ const QUEST_A: felt252 = 'QUEST-A';
 const QUEST_B: felt252 = 'QUEST-B';
 const QUEST_C: felt252 = 'QUEST-C';
 const QUEST_D: felt252 = 'QUEST-D';
-const TASK_A: felt252 = 'TASK-A';
-const TASK_B: felt252 = 'TASK-B';
-const TASK_C: felt252 = 'TASK-C';
-const TASK_D: felt252 = 'TASK-D';
+const TASK: felt252 = 'TASK';
 const TOTAL: u128 = 100;
 const COUNT: u128 = 50;
 
@@ -42,7 +39,7 @@ fn test_convergent_pattern_creation() {
     let store = StoreTrait::new(world);
 
     // [Create] Quest A with no conditions
-    let tasks_a = array![TaskTrait::new(TASK_A, TOTAL, "Task A Description")].span();
+    let tasks_a = array![TaskTrait::new(TASK, TOTAL, "Task A Description")].span();
     systems
         .quester
         .create(
@@ -59,7 +56,7 @@ fn test_convergent_pattern_creation() {
         );
 
     // [Create] Quest B with no conditions
-    let tasks_b = array![TaskTrait::new(TASK_B, TOTAL, "Task B Description")].span();
+    let tasks_b = array![TaskTrait::new(TASK, TOTAL, "Task B Description")].span();
     systems
         .quester
         .create(
@@ -76,7 +73,7 @@ fn test_convergent_pattern_creation() {
         );
 
     // [Create] Quest C with conditions A and B
-    let tasks_c = array![TaskTrait::new(TASK_C, TOTAL, "Task C Description")].span();
+    let tasks_c = array![TaskTrait::new(TASK, TOTAL, "Task C Description")].span();
     systems
         .quester
         .create(
@@ -93,7 +90,7 @@ fn test_convergent_pattern_creation() {
         );
 
     // [Create] Quest D with condition C
-    let tasks_d = array![TaskTrait::new(TASK_D, TOTAL, "Task D Description")].span();
+    let tasks_d = array![TaskTrait::new(TASK, TOTAL, "Task D Description")].span();
     systems
         .quester
         .create(
@@ -132,7 +129,7 @@ fn test_convergent_pattern_unlock_sequence() {
     let store = StoreTrait::new(world);
 
     // [Create] All quests
-    let tasks_a = array![TaskTrait::new(TASK_A, TOTAL, "Task A Description")].span();
+    let tasks_a = array![TaskTrait::new(TASK, TOTAL, "Task A Description")].span();
     systems
         .quester
         .create(
@@ -148,7 +145,7 @@ fn test_convergent_pattern_unlock_sequence() {
             to_store: true,
         );
 
-    let tasks_b = array![TaskTrait::new(TASK_B, TOTAL, "Task B Description")].span();
+    let tasks_b = array![TaskTrait::new(TASK, TOTAL, "Task B Description")].span();
     systems
         .quester
         .create(
@@ -164,7 +161,7 @@ fn test_convergent_pattern_unlock_sequence() {
             to_store: true,
         );
 
-    let tasks_c = array![TaskTrait::new(TASK_C, TOTAL, "Task C Description")].span();
+    let tasks_c = array![TaskTrait::new(TASK, TOTAL, "Task C Description")].span();
     systems
         .quester
         .create(
@@ -180,7 +177,7 @@ fn test_convergent_pattern_unlock_sequence() {
             to_store: true,
         );
 
-    let tasks_d = array![TaskTrait::new(TASK_D, TOTAL, "Task D Description")].span();
+    let tasks_d = array![TaskTrait::new(TASK, TOTAL, "Task D Description")].span();
     systems
         .quester
         .create(
@@ -214,36 +211,18 @@ fn test_convergent_pattern_unlock_sequence() {
     assert_eq!(completion_c.is_unlocked(), false, "Quest C should be locked");
     assert_eq!(completion_d.is_unlocked(), false, "Quest D should be locked");
 
-    // [Progress] Complete quest A
+    // [Progress] Complete quest A and B
     systems
         .quester
-        .progress(player_id: context.player_id, task_id: TASK_A, count: TOTAL, to_store: true);
+        .progress(player_id: context.player_id, task_id: TASK, count: TOTAL, to_store: true);
 
-    // [Assert] A is completed, C is still locked (needs B)
-    let definition_a = store.get_definition(QUEST_A);
+    // [Assert] A and B are completed, C is unlocked
     let completion_a = store.get_completion_or_new(context.player_id, @definition_a, 1000);
-    let definition_c = store.get_definition(QUEST_C);
+    let completion_b = store.get_completion_or_new(context.player_id, @definition_b, 1000);
     let completion_c = store.get_completion_or_new(context.player_id, @definition_c, 1000);
-    let definition_d = store.get_definition(QUEST_D);
     let completion_d = store.get_completion_or_new(context.player_id, @definition_d, 1000);
 
     assert_eq!(completion_a.is_completed(), true, "Quest A should be completed");
-    assert_eq!(completion_c.is_unlocked(), false, "Quest C should still be locked");
-    assert_eq!(completion_d.is_unlocked(), false, "Quest D should still be locked");
-
-    // [Progress] Complete quest B
-    systems
-        .quester
-        .progress(player_id: context.player_id, task_id: TASK_B, count: TOTAL, to_store: true);
-
-    // [Assert] B is completed, C is unlocked
-    let definition_b = store.get_definition(QUEST_B);
-    let completion_b = store.get_completion_or_new(context.player_id, @definition_b, 1000);
-    let definition_c = store.get_definition(QUEST_C);
-    let completion_c = store.get_completion_or_new(context.player_id, @definition_c, 1000);
-    let definition_d = store.get_definition(QUEST_D);
-    let completion_d = store.get_completion_or_new(context.player_id, @definition_d, 1000);
-
     assert_eq!(completion_b.is_completed(), true, "Quest B should be completed");
     assert_eq!(completion_c.is_unlocked(), true, "Quest C should be unlocked");
     assert_eq!(completion_d.is_unlocked(), false, "Quest D should still be locked");
@@ -251,12 +230,10 @@ fn test_convergent_pattern_unlock_sequence() {
     // [Progress] Complete quest C
     systems
         .quester
-        .progress(player_id: context.player_id, task_id: TASK_C, count: TOTAL, to_store: true);
+        .progress(player_id: context.player_id, task_id: TASK, count: TOTAL, to_store: true);
 
     // [Assert] C is completed, D is unlocked
-    let definition_c = store.get_definition(QUEST_C);
     let completion_c = store.get_completion_or_new(context.player_id, @definition_c, 1000);
-    let definition_d = store.get_definition(QUEST_D);
     let completion_d = store.get_completion_or_new(context.player_id, @definition_d, 1000);
 
     assert_eq!(completion_c.is_completed(), true, "Quest C should be completed");
@@ -265,10 +242,10 @@ fn test_convergent_pattern_unlock_sequence() {
     // [Progress] Now can progress on D
     systems
         .quester
-        .progress(player_id: context.player_id, task_id: TASK_D, count: COUNT, to_store: true);
+        .progress(player_id: context.player_id, task_id: TASK, count: COUNT, to_store: true);
 
     // [Assert] D has progress
-    let advancement_d = store.get_advancement(context.player_id, QUEST_D, TASK_D, interval_id);
+    let advancement_d = store.get_advancement(context.player_id, QUEST_D, TASK, interval_id);
     assert_eq!(advancement_d.count, COUNT, "Quest D should have progress");
 }
 

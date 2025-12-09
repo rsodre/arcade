@@ -168,33 +168,38 @@ pub impl StoreImpl of StoreTrait {
         if (!to_store) {
             return;
         }
-        // [Effect] Update player advancement
+        // [Compute] Filter active, unlocked and uncompleted quests
         let association = self.get_association(task_id);
         let mut quests = association.quests;
+        let mut definitions: Array<QuestDefinition> = array![];
         while let Option::Some(quest_id) = quests.pop_front() {
+            // [Check] Quest is active, otherwise save and continue
             let definition = self.get_definition(quest_id);
             if (!definition.is_active(time)) {
                 continue;
             }
             // [Check] Completion is unlocked, otherwise save and continue
-            let interval_id = definition.compute_interval_id(time);
-            let mut completion = self.get_completion_or_new(player_id, @definition, time);
+            let completion = self.get_completion_or_new(player_id, @definition, time);
             if (!completion.is_unlocked()) {
-                self.set_completion(@completion);
                 continue;
             }
             // [Check] Quest is not already completed, otherwise save and continue
             if (completion.is_completed()) {
                 continue;
             }
+            definitions.append(definition);
+        }
+        // [Effect] Update player advancement
+        while let Option::Some(definition) = definitions.pop_front() {
             // [Effect] Update player quest advancement
+            let quest_id = definition.id;
+            let interval_id = definition.compute_interval_id(time);
             let mut advancement = self.get_advancement(player_id, quest_id, task_id, interval_id);
             advancement.add(count);
             advancement.assess(definition.tasks, time);
             self.set_advancement(@advancement);
             // [Check] Task is completed, otherwise save and continue
             if (!advancement.is_completed()) {
-                self.set_completion(@completion);
                 continue;
             }
             // [Check] Quest is completed, otherwise save and continue
@@ -205,10 +210,10 @@ pub impl StoreImpl of StoreTrait {
                 completed = completed && advancement.is_completed();
             }
             if (!completed) {
-                self.set_completion(@completion);
                 continue;
             }
             // [Effect] Update player quest completion if completed
+            let mut completion = self.get_completion_or_new(player_id, @definition, time);
             completion.complete(time);
             self.set_completion(@completion);
             // [Event] Emit quest completed

@@ -113,7 +113,7 @@ mod tests {
             .jsonify();
         assert_eq!(
             metadata,
-            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"icon\":\"ICON\",\"rewards\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"icon\":\"ICON\"}]}",
+            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"icon\":\"ICON\",\"registry\":\"5928222864759345753\",\"rewards\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"icon\":\"ICON\"}]}",
         );
     }
 
@@ -128,7 +128,7 @@ mod tests {
             .jsonify();
         assert_eq!(
             metadata,
-            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"icon\":\"ICON\",\"rewards\":[]}",
+            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"icon\":\"ICON\",\"registry\":\"5928222864759345753\",\"rewards\":[]}",
         );
     }
 
@@ -154,6 +154,16 @@ mod tests {
         let name: ByteArray = "NAME";
         let description: ByteArray = "DESCRIPTION";
         QuestMetadataImpl::new(name, description, "", REGISTRY, array![].span()).jsonify();
+    }
+
+    #[test]
+    #[should_panic(expected: ('Metadata: invalid registry',))]
+    fn test_metadata_creation_new_invalid_registry() {
+        let name: ByteArray = "NAME";
+        let description: ByteArray = "DESCRIPTION";
+        let icon: ByteArray = "ICON";
+        QuestMetadataImpl::new(name, description, icon, 0.try_into().unwrap(), array![].span())
+            .jsonify();
     }
 }
 
