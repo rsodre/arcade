@@ -95,7 +95,6 @@ export const MarketplaceItemsContainer = ({
   const {
     collection,
     status,
-    loadingProgress,
     hasMore,
     isFetchingNextPage,
     fetchNextPage,
@@ -115,6 +114,9 @@ export const MarketplaceItemsContainer = ({
     handlePurchase,
     sales,
     assets,
+    isLoading,
+    statusFilter,
+    listedTokens,
   } = useMarketplaceItemsViewModel({ collectionAddress });
 
   const parentRef = useRef<HTMLDivElement>(null);
@@ -278,18 +280,13 @@ export const MarketplaceItemsContainer = ({
 
   const totalHeight = virtualizer.getTotalSize();
 
-  const shouldShowLoading =
-    (collection !== null || collection === undefined) &&
-    (assets === undefined || assets.length === 0) &&
-    ["idle", "loading"].includes(status);
-
   const shouldShowEmpty =
     null === collection &&
     assets !== undefined &&
     assets.length === 0 &&
     ["idle", "error", "success"].includes(status);
 
-  if (shouldShowLoading) {
+  if (isLoading) {
     return <ItemsLoadingState />;
   }
 
@@ -317,8 +314,10 @@ export const MarketplaceItemsContainer = ({
       onBuySelection={handleBuySelection}
       loadingOverlay={{
         isLoading: status === "loading",
-        progress: loadingProgress,
+        progress: undefined,
       }}
+      statusFilter={statusFilter}
+      listedTokensCount={listedTokens.length}
     />
   );
 };
