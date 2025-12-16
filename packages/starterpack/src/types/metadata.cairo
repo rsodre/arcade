@@ -62,7 +62,7 @@ pub impl MetadataImpl of MetadataTrait {
             .add("description", self.description)
             .add("image_uri", self.image_uri)
             .add_array("items", items.span())
-            .add_array("tokens", tokens.span())
+            .add_array("additional_payment_tokens", tokens.span())
             .build()
     }
 }
@@ -112,7 +112,7 @@ mod tests {
             .jsonify();
         assert_eq!(
             metadata,
-            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"tokens\":[\"362107585870\"]}",
+            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"additional_payment_tokens\":[\"362107585870\"]}",
         );
     }
 
@@ -127,7 +127,7 @@ mod tests {
             .jsonify();
         assert_eq!(
             metadata,
-            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"tokens\":[]}",
+            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"additional_payment_tokens\":[]}",
         );
     }
 
