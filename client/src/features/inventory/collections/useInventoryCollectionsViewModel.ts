@@ -20,6 +20,7 @@ export interface InventoryCollectionCardView {
   image: string;
   totalCount: number;
   listingCount: number;
+  ownedCount: number;
   href?: string;
   search?: Record<string, string>;
   onClick?: () => void;
@@ -108,6 +109,9 @@ export function useInventoryCollectionsViewModel({
             return filtered.length > 0 ? count + 1 : count;
           }, 0)
         : 0;
+      const ownedCount = ownedCollections
+        .find((c) => getChecksumAddress(c.address) === collection.contract_address)
+        ?.totalCount || 0;
 
       const collectionType = getCollectionType(collection);
 
@@ -116,6 +120,7 @@ export function useInventoryCollectionsViewModel({
         title: collection.name,
         image: resizeImage(collection.image, 300, 300) || "",
         totalCount: Number(collection.totalSupply),
+        ownedCount,
         listingCount,
       };
 
