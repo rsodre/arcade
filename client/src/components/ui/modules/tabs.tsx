@@ -1,6 +1,4 @@
 import {
-  ArcadeMenuButton,
-  ArcadeMenuItem,
   BottomTab,
   ChestIcon,
   cn,
@@ -21,6 +19,8 @@ import {
   UsersIcon,
   LightbulbIcon,
 } from "@cartridge/ui";
+import ArcadeMenuButton from "@/components/ui/modules/menu-button";
+import ArcadeMenuItem from "@/components/ui/modules/menu-item";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import ArcadeTab from "./tab";
