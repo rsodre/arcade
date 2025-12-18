@@ -1,4 +1,4 @@
-import { CollectibleCard, Skeleton } from "@cartridge/ui";
+import { InventoryCollectionCard as InventoryCollectionCardConmponent, Skeleton } from "@cartridge/ui";
 import { Link } from "@tanstack/react-router";
 import type { InventoryCollectionCardView } from "@/features/inventory/collections/useInventoryCollectionsViewModel";
 
@@ -30,11 +30,11 @@ const InventoryCollectionCard = ({
   card: InventoryCollectionCardView;
 }) => {
   const content = (
-    <CollectibleCard
+    <InventoryCollectionCardConmponent
       title={card.title}
-      image={card.image}
-      totalCount={card.totalCount}
-      listingCount={card.listingCount}
+      icon={card.image}
+      images={[card.image]}
+      totalCount={card.ownedCount}
       onClick={card.onClick}
     />
   );
