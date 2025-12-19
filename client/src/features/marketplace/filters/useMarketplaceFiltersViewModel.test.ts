@@ -35,6 +35,23 @@ const mockRouterState = { location: { pathname: "/marketplace" } };
 
 vi.mock("@tanstack/react-router", () => ({
   useRouterState: () => mockRouterState,
+  useNavigate: () => vi.fn(),
+}));
+
+vi.mock("@/hooks/filters", () => ({
+  useOwnerFilter: () => ({
+    inputValue: "",
+    setInputValue: vi.fn(),
+    resolvedAddress: null,
+    isAddressInput: false,
+    suggestions: [],
+    clearOwner: vi.fn(),
+  }),
+  useFilterActions: () => ({
+    setOwnerFilter: vi.fn(),
+    replaceFilters: vi.fn(),
+  }),
+  useFilterUrlSync: vi.fn(),
 }));
 
 describe("useMarketplaceFiltersViewModel", () => {

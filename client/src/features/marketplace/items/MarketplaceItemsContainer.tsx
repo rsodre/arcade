@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { getChecksumAddress } from "starknet";
-import type { SaleEvent } from "@cartridge/arcade";
+import type { OrderModel } from "@cartridge/arcade";
 import { useMediaQuery } from "@cartridge/ui";
 import { resizeImage } from "@/lib/helpers";
 import placeholderImage from "@/assets/placeholder.svg";
@@ -30,14 +30,14 @@ const ROW_HEIGHT = 184;
 const derivePrice = (
   asset: MarketplaceAsset,
 ): MarketplaceItemPriceInfo | null => {
-  if (!asset.orders.length || asset.orders.length > 1) return null;
-  const order = asset.orders[0];
-  return formatPriceInfo(order.currency, order.price);
+  if (!asset.orders.length) return null;
+  const listing = asset.orders[0];
+  return formatPriceInfo(listing.order.currency, listing.order.price);
 };
 
 const deriveLastSale = (
   asset: MarketplaceAsset,
-  salesByContract: Record<string, Record<string, SaleEvent>> | undefined,
+  salesByContract: Record<string, Record<string, OrderModel>> | undefined,
 ): MarketplaceItemPriceInfo | null => {
   if (!asset.token_id || !salesByContract) return null;
 
@@ -48,6 +48,7 @@ const deriveLastSale = (
 
 interface BaseItemView {
   id: string;
+  tokenId: string;
   title: string;
   image?: string | null;
   placeholderImage: string;
@@ -62,11 +63,13 @@ interface BaseItemView {
 const createBaseItemView = (
   asset: MarketplaceAsset,
   collectionImage: string | undefined,
-  salesByContract: Record<string, Record<string, SaleEvent>> | undefined,
+  salesByContract: Record<string, Record<string, OrderModel>> | undefined,
   navManager: NavigationContextManager,
 ): BaseItemView => {
+  const tokenId = asset.token_id?.toString() ?? "0";
   return {
-    id: `${asset.contract_address}-${asset.token_id?.toString() ?? "0"}`,
+    id: `${asset.contract_address}-${tokenId}`,
+    tokenId,
     title:
       (asset.metadata as unknown as { name?: string })?.name ||
       asset.name ||
@@ -83,7 +86,8 @@ const createBaseItemView = (
       asset.token_id ?? "0x0",
     ),
     assetHasOrders: asset.orders.length > 0,
-    currency: asset.orders.length > 0 ? asset.orders[0].currency : undefined,
+    currency:
+      asset.orders.length > 0 ? asset.orders[0].order.currency : undefined,
   };
 };
 
@@ -151,7 +155,7 @@ export const MarketplaceItemsContainer = ({
 
   const salesByContract = useMemo(() => {
     return sales[getChecksumAddress(collectionAddress)] as
-      | Record<string, Record<string, SaleEvent>>
+      | Record<string, Record<string, OrderModel>>
       | undefined;
   }, [sales, collectionAddress]);
 
@@ -182,7 +186,7 @@ export const MarketplaceItemsContainer = ({
   const selectionCurrency = useMemo(() => {
     if (selection.length === 0) return undefined;
     return selection[0].orders.length > 0
-      ? selection[0].orders[0].currency
+      ? selection[0].orders[0].order.currency
       : undefined;
   }, [selection]);
 
@@ -219,8 +223,7 @@ export const MarketplaceItemsContainer = ({
     const selectionHasCurrency = selectionCurrency !== undefined;
 
     return baseItems.map((base, index) => {
-      const tokenId = assets[index]?.token_id?.toString();
-      const selected = isConnected && selectionIds.has(tokenId);
+      const selected = isConnected && selectionIds.has(base.tokenId);
 
       const selectable =
         selection.length === 0
@@ -245,7 +248,6 @@ export const MarketplaceItemsContainer = ({
     });
   }, [
     baseItems,
-    assets,
     selection.length,
     selectionIds,
     selectionCurrency,
