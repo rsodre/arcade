@@ -134,52 +134,25 @@ export function useInventoryCollectionsViewModel({
           is_self: isSelf,
           from_page: location.pathname,
         });
-
-        if (isSelf) {
-          const controller = (connector as ControllerConnector)?.controller;
-          const username = await controller?.username();
-          if (!controller || !username) {
-            console.error("Connector not initialized");
-            return;
-          }
-
-          let subpath: string | undefined;
-          if (collectionType === CollectionType.ERC721) {
-            subpath = "collection";
-          } else if (collectionType === CollectionType.ERC1155) {
-            subpath = "collectible";
-          }
-          if (!subpath) return;
-
-          const preset = edition?.properties.preset;
-          const options = [`ps=${collection.project}`, "closable=true"];
-          if (preset) {
-            options.push(`preset=${preset}`);
-          } else {
-            options.push("preset=cartridge");
-          }
-          const path = `account/${username}/inventory/${subpath}/${collection.contract_address}${options.length > 0 ? `?${options.join("&")}` : ""}`;
-          controller.openProfileAt(path);
-        }
       };
 
-      content.onClick = handleClick;
+      content.onClick = undefined;
 
-      if (!isSelf) {
-        const segments = location.pathname.split("/").filter(Boolean);
-        const playerIndex = segments.indexOf("player");
-        const baseSegments =
-          playerIndex === -1 ? segments : segments.slice(0, playerIndex);
+      // possible from -> to locations:
+      // /inventory -> /inventory/collection/0xabc
+      // /player/0x123 -> /player/0x123/collection/0xabc
+      // /player/0x123/inventory -> /player/0x123/collection/0xabc
+      const segments = location.pathname.split("/").filter(Boolean);
+      const baseSegments = [...segments];
+      const playerIndex = segments.indexOf("player");
+      if (playerIndex !== -1) {
         const last = baseSegments[baseSegments.length - 1];
         if (TAB_SEGMENTS.includes(last as (typeof TAB_SEGMENTS)[number])) {
           baseSegments.pop();
         }
-        baseSegments.push("collection", collection.contract_address, "items");
-        content.href = baseSegments.length ? joinPaths(...baseSegments) : "/";
-        if (account?.username) {
-          content.search = { filter: account.username.toLowerCase() };
-        }
       }
+      baseSegments.push("collection", collection.contract_address);
+      content.href = baseSegments.length ? joinPaths(...baseSegments) : "/";
 
       return content;
     });
