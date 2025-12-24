@@ -1,9 +1,8 @@
-import { MarketplaceItemsContainer } from "@/features/marketplace/items";
+import { InventoryItemsContainer } from "@/features/inventory/items";
 import { useProject } from "@/hooks/project";
 
 export const InventoryItemsScene = () => {
   const { collection } = useProject();
-
   if (!collection) return null;
-  return <MarketplaceItemsContainer collectionAddress={collection} />;
+  return <InventoryItemsContainer collectionAddress={collection} />;
 };

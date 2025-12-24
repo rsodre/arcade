@@ -18,7 +18,11 @@ export const TAB_SEGMENTS = [
   "holders",
   "predict",
   "positions",
+  "collection",
+  "back",
 ] as const;
+
+export type TabValue = (typeof TAB_SEGMENTS)[number];
 
 interface RouteParams {
   game?: string;
