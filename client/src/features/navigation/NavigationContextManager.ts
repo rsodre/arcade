@@ -1,15 +1,14 @@
-import { parseRouteParams, type TAB_SEGMENTS } from "@/hooks/project";
+import { parseRouteParams, type TabValue } from "@/hooks/project";
 import { joinPaths } from "@/lib/helpers";
 import { getChecksumAddress } from "starknet";
-
-export type TabValue = (typeof TAB_SEGMENTS)[number];
 
 export type NavigationContext =
   | "general"
   | "game"
   | "edition"
   | "marketplace"
-  | "player";
+  | "player"
+  | "inventory";
 
 export interface NavigationTab {
   tab: TabValue;
@@ -56,6 +55,7 @@ export class NavigationContextManager {
   }
 
   getActiveContext(): NavigationContext {
+    if (this.params.player && this.params.collection) return "inventory";
     if (this.params.collection) return "marketplace";
     if (this.params.player) return "player";
     if (this.params.edition) return "edition";
@@ -158,12 +158,20 @@ export class NavigationContextManager {
         return ["items", "holders"];
       case "player":
         return ["inventory", "achievements"];
+      case "inventory":
+        return [
+          "back",
+          "collection",
+        ];
       default:
         return ["about"];
     }
   }
 
   private generateHref(tab: TabValue): string {
+    if (tab === "back") {
+      return document.referrer ?? "/";
+    }
     const segments = this.pathname.split("/").filter(Boolean);
     const currentTab = this.params.tab;
     const hasTrailingTab =

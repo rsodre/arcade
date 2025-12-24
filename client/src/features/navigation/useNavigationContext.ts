@@ -6,8 +6,8 @@ import { useArcade } from "@/hooks/arcade";
 import {
   NavigationContextManager,
   type NavigationContext,
-  type TabValue,
 } from "./NavigationContextManager";
+import { TabValue } from "@/hooks/project";
 import {
   ChestIcon,
   LeaderboardIcon,
@@ -19,6 +19,7 @@ import {
   SwordsIcon,
   TrophyIcon,
   UsersIcon,
+  ArrowIcon,
 } from "@cartridge/ui";
 import { DashboardIcon } from "@/components/ui/icons";
 
@@ -32,12 +33,15 @@ export const DASHBOARD_ALLOWED_ROUTES = [DEFAULT_TAB, "leaderboard", "predict"];
 
 export type TabItem = {
   name: string;
-  icon: typeof ChestIcon;
+  icon: typeof ChestIcon | typeof ArrowIcon;
   tab: TabValue;
   href: string;
+  props?: {
+    variant?: 'solid' | 'line' | 'left';
+  };
 };
 
-const TabValueDisplayMap = (tab: TabValue) => {
+const TabValueDisplayMap = (tab: TabValue): Partial<TabItem> | null => {
   switch (tab) {
     case "inventory":
       return { name: "Inventory", icon: ChestIcon };
@@ -63,6 +67,10 @@ const TabValueDisplayMap = (tab: TabValue) => {
       return { name: "Predict", icon: LightbulbIcon };
     case "positions":
       return { name: "Positions", icon: LightbulbIcon };
+    case "collection":
+      return { name: "Collection", icon: ScrollIcon };
+    case "back":
+      return { name: "Back", icon: ArrowIcon, props: { variant: "left" } };
     default:
       return null;
   }
