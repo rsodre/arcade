@@ -55,7 +55,8 @@ export class NavigationContextManager {
   }
 
   getActiveContext(): NavigationContext {
-    if (this.params.player && this.params.collection) return "inventory";
+    const segments = this.pathname.split("/").filter(Boolean);
+    if (this.params.collection && (this.params.player || segments.includes("inventory"))) return "inventory";
     if (this.params.collection) return "marketplace";
     if (this.params.player) return "player";
     if (this.params.edition) return "edition";
@@ -170,9 +171,15 @@ export class NavigationContextManager {
 
   private generateHref(tab: TabValue): string {
     if (tab === "back") {
-      return document.referrer ?? "/";
+      return this.generateBackHref(tab);
     }
+    
     const segments = this.pathname.split("/").filter(Boolean);
+
+    if (tab === "collection" && this.params.collection) {
+      return this.generateCollectionHref(this.params.collection);
+    }
+
     const currentTab = this.params.tab;
     const hasTrailingTab =
       currentTab && segments[segments.length - 1] === currentTab;
@@ -192,6 +199,20 @@ export class NavigationContextManager {
     }
 
     return joinPaths(...baseSegments, tab);
+  }
+
+  private generateBackHref(_tab: TabValue): string {
+    const segments = this.pathname.split("/").filter(Boolean);
+    if (segments.length <= 1) {
+      return "/";
+    }
+
+    const lastSegment = segments[segments.length - 1];
+    if (lastSegment === this.params.collection) {
+      return joinPaths(...segments.slice(0, -2));
+    }
+
+    return joinPaths(...segments.slice(0, -1));
   }
 
   generatePlayerHref(playerNameOrAddress: string, tab?: TabValue): string {
