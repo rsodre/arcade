@@ -10,6 +10,7 @@ import {
   Button,
   Checkbox,
   Empty,
+  InventoryItemCard,
   MarketplaceSearch,
   Separator,
   Skeleton,
@@ -19,7 +20,7 @@ import CollectibleCard from "./collectible-card";
 import { FloatingLoadingSpinner } from "@/components/ui/floating-loading-spinner";
 import { Link } from "@tanstack/react-router";
 
-const NOOP = () => {};
+const NOOP = () => { };
 
 export interface MarketplaceItemPriceInfo {
   value: string;
@@ -41,6 +42,7 @@ export interface MarketplaceItemCardProps {
   isConnected: boolean;
   selectionActive: boolean;
   tokenDetailHref: string;
+  isInventory: boolean;
   onToggleSelectByIndex: (index: number) => void;
   onBuyByIndex: (index: number) => void;
   onInspectByIndex: (index: number) => void;
@@ -75,7 +77,6 @@ interface ItemsViewProps {
     isLoading: boolean;
     progress?: { completed: number; total: number };
   };
-
   statusFilter: string;
   listedTokensCount: number;
 }
@@ -344,6 +345,7 @@ const MarketplaceItemCard = memo(
     price,
     lastSale,
     tokenDetailHref,
+    isInventory,
   }: MarketplaceItemCardProps) => {
     const fallbackImage = placeholderImage ?? image ?? "";
     const [displayImage, setDisplayImage] = useState<string>(fallbackImage);
@@ -409,24 +411,41 @@ const MarketplaceItemCard = memo(
 
     return (
       <div className="w-full group select-none" onClick={handleContainerClick}>
-        <Link to={tokenDetailHref}>
-          <CollectibleCard
+        {isInventory && (
+          <InventoryItemCard
             title={title}
             images={[displayImage]}
             listingCount={listingCount}
-            onClick={handleCardClick}
+            selectable={selectable}
+            onSelect={handleSelect}
+            // onClick={handleCardClick}
             className={
               selectable || canOpen
                 ? "cursor-pointer"
                 : "cursor-default pointer-events-none"
             }
-            onSelect={handleSelect}
-            price={price}
-            lastSale={lastSale}
-            selectable={selectable}
-            selected={selected}
           />
-        </Link>
+        )}
+        {!isInventory && (
+          <Link to={tokenDetailHref}>
+            <CollectibleCard
+              title={title}
+              images={[displayImage]}
+              listingCount={listingCount}
+              onClick={handleCardClick}
+              className={
+                selectable || canOpen
+                  ? "cursor-pointer"
+                  : "cursor-default pointer-events-none"
+              }
+              onSelect={handleSelect}
+              price={price}
+              lastSale={lastSale}
+              selectable={selectable}
+              selected={selected}
+            />
+          </Link>
+        )}
       </div>
     );
   },

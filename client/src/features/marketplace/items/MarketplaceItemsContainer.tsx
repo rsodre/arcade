@@ -24,6 +24,7 @@ import {
 import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
 import { useRouterState } from "@tanstack/react-router";
 import { useArcade } from "@/hooks/arcade";
+import { useProject } from "@/hooks/project";
 
 const ROW_HEIGHT = 184;
 
@@ -127,7 +128,8 @@ export const MarketplaceItemsContainer = ({
 
   const { location } = useRouterState();
   const { games, editions } = useArcade();
-
+  const { isInventory } = useProject();
+  
   const isLargeScreen = useMediaQuery("(min-width: 1200px)");
   const itemsPerRow = isLargeScreen ? 4 : 2;
 
@@ -244,6 +246,7 @@ export const MarketplaceItemsContainer = ({
         onBuyByIndex: handleBuyById,
         onInspectByIndex: handleInspectById,
         onConnect: connectWallet,
+        isInventory,
       } as MarketplaceItemCardProps;
     });
   }, [
