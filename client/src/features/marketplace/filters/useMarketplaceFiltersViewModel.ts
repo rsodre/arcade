@@ -39,6 +39,7 @@ export interface MarketplaceFiltersViewModel {
   setSearchValue: (attribute: string, value: string) => void;
   onAttributeExpand: (attribute: string, expanded: boolean) => void;
   isSummaryLoading: boolean;
+  isInventory: boolean;
   ownerInput: string;
   ownerSuggestions: Account[];
   isOwnerAddressInput: boolean;
@@ -48,7 +49,7 @@ export interface MarketplaceFiltersViewModel {
 }
 
 export function useMarketplaceFiltersViewModel(): MarketplaceFiltersViewModel {
-  const { collection: collectionAddress } = useProject();
+  const { collection: collectionAddress, isInventory } = useProject();
   const getTokens = useMarketplaceTokensStore((state) => state.getTokens);
   const tokens = getTokens(DEFAULT_PROJECT, collectionAddress ?? "");
   const { trackEvent, events } = useAnalytics();
@@ -217,6 +218,7 @@ export function useMarketplaceFiltersViewModel(): MarketplaceFiltersViewModel {
     setSearchValue,
     onAttributeExpand,
     isSummaryLoading,
+    isInventory,
     ownerInput,
     ownerSuggestions,
     isOwnerAddressInput,

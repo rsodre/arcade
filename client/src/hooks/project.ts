@@ -177,6 +177,8 @@ export const useProject = () => {
     return undefined;
   }, [playerData, playerParam]);
 
+  const isInventory = useMemo(() => Boolean(player) && (tab === "inventory" || Boolean(collection)), [tab, player, collection]);
+
   return {
     game,
     edition,
@@ -184,5 +186,6 @@ export const useProject = () => {
     filter,
     collection,
     tab,
+    isInventory,
   };
 };
