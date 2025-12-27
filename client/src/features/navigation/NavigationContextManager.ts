@@ -8,7 +8,7 @@ export type NavigationContext =
   | "edition"
   | "marketplace"
   | "player"
-  | "inventory";
+  | "inventoryitems";
 
 export interface NavigationTab {
   tab: TabValue;
@@ -56,7 +56,7 @@ export class NavigationContextManager {
 
   getActiveContext(): NavigationContext {
     const segments = this.pathname.split("/").filter(Boolean);
-    if (this.params.collection && (this.params.player || segments.includes("inventory"))) return "inventory";
+    if (this.params.collection && segments.includes("inventory")) return "inventoryitems";
     if (this.params.collection) return "marketplace";
     if (this.params.player) return "player";
     if (this.params.edition) return "edition";
@@ -159,7 +159,7 @@ export class NavigationContextManager {
         return ["items", "holders"];
       case "player":
         return ["inventory", "achievements"];
-      case "inventory":
+      case "inventoryitems":
         return [
           "back",
           "collection",

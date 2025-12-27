@@ -134,20 +134,18 @@ export function useInventoryCollectionsViewModel({
       content.onClick = undefined;
 
       // possible from -> to locations:
-      // /inventory -> /inventory/collection/0xabc
-      // /player/0x123 -> /player/0x123/collection/0xabc
-      // /player/0x123/inventory -> /player/0x123/collection/0xabc
+      // /inventory -> /inventory/collection/$collection
+      // /game/$game/inventory -> /game/$game/inventory/collection/$collection
+      // /player/$player/inventory -> /player/$player/inventory/collection/$collection
+      // /player/$player -> /player/$player/inventory/collection/$collection
       const segments = location.pathname.split("/").filter(Boolean);
       const baseSegments = [...segments];
-      const playerIndex = segments.indexOf("player");
-      if (playerIndex !== -1) {
-        const last = baseSegments[baseSegments.length - 1];
-        if (TAB_SEGMENTS.includes(last as (typeof TAB_SEGMENTS)[number])) {
-          baseSegments.pop();
-        }
+      const lastSegment = baseSegments.at(-1);
+      if (lastSegment !== "inventory") {
+        baseSegments.push("inventory");
       }
       baseSegments.push("collection", collection.contract_address);
-      content.href = baseSegments.length ? joinPaths(...baseSegments) : "/";
+      content.href = joinPaths(...baseSegments);
 
       return content;
     });
