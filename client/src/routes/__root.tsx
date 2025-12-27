@@ -18,13 +18,8 @@ function RootComponent() {
 
   const segments = pathname.split("/").filter(Boolean);
   const collectionIndex = segments.findIndex((s) => s === "collection");
-  const inventoryIndex = segments.findIndex((s) => s === "inventory");
-  const playerIndex = segments.findIndex((s) => s === "player");
 
-  const hasOwnTemplate =
-    collectionIndex >= 0 &&
-    inventoryIndex < 0 &&
-    playerIndex < 0;
+  const hasOwnTemplate = collectionIndex >= 0;
 
   const { manager } = useNavigationContext();
   const { data } = useAccount(manager.getParams().player);

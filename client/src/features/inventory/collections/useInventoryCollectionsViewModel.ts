@@ -5,13 +5,12 @@ import { useAddress } from "@/hooks/address";
 import { useAccount } from "@starknet-react/core";
 import { useMarketplace } from "@/hooks/marketplace";
 import { useRouterState } from "@tanstack/react-router";
-import type ControllerConnector from "@cartridge/connector/controller";
 import { CollectionType } from "@/hooks/collections";
 import { getChecksumAddress } from "starknet";
 import { joinPaths, resizeImage } from "@/lib/helpers";
 import { TAB_SEGMENTS } from "@/hooks/project";
 import { useAccountByAddress, type EnrichedTokenContract } from "@/effect";
-import { StatusType, type EditionModel } from "@cartridge/arcade";
+import { StatusType } from "@cartridge/arcade";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 export interface InventoryCollectionCardView {
@@ -92,10 +91,6 @@ export function useInventoryCollectionsViewModel({
 
   const collectionCards = useMemo(() => {
     return filteredCollections.map((collection) => {
-      const edition = editions.find(
-        (item: EditionModel) => item.config.project === collection.project,
-      );
-
       const collectionOrders = orders[collection.contract_address];
       const listingCount = collectionOrders
         ? Object.values(collectionOrders).reduce((count, tokenOrders) => {
