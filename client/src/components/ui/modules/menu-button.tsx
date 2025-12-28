@@ -41,9 +41,9 @@ export const ArcadeMenuButton = React.forwardRef<
         simplified={simplified}
         className={cn(arcadeMenuButtonVariants({ variant, size }), className)}
         ref={ref}
-        {...props}
+        {...(props as any)}
       >
-        {children}
+        {children as any}
       </SelectTrigger>
     );
   },

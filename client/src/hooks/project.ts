@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useArcade } from "./arcade";
 import { getChecksumAddress } from "starknet";
 import { useRouterState, useSearch } from "@tanstack/react-router";

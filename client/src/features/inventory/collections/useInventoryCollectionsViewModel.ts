@@ -5,13 +5,12 @@ import { useAddress } from "@/hooks/address";
 import { useAccount } from "@starknet-react/core";
 import { useMarketplace } from "@/hooks/marketplace";
 import { useRouterState } from "@tanstack/react-router";
-import { CollectionType } from "@/hooks/collections";
 import { getChecksumAddress } from "starknet";
 import { joinPaths, resizeImage } from "@/lib/helpers";
-import { TAB_SEGMENTS } from "@/hooks/project";
 import { useAccountByAddress, type EnrichedTokenContract } from "@/effect";
 import { StatusType } from "@cartridge/arcade";
 import { useAnalytics } from "@/hooks/useAnalytics";
+// import { CollectionType } from "@/hooks/collections";
 
 export interface InventoryCollectionCardView {
   id: string;
@@ -42,11 +41,11 @@ interface UseInventoryCollectionsViewModelArgs {
     | "cleaned-up";
 }
 
-const getCollectionType = (collection: EnrichedTokenContract) => {
-  return collection.contract_type === "ERC721"
-    ? CollectionType.ERC721
-    : CollectionType.ERC1155;
-};
+// const getCollectionType = (collection: EnrichedTokenContract) => {
+//   return collection.contract_type === "ERC721"
+//     ? CollectionType.ERC721
+//     : CollectionType.ERC1155;
+// };
 
 export function useInventoryCollectionsViewModel({
   collections,
@@ -108,8 +107,6 @@ export function useInventoryCollectionsViewModel({
         .find((c) => getChecksumAddress(c.address) === collection.contract_address)
         ?.totalCount || 0;
 
-      const collectionType = getCollectionType(collection);
-
       const content: InventoryCollectionCardView = {
         id: collection.contract_address,
         title: collection.name,
@@ -119,17 +116,19 @@ export function useInventoryCollectionsViewModel({
         listingCount,
       };
 
-      const handleClick = async () => {
-        trackEvent(events.INVENTORY_COLLECTION_CLICKED, {
-          collection_address: collection.contract_address,
-          collection_name: collection.name,
-          collection_type: collectionType,
-          total_count: Number(collection.totalSupply),
-          listing_count: listingCount,
-          is_self: isSelf,
-          from_page: location.pathname,
-        });
-      };
+      // const collectionType = getCollectionType(collection);
+
+      // const handleClick = async () => {
+      //   trackEvent(events.INVENTORY_COLLECTION_CLICKED, {
+      //     collection_address: collection.contract_address,
+      //     collection_name: collection.name,
+      //     collection_type: collectionType,
+      //     total_count: Number(collection.totalSupply),
+      //     listing_count: listingCount,
+      //     is_self: isSelf,
+      //     from_page: location.pathname,
+      //   });
+      // };
 
       content.onClick = undefined;
 
