@@ -16,7 +16,6 @@ import {
 } from "@/effect";
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
-import { consoleWith } from "effect/Console";
 
 export const ERC1155_ENTRYPOINT = "balance_of_batch";
 

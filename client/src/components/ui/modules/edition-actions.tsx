@@ -93,7 +93,7 @@ const EditionActions = ({
           className="bg-background-100 flex flex-col gap-px"
           onClick={() => setOpen(false)}
         >
-          {children}
+          <>{children}</>
         </SelectContent>
       </Select>
     </div>

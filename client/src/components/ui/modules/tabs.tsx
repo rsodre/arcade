@@ -231,7 +231,7 @@ export const ArcadeTabs = ({
           </Select>
         </TabsList>
       )}
-      {children}
+      <>{children}</>
     </Tabs>
   );
 };
