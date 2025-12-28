@@ -49,7 +49,7 @@ export interface MarketplaceFiltersViewModel {
 }
 
 export function useMarketplaceFiltersViewModel(): MarketplaceFiltersViewModel {
-  const { collection: collectionAddress, isInventory } = useProject();
+  const { collection: collectionAddress, tab } = useProject();
   const getTokens = useMarketplaceTokensStore((state) => state.getTokens);
   const tokens = getTokens(DEFAULT_PROJECT, collectionAddress ?? "");
   const { trackEvent, events } = useAnalytics();
@@ -218,7 +218,7 @@ export function useMarketplaceFiltersViewModel(): MarketplaceFiltersViewModel {
     setSearchValue,
     onAttributeExpand,
     isSummaryLoading,
-    isInventory,
+    isInventory: tab === "inventoryitems",
     ownerInput,
     ownerSuggestions,
     isOwnerAddressInput,

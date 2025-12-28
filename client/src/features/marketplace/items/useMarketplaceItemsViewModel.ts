@@ -15,6 +15,7 @@ import {
   type EnrichedListedToken,
 } from "@/effect";
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
+import { useProject } from "@/hooks/project";
 
 export const ERC1155_ENTRYPOINT = "balance_of_batch";
 
@@ -53,6 +54,7 @@ interface MarketplaceItemsViewModel {
   sales: ReturnType<typeof useMarketplace>["sales"];
   statusFilter: string;
   listedTokens: EnrichedListedToken[];
+  isInventory: boolean;
 }
 
 export const getEntrypoints = async (
@@ -89,6 +91,7 @@ export function useMarketplaceItemsViewModel({
   const [search, setSearch] = useState<string>("");
   const [lastSearch, setLastSearch] = useState<string>("");
   const [selection, setSelection] = useState<MarketplaceAsset[]>([]);
+  const { tab } = useProject();
 
   const { listedTokenIds, getOrdersForToken } =
     useCollectionOrders(collectionAddress);
@@ -370,5 +373,6 @@ export function useMarketplaceItemsViewModel({
     isLoading: isLoadingTokens || Boolean(isOwnerFilterLoading),
     statusFilter,
     listedTokens,
+    isInventory: tab === "inventoryitems",
   };
 }
