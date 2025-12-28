@@ -24,6 +24,7 @@ import {
 import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
 import { useRouterState } from "@tanstack/react-router";
 import { useArcade } from "@/hooks/arcade";
+import { useAddress } from "@/hooks/address";
 
 const ROW_HEIGHT = 184;
 
@@ -116,6 +117,9 @@ export const MarketplaceItemsContainer = ({
     connectWallet,
     handleInspect,
     handlePurchase,
+    handleList,
+    handleUnlist,
+    handleSend,
     sales,
     assets,
     isLoading,
@@ -128,7 +132,8 @@ export const MarketplaceItemsContainer = ({
 
   const { location } = useRouterState();
   const { games, editions } = useArcade();
-  
+  const { isSelf } = useAddress();
+
   const isLargeScreen = useMediaQuery("(min-width: 1200px)");
   const itemsPerRow = isLargeScreen ? 4 : 2;
 
@@ -215,9 +220,33 @@ export const MarketplaceItemsContainer = ({
     [handleInspect],
   );
 
+  const canBuySelection = useMemo(() => {
+    return (!isInventory || !isSelf);
+  }, [isInventory, isSelf]);
+
+  const canListSelection = useMemo(() => {
+    return isInventory && isSelf && selectionCurrency === undefined;
+  }, [isInventory, isSelf, selectionCurrency]);
+
+  const canUnlistSelection = useMemo(() => {
+    return isInventory && isSelf && selectionCurrency !== undefined;
+  }, [isInventory, isSelf, selectionCurrency]);
+
   const handleBuySelection = useCallback(() => {
     handlePurchase(selection);
   }, [handlePurchase, selection]);
+
+  const handleListSelection = useCallback(() => {
+    handleList(selection);
+  }, [handleList, selection]);
+
+  const handleUnlistSelection = useCallback(() => {
+    handleUnlist(selection);
+  }, [handleUnlist, selection]);
+
+  const handleSendSelection = useCallback(() => {
+    handleSend(selection);
+  }, [handleSend, selection]);
 
   const items = useMemo(() => {
     const selectionActive = selection.length > 0;
@@ -227,11 +256,19 @@ export const MarketplaceItemsContainer = ({
       const selected = isConnected && selectionIds.has(base.tokenId);
 
       const selectable =
-        selection.length === 0
-          ? base.assetHasOrders
-          : selectionHasCurrency && base.assetHasOrders
-            ? base.currency === selectionCurrency
-            : false;
+        (isInventory && isSelf) ? (
+          selection.length === 0
+            ? true
+            : selectionHasCurrency
+              ? base.currency === selectionCurrency
+              : true
+        ) : (
+          selection.length === 0
+            ? base.assetHasOrders
+            : selectionHasCurrency && base.assetHasOrders
+              ? base.currency === selectionCurrency
+              : false
+        );
 
       return {
         ...base,
@@ -318,7 +355,10 @@ export const MarketplaceItemsContainer = ({
       onClearFilters={clearAllFilters}
       onResetSelection={clearSelection}
       isConnected={isConnected}
-      onBuySelection={handleBuySelection}
+      onBuySelection={canBuySelection ? handleBuySelection : undefined}
+      onListSelection={canListSelection ? handleListSelection : undefined}
+      onUnlistSelection={canUnlistSelection ? handleUnlistSelection : undefined}
+      onSendSelection={canListSelection ? handleSendSelection : undefined}
       loadingOverlay={{
         isLoading: status === "loading",
         progress: undefined,

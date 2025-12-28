@@ -16,6 +16,7 @@ import {
 } from "@/effect";
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
+import { consoleWith } from "effect/Console";
 
 export const ERC1155_ENTRYPOINT = "balance_of_batch";
 
@@ -51,6 +52,9 @@ interface MarketplaceItemsViewModel {
   connectWallet: () => Promise<void>;
   handleInspect: (token: MarketplaceAsset) => Promise<void>;
   handlePurchase: (tokens: MarketplaceAsset[]) => Promise<void>;
+  handleList: (tokens: MarketplaceAsset[]) => Promise<void>;
+  handleUnlist: (tokens: MarketplaceAsset[]) => Promise<void>;
+  handleSend: (tokens: MarketplaceAsset[]) => Promise<void>;
   sales: ReturnType<typeof useMarketplace>["sales"];
   statusFilter: string;
   listedTokens: EnrichedListedToken[];
@@ -338,6 +342,24 @@ export function useMarketplaceItemsViewModel({
     [connector, isConnected, provider.provider, events, trackEvent, address],
   );
 
+  const handleList = useCallback(
+    async (tokens: MarketplaceAsset[]) => {
+      console.warn("TODO: handleList", tokens);
+    }, [])
+    ;
+
+  const handleUnlist = useCallback(
+    async (tokens: MarketplaceAsset[]) => {
+      console.warn("TODO: handleUnlist", tokens);
+    }, [])
+    ;
+
+  const handleSend = useCallback(
+    async (tokens: MarketplaceAsset[]) => {
+      console.warn("TODO: handleSend", tokens);
+    }, []
+  );
+
   const collectionSupply = useMemo(() => {
     if (!collection?.total_supply) return 0;
     try {
@@ -369,6 +391,9 @@ export function useMarketplaceItemsViewModel({
     connectWallet,
     handleInspect,
     handlePurchase,
+    handleList,
+    handleUnlist,
+    handleSend,
     sales,
     isLoading: isLoadingTokens || Boolean(isOwnerFilterLoading),
     statusFilter,

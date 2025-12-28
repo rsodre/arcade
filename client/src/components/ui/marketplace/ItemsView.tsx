@@ -72,7 +72,10 @@ interface ItemsViewProps {
   onClearFilters: () => void;
   onResetSelection: () => void;
   isConnected: boolean;
-  onBuySelection: () => void;
+  onBuySelection: (() => void) | undefined;
+  onListSelection: (() => void) | undefined;
+  onUnlistSelection: (() => void) | undefined;
+  onSendSelection: (() => void) | undefined;
   loadingOverlay: {
     isLoading: boolean;
     progress?: { completed: number; total: number };
@@ -98,6 +101,9 @@ export const ItemsView = ({
   onResetSelection,
   isConnected,
   onBuySelection,
+  onListSelection,
+  onUnlistSelection,
+  onSendSelection,
   loadingOverlay,
   statusFilter,
   listedTokensCount,
@@ -171,6 +177,9 @@ export const ItemsView = ({
         isVisible={isConnected && selectionCount > 0}
         selectionCount={selectionCount}
         onBuySelection={onBuySelection}
+        onListSelection={onListSelection}
+        onUnlistSelection={onUnlistSelection}
+        onSendSelection={onSendSelection}
       />
       <FloatingLoadingSpinner
         isLoading={loadingOverlay.isLoading && totalTokensCount > 0}
@@ -300,27 +309,62 @@ const SelectionFooter = ({
   isVisible,
   selectionCount,
   onBuySelection,
+  onListSelection,
+  onUnlistSelection,
+  onSendSelection,
 }: {
   isVisible: boolean;
   selectionCount: number;
-  onBuySelection: () => void;
+  onBuySelection?: () => void;
+  onListSelection?: () => void;
+  onUnlistSelection?: () => void;
+  onSendSelection?: () => void;
 }) => {
   return (
     <div
       className={cn(
         "overflow-hidden transition-all duration-500 ease-out",
-        isVisible ? "max-h-36 opacity-100" : "max-h-0 opacity-0",
+        isVisible ? "h-[50px] opacity-100" : "max-h-0 opacity-0",
       )}
     >
       <Separator className="w-full bg-background-200" />
-      <div className="w-full flex justify-end items-center">
-        <Button
-          variant="primary"
-          onClick={onBuySelection}
-          disabled={selectionCount === 0}
-        >
-          {`Buy (${selectionCount})`}
-        </Button>
+      <div className="w-full flex justify-end items-center gap-x-2">
+        {onBuySelection && (
+          <Button
+            variant="primary"
+            onClick={onBuySelection}
+            disabled={selectionCount === 0}
+          >
+            {`Buy (${selectionCount})`}
+          </Button>
+        )}
+        {onListSelection && (
+          <Button
+            variant="primary"
+            onClick={onListSelection}
+            disabled={selectionCount === 0}
+          >
+            {`List (${selectionCount})`}
+          </Button>
+        )}
+        {onUnlistSelection && (
+          <Button
+            variant="primary"
+            onClick={onUnlistSelection}
+            disabled={selectionCount === 0}
+          >
+            {`Unlist (${selectionCount})`}
+          </Button>
+        )}
+        {onSendSelection && (
+          <Button
+            variant="primary"
+            onClick={onSendSelection}
+            disabled={selectionCount === 0}
+          >
+            {`Send (${selectionCount})`}
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -417,6 +461,7 @@ const MarketplaceItemCard = memo(
             images={[displayImage]}
             listingCount={listingCount}
             selectable={selectable}
+            selected={selected}
             onSelect={handleSelect}
             // onClick={handleCardClick}
             className={
