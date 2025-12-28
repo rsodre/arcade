@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useArcade } from "./arcade";
 import { getChecksumAddress } from "starknet";
 import { useRouterState, useSearch } from "@tanstack/react-router";
@@ -7,6 +7,7 @@ import { useAccount as useSnReactAccount } from "@starknet-react/core";
 
 export const TAB_SEGMENTS = [
   "inventory",
+  "inventoryitems",
   "achievements",
   "leaderboard",
   "guilds",
@@ -29,7 +30,7 @@ interface RouteParams {
   edition?: string;
   player?: string;
   collection?: string;
-  tab?: string;
+  tab?: TabValue;
   token?: string;
 }
 
@@ -65,6 +66,9 @@ export const parseRouteParams = (pathname: string): RouteParams => {
           params.collection = next;
           index += 1;
         }
+        if (params.tab === "inventory") {
+          params.tab = "inventoryitems";
+        }
         break;
       case "token":
         if (next) {
@@ -74,7 +78,7 @@ export const parseRouteParams = (pathname: string): RouteParams => {
         break;
       default:
         if (!params.tab && TAB_SEGMENTS.includes(segment as any)) {
-          params.tab = segment;
+          params.tab = segment as TabValue;
         }
         break;
     }
@@ -177,8 +181,6 @@ export const useProject = () => {
     return undefined;
   }, [playerData, playerParam]);
 
-  const isInventory = useMemo(() => Boolean(player) && (tab === "inventory" || Boolean(collection)), [tab, player, collection]);
-
   return {
     game,
     edition,
@@ -186,6 +188,5 @@ export const useProject = () => {
     filter,
     collection,
     tab,
-    isInventory,
   };
 };

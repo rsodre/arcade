@@ -51,14 +51,14 @@ export function useOwnerFilter(): UseOwnerFilterReturn {
     );
   }, [accounts, inputValue, isAddressInput]);
 
-  const { player, isInventory } = useProject();
+  const { tab, player } = useProject();
 
   const resolvedAddress = useMemo(() => {
-    if (isInventory) return player || '0x0';
+    if (tab === "inventoryitems") return player || '0x0';
     if (isAddressInput) return inputValue;
     if (selectedAccount) return selectedAccount.address;
     return null;
-  }, [isInventory, player, isAddressInput, inputValue, selectedAccount]);
+  }, [tab, player, isAddressInput, inputValue, selectedAccount]);
 
   const isValidInput = resolvedAddress !== null || inputValue === "";
 
