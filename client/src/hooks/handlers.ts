@@ -11,7 +11,7 @@ import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
 
 
-export function useHandleBuy(
+export function useHandleBuyCallback(
   collectionAddress: string,
   tokenId: string,
 ): () => Promise<void> {
@@ -64,7 +64,7 @@ export function useHandleBuy(
     return [];
   }, [collectionOrders, tokenId]);
 
-  const handleBuy = useCallback(async () => {
+  const handleBuyCallback = useCallback(async () => {
     if (!isConnected || !connector) return;
 
     const eventType = events.MARKETPLACE_PURCHASE_INITIATED;
@@ -124,18 +124,15 @@ export function useHandleBuy(
     owner,
   ]);
 
-  return handleBuy;
+  return handleBuyCallback;
 }
 
-export function useHandleList(
-  collectionAddress: string,
-  tokenId: string,
-): () => Promise<void> {
+export function useHandleListCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
   const { provider } = useArcade();
 
-  const handleList = useCallback(async () => {
+  const handleListCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
     if (!isConnected || !connector) return;
 
     const controller = (connector as ControllerConnector)?.controller;
@@ -161,24 +158,31 @@ export function useHandleList(
       options.push("preset=cartridge");
     }
 
-    options.push("listView=true");
-    const path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+    let path: string;
+
+    if (tokenIds.length > 1) {
+      tokenIds.forEach((tokenId) => {
+        options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+      });
+      path = `account/${username}/inventory/${subpath}/${collectionAddress}/list?${options.join("&")}`;
+    } else {
+      const [tokenId] = tokenIds;
+      options.push("listView=true");
+      path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+    }
 
     controller.openProfileAt(path);
-  }, [connector, isConnected, provider, tokenId, collectionAddress]);
+  }, [connector, isConnected, provider]);
 
-  return handleList;
+  return handleListCallback;
 }
 
-export function useHandleUnlist(
-  collectionAddress: string,
-  tokenId: string,
-): () => Promise<void> {
+export function useHandleUnlistCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
   const { provider } = useArcade();
 
-  const handleUnlist = useCallback(async () => {
+  const handleUnlistCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
     if (!isConnected || !connector) return;
 
     const controller = (connector as ControllerConnector)?.controller;
@@ -204,24 +208,31 @@ export function useHandleUnlist(
       options.push("preset=cartridge");
     }
 
-    options.push("unlistView=true");
-    const path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+    let path: string;
+
+    if (tokenIds.length > 1) {
+      tokenIds.forEach((tokenId) => {
+        options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+      });
+      path = `account/${username}/inventory/${subpath}/${collectionAddress}/unlist?${options.join("&")}`;
+    } else {
+      const [tokenId] = tokenIds;
+      options.push("unlistView=true");
+      path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+    }
 
     controller.openProfileAt(path);
-  }, [connector, isConnected, provider, tokenId, collectionAddress]);
+  }, [connector, isConnected, provider]);
 
-  return handleUnlist;
+  return handleUnlistCallback;
 }
 
-export function useHandleSend(
-  collectionAddress: string,
-  tokenId: string,
-): () => Promise<void> {
+export function useHandleSendCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
   const { provider } = useArcade();
 
-  const handleSend = useCallback(async () => {
+  const handleSendCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
     if (!isConnected || !connector) return;
 
     const controller = (connector as ControllerConnector)?.controller;
@@ -247,11 +258,21 @@ export function useHandleSend(
       options.push("preset=cartridge");
     }
 
-    options.push("sendView=true");
-    const path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+    let path: string;
+
+    if (tokenIds.length > 1) {
+      tokenIds.forEach((tokenId) => {
+        options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+      });
+      path = `account/${username}/inventory/${subpath}/${collectionAddress}/send?${options.join("&")}`;
+    } else {
+      const [tokenId] = tokenIds;
+      options.push("sendView=true");
+      path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+    }
 
     controller.openProfileAt(path);
-  }, [connector, isConnected, provider, tokenId, collectionAddress]);
+  }, [connector, isConnected, provider]);
 
-  return handleSend;
+  return handleSendCallback;
 }

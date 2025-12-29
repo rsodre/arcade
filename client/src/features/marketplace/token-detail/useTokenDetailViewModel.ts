@@ -11,7 +11,7 @@ import { useAccountByAddress, useMarketplaceTokens } from "@/effect";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
-import { useHandleBuy, useHandleList, useHandleSend, useHandleUnlist } from "@/hooks/handlers";
+import { useHandleBuyCallback, useHandleListCallback, useHandleSendCallback, useHandleUnlistCallback } from "@/hooks/handlers";
 
 interface UseTokenDetailViewModelArgs {
   collectionAddress: string;
@@ -133,10 +133,12 @@ export function useTokenDetailViewModel({
     [navManager, collectionAddress],
   );
 
-  const handleBuy = useHandleBuy(collectionAddress, tokenId);
-  const handleList = useHandleList(collectionAddress, tokenId);
-  const handleUnlist = useHandleUnlist(collectionAddress, tokenId);
-  const handleSend = useHandleSend(collectionAddress, tokenId);
+  const tokenIds = useMemo(() => [tokenId], [tokenId]);
+
+  const handleBuyCallback = useHandleBuyCallback(collectionAddress, tokenId);
+  const handleListCallback = useHandleListCallback();
+  const handleUnlistCallback = useHandleUnlistCallback();
+  const handleSendCallback = useHandleSendCallback();
 
   return {
     token,
@@ -148,9 +150,9 @@ export function useTokenDetailViewModel({
     owner,
     controller: controllerName,
     collectionHref,
-    handleBuy,
-    handleList,
-    handleUnlist,
-    handleSend,
+    handleBuy: handleBuyCallback,
+    handleList: () => handleListCallback(collectionAddress, tokenIds),
+    handleUnlist: () => handleUnlistCallback(collectionAddress, tokenIds),
+    handleSend: () => handleSendCallback(collectionAddress, tokenIds),
   };
 }
