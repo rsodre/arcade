@@ -140,7 +140,9 @@ export function useMarketplaceItemsViewModel({
     const baseEffectiveTokens = shouldShowEmpty ? [] : rawTokens;
     const effectiveTokens =
       statusFilter === "all"
-        ? [...listedTokens, ...baseEffectiveTokens]
+        ? [...listedTokens, ...baseEffectiveTokens].filter((value, index, self) => (
+          self.findIndex((v) => v.token_id === value.token_id) === index
+        ))
         : baseEffectiveTokens;
     if (!search.trim()) return effectiveTokens;
     const searchLower = search.toLowerCase();
