@@ -14,6 +14,7 @@ import {
   useListedTokens,
   type EnrichedListedToken,
 } from "@/effect";
+import { useHandleListCallback, useHandleSendCallback, useHandleUnlistCallback } from "@/hooks/handlers";
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
 
@@ -341,22 +342,26 @@ export function useMarketplaceItemsViewModel({
     [connector, isConnected, provider.provider, events, trackEvent, address],
   );
 
+  const handleListCallback = useHandleListCallback();
+  const handleUnlistCallback = useHandleUnlistCallback();
+  const handleSendCallback = useHandleSendCallback();
+
   const handleList = useCallback(
-    async (tokens: MarketplaceAsset[]) => {
-      console.warn("TODO: handleList", tokens);
-    }, [])
-    ;
+    async (tokens: MarketplaceAsset[]) => (
+      handleListCallback(collectionAddress, tokens.map((token) => token.token_id ?? '').filter(Boolean))
+    ), [collectionAddress, handleListCallback]
+  );
 
   const handleUnlist = useCallback(
-    async (tokens: MarketplaceAsset[]) => {
-      console.warn("TODO: handleUnlist", tokens);
-    }, [])
-    ;
+    async (tokens: MarketplaceAsset[]) => (
+      handleUnlistCallback(collectionAddress, tokens.map((token) => token.token_id ?? '').filter(Boolean))
+    ), [collectionAddress, handleUnlistCallback]
+  );
 
   const handleSend = useCallback(
-    async (tokens: MarketplaceAsset[]) => {
-      console.warn("TODO: handleSend", tokens);
-    }, []
+    async (tokens: MarketplaceAsset[]) => (
+      handleSendCallback(collectionAddress, tokens.map((token) => token.token_id ?? '').filter(Boolean))
+    ), [collectionAddress, handleSendCallback]
   );
 
   const collectionSupply = useMemo(() => {

@@ -463,12 +463,7 @@ const MarketplaceItemCard = memo(
             selectable={selectable}
             selected={selected}
             onSelect={handleSelect}
-            // onClick={handleCardClick}
-            className={
-              selectable || canOpen
-                ? "cursor-pointer"
-                : "cursor-default pointer-events-none"
-            }
+            onClick={handleCardClick}
           />
         )}
         {!isInventory && (
