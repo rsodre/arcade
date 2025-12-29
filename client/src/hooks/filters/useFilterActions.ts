@@ -16,7 +16,7 @@ export interface UseFilterActionsReturn {
   removeFilter: (trait: string, value?: string) => void;
   clearAllFilters: () => void;
   setStatusFilter: (status: StatusFilter) => void;
-  setOwnerFilter: (owner: string | undefined) => void;
+  setOwnerFilter: (owner: string | undefined, isPlayerAddress?: boolean) => void;
 }
 
 export function useFilterActions(
@@ -142,7 +142,7 @@ export function useFilterActions(
   );
 
   const setOwnerFilter = useCallback(
-    (owner: string | undefined) => {
+    (owner: string | undefined, isPlayerAddress?: boolean) => {
       setFilters((state) => {
         const collection = ensureCollectionState(state, collectionAddress);
         return {
@@ -150,6 +150,7 @@ export function useFilterActions(
           [collectionAddress]: {
             ...collection,
             ownerFilter: owner,
+            isPlayerAddress: isPlayerAddress ?? false,
           },
         };
       });

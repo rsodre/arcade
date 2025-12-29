@@ -61,6 +61,7 @@ export function useMarketplaceFiltersViewModel(): MarketplaceFiltersViewModel {
     inputValue: ownerInput,
     setInputValue: setOwnerInput,
     resolvedAddress: ownerAddress,
+    isPlayerAddress,
     isAddressInput: isOwnerAddressInput,
     suggestions: ownerSuggestions,
     clearOwner,
@@ -78,8 +79,8 @@ export function useMarketplaceFiltersViewModel(): MarketplaceFiltersViewModel {
   });
 
   useEffect(() => {
-    setOwnerFilter(ownerAddress ?? undefined);
-  }, [ownerAddress, setOwnerFilter]);
+    setOwnerFilter(ownerAddress ?? undefined, isPlayerAddress);
+  }, [ownerAddress, isPlayerAddress, setOwnerFilter]);
 
   const {
     activeFilters,
