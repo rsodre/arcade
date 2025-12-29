@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { getChecksumAddress } from "starknet";
+import { addAddressPadding, getChecksumAddress } from "starknet";
 import type { OrderModel } from "@cartridge/arcade";
 import { useMediaQuery } from "@cartridge/ui";
 import { resizeImage } from "@/lib/helpers";
@@ -24,7 +24,6 @@ import {
 import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
 import { useRouterState } from "@tanstack/react-router";
 import { useArcade } from "@/hooks/arcade";
-import { useAddress } from "@/hooks/address";
 
 const ROW_HEIGHT = 184;
 
@@ -59,6 +58,7 @@ interface BaseItemView {
   tokenDetailHref: string;
   assetHasOrders: boolean;
   currency?: string;
+  owned: boolean;
 }
 
 const createBaseItemView = (
@@ -66,6 +66,7 @@ const createBaseItemView = (
   collectionImage: string | undefined,
   salesByContract: Record<string, Record<string, OrderModel>> | undefined,
   navManager: NavigationContextManager,
+  ownedTokenIds: string[],
 ): BaseItemView => {
   const tokenId = asset.token_id?.toString() ?? "0";
   return {
@@ -89,6 +90,7 @@ const createBaseItemView = (
     assetHasOrders: asset.orders.length > 0,
     currency:
       asset.orders.length > 0 ? asset.orders[0].order.currency : undefined,
+    owned: ownedTokenIds.includes(addAddressPadding(asset.token_id ?? 0)),
   };
 };
 
@@ -126,13 +128,13 @@ export const MarketplaceItemsContainer = ({
     statusFilter,
     listedTokens,
     isInventory,
+    ownedTokenIds,
   } = useMarketplaceItemsViewModel({ collectionAddress });
 
   const parentRef = useRef<HTMLDivElement>(null);
 
   const { location } = useRouterState();
   const { games, editions } = useArcade();
-  const { isSelf } = useAddress();
 
   const isLargeScreen = useMediaQuery("(min-width: 1200px)");
   const itemsPerRow = isLargeScreen ? 4 : 2;
@@ -181,9 +183,9 @@ export const MarketplaceItemsContainer = ({
 
   const baseItems = useMemo(() => {
     return assets.map((asset) =>
-      createBaseItemView(asset, collection?.image, salesByContract, navManager),
+      createBaseItemView(asset, collection?.image, salesByContract, navManager, ownedTokenIds),
     );
-  }, [assets, collection?.image, salesByContract, navManager]);
+  }, [assets, collection?.image, salesByContract, navManager, ownedTokenIds]);
 
   const selectionIds = useMemo(() => {
     return new Set(selection.map((item) => item.token_id?.toString()));
@@ -195,6 +197,16 @@ export const MarketplaceItemsContainer = ({
       ? selection[0].orders[0].order.currency
       : undefined;
   }, [selection]);
+
+  const selectionType = useMemo(() => {
+    if (selection.length === 0) return undefined;
+    const listed = selection[0].orders.length > 0;
+    if (ownedTokenIds.includes(addAddressPadding(selection[0].token_id ?? 0))) {
+      return listed ? "owned-listed" : "owned-unlisted";
+    } else {
+      return listed ? "listed" : "unlisted";
+    }
+  }, [selection, ownedTokenIds]);
 
   const handleToggleSelectById = useCallback(
     (index: number) => {
@@ -220,18 +232,6 @@ export const MarketplaceItemsContainer = ({
     [handleInspect],
   );
 
-  const canBuySelection = useMemo(() => {
-    return (!isInventory || !isSelf);
-  }, [isInventory, isSelf]);
-
-  const canListSelection = useMemo(() => {
-    return isInventory && isSelf && selectionCurrency === undefined;
-  }, [isInventory, isSelf, selectionCurrency]);
-
-  const canUnlistSelection = useMemo(() => {
-    return isInventory && isSelf && selectionCurrency !== undefined;
-  }, [isInventory, isSelf, selectionCurrency]);
-
   const handleBuySelection = useCallback(() => {
     handlePurchase(selection);
   }, [handlePurchase, selection]);
@@ -250,25 +250,21 @@ export const MarketplaceItemsContainer = ({
 
   const items = useMemo(() => {
     const selectionActive = selection.length > 0;
-    const selectionHasCurrency = selectionCurrency !== undefined;
 
     return baseItems.map((base, index) => {
       const selected = isConnected && selectionIds.has(base.tokenId);
+      const isListedCurrency = base.assetHasOrders && base.currency === selectionCurrency;
 
       const selectable =
-        (isInventory && isSelf) ? (
-          selection.length === 0
-            ? true
-            : selectionHasCurrency
-              ? base.currency === selectionCurrency
-              : true
-        ) : (
-          selection.length === 0
-            ? base.assetHasOrders
-            : selectionHasCurrency && base.assetHasOrders
-              ? base.currency === selectionCurrency
-              : false
-        );
+        selection.length === 0
+        ? (base.owned || base.assetHasOrders)
+          : selectionType === 'owned-unlisted'
+          ? (base.owned && !base.assetHasOrders)
+            : selectionType === 'owned-listed'
+            ? (base.owned && isListedCurrency)
+              : selectionType === 'listed'
+              ? isListedCurrency
+                : false;
 
       return {
         ...base,
@@ -355,10 +351,10 @@ export const MarketplaceItemsContainer = ({
       onClearFilters={clearAllFilters}
       onResetSelection={clearSelection}
       isConnected={isConnected}
-      onBuySelection={canBuySelection ? handleBuySelection : undefined}
-      onListSelection={canListSelection ? handleListSelection : undefined}
-      onUnlistSelection={canUnlistSelection ? handleUnlistSelection : undefined}
-      onSendSelection={canListSelection ? handleSendSelection : undefined}
+      onBuySelection={selectionType === 'listed' ? handleBuySelection : undefined}
+      onListSelection={selectionType === 'owned-unlisted' ? handleListSelection : undefined}
+      onUnlistSelection={selectionType === 'owned-listed' ? handleUnlistSelection : undefined}
+      onSendSelection={selectionType === 'owned-unlisted' ? handleSendSelection : undefined}
       loadingOverlay={{
         isLoading: status === "loading",
         progress: undefined,

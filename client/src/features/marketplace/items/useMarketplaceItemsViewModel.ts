@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useConnect } from "@starknet-react/core";
 import type { Token } from "@dojoengine/torii-wasm";
 import type { ListingWithUsd } from "@/effect/atoms/marketplace";
-import { getChecksumAddress, type RpcProvider } from "starknet";
+import { addAddressPadding, getChecksumAddress, type RpcProvider } from "starknet";
 import type ControllerConnector from "@cartridge/connector/controller";
 import { useArcade } from "@/hooks/arcade";
 import { useMarketplace } from "@/hooks/marketplace";
@@ -13,10 +13,12 @@ import {
   useMarketplaceTokens,
   useListedTokens,
   type EnrichedListedToken,
+  ownerTokenIdsAtom,
 } from "@/effect";
 import { useHandleListCallback, useHandleSendCallback, useHandleUnlistCallback } from "@/hooks/handlers";
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
+import { useAtomValue } from "@effect-atom/atom-react";
 
 export const ERC1155_ENTRYPOINT = "balance_of_batch";
 
@@ -59,6 +61,7 @@ interface MarketplaceItemsViewModel {
   statusFilter: string;
   listedTokens: EnrichedListedToken[];
   isInventory: boolean;
+  ownedTokenIds: string[];
 }
 
 export const getEntrypoints = async (
@@ -96,6 +99,14 @@ export function useMarketplaceItemsViewModel({
   const [lastSearch, setLastSearch] = useState<string>("");
   const [selection, setSelection] = useState<MarketplaceAsset[]>([]);
   const { tab } = useProject();
+
+  const ownedTokenIdsResult = useAtomValue(
+    ownerTokenIdsAtom(collectionAddress, address) as any,
+  ) as { _tag: string; value?: Set<string> };
+
+  const ownedTokenIds = useMemo(() => (
+    ownedTokenIdsResult?.value ? Array.from(ownedTokenIdsResult.value).map(addAddressPadding) : []
+  ), [ownedTokenIdsResult]);
 
   const { listedTokenIds, getOrdersForToken } =
     useCollectionOrders(collectionAddress);
@@ -405,5 +416,6 @@ export function useMarketplaceItemsViewModel({
     statusFilter,
     listedTokens,
     isInventory: tab === "inventoryitems",
+    ownedTokenIds,
   };
 }
