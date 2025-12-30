@@ -1,5 +1,5 @@
 import { Atom } from "@effect-atom/atom-react";
-import { Effect, Array as A, pipe, Order } from "effect";
+import { Effect, Array as A, pipe, Order, Data } from "effect";
 import { getChecksumAddress } from "starknet";
 import { ToriiGrpcClient } from "@dojoengine/react/effect";
 import { toriiRuntime } from "../runtime";
@@ -10,6 +10,10 @@ import type {
   Token,
   TokenContract as TokenContractWasm,
 } from "@dojoengine/torii-wasm";
+
+class EnrichTokensError extends Data.TaggedError("EnrichTokensError")<{
+  message: string;
+}> { }
 
 export type EnrichedTokenContract = {
   contract_address: string;
@@ -83,32 +87,37 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
     }
   }
 
+  const tokenResults = yield* Effect.tryPromise({
+    try: () =>
+      client.executeSql(`
+        SELECT contract_address, token_id, metadata
+        FROM tokens
+        WHERE token_id is not null
+        GROUP BY contract_address
+      `),
+    catch: (error) =>
+      new EnrichTokensError({
+        message: error instanceof Error ? error.message : String(error),
+      }),
+  });
+
   const enrichedContracts = yield* Effect.all(
     contracts.map((contract) =>
       Effect.gen(function* () {
-        const tokenResult = yield* Effect.tryPromise(() =>
-          client.getTokens({
-            contract_addresses: [contract.contract_address],
-            token_ids: [],
-            attribute_filters: [],
-            pagination: {
-              limit: 1,
-              cursor: undefined,
-              direction: "Forward",
-              order_by: [],
-            },
-          }),
-        );
+        const tokenData = tokenResults.find(t => t.contract_address === contract.contract_address) as {
+          contract_address: string;
+          metadata: string;
+          token_id: string;
+        } | undefined;
 
         let metadata = contract.metadata;
         let tokenId: string | null = null;
 
-        if (tokenResult.items.length > 0) {
-          const t = tokenResult.items[0];
-          if (metadata === "" && t.metadata !== "") {
-            metadata = t.metadata ?? "";
+        if (tokenData) {
+          if (metadata === "" && tokenData.metadata !== "") {
+            metadata = tokenData.metadata;
           }
-          tokenId = t.token_id ?? null;
+          tokenId = tokenData.token_id ?? null;
         }
 
         const image = yield* Effect.tryPromise(async () => {
