@@ -43,6 +43,7 @@ export interface MarketplaceItemCardProps {
   selectionActive: boolean;
   tokenDetailHref: string;
   isInventory: boolean;
+  backgroundColor?: string;
   onToggleSelectByIndex: (index: number) => void;
   onBuyByIndex: (index: number) => void;
   onInspectByIndex: (index: number) => void;
@@ -390,6 +391,7 @@ const MarketplaceItemCard = memo(
     lastSale,
     tokenDetailHref,
     isInventory,
+    backgroundColor,
   }: MarketplaceItemCardProps) => {
     const fallbackImage = placeholderImage ?? image ?? "";
     const [displayImage, setDisplayImage] = useState<string>(fallbackImage);
@@ -460,6 +462,7 @@ const MarketplaceItemCard = memo(
             title={title}
             images={[displayImage]}
             listingCount={listingCount}
+            backgroundColor={backgroundColor}
             selectable={selectable}
             selected={selected}
             onSelect={handleSelect}
