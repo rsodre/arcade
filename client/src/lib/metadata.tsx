@@ -278,4 +278,17 @@ export const MetadataHelper = {
       }
     }
   },
+
+  getMetadataField: (metadata: string | any, field: string): string | undefined => {
+    if (!metadata) return;
+    if (typeof metadata === "string") {
+      try {
+        return JSON.parse(metadata)?.[field];
+      } catch (error) {
+        console.error("Error parsing metadata:", metadata);
+      }
+    } else {
+      return metadata?.[field];
+    }
+  },
 };

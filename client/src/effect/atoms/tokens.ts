@@ -5,6 +5,7 @@ import { ToriiGrpcClient } from "@dojoengine/react/effect";
 import { toriiRuntime } from "../runtime";
 import { BLACKLISTS, DEFAULT_PROJECT } from "@/constants";
 import { fetchContractImage, fetchTokenImage } from "@/hooks/fetcher-utils";
+import { MetadataHelper } from "@/lib/metadata";
 import { mapResult } from "../utils/result";
 import type {
   Token,
@@ -26,6 +27,7 @@ export type EnrichedTokenContract = {
   project: string;
   image: string;
   contract_type: string;
+  background_color: string | null;
 };
 
 const fetchTokenContractsEffect = Effect.gen(function* () {
@@ -112,12 +114,20 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
 
         let metadata = contract.metadata;
         let tokenId: string | null = null;
+        let backgroundColor: string | null = MetadataHelper.getMetadataField(contract.metadata, "background_color") ?? null;
 
         if (tokenData) {
+          tokenId = tokenData.token_id || null;
           if (metadata === "" && tokenData.metadata !== "") {
             metadata = tokenData.metadata;
           }
-          tokenId = tokenData.token_id ?? null;
+          if (!backgroundColor && tokenData.metadata !== "") {
+            backgroundColor = MetadataHelper.getMetadataField(tokenData.metadata, "background_color") ?? null;
+          }
+        }
+
+        if (backgroundColor && !backgroundColor.startsWith("#")) {
+          backgroundColor = `#${backgroundColor}`;
         }
 
         const image = yield* Effect.tryPromise(async () => {
@@ -145,6 +155,7 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
           project: DEFAULT_PROJECT,
           image: image ?? "",
           contract_type: "ERC721",
+          background_color: backgroundColor,
         } satisfies EnrichedTokenContract;
       }),
     ),

@@ -19,6 +19,7 @@ export interface InventoryCollectionCardView {
   totalCount: number;
   listingCount: number;
   ownedCount: number;
+  backgroundColor?: string;
   href?: string;
   search?: Record<string, string>;
   onClick?: () => void;
@@ -114,6 +115,7 @@ export function useInventoryCollectionsViewModel({
         totalCount: Number(collection.totalSupply),
         ownedCount,
         listingCount,
+        backgroundColor: collection.background_color ?? undefined,
       };
 
       // const collectionType = getCollectionType(collection);
