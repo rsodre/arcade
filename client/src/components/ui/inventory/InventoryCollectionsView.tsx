@@ -35,6 +35,7 @@ const InventoryCollectionCard = ({
       icon={card.image}
       images={[card.image]}
       totalCount={card.ownedCount}
+      backgroundColor={card.backgroundColor}
       onClick={card.onClick}
     />
   );
