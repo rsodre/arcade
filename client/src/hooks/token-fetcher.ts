@@ -477,7 +477,7 @@ export function useCollectibles(
   const [error, setError] = useState<Error | null>(null);
 
   const fetchCollectibles = async () => {
-    if (!projects.length || !address) {
+    if (!projects.length || !address || BigInt(address) === 0n) {
       setStatus("idle");
       setCollections([]);
       return;
