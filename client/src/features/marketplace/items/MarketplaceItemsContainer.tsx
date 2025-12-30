@@ -59,6 +59,7 @@ interface BaseItemView {
   assetHasOrders: boolean;
   currency?: string;
   owned: boolean;
+  backgroundColor?: string;
 }
 
 const createBaseItemView = (
@@ -69,11 +70,15 @@ const createBaseItemView = (
   ownedTokenIds: string[],
 ): BaseItemView => {
   const tokenId = asset.token_id?.toString() ?? "0";
+  const metadata = asset.metadata as unknown as {
+    name?: string,
+    background_color?: string,
+  };
   return {
     id: `${asset.contract_address}-${tokenId}`,
     tokenId,
     title:
-      (asset.metadata as unknown as { name?: string })?.name ||
+      metadata?.name ||
       asset.name ||
       "Untitled",
     image:
@@ -91,6 +96,7 @@ const createBaseItemView = (
     currency:
       asset.orders.length > 0 ? asset.orders[0].order.currency : undefined,
     owned: ownedTokenIds.includes(addAddressPadding(asset.token_id ?? 0)),
+    backgroundColor: metadata?.background_color ?? undefined,
   };
 };
 
@@ -266,6 +272,11 @@ export const MarketplaceItemsContainer = ({
               ? isListedCurrency
                 : false;
 
+      let backgroundColor: string | undefined = base.backgroundColor;
+      if (backgroundColor && !backgroundColor.startsWith("#")) {
+        backgroundColor = `#${backgroundColor}`;
+      }
+
       return {
         ...base,
         index,
@@ -279,6 +290,7 @@ export const MarketplaceItemsContainer = ({
         onInspectByIndex: handleInspectById,
         onConnect: connectWallet,
         isInventory,
+        backgroundColor,
       } as MarketplaceItemCardProps;
     });
   }, [
