@@ -460,7 +460,7 @@ const MarketplaceItemCard = memo(
         {isInventory && (
           <InventoryItemCard
             title={title}
-            images={[displayImage]}
+            images={image ? [image]: []}
             listingCount={listingCount}
             backgroundColor={backgroundColor}
             selectable={selectable}

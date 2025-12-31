@@ -343,9 +343,11 @@ export type Collection = {
   address: string;
   name: string;
   type: CollectionType;
-  imageUrl: string;
+  tokenImageUrl: string;
+  iconUrl?: string;
   totalCount: number;
-  project: string;
+  tokenIds: string[];
+  projects: string[];
 };
 
 export type CollectibleMetadata = TokenMetadata & {
@@ -421,12 +423,13 @@ function processNFTCollections(
     const collectionType = CollectionType.ERC721;
 
     collections.push({
-      address: address,
+      address,
       name: metadata?.name || firstNFT.name || "---",
       type: collectionType,
-      imageUrl: getAssetImage(project, metadata, innerMeta, firstNFT),
+      tokenImageUrl: getAssetImage(innerMeta, project, address, firstNFT),
       totalCount: nfts.length,
-      project: project,
+      tokenIds: nfts.map((nft) => nft.token_id ?? ""),
+      projects: [project],
     });
   });
 
@@ -434,18 +437,17 @@ function processNFTCollections(
 }
 
 function getAssetImage(
-  project: string,
-  metadata: TokenMetadata | undefined,
   inner: CollectibleMetadata,
+  project: string,
+  contractAddress: string,
   firstNFT: TokenWithMetadata,
 ): string {
-  const image = inner?.image;
-  image?.replace("ipfs://", "https://gateway.pinata.cloud/ipfs/");
+  const image = inner?.image?.replace("ipfs://", "https://gateway.pinata.cloud/ipfs/");
   return (
     image ??
     getToriiAssetUrl(
       project,
-      addAddressPadding(metadata?.contract_address ?? "0x0"),
+      addAddressPadding(contractAddress ?? "0x0"),
       addAddressPadding(firstNFT.token_id ?? "0x0"),
     )
   );
@@ -510,7 +512,9 @@ export function useCollectibles(
             // Filter for NFTs only
             const nftBalances = response.items.filter((item: TokenBalance) =>
               isNFT(item),
-            );
+            ).sort((a: TokenBalance, b: TokenBalance) => {
+              return (a.token_id ?? "").localeCompare(b.token_id ?? "");
+            });
 
             if (nftBalances.length > 0) {
               // Extract unique identifiers from NFT batch
@@ -561,7 +565,18 @@ export function useCollectibles(
               projects[projectIndex] || "",
             );
 
-            allCollections.push(...projectCollections);
+            // push avoiding duplicates
+            projectCollections.forEach((newCollection) => {
+              const existingIndex = allCollections.findIndex((collection) => newCollection.address === collection.address);
+              if (existingIndex < 0) {
+                allCollections.push(newCollection);
+              } else {
+                allCollections[existingIndex].projects = [
+                  ...allCollections[existingIndex].projects,
+                  ...newCollection.projects,
+                ];
+              }
+            });
           }
         });
       }

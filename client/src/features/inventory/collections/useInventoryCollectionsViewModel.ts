@@ -6,7 +6,7 @@ import { useAccount } from "@starknet-react/core";
 import { useMarketplace } from "@/hooks/marketplace";
 import { useRouterState } from "@tanstack/react-router";
 import { getChecksumAddress } from "starknet";
-import { joinPaths, resizeImage } from "@/lib/helpers";
+import { joinPaths } from "@/lib/helpers";
 import { useAccountByAddress, type EnrichedTokenContract } from "@/effect";
 import { StatusType } from "@cartridge/arcade";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -16,6 +16,7 @@ export interface InventoryCollectionCardView {
   id: string;
   title: string;
   image: string;
+  icon: string;
   totalCount: number;
   listingCount: number;
   ownedCount: number;
@@ -90,8 +91,8 @@ export function useInventoryCollectionsViewModel({
   }, [collections, ownedAddresses]);
 
   const collectionCards = useMemo(() => {
-    return filteredCollections.map((collection) => {
-      const collectionOrders = orders[collection.contract_address];
+    return filteredCollections.map((contract) => {
+      const collectionOrders = orders[contract.contract_address];
       const listingCount = collectionOrders
         ? Object.values(collectionOrders).reduce((count, tokenOrders) => {
             const filtered = Object.values(tokenOrders).filter((order) => {
@@ -104,18 +105,21 @@ export function useInventoryCollectionsViewModel({
             return filtered.length > 0 ? count + 1 : count;
           }, 0)
         : 0;
-      const ownedCount = ownedCollections
-        .find((c) => getChecksumAddress(c.address) === collection.contract_address)
-        ?.totalCount || 0;
+      const collection = ownedCollections
+        .find((c) => getChecksumAddress(c.address) === contract.contract_address);
+      const ownedCount = collection?.totalCount || 0;
+      const icon = collection?.iconUrl || contract.image || collection?.tokenImageUrl || "";
+      const image = collection?.tokenImageUrl || contract.image || collection?.iconUrl || "";
 
       const content: InventoryCollectionCardView = {
-        id: collection.contract_address,
-        title: collection.name,
-        image: resizeImage(collection.image, 300, 300) || "",
-        totalCount: Number(collection.totalSupply),
+        id: contract.contract_address,
+        title: contract.name,
+        image,
+        icon,
+        totalCount: Number(contract.totalSupply),
         ownedCount,
         listingCount,
-        backgroundColor: collection.background_color ?? undefined,
+        backgroundColor: contract.background_color ?? undefined,
       };
 
       // const collectionType = getCollectionType(collection);
@@ -145,7 +149,7 @@ export function useInventoryCollectionsViewModel({
       if (lastSegment !== "inventory") {
         baseSegments.push("inventory");
       }
-      baseSegments.push("collection", collection.contract_address);
+      baseSegments.push("collection", contract.contract_address);
       content.href = joinPaths(...baseSegments);
 
       return content;
