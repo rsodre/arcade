@@ -32,7 +32,7 @@ const InventoryCollectionCard = ({
   const content = (
     <InventoryCollectionCardConmponent
       title={card.title}
-      icon={card.image}
+      icon={card.icon}
       images={[card.image]}
       totalCount={card.ownedCount}
       backgroundColor={card.backgroundColor}

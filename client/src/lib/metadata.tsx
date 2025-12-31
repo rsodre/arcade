@@ -220,7 +220,7 @@ export const MetadataHelper = {
         return toriiImage;
       }
     } catch (error) {
-      console.error("Error fetching image:", error);
+      console.error("Error fetching image:", error, toriiImage);
     }
   },
 
@@ -241,7 +241,7 @@ export const MetadataHelper = {
         return toriiImage;
       }
     } catch (error) {
-      console.error("Error fetching image:", error);
+      console.error("Error fetching image:", error, toriiImage);
     }
   },
   unsafeGetToriiImage: async (
@@ -258,19 +258,11 @@ export const MetadataHelper = {
 
   getMetadataImage: async (token: Token): Promise<string | undefined> => {
     if (!token.metadata) return;
-    let metadata;
     if (typeof token.metadata === "string") {
       try {
-        metadata = JSON.parse(token.metadata);
-        const response = await fetch(metadata.image);
+        const image = JSON.parse(token.metadata).image?.replace("ipfs://", "https://gateway.pinata.cloud/ipfs/");
+        const response = await fetch(image);
         if (response.ok) {
-          const image = metadata.image;
-          if (image.startsWith("ipfs://")) {
-            return image.replace(
-              "ipfs://",
-              "https://gateway.pinata.cloud/ipfs/",
-            );
-          }
           return image;
         }
       } catch (error) {

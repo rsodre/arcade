@@ -27,10 +27,18 @@ export const useCollections = () => {
   );
 
   const collections = useMemo(() => {
-    if (!edition) return allCollections;
-    return allCollections.filter(
-      (collection: Collection) => collection.project === edition.config.project,
-    );
+    const collections = [...allCollections];
+    collections.forEach((collection: Collection) => {
+      const projects = [...collection.projects];
+      if (projects.length > 1 && projects[0] === "arcade-main") {
+        projects.shift();
+      }
+      collection.iconUrl = editions.find((ed) => ed.config.project === projects[0])?.properties.icon ?? undefined;
+    });
+    return !edition ? collections
+      : collections.filter(
+        (collection: Collection) => collection.projects.includes(edition.config.project),
+      );
   }, [edition, allCollections]);
 
   return { collections, status };
