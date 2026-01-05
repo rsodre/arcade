@@ -167,7 +167,7 @@ export function useMarketBalancesFetcher({
       (b) =>
         BigInt(b.token_id ?? "0x0") ===
         BigInt(tokenId.startsWith("0x") ? tokenId : `0x${tokenId}`),
-    );
+    ).filter((b) => BigInt(b.balance ?? "0x0") !== 0n);
   }, [balances, tokenId]);
 
   const effectiveStatus = projectError ? "error" : status;
