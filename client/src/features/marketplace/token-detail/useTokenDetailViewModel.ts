@@ -90,14 +90,14 @@ export function useTokenDetailViewModel({
     const candidates = new Set<string>();
     candidates.add(tokenId);
 
-    try {
-      if (tokenId.startsWith("0x")) {
+    if (tokenId.startsWith("0x")) {
+      try {
         const numericId = BigInt(tokenId).toString();
         candidates.add(numericId);
-      } else {
-        candidates.add(`0x${BigInt(tokenId).toString(16)}`);
+      } catch (error) {
+        candidates.add(BigInt(`0x${tokenId}`).toString());
       }
-    } catch (error) {
+    } else {
       candidates.add(BigInt(`0x${tokenId}`).toString());
     }
 
