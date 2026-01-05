@@ -458,16 +458,18 @@ const MarketplaceItemCard = memo(
     return (
       <div className="w-full group select-none" onClick={handleContainerClick}>
         {isInventory && (
-          <InventoryItemCard
-            title={title}
-            images={image ? [image]: []}
-            listingCount={listingCount}
-            backgroundColor={backgroundColor}
-            selectable={selectable}
-            selected={selected}
-            onSelect={handleSelect}
-            onClick={handleCardClick}
-          />
+          <Link to={tokenDetailHref} disabled={!canOpen}>
+            <InventoryItemCard
+              title={title}
+              images={image ? [image] : []}
+              listingCount={listingCount}
+              backgroundColor={backgroundColor}
+              selectable={selectable}
+              selected={selected}
+              onSelect={handleSelect}
+              onClick={canOpen || selectable ? () => {} : undefined}
+            />
+          </Link>
         )}
         {!isInventory && (
           <Link to={tokenDetailHref}>
