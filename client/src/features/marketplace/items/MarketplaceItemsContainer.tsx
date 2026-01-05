@@ -133,6 +133,7 @@ export const MarketplaceItemsContainer = ({
     isLoading,
     statusFilter,
     listedTokens,
+    isERC1155,
     isInventory,
     ownedTokenIds,
   } = useMarketplaceItemsViewModel({ collectionAddress });
@@ -264,13 +265,15 @@ export const MarketplaceItemsContainer = ({
       const selectable =
         selection.length === 0
         ? (base.owned || base.assetHasOrders)
-          : selectionType === 'owned-unlisted'
-          ? (base.owned && !base.assetHasOrders)
-            : selectionType === 'owned-listed'
-            ? (base.owned && isListedCurrency)
-              : selectionType === 'listed'
-              ? isListedCurrency
-                : false;
+          : isERC1155
+          ? false
+            : selectionType === 'owned-unlisted'
+              ? (base.owned && !base.assetHasOrders)
+              : selectionType === 'owned-listed'
+                ? (base.owned && isListedCurrency)
+                : selectionType === 'listed'
+                  ? isListedCurrency
+                  : false;
 
       let backgroundColor: string | undefined = base.backgroundColor;
       if (backgroundColor && !backgroundColor.startsWith("#")) {

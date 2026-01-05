@@ -60,6 +60,7 @@ interface MarketplaceItemsViewModel {
   sales: ReturnType<typeof useMarketplace>["sales"];
   statusFilter: string;
   listedTokens: EnrichedListedToken[];
+  isERC1155: boolean;
   isInventory: boolean;
   ownedTokenIds: string[];
 }
@@ -146,6 +147,8 @@ export function useMarketplaceItemsViewModel({
     collectionAddress,
     enabled: !!collectionAddress && rawTokens.length > 0,
   });
+
+  const isERC1155 = useMemo(() => collection?.contract_type === "ERC1155", [collection]);
 
   const searchFilteredTokens = useMemo(() => {
     const baseEffectiveTokens = shouldShowEmpty ? [] : rawTokens;
@@ -319,11 +322,6 @@ export function useMarketplaceItemsViewModel({
         return;
       }
 
-      const entrypoints = await getEntrypoints(
-        provider.provider,
-        contractAddress,
-      );
-      const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
       const subpath = isERC1155 ? "collectible" : "collection";
 
       const project = DEFAULT_PROJECT;
@@ -352,7 +350,7 @@ export function useMarketplaceItemsViewModel({
 
       controller.openProfileAt(path);
     },
-    [connector, isConnected, provider.provider, events, trackEvent, address],
+    [connector, isConnected, provider.provider, events, trackEvent, address, isERC1155],
   );
 
   const handleListCallback = useHandleListCallback();
@@ -415,6 +413,7 @@ export function useMarketplaceItemsViewModel({
     isLoading: isLoadingTokens || Boolean(isOwnerFilterLoading),
     statusFilter,
     listedTokens,
+    isERC1155,
     isInventory: tab === "inventoryitems",
     ownedTokenIds,
   };
