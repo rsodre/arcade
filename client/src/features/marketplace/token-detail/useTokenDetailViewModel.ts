@@ -112,7 +112,7 @@ export function useTokenDetailViewModel({
   }, [collectionOrders, tokenId]);
 
   const isListed = useMemo(() => {
-    return orders.length > 0;
+    return orders.length > 0 && orders[0].expiration > new Date().getTime() / 1000;
   }, [orders]);
 
   const isLoading = status === "loading" || status === "idle";
