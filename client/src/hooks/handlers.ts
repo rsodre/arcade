@@ -9,6 +9,7 @@ import { ERC1155_ENTRYPOINT, getEntrypoints } from "@/features/marketplace/items
 import type ControllerConnector from "@cartridge/connector/controller";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
+import { useConnectionViewModel } from "@/features/connection";
 
 
 export function useHandleBuyCallback(
@@ -17,6 +18,7 @@ export function useHandleBuyCallback(
 ): () => Promise<void> {
   const { connector } = useConnect();
   const { address, isConnected } = useAccount();
+  const { onConnect, isConnectDisabled } = useConnectionViewModel();
   const { trackEvent, events } = useAnalytics();
   const { provider } = useArcade();
 
@@ -65,7 +67,12 @@ export function useHandleBuyCallback(
   }, [collectionOrders, tokenId]);
 
   const handleBuyCallback = useCallback(async () => {
-    if (!isConnected || !connector) return;
+    if (!isConnected) {
+      if (isConnectDisabled) {
+        return;
+      }
+      await onConnect();
+    }
 
     const eventType = events.MARKETPLACE_PURCHASE_INITIATED;
 
@@ -116,6 +123,7 @@ export function useHandleBuyCallback(
     connector,
     events,
     isConnected,
+    isConnectDisabled,
     provider,
     tokenId,
     trackEvent,
@@ -130,10 +138,16 @@ export function useHandleBuyCallback(
 export function useHandleListCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
+  const { onConnect, isConnectDisabled } = useConnectionViewModel();
   const { provider } = useArcade();
 
   const handleListCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
-    if (!isConnected || !connector) return;
+    if (!isConnected) {
+      if (isConnectDisabled) {
+        return;
+      }
+      await onConnect();
+    }
 
     const controller = (connector as ControllerConnector)?.controller;
     const username = await controller?.username();
@@ -172,7 +186,7 @@ export function useHandleListCallback(): (collectionAddress: string, tokenIds: s
     }
 
     controller.openProfileAt(path);
-  }, [connector, isConnected, provider]);
+  }, [connector, isConnected, isConnectDisabled, provider]);
 
   return handleListCallback;
 }
@@ -180,10 +194,16 @@ export function useHandleListCallback(): (collectionAddress: string, tokenIds: s
 export function useHandleUnlistCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
+  const { onConnect, isConnectDisabled } = useConnectionViewModel();
   const { provider } = useArcade();
 
   const handleUnlistCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
-    if (!isConnected || !connector) return;
+    if (!isConnected) {
+      if (isConnectDisabled) {
+        return;
+      }
+      await onConnect();
+    }
 
     const controller = (connector as ControllerConnector)?.controller;
     const username = await controller?.username();
@@ -222,7 +242,7 @@ export function useHandleUnlistCallback(): (collectionAddress: string, tokenIds:
     }
 
     controller.openProfileAt(path);
-  }, [connector, isConnected, provider]);
+  }, [connector, isConnected, isConnectDisabled, provider]);
 
   return handleUnlistCallback;
 }
@@ -230,10 +250,16 @@ export function useHandleUnlistCallback(): (collectionAddress: string, tokenIds:
 export function useHandleSendCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
+  const { onConnect, isConnectDisabled } = useConnectionViewModel();
   const { provider } = useArcade();
 
   const handleSendCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
-    if (!isConnected || !connector) return;
+    if (!isConnected) {
+      if (isConnectDisabled) {
+        return;
+      }
+      await onConnect();
+    }
 
     const controller = (connector as ControllerConnector)?.controller;
     const username = await controller?.username();
@@ -272,7 +298,7 @@ export function useHandleSendCallback(): (collectionAddress: string, tokenIds: s
     }
 
     controller.openProfileAt(path);
-  }, [connector, isConnected, provider]);
+  }, [connector, isConnected, isConnectDisabled, provider]);
 
   return handleSendCallback;
 }
