@@ -112,6 +112,10 @@ export function useInventoryCollectionsViewModel({
         contract.image ||
         collection?.iconUrl ||
         "";
+      const backgroundColor =
+        collection?.tokenBackgroundColor ||
+        contract.background_color ||
+        undefined;
 
       const content: InventoryCollectionCardView = {
         id: contract.contract_address,
@@ -121,7 +125,7 @@ export function useInventoryCollectionsViewModel({
         totalCount: Number(contract.totalSupply),
         ownedCount,
         listingCount,
-        backgroundColor: contract.background_color ?? undefined,
+        backgroundColor,
       };
 
       const handleClick = async () => {

@@ -340,6 +340,7 @@ export type Collection = {
   name: string;
   type: CollectionType;
   tokenImageUrl: string;
+  tokenBackgroundColor: string | null;
   iconUrl?: string;
   totalCount: number;
   tokenIds: string[];
@@ -406,23 +407,26 @@ function processNFTCollections(
 
   collectionMap.forEach((nfts, address) => {
     // Get metadata from the first NFT in the collection
-    const firstNFT = nfts[0];
+    const firstNFT = nfts.at(-1) as TokenWithMetadata;
     const metadata = firstNFT.metadata;
 
     let innerMeta = undefined;
     try {
-      innerMeta = JSON.parse(metadata?.metadata as string);
-    } catch (err) {}
+      innerMeta = JSON.parse(metadata?.metadata || "{}");
+    } catch (_error) {}
 
     // Determine collection type (could be enhanced with actual logic)
     // For now, default to ERC721
     const collectionType = CollectionType.ERC721;
+
+    const backgroundColor = formatBackgroundColor(innerMeta?.background_color);
 
     collections.push({
       address,
       name: metadata?.name || firstNFT.name || "---",
       type: collectionType,
       tokenImageUrl: getAssetImage(innerMeta, project, address, firstNFT),
+      tokenBackgroundColor: backgroundColor,
       totalCount: nfts.length,
       tokenIds: nfts.map((nft) => nft.token_id ?? ""),
       projects: [project],
@@ -430,6 +434,18 @@ function processNFTCollections(
   });
 
   return collections;
+}
+
+export function formatBackgroundColor(
+  backgroundColor: string | null | undefined,
+): string | null {
+  if (!backgroundColor) {
+    return null;
+  }
+  if (backgroundColor.startsWith("#")) {
+    return backgroundColor;
+  }
+  return `#${backgroundColor}`;
 }
 
 function getAssetImage(

@@ -24,6 +24,7 @@ import {
 import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
 import { useRouterState } from "@tanstack/react-router";
 import { useArcade } from "@/hooks/arcade";
+import { formatBackgroundColor } from "@/hooks/token-fetcher";
 
 const ROW_HEIGHT = 184;
 
@@ -59,7 +60,7 @@ interface BaseItemView {
   assetHasOrders: boolean;
   currency?: string;
   owned: boolean;
-  backgroundColor?: string;
+  backgroundColor: string | null;
 }
 
 const createBaseItemView = (
@@ -93,7 +94,7 @@ const createBaseItemView = (
     currency:
       asset.orders.length > 0 ? asset.orders[0].order.currency : undefined,
     owned: ownedTokenIds.includes(addAddressPadding(asset.token_id ?? 0)),
-    backgroundColor: metadata?.background_color ?? undefined,
+    backgroundColor: formatBackgroundColor(metadata?.background_color),
   };
 };
 
@@ -279,10 +280,7 @@ export const MarketplaceItemsContainer = ({
                   ? isListedCurrency
                   : false;
 
-      let backgroundColor: string | undefined = base.backgroundColor;
-      if (backgroundColor && !backgroundColor.startsWith("#")) {
-        backgroundColor = `#${backgroundColor}`;
-      }
+      let backgroundColor = base.backgroundColor || undefined;
 
       return {
         ...base,

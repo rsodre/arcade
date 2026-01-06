@@ -11,6 +11,7 @@ import type {
   Token,
   TokenContract as TokenContractWasm,
 } from "@dojoengine/torii-wasm";
+import { formatBackgroundColor } from "@/hooks/token-fetcher";
 
 class EnrichTokensError extends Data.TaggedError("EnrichTokensError")<{
   message: string;
@@ -143,9 +144,7 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
           }
         }
 
-        if (backgroundColor && !backgroundColor.startsWith("#")) {
-          backgroundColor = `#${backgroundColor}`;
-        }
+        backgroundColor = formatBackgroundColor(backgroundColor);
 
         const image = yield* Effect.tryPromise(async () => {
           if (!contract.metadata) {
