@@ -151,20 +151,14 @@ export function useMarketplaceItemsViewModel({
   const isERC1155 = useMemo(() => collection?.contract_type === "ERC1155", [collection]);
 
   const searchFilteredTokens = useMemo(() => {
-    const baseEffectiveTokens = shouldShowEmpty ? [] : rawTokens;
-    const effectiveTokens =
-      statusFilter === "all"
-        ? [...listedTokens, ...baseEffectiveTokens].filter((value, index, self) => (
-          self.findIndex((v) => v.token_id === value.token_id) === index
-        ))
-        : baseEffectiveTokens;
+    const effectiveTokens = shouldShowEmpty ? [] : rawTokens;
     if (!search.trim()) return effectiveTokens;
     const searchLower = search.toLowerCase();
     return effectiveTokens.filter((token) => {
       const tokenName = (token.metadata as any)?.name || token.name || "";
       return tokenName.toLowerCase().includes(searchLower);
     });
-  }, [rawTokens, search, shouldShowEmpty, statusFilter, listedTokens]);
+  }, [rawTokens, search, shouldShowEmpty]);
 
   useEffect(() => {
     if (search && search !== lastSearch) {
