@@ -12,7 +12,7 @@ export const NavigationView = ({ tabs }: NavigationViewModel) => {
         <NavigationButton key={t.href} asChild>
           <Link to={t.href} activeOptions={{ exact: t.tab !== "inventory" }}>
             <t.icon
-              variant={ t.props?.variant || "solid" }
+              variant={t.props?.variant || "solid"}
               className="h-8 w-8 text-3xl lg:h-6 lg:w-6 lg:text-sm"
             />{" "}
             <span className="hidden lg:block">{t.name}</span>

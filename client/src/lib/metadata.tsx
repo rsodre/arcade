@@ -260,7 +260,10 @@ export const MetadataHelper = {
     if (!token.metadata) return;
     if (typeof token.metadata === "string") {
       try {
-        const image = JSON.parse(token.metadata).image?.replace("ipfs://", "https://gateway.pinata.cloud/ipfs/");
+        const image = JSON.parse(token.metadata).image?.replace(
+          "ipfs://",
+          "https://gateway.pinata.cloud/ipfs/",
+        );
         const response = await fetch(image);
         if (response.ok) {
           return image;
@@ -271,7 +274,10 @@ export const MetadataHelper = {
     }
   },
 
-  getMetadataField: (metadata: string | any, field: string): string | undefined => {
+  getMetadataField: (
+    metadata: string | any,
+    field: string,
+  ): string | undefined => {
     if (!metadata) return;
     if (typeof metadata === "string") {
       try {

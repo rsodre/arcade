@@ -33,12 +33,15 @@ export const useCollections = () => {
       if (projects.length > 1 && projects[0] === "arcade-main") {
         projects.shift();
       }
-      collection.iconUrl = editions.find((ed) => ed.config.project === projects[0])?.properties.icon ?? undefined;
+      collection.iconUrl =
+        editions.find((ed) => ed.config.project === projects[0])?.properties
+          .icon ?? undefined;
     });
-    return !edition ? collections
-      : collections.filter(
-        (collection: Collection) => collection.projects.includes(edition.config.project),
-      );
+    return !edition
+      ? collections
+      : collections.filter((collection: Collection) =>
+          collection.projects.includes(edition.config.project),
+        );
   }, [edition, allCollections]);
 
   return { collections, status };

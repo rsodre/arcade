@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useConnect } from "@starknet-react/core";
 import type { Token } from "@dojoengine/torii-wasm";
 import type { ListingWithUsd } from "@/effect/atoms/marketplace";
-import { addAddressPadding, getChecksumAddress, type RpcProvider } from "starknet";
+import {
+  addAddressPadding,
+  getChecksumAddress,
+  type RpcProvider,
+} from "starknet";
 import type ControllerConnector from "@cartridge/connector/controller";
 import { useArcade } from "@/hooks/arcade";
 import { useMarketplace } from "@/hooks/marketplace";
@@ -15,7 +19,11 @@ import {
   type EnrichedListedToken,
   ownerTokenIdsAtom,
 } from "@/effect";
-import { useHandleListCallback, useHandleSendCallback, useHandleUnlistCallback } from "@/hooks/handlers";
+import {
+  useHandleListCallback,
+  useHandleSendCallback,
+  useHandleUnlistCallback,
+} from "@/hooks/handlers";
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
 import { useAtomValue } from "@effect-atom/atom-react";
@@ -105,9 +113,13 @@ export function useMarketplaceItemsViewModel({
     ownerTokenIdsAtom(collectionAddress, address) as any,
   ) as { _tag: string; value?: Set<string> };
 
-  const ownedTokenIds = useMemo(() => (
-    ownedTokenIdsResult?.value ? Array.from(ownedTokenIdsResult.value).map(addAddressPadding) : []
-  ), [ownedTokenIdsResult]);
+  const ownedTokenIds = useMemo(
+    () =>
+      ownedTokenIdsResult?.value
+        ? Array.from(ownedTokenIdsResult.value).map(addAddressPadding)
+        : [],
+    [ownedTokenIdsResult],
+  );
 
   const { listedTokenIds, getOrdersForToken } =
     useCollectionOrders(collectionAddress);
@@ -148,7 +160,10 @@ export function useMarketplaceItemsViewModel({
     enabled: !!collectionAddress && rawTokens.length > 0,
   });
 
-  const isERC1155 = useMemo(() => collection?.contract_type === "ERC1155", [collection]);
+  const isERC1155 = useMemo(
+    () => collection?.contract_type === "ERC1155",
+    [collection],
+  );
 
   const searchFilteredTokens = useMemo(() => {
     const effectiveTokens = shouldShowEmpty ? [] : rawTokens;
@@ -344,7 +359,15 @@ export function useMarketplaceItemsViewModel({
 
       controller.openProfileAt(path);
     },
-    [connector, isConnected, provider.provider, events, trackEvent, address, isERC1155],
+    [
+      connector,
+      isConnected,
+      provider.provider,
+      events,
+      trackEvent,
+      address,
+      isERC1155,
+    ],
   );
 
   const handleListCallback = useHandleListCallback();
@@ -352,21 +375,30 @@ export function useMarketplaceItemsViewModel({
   const handleSendCallback = useHandleSendCallback();
 
   const handleList = useCallback(
-    async (tokens: MarketplaceAsset[]) => (
-      handleListCallback(collectionAddress, tokens.map((token) => token.token_id ?? '').filter(Boolean))
-    ), [collectionAddress, handleListCallback]
+    async (tokens: MarketplaceAsset[]) =>
+      handleListCallback(
+        collectionAddress,
+        tokens.map((token) => token.token_id ?? "").filter(Boolean),
+      ),
+    [collectionAddress, handleListCallback],
   );
 
   const handleUnlist = useCallback(
-    async (tokens: MarketplaceAsset[]) => (
-      handleUnlistCallback(collectionAddress, tokens.map((token) => token.token_id ?? '').filter(Boolean))
-    ), [collectionAddress, handleUnlistCallback]
+    async (tokens: MarketplaceAsset[]) =>
+      handleUnlistCallback(
+        collectionAddress,
+        tokens.map((token) => token.token_id ?? "").filter(Boolean),
+      ),
+    [collectionAddress, handleUnlistCallback],
   );
 
   const handleSend = useCallback(
-    async (tokens: MarketplaceAsset[]) => (
-      handleSendCallback(collectionAddress, tokens.map((token) => token.token_id ?? '').filter(Boolean))
-    ), [collectionAddress, handleSendCallback]
+    async (tokens: MarketplaceAsset[]) =>
+      handleSendCallback(
+        collectionAddress,
+        tokens.map((token) => token.token_id ?? "").filter(Boolean),
+      ),
+    [collectionAddress, handleSendCallback],
   );
 
   const collectionSupply = useMemo(() => {

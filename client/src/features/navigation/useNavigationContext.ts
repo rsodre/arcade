@@ -31,7 +31,9 @@ export interface NavigationViewModel {
 export const DEFAULT_TAB: TabValue = "about";
 export const DASHBOARD_ALLOWED_ROUTES = [DEFAULT_TAB, "leaderboard", "predict"];
 
-type TabIconType = React.FC<ComponentProps<typeof ChestIcon | typeof ArrowIcon>>;
+type TabIconType = React.FC<
+  ComponentProps<typeof ChestIcon | typeof ArrowIcon>
+>;
 
 export type TabItem = {
   name: string;
@@ -70,7 +72,11 @@ const TabValueDisplayMap = (tab: TabValue): Partial<TabItem> | null => {
     case "collection":
       return { name: "Collection", icon: ScrollIcon as TabIconType };
     case "back":
-      return { name: "Back", icon: ArrowIcon as TabIconType, props: { variant: "left" } };
+      return {
+        name: "Back",
+        icon: ArrowIcon as TabIconType,
+        props: { variant: "left" },
+      };
     default:
       return null;
   }

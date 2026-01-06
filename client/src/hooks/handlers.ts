@@ -5,12 +5,14 @@ import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
 import { addAddressPadding, getChecksumAddress } from "starknet";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useArcade } from "@/hooks/arcade";
-import { ERC1155_ENTRYPOINT, getEntrypoints } from "@/features/marketplace/items";
+import {
+  ERC1155_ENTRYPOINT,
+  getEntrypoints,
+} from "@/features/marketplace/items";
 import type ControllerConnector from "@cartridge/connector/controller";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { useConnectionViewModel } from "@/features/connection";
-
 
 export function useHandleBuyCallback(
   collectionAddress: string,
@@ -135,170 +137,188 @@ export function useHandleBuyCallback(
   return handleBuyCallback;
 }
 
-export function useHandleListCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+export function useHandleListCallback(): (
+  collectionAddress: string,
+  tokenIds: string[],
+) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
   const { onConnect, isConnectDisabled } = useConnectionViewModel();
   const { provider } = useArcade();
 
-  const handleListCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
-    if (!isConnected) {
-      if (isConnectDisabled) {
+  const handleListCallback = useCallback(
+    async (collectionAddress: string, tokenIds: string[]) => {
+      if (!isConnected) {
+        if (isConnectDisabled) {
+          return;
+        }
+        await onConnect();
+      }
+
+      const controller = (connector as ControllerConnector)?.controller;
+      const username = await controller?.username();
+      if (!controller || !username) {
+        console.error("Connector not initialized");
         return;
       }
-      await onConnect();
-    }
 
-    const controller = (connector as ControllerConnector)?.controller;
-    const username = await controller?.username();
-    if (!controller || !username) {
-      console.error("Connector not initialized");
-      return;
-    }
+      const entrypoints = await getEntrypoints(
+        provider.provider,
+        collectionAddress,
+      );
+      const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
+      const subpath = isERC1155 ? "collectible" : "collection";
 
-    const entrypoints = await getEntrypoints(
-      provider.provider,
-      collectionAddress,
-    );
-    const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
-    const subpath = isERC1155 ? "collectible" : "collection";
+      const project = DEFAULT_PROJECT;
+      const preset = DEFAULT_PRESET;
+      const options = [`ps=${project}`];
+      if (preset) {
+        options.push(`preset=${preset}`);
+      } else {
+        options.push("preset=cartridge");
+      }
 
-    const project = DEFAULT_PROJECT;
-    const preset = DEFAULT_PRESET;
-    const options = [`ps=${project}`];
-    if (preset) {
-      options.push(`preset=${preset}`);
-    } else {
-      options.push("preset=cartridge");
-    }
+      let path: string;
 
-    let path: string;
+      if (tokenIds.length > 1) {
+        tokenIds.forEach((tokenId) => {
+          options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+        });
+        path = `account/${username}/inventory/${subpath}/${collectionAddress}/list?${options.join("&")}`;
+      } else {
+        const [tokenId] = tokenIds;
+        options.push("listView=true");
+        path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+      }
 
-    if (tokenIds.length > 1) {
-      tokenIds.forEach((tokenId) => {
-        options.push(`tokenIds=${addAddressPadding(tokenId)}`);
-      });
-      path = `account/${username}/inventory/${subpath}/${collectionAddress}/list?${options.join("&")}`;
-    } else {
-      const [tokenId] = tokenIds;
-      options.push("listView=true");
-      path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
-    }
-
-    controller.openProfileAt(path);
-  }, [connector, isConnected, isConnectDisabled, provider]);
+      controller.openProfileAt(path);
+    },
+    [connector, isConnected, isConnectDisabled, provider],
+  );
 
   return handleListCallback;
 }
 
-export function useHandleUnlistCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+export function useHandleUnlistCallback(): (
+  collectionAddress: string,
+  tokenIds: string[],
+) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
   const { onConnect, isConnectDisabled } = useConnectionViewModel();
   const { provider } = useArcade();
 
-  const handleUnlistCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
-    if (!isConnected) {
-      if (isConnectDisabled) {
+  const handleUnlistCallback = useCallback(
+    async (collectionAddress: string, tokenIds: string[]) => {
+      if (!isConnected) {
+        if (isConnectDisabled) {
+          return;
+        }
+        await onConnect();
+      }
+
+      const controller = (connector as ControllerConnector)?.controller;
+      const username = await controller?.username();
+      if (!controller || !username) {
+        console.error("Connector not initialized");
         return;
       }
-      await onConnect();
-    }
 
-    const controller = (connector as ControllerConnector)?.controller;
-    const username = await controller?.username();
-    if (!controller || !username) {
-      console.error("Connector not initialized");
-      return;
-    }
+      const entrypoints = await getEntrypoints(
+        provider.provider,
+        collectionAddress,
+      );
+      const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
+      const subpath = isERC1155 ? "collectible" : "collection";
 
-    const entrypoints = await getEntrypoints(
-      provider.provider,
-      collectionAddress,
-    );
-    const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
-    const subpath = isERC1155 ? "collectible" : "collection";
+      const project = DEFAULT_PROJECT;
+      const preset = DEFAULT_PRESET;
+      const options = [`ps=${project}`];
+      if (preset) {
+        options.push(`preset=${preset}`);
+      } else {
+        options.push("preset=cartridge");
+      }
 
-    const project = DEFAULT_PROJECT;
-    const preset = DEFAULT_PRESET;
-    const options = [`ps=${project}`];
-    if (preset) {
-      options.push(`preset=${preset}`);
-    } else {
-      options.push("preset=cartridge");
-    }
+      let path: string;
 
-    let path: string;
+      if (tokenIds.length > 1) {
+        tokenIds.forEach((tokenId) => {
+          options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+        });
+        path = `account/${username}/inventory/${subpath}/${collectionAddress}/unlist?${options.join("&")}`;
+      } else {
+        const [tokenId] = tokenIds;
+        options.push("unlistView=true");
+        path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+      }
 
-    if (tokenIds.length > 1) {
-      tokenIds.forEach((tokenId) => {
-        options.push(`tokenIds=${addAddressPadding(tokenId)}`);
-      });
-      path = `account/${username}/inventory/${subpath}/${collectionAddress}/unlist?${options.join("&")}`;
-    } else {
-      const [tokenId] = tokenIds;
-      options.push("unlistView=true");
-      path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
-    }
-
-    controller.openProfileAt(path);
-  }, [connector, isConnected, isConnectDisabled, provider]);
+      controller.openProfileAt(path);
+    },
+    [connector, isConnected, isConnectDisabled, provider],
+  );
 
   return handleUnlistCallback;
 }
 
-export function useHandleSendCallback(): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+export function useHandleSendCallback(): (
+  collectionAddress: string,
+  tokenIds: string[],
+) => Promise<void> {
   const { connector } = useConnect();
   const { isConnected } = useAccount();
   const { onConnect, isConnectDisabled } = useConnectionViewModel();
   const { provider } = useArcade();
 
-  const handleSendCallback = useCallback(async (collectionAddress: string, tokenIds: string[]) => {
-    if (!isConnected) {
-      if (isConnectDisabled) {
+  const handleSendCallback = useCallback(
+    async (collectionAddress: string, tokenIds: string[]) => {
+      if (!isConnected) {
+        if (isConnectDisabled) {
+          return;
+        }
+        await onConnect();
+      }
+
+      const controller = (connector as ControllerConnector)?.controller;
+      const username = await controller?.username();
+      if (!controller || !username) {
+        console.error("Connector not initialized");
         return;
       }
-      await onConnect();
-    }
 
-    const controller = (connector as ControllerConnector)?.controller;
-    const username = await controller?.username();
-    if (!controller || !username) {
-      console.error("Connector not initialized");
-      return;
-    }
+      const entrypoints = await getEntrypoints(
+        provider.provider,
+        collectionAddress,
+      );
+      const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
+      const subpath = isERC1155 ? "collectible" : "collection";
 
-    const entrypoints = await getEntrypoints(
-      provider.provider,
-      collectionAddress,
-    );
-    const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
-    const subpath = isERC1155 ? "collectible" : "collection";
+      const project = DEFAULT_PROJECT;
+      const preset = DEFAULT_PRESET;
+      const options = [`ps=${project}`];
+      if (preset) {
+        options.push(`preset=${preset}`);
+      } else {
+        options.push("preset=cartridge");
+      }
 
-    const project = DEFAULT_PROJECT;
-    const preset = DEFAULT_PRESET;
-    const options = [`ps=${project}`];
-    if (preset) {
-      options.push(`preset=${preset}`);
-    } else {
-      options.push("preset=cartridge");
-    }
+      let path: string;
 
-    let path: string;
+      if (tokenIds.length > 1) {
+        tokenIds.forEach((tokenId) => {
+          options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+        });
+        path = `account/${username}/inventory/${subpath}/${collectionAddress}/send?${options.join("&")}`;
+      } else {
+        const [tokenId] = tokenIds;
+        options.push("sendView=true");
+        path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
+      }
 
-    if (tokenIds.length > 1) {
-      tokenIds.forEach((tokenId) => {
-        options.push(`tokenIds=${addAddressPadding(tokenId)}`);
-      });
-      path = `account/${username}/inventory/${subpath}/${collectionAddress}/send?${options.join("&")}`;
-    } else {
-      const [tokenId] = tokenIds;
-      options.push("sendView=true");
-      path = `account/${username}/inventory/${subpath}/${collectionAddress}/token/${addAddressPadding(tokenId)}${options.length > 0 ? `?${options.join("&")}` : ""}`;
-    }
-
-    controller.openProfileAt(path);
-  }, [connector, isConnected, isConnectDisabled, provider]);
+      controller.openProfileAt(path);
+    },
+    [connector, isConnected, isConnectDisabled, provider],
+  );
 
   return handleSendCallback;
 }

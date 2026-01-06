@@ -105,11 +105,20 @@ export function useInventoryCollectionsViewModel({
             return filtered.length > 0 ? count + 1 : count;
           }, 0)
         : 0;
-      const collection = ownedCollections
-        .find((c) => getChecksumAddress(c.address) === contract.contract_address);
+      const collection = ownedCollections.find(
+        (c) => getChecksumAddress(c.address) === contract.contract_address,
+      );
       const ownedCount = collection?.totalCount || 0;
-      const icon = collection?.iconUrl || contract.image || collection?.tokenImageUrl || "";
-      const image = collection?.tokenImageUrl || contract.image || collection?.iconUrl || "";
+      const icon =
+        collection?.iconUrl ||
+        contract.image ||
+        collection?.tokenImageUrl ||
+        "";
+      const image =
+        collection?.tokenImageUrl ||
+        contract.image ||
+        collection?.iconUrl ||
+        "";
 
       const content: InventoryCollectionCardView = {
         id: contract.contract_address,

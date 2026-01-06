@@ -49,8 +49,7 @@ export function useCombinedTokenFilter(
         const listedSet = new Set(listedTokenIds.map(addAddressPadding));
         const intersection = [...ownerTokenIds].filter((id) => {
           return listedSet.has(addAddressPadding(id));
-        }
-        );
+        });
         return {
           combinedTokenIds: intersection.length > 0 ? intersection : undefined,
           shouldShowEmpty: intersection.length === 0,

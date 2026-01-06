@@ -1,4 +1,7 @@
-import { InventoryCollectionCard as InventoryCollectionCardConmponent, Skeleton } from "@cartridge/ui";
+import {
+  InventoryCollectionCard as InventoryCollectionCardConmponent,
+  Skeleton,
+} from "@cartridge/ui";
 import { Link } from "@tanstack/react-router";
 import type { InventoryCollectionCardView } from "@/features/inventory/collections/useInventoryCollectionsViewModel";
 

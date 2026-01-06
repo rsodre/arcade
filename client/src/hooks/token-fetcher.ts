@@ -442,7 +442,10 @@ function getAssetImage(
   contractAddress: string,
   firstNFT: TokenWithMetadata,
 ): string {
-  const image = inner?.image?.replace("ipfs://", "https://gateway.pinata.cloud/ipfs/");
+  const image = inner?.image?.replace(
+    "ipfs://",
+    "https://gateway.pinata.cloud/ipfs/",
+  );
   return (
     image ??
     getToriiAssetUrl(
@@ -510,11 +513,11 @@ export function useCollectibles(
             });
 
             // Filter for NFTs only
-            const nftBalances = response.items.filter((item: TokenBalance) =>
-              isNFT(item),
-            ).sort((a: TokenBalance, b: TokenBalance) => {
-              return (a.token_id ?? "").localeCompare(b.token_id ?? "");
-            });
+            const nftBalances = response.items
+              .filter((item: TokenBalance) => isNFT(item))
+              .sort((a: TokenBalance, b: TokenBalance) => {
+                return (a.token_id ?? "").localeCompare(b.token_id ?? "");
+              });
 
             if (nftBalances.length > 0) {
               // Extract unique identifiers from NFT batch
@@ -567,7 +570,9 @@ export function useCollectibles(
 
             // push avoiding duplicates
             projectCollections.forEach((newCollection) => {
-              const existingIndex = allCollections.findIndex((collection) => newCollection.address === collection.address);
+              const existingIndex = allCollections.findIndex(
+                (collection) => newCollection.address === collection.address,
+              );
               if (existingIndex < 0) {
                 allCollections.push(newCollection);
               } else {

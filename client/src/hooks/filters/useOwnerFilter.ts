@@ -60,9 +60,10 @@ export function useOwnerFilter(): UseOwnerFilterReturn {
     return null;
   }, [tab, player, isAddressInput, inputValue, selectedAccount]);
 
-  const playerAddress = useMemo(() => (
-    tab === "inventoryitems" ? (player ?? '0x0') : null
-  ), [tab, player]);
+  const playerAddress = useMemo(
+    () => (tab === "inventoryitems" ? (player ?? "0x0") : null),
+    [tab, player],
+  );
 
   const isValidInput = resolvedAddress !== null || inputValue === "";
 

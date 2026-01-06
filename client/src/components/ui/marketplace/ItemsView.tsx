@@ -20,7 +20,7 @@ import CollectibleCard from "./collectible-card";
 import { FloatingLoadingSpinner } from "@/components/ui/floating-loading-spinner";
 import { Link } from "@tanstack/react-router";
 
-const NOOP = () => { };
+const NOOP = () => {};
 
 export interface MarketplaceItemPriceInfo {
   value: string;

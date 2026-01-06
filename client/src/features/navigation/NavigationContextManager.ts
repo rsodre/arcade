@@ -56,7 +56,8 @@ export class NavigationContextManager {
 
   getActiveContext(): NavigationContext {
     const segments = this.pathname.split("/").filter(Boolean);
-    if (this.params.collection && segments.includes("inventory")) return "inventoryitems";
+    if (this.params.collection && segments.includes("inventory"))
+      return "inventoryitems";
     if (this.params.collection) return "marketplace";
     if (this.params.player) return "player";
     if (this.params.edition) return "edition";
@@ -160,10 +161,7 @@ export class NavigationContextManager {
       case "player":
         return ["inventory", "achievements"];
       case "inventoryitems":
-        return [
-          "back",
-          "collection",
-        ];
+        return ["back", "collection"];
       default:
         return ["about"];
     }
@@ -173,7 +171,7 @@ export class NavigationContextManager {
     if (tab === "back") {
       return this.generateBackHref(tab);
     }
-    
+
     const segments = this.pathname.split("/").filter(Boolean);
 
     if (tab === "collection" && this.params.collection) {

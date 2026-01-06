@@ -14,7 +14,7 @@ import type {
 
 class EnrichTokensError extends Data.TaggedError("EnrichTokensError")<{
   message: string;
-}> { }
+}> {}
 
 export type EnrichedTokenContract = {
   contract_address: string;
@@ -106,15 +106,23 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
   const enrichedContracts = yield* Effect.all(
     contracts.map((contract) =>
       Effect.gen(function* () {
-        const tokenData = tokenResults.find(t => t.contract_address === contract.contract_address) as {
-          contract_address: string;
-          metadata: string;
-          token_id: string;
-        } | undefined;
+        const tokenData = tokenResults.find(
+          (t) => t.contract_address === contract.contract_address,
+        ) as
+          | {
+              contract_address: string;
+              metadata: string;
+              token_id: string;
+            }
+          | undefined;
 
         let metadata = contract.metadata;
         let tokenId: string | null = null;
-        let backgroundColor: string | null = MetadataHelper.getMetadataField(contract.metadata, "background_color") ?? null;
+        let backgroundColor: string | null =
+          MetadataHelper.getMetadataField(
+            contract.metadata,
+            "background_color",
+          ) ?? null;
 
         if (tokenData) {
           tokenId = tokenData.token_id || null;
@@ -122,7 +130,11 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
             metadata = tokenData.metadata;
           }
           if (!backgroundColor && tokenData.metadata !== "") {
-            backgroundColor = MetadataHelper.getMetadataField(tokenData.metadata, "background_color") ?? null;
+            backgroundColor =
+              MetadataHelper.getMetadataField(
+                tokenData.metadata,
+                "background_color",
+              ) ?? null;
           }
         }
 

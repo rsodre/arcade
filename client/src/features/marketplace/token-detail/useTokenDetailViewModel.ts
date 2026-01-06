@@ -11,7 +11,12 @@ import { useAccountByAddress, useMarketplaceTokens } from "@/effect";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
-import { useHandleBuyCallback, useHandleListCallback, useHandleSendCallback, useHandleUnlistCallback } from "@/hooks/handlers";
+import {
+  useHandleBuyCallback,
+  useHandleListCallback,
+  useHandleSendCallback,
+  useHandleUnlistCallback,
+} from "@/hooks/handlers";
 
 interface UseTokenDetailViewModelArgs {
   collectionAddress: string;
@@ -112,7 +117,9 @@ export function useTokenDetailViewModel({
   }, [collectionOrders, tokenId]);
 
   const isListed = useMemo(() => {
-    return orders.length > 0 && orders[0].expiration > new Date().getTime() / 1000;
+    return (
+      orders.length > 0 && orders[0].expiration > new Date().getTime() / 1000
+    );
   }, [orders]);
 
   const isLoading = status === "loading" || status === "idle";

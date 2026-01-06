@@ -16,7 +16,10 @@ export interface UseFilterActionsReturn {
   removeFilter: (trait: string, value?: string) => void;
   clearAllFilters: () => void;
   setStatusFilter: (status: StatusFilter) => void;
-  setOwnerFilter: (owner: string | undefined, isPlayerAddress?: boolean) => void;
+  setOwnerFilter: (
+    owner: string | undefined,
+    isPlayerAddress?: boolean,
+  ) => void;
 }
 
 export function useFilterActions(

@@ -40,7 +40,7 @@ export function MarketplaceItemsTemplate({
       contentClassName={cn(
         "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden overflow-y-scroll",
         player &&
-        "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
+          "bg-background-125 shadow-[0px_0px_8px_0px_rgba(15,20,16,_0.50)]",
       )}
     >
       {tab !== "inventoryitems" && (

@@ -86,7 +86,10 @@ export const AchievementSummary = ({
   }, [achievements]);
 
   return (
-    <Card className={achievementSummaryVariants({ variant })} {...props as any}>
+    <Card
+      className={achievementSummaryVariants({ variant })}
+      {...(props as any)}
+    >
       {header && (
         <ArcadeGameHeader
           achievements={achievements}

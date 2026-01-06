@@ -71,16 +71,13 @@ const createBaseItemView = (
 ): BaseItemView => {
   const tokenId = asset.token_id?.toString() ?? "0";
   const metadata = asset.metadata as unknown as {
-    name?: string,
-    background_color?: string,
+    name?: string;
+    background_color?: string;
   };
   return {
     id: `${asset.contract_address}-${tokenId}`,
     tokenId,
-    title:
-      metadata?.name ||
-      asset.name ||
-      "Untitled",
+    title: metadata?.name || asset.name || "Untitled",
     image:
       resizeImage((asset as any).image ?? collectionImage, 300, 300) ??
       collectionImage,
@@ -190,7 +187,13 @@ export const MarketplaceItemsContainer = ({
 
   const baseItems = useMemo(() => {
     return assets.map((asset) =>
-      createBaseItemView(asset, collection?.image, salesByContract, navManager, ownedTokenIds),
+      createBaseItemView(
+        asset,
+        collection?.image,
+        salesByContract,
+        navManager,
+        ownedTokenIds,
+      ),
     );
   }, [assets, collection?.image, salesByContract, navManager, ownedTokenIds]);
 
@@ -260,18 +263,19 @@ export const MarketplaceItemsContainer = ({
 
     return baseItems.map((base, index) => {
       const selected = isConnected && selectionIds.has(base.tokenId);
-      const isListedCurrency = base.assetHasOrders && base.currency === selectionCurrency;
+      const isListedCurrency =
+        base.assetHasOrders && base.currency === selectionCurrency;
 
       const selectable =
         selection.length === 0
-        ? (base.owned || base.assetHasOrders)
+          ? base.owned || base.assetHasOrders
           : isERC1155
-          ? false
-            : selectionType === 'owned-unlisted'
-              ? (base.owned && !base.assetHasOrders)
-              : selectionType === 'owned-listed'
-                ? (base.owned && isListedCurrency)
-                : selectionType === 'listed'
+            ? false
+            : selectionType === "owned-unlisted"
+              ? base.owned && !base.assetHasOrders
+              : selectionType === "owned-listed"
+                ? base.owned && isListedCurrency
+                : selectionType === "listed"
                   ? isListedCurrency
                   : false;
 
@@ -366,10 +370,18 @@ export const MarketplaceItemsContainer = ({
       onClearFilters={clearAllFilters}
       onResetSelection={clearSelection}
       isConnected={isConnected}
-      onBuySelection={selectionType === 'listed' ? handleBuySelection : undefined}
-      onListSelection={selectionType === 'owned-unlisted' ? handleListSelection : undefined}
-      onUnlistSelection={selectionType === 'owned-listed' ? handleUnlistSelection : undefined}
-      onSendSelection={selectionType === 'owned-unlisted' ? handleSendSelection : undefined}
+      onBuySelection={
+        selectionType === "listed" ? handleBuySelection : undefined
+      }
+      onListSelection={
+        selectionType === "owned-unlisted" ? handleListSelection : undefined
+      }
+      onUnlistSelection={
+        selectionType === "owned-listed" ? handleUnlistSelection : undefined
+      }
+      onSendSelection={
+        selectionType === "owned-unlisted" ? handleSendSelection : undefined
+      }
       loadingOverlay={{
         isLoading: status === "loading",
         progress: undefined,
