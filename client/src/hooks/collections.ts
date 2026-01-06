@@ -7,8 +7,6 @@ import { useAddress } from "./address";
 import { useCollectibles, type Collection } from "@/hooks/token-fetcher";
 import { DEFAULT_PROJECT } from "@/constants";
 
-export { CollectionType, type Collection } from "@/hooks/token-fetcher";
-
 export const useCollections = () => {
   const { edition } = useProject();
   const { address } = useAddress();

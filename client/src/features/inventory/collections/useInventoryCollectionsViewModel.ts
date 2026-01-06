@@ -10,7 +10,6 @@ import { joinPaths } from "@/lib/helpers";
 import { useAccountByAddress, type EnrichedTokenContract } from "@/effect";
 import { StatusType } from "@cartridge/arcade";
 import { useAnalytics } from "@/hooks/useAnalytics";
-// import { CollectionType } from "@/hooks/collections";
 
 export interface InventoryCollectionCardView {
   id: string;
@@ -42,12 +41,6 @@ interface UseInventoryCollectionsViewModelArgs {
     | "ready"
     | "cleaned-up";
 }
-
-// const getCollectionType = (collection: EnrichedTokenContract) => {
-//   return collection.contract_type === "ERC721"
-//     ? CollectionType.ERC721
-//     : CollectionType.ERC1155;
-// };
 
 export function useInventoryCollectionsViewModel({
   collections,
@@ -131,21 +124,19 @@ export function useInventoryCollectionsViewModel({
         backgroundColor: contract.background_color ?? undefined,
       };
 
-      // const collectionType = getCollectionType(collection);
+      const handleClick = async () => {
+        trackEvent(events.INVENTORY_COLLECTION_CLICKED, {
+          collection_address: contract.contract_address,
+          collection_name: contract.name,
+          collection_type: contract.contract_type,
+          total_count: Number(contract.totalSupply),
+          listing_count: listingCount,
+          is_self: isSelf,
+          from_page: location.pathname,
+        });
+      };
 
-      // const handleClick = async () => {
-      //   trackEvent(events.INVENTORY_COLLECTION_CLICKED, {
-      //     collection_address: collection.contract_address,
-      //     collection_name: collection.name,
-      //     collection_type: collectionType,
-      //     total_count: Number(collection.totalSupply),
-      //     listing_count: listingCount,
-      //     is_self: isSelf,
-      //     from_page: location.pathname,
-      //   });
-      // };
-
-      content.onClick = undefined;
+      content.onClick = handleClick;
 
       // possible from -> to locations:
       // /inventory -> /inventory/collection/$collection

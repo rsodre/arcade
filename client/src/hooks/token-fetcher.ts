@@ -5,11 +5,7 @@ import {
   getToriiAssetUrl,
 } from "@cartridge/arcade";
 import { addAddressPadding } from "starknet";
-
-export enum CollectionType {
-  ERC721 = "ERC-721",
-  ERC1155 = "ERC-1155",
-}
+import { CollectionType } from "@/effect/atoms/tokens";
 
 /**
  * Hook for fetching token balances from multiple Torii endpoints

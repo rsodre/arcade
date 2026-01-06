@@ -38,7 +38,8 @@ export function TokenDetailSidebar() {
 
   if (!collection || !tokenId) return null;
 
-  const tokenStandard = collection.contract_type;
+  const tokenStandard =
+    collection.contract_type?.replace("ERC", "ERC-") ?? "Unknown";
   const collectionName = collection.name;
   const collectionSupply = collection.total_supply;
 

@@ -27,6 +27,7 @@ import {
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
 import { useAtomValue } from "@effect-atom/atom-react";
+import { CollectionType } from "@/effect/atoms/tokens";
 
 export const ERC1155_ENTRYPOINT = "balance_of_batch";
 
@@ -161,7 +162,7 @@ export function useMarketplaceItemsViewModel({
   });
 
   const isERC1155 = useMemo(
-    () => collection?.contract_type === "ERC1155",
+    () => collection?.contract_type === CollectionType.ERC1155,
     [collection],
   );
 

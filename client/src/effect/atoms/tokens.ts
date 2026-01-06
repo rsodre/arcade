@@ -26,9 +26,14 @@ export type EnrichedTokenContract = {
   token_id: string | null;
   project: string;
   image: string;
-  contract_type: string;
+  contract_type: CollectionType;
   background_color: string | null;
 };
+
+export enum CollectionType {
+  ERC721 = "ERC721",
+  ERC1155 = "ERC1155",
+}
 
 const fetchTokenContractsEffect = Effect.gen(function* () {
   const { client } = yield* ToriiGrpcClient;
@@ -166,7 +171,7 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
           token_id: tokenId,
           project: DEFAULT_PROJECT,
           image: image ?? "",
-          contract_type: "ERC721",
+          contract_type: CollectionType.ERC721,
           background_color: backgroundColor,
         } satisfies EnrichedTokenContract;
       }),
