@@ -26,6 +26,8 @@ function RootComponent() {
   useEffect(() => {
     if (data) {
       setPlayer((p) => (p !== data.address ? data.address : p));
+    } else {
+      setPlayer(undefined);
     }
   }, [data, setPlayer]);
 
