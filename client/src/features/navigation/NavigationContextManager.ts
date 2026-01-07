@@ -235,7 +235,7 @@ export class NavigationContextManager {
 
     return tab
       ? joinPaths("player", playerName, tab)
-      : joinPaths("player", playerName);
+      : joinPaths("player", playerName, "inventory");
   }
 
   generateTokenDetailHref(collectionAddress: string, tokenId: string): string {

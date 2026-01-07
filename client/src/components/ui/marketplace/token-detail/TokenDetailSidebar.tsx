@@ -20,7 +20,7 @@ export function TokenDetailSidebar() {
     useParams({
       strict: false,
     });
-  const { token, collection, controller, owner, collectionHref } =
+  const { token, collection, controller, owner, collectionHref, ownerHref } =
     useTokenDetailViewModel({
       collectionAddress: collectionAddressParam ?? "0x0",
       tokenId: tokenIdParam ?? "0x0",
@@ -48,9 +48,11 @@ export function TokenDetailSidebar() {
       <div className="">
         <DetailTitle label="Details" />
         <div className="flex flex-col gap-[1px]">
-          <DetailItem label="Owner">
-            <Username username={controller?.username} address={owner} />
-          </DetailItem>
+          <Link to={ownerHref}>
+            <DetailItem label="Owner" hoverable>
+              <Username username={controller?.username} address={owner} />
+            </DetailItem>
+          </Link>
           <DetailItem label="Contract Address">
             {collectionAddressTrunc}
           </DetailItem>

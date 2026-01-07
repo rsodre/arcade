@@ -33,6 +33,7 @@ interface TokenDetailViewModel {
   owner: string;
   controller: { address: string; username: string } | null;
   collectionHref: string;
+  ownerHref: string;
   handleBuy: () => Promise<void>;
   handleList: () => Promise<void>;
   handleUnlist: () => Promise<void>;
@@ -140,6 +141,11 @@ export function useTokenDetailViewModel({
     [navManager, collectionAddress],
   );
 
+  const ownerHref = useMemo(
+    () => navManager.generatePlayerHref(owner),
+    [navManager, owner],
+  );
+
   const tokenIds = useMemo(() => [tokenId], [tokenId]);
 
   const handleBuyCallback = useHandleBuyCallback(collectionAddress, tokenId);
@@ -157,6 +163,7 @@ export function useTokenDetailViewModel({
     owner,
     controller: controllerName,
     collectionHref,
+    ownerHref,
     handleBuy: handleBuyCallback,
     handleList: () => handleListCallback(collectionAddress, tokenIds),
     handleUnlist: () => handleUnlistCallback(collectionAddress, tokenIds),
