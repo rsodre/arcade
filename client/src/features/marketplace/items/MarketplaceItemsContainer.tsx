@@ -27,6 +27,7 @@ import { useArcade } from "@/hooks/arcade";
 import { formatBackgroundColor } from "@/hooks/token-fetcher";
 
 const ROW_HEIGHT = 184;
+const ROW_HEIGHT_INVENTORY = 160;
 
 const derivePrice = (
   asset: MarketplaceAsset,
@@ -149,7 +150,7 @@ export const MarketplaceItemsContainer = ({
   const virtualizer = useVirtualizer({
     count: rowCount + 1,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => ROW_HEIGHT + 16,
+    estimateSize: () => (isInventory ? ROW_HEIGHT_INVENTORY : ROW_HEIGHT) + 16,
     overscan: 2,
   });
 
