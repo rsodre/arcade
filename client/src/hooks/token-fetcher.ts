@@ -6,6 +6,7 @@ import {
 } from "@cartridge/arcade";
 import { addAddressPadding } from "starknet";
 import { CollectionType } from "@/effect/atoms/tokens";
+import { useMounted } from "@/hooks/useMounted";
 
 /**
  * Hook for fetching token balances from multiple Torii endpoints
@@ -609,10 +610,13 @@ export function useCollectibles(
     }
   };
 
+  const mounted = useMounted();
+
   useEffect(() => {
+    if (!mounted) return;
     fetchCollectibles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projects.join(","), address]); // Using join to create stable dependency
+  }, [projects.join(","), address, mounted]); // Using join to create stable dependency
 
   const refetch = () => {
     fetchCollectibles();
