@@ -22,14 +22,15 @@ function RootComponent() {
   const hasOwnTemplate = collectionIndex >= 0;
 
   const { manager } = useNavigationContext();
+  
   const { data } = useAccount(manager.getParams().player);
   useEffect(() => {
     if (data) {
       setPlayer((p) => (p !== data.address ? data.address : p));
     } else {
-      setPlayer(undefined);
+      setPlayer(manager.getParams().player || undefined);
     }
-  }, [data, setPlayer]);
+  }, [data, manager, setPlayer]);
 
   return (
     <>
