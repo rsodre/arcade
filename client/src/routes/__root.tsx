@@ -22,7 +22,7 @@ function RootComponent() {
   const hasOwnTemplate = collectionIndex >= 0;
 
   const { manager } = useNavigationContext();
-  
+
   const { data } = useAccount(manager.getParams().player);
   useEffect(() => {
     if (data) {

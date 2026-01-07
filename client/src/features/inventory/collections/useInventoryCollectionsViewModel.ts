@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useArcade } from "@/hooks/arcade";
-import { useCollections } from "@/hooks/collections";
+import { useInventoryCollections } from "@/hooks/collections";
 import { useAddress } from "@/hooks/address";
 import { useAccount } from "@starknet-react/core";
 import { useMarketplace } from "@/hooks/marketplace";
@@ -47,7 +47,7 @@ export function useInventoryCollectionsViewModel({
   status,
 }: UseInventoryCollectionsViewModelArgs): InventoryCollectionsViewModel {
   const { editions } = useArcade();
-  const { collections: ownedCollections } = useCollections();
+  const { collections: ownedCollections } = useInventoryCollections();
   const { isSelf, address } = useAddress();
   const { connector } = useAccount();
   const { orders } = useMarketplace();
