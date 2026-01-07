@@ -216,7 +216,7 @@ const SelectionSummary = ({
   return (
     <div
       className={cn(
-        "h-6 p-0.5 flex items-center gap-1.5 text-foreground-200 text-xs",
+        "h-6 p-0.5 flex items-center gap-1.5 text-foreground-200 text-sm",
         !selectionCount && "text-foreground-400",
         showSelection && "cursor-pointer",
       )}
@@ -226,7 +226,7 @@ const SelectionSummary = ({
         <Checkbox
           className="text-foreground-100"
           variant="minus-line"
-          size="sm"
+          size="default"
           checked
         />
       )}
