@@ -23,7 +23,7 @@ import {
   useHandleListCallback,
   useHandleSendCallback,
   useHandleUnlistCallback,
-} from "@/hooks/handlers";
+} from "@/hooks/marketplace-actions-handlers";
 import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
 import { useAtomValue } from "@effect-atom/atom-react";

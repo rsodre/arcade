@@ -215,9 +215,8 @@ export const MarketplaceItemsContainer = ({
     const listed = selection[0].orders.length > 0;
     if (ownedTokenIds.includes(addAddressPadding(selection[0].token_id ?? 0))) {
       return listed ? "owned-listed" : "owned-unlisted";
-    } else {
-      return listed ? "listed" : "unlisted";
     }
+    return listed ? "listed" : "unlisted";
   }, [selection, ownedTokenIds]);
 
   const handleToggleSelectById = useCallback(

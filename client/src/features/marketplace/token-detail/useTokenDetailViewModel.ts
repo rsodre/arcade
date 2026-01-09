@@ -16,7 +16,7 @@ import {
   useHandleListCallback,
   useHandleSendCallback,
   useHandleUnlistCallback,
-} from "@/hooks/handlers";
+} from "@/hooks/marketplace-actions-handlers";
 
 interface UseTokenDetailViewModelArgs {
   collectionAddress: string;

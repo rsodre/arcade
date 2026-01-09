@@ -1,5 +1,5 @@
 import {
-  InventoryCollectionCard as InventoryCollectionCardConmponent,
+  InventoryCollectionCard as InventoryCollectionCardComponent,
   Skeleton,
 } from "@cartridge/ui";
 import { Link } from "@tanstack/react-router";
@@ -33,7 +33,7 @@ const InventoryCollectionCard = ({
   card: InventoryCollectionCardView;
 }) => {
   const content = (
-    <InventoryCollectionCardConmponent
+    <InventoryCollectionCardComponent
       title={card.title}
       icon={card.icon}
       images={[card.image]}
