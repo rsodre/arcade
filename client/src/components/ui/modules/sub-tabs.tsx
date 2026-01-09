@@ -78,7 +78,7 @@ export const ArcadeSubTabs = ({
           />
         ))}
       </TabsList>
-      <>{children}</>
+      {children}
     </Tabs>
   );
 };

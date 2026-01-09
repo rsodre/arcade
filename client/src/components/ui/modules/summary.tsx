@@ -5,7 +5,7 @@ import {
   Card,
   CardContent,
 } from "@cartridge/ui";
-import { Socials } from "@cartridge/arcade";
+import type { Socials } from "@cartridge/arcade";
 import { AchievementPinIcons } from "./achievement-pin-icons";
 import { cva, type VariantProps } from "class-variance-authority";
 import { type HTMLAttributes, useMemo } from "react";

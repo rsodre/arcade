@@ -25,7 +25,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import ArcadeTab from "./tab";
 import { useDevice } from "@/hooks/device";
-import { TabValue } from "@/hooks/project";
+import type { TabValue } from "@/hooks/project";
 
 const arcadeTabsVariants = cva(
   "flex justify-start items-end w-full p-0 px-4 border-b rounded-none",
@@ -231,7 +231,7 @@ export const ArcadeTabs = ({
           </Select>
         </TabsList>
       )}
-      <>{children}</>
+      {children}
     </Tabs>
   );
 };

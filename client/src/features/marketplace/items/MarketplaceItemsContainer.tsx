@@ -280,7 +280,7 @@ export const MarketplaceItemsContainer = ({
                   ? isListedCurrency
                   : false;
 
-      let backgroundColor = base.backgroundColor || undefined;
+      const backgroundColor = base.backgroundColor || undefined;
 
       return {
         ...base,

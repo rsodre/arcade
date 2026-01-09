@@ -1,4 +1,4 @@
-import { ComponentProps, useMemo } from "react";
+import { useMemo, type ComponentProps } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { useAccount } from "@starknet-react/core";
 import { useAccountByAddress } from "@/effect";
@@ -7,7 +7,7 @@ import {
   NavigationContextManager,
   type NavigationContext,
 } from "./NavigationContextManager";
-import { TabValue } from "@/hooks/project";
+import type { TabValue } from "@/hooks/project";
 import {
   ChestIcon,
   LeaderboardIcon,
