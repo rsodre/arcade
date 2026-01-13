@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Button, type ButtonProps } from "@cartridge/ui";
 import type { OrderModel } from "@cartridge/arcade";
 import { Info } from "lucide-react";
@@ -45,18 +46,29 @@ interface PriceDisplayProps {
   label: string;
   order: OrderModel;
   showInfoIcon?: boolean;
+  showCurrencySymbol?: boolean;
 }
 
 function PriceDisplay({
   label,
   order,
   showInfoIcon = false,
+  showCurrencySymbol = false,
 }: PriceDisplayProps) {
-  const priceInfo = formatPriceInfo(order.currency, order.price);
-  const currencySymbol =
-    erc20Metadata.find(
-      (token) => BigInt(token.l2_token_address) === BigInt(order.currency),
-    )?.symbol ?? "";
+  const { value } = useMemo(
+    () => formatPriceInfo(order.currency, order.price, 0, 4, true),
+    [order],
+  );
+  const currencySymbol = useMemo(
+    () =>
+      showCurrencySymbol
+        ? (erc20Metadata.find(
+          (token) =>
+            BigInt(token.l2_token_address) === BigInt(order.currency),
+        )?.symbol ?? "")
+        : "",
+    [order, showCurrencySymbol],
+  );
 
   return (
     <div className="flex-1 bg-background-125 border border-background-200 rounded flex items-center justify-between px-3 py-2.5 h-[40px]">
@@ -65,9 +77,7 @@ function PriceDisplay({
         {showInfoIcon && <Info className="w-5 h-5 text-foreground-300" />}
       </div>
       <div className="flex items-center gap-1.5">
-        <span className="text-foreground-100 text-sm font-medium">
-          {priceInfo.value}
-        </span>
+        <span className="text-foreground-100 text-sm font-medium">{value}</span>
         {currencySymbol && (
           <span className="text-foreground-300 text-sm">{currencySymbol}</span>
         )}
