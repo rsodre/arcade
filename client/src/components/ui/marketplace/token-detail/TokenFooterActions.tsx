@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Button, type ButtonProps } from "@cartridge/ui";
+import { Button, cn, type ButtonProps } from "@cartridge/ui";
 import type { OrderModel } from "@cartridge/arcade";
 import { Info } from "lucide-react";
 import { formatPriceInfo } from "@/lib/shared/marketplace/utils";
@@ -63,9 +63,9 @@ function PriceDisplay({
     () =>
       showCurrencySymbol
         ? (erc20Metadata.find(
-          (token) =>
-            BigInt(token.l2_token_address) === BigInt(order.currency),
-        )?.symbol ?? "")
+            (token) =>
+              BigInt(token.l2_token_address) === BigInt(order.currency),
+          )?.symbol ?? "")
         : "",
     [order, showCurrencySymbol],
   );
@@ -111,6 +111,7 @@ function FooterContainer({
 type ButtonConfig = {
   label: string;
   variant: ButtonProps["variant"];
+  className?: string;
   onClick: () => void;
 };
 
@@ -126,7 +127,10 @@ function ActionButtons({ buttons }: ActionButtonsProps) {
         variant={button.variant}
         size="default"
         onClick={button.onClick}
-        className="w-[120px] h-[40px] uppercase tracking-wider"
+        className={cn(
+          "w-[120px] h-[40px] uppercase tracking-wider",
+          button.className,
+        )}
       >
         {button.label}
       </Button>
@@ -141,7 +145,10 @@ function ActionButtons({ buttons }: ActionButtonsProps) {
           variant={button.variant}
           size="default"
           onClick={button.onClick}
-          className="w-[120px] h-[40px] uppercase tracking-wider"
+          className={cn(
+            "w-[120px] h-[40px] uppercase tracking-wider",
+            button.className,
+          )}
         >
           {button.label}
         </Button>
@@ -212,7 +219,12 @@ export function TokenFooterActions({
         )}
         <ActionButtons
           buttons={[
-            { label: "UNLIST", variant: "destructive", onClick: handleUnlist },
+            {
+              label: "UNLIST",
+              variant: "secondary",
+              className: "text-destructive-100",
+              onClick: handleUnlist,
+            },
             { label: "SEND", variant: "secondary", onClick: handleSend },
           ]}
         />

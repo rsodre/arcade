@@ -331,7 +331,7 @@ const SelectionFooter = ({
       <div className="w-full flex justify-end items-center gap-x-2">
         {onBuySelection && (
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={onBuySelection}
             disabled={selectionCount === 0}
           >
@@ -340,7 +340,7 @@ const SelectionFooter = ({
         )}
         {onListSelection && (
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={onListSelection}
             disabled={selectionCount === 0}
           >
@@ -349,7 +349,8 @@ const SelectionFooter = ({
         )}
         {onUnlistSelection && (
           <Button
-            variant="primary"
+            variant="secondary"
+            className="text-destructive-100"
             onClick={onUnlistSelection}
             disabled={selectionCount === 0}
           >
@@ -358,7 +359,7 @@ const SelectionFooter = ({
         )}
         {onSendSelection && (
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={onSendSelection}
             disabled={selectionCount === 0}
           >
