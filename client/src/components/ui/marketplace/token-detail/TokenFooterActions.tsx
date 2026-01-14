@@ -10,7 +10,7 @@ import { orderWithUsdAtom } from "@/effect/atoms/marketplace";
 interface TokenFooterActionsProps {
   isOwner: boolean;
   isListed: boolean;
-  orders: OrderModel[];
+  order: OrderModel | null;
   handleBuy: () => void;
   handleList: () => void;
   handleUnlist: () => void;
@@ -158,37 +158,35 @@ function ActionButtons({ buttons }: ActionButtonsProps) {
 export function TokenFooterActions({
   isOwner,
   isListed,
-  orders,
+  order,
   handleBuy,
   handleList,
   handleUnlist,
   handleSend,
 }: TokenFooterActionsProps) {
-  const lowestOrder = orders.length > 0 ? orders[0] : null;
-
-  const orderWithUsd = useAtomValue(orderWithUsdAtom(lowestOrder));
+  const orderWithUsd = useAtomValue(orderWithUsdAtom(order));
 
   if (!isOwner && !isListed) {
     return null;
   }
 
   if (!isOwner && isListed) {
-    const priceInfo = lowestOrder
-      ? formatPriceInfo(lowestOrder.currency, lowestOrder.price)
+    const priceInfo = order
+      ? formatPriceInfo(order.currency, order.price)
       : null;
 
     return (
       <FooterContainer>
-        {lowestOrder && priceInfo && (
+        {order && priceInfo && (
           <div className="flex gap-3 flex-1 w-full">
             <PriceDisplay
               label="Total"
-              order={lowestOrder}
+              order={order}
               usdPrice={orderWithUsd?.usdPrice ?? null}
               showInfoIcon
             />
             <TokenSelector
-              currencyAddress={lowestOrder.currency}
+              currencyAddress={order.currency}
               currencyImage={priceInfo.image}
             />
           </div>
@@ -203,22 +201,22 @@ export function TokenFooterActions({
   }
 
   if (isOwner && isListed) {
-    const priceInfo = lowestOrder
-      ? formatPriceInfo(lowestOrder.currency, lowestOrder.price)
+    const priceInfo = order
+      ? formatPriceInfo(order.currency, order.price)
       : null;
 
     return (
       <FooterContainer>
-        {lowestOrder && priceInfo && (
+        {order && priceInfo && (
           <div className="flex gap-3 flex-1 w-full">
             <PriceDisplay
               label="Listed Price"
-              order={lowestOrder}
+              order={order}
               usdPrice={orderWithUsd?.usdPrice ?? null}
               showInfoIcon
             />
             <TokenSelector
-              currencyAddress={lowestOrder.currency}
+              currencyAddress={order.currency}
               currencyImage={priceInfo.image}
             />
           </div>
