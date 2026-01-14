@@ -20,11 +20,18 @@ export function TokenDetailSidebar() {
     useParams({
       strict: false,
     });
-  const { token, collection, controller, owner, collectionHref, ownerHref } =
-    useTokenDetailViewModel({
-      collectionAddress: collectionAddressParam ?? "0x0",
-      tokenId: tokenIdParam ?? "0x0",
-    });
+  const {
+    token,
+    collection,
+    controller,
+    owner,
+    collectionHref,
+    ownerHref,
+    contractHref,
+  } = useTokenDetailViewModel({
+    collectionAddress: collectionAddressParam ?? "0x0",
+    tokenId: tokenIdParam ?? "0x0",
+  });
   const tokenId = token?.token_id;
 
   const tokenIdStr = useMemo(
@@ -53,9 +60,11 @@ export function TokenDetailSidebar() {
               <Username username={controller?.username} address={owner} />
             </DetailItem>
           </Link>
-          <DetailItem label="Contract Address">
-            {collectionAddressTrunc}
-          </DetailItem>
+          <Link to={contractHref} disabled={!contractHref} target="_blank">
+            <DetailItem label="Contract Address" hoverable>
+              {collectionAddressTrunc}
+            </DetailItem>
+          </Link>
           <DetailItem label="Token ID">
             {truncateAddress(tokenIdStr)}
           </DetailItem>
