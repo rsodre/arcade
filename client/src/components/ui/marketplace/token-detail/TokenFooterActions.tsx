@@ -115,12 +115,10 @@ function FooterContainer({
   const justifyClass =
     justify === "between" ? "justify-between" : "justify-end";
   return (
-    <div className="bg-background-100 p-4">
-      <div
-        className={`max-w-7xl mx-auto flex items-center ${justifyClass} gap-3`}
-      >
-        {children}
-      </div>
+    <div
+      className={`bg-background-100 py-4 w-full mx-auto flex flex-col md:flex-row items-center ${justifyClass} gap-3`}
+    >
+      {children}
     </div>
   );
 }
@@ -137,25 +135,8 @@ interface ActionButtonsProps {
 }
 
 function ActionButtons({ buttons }: ActionButtonsProps) {
-  if (buttons.length === 1) {
-    const button = buttons[0];
-    return (
-      <Button
-        variant={button.variant}
-        size="default"
-        onClick={button.onClick}
-        className={cn(
-          "w-[120px] h-[40px] uppercase tracking-wider",
-          button.className,
-        )}
-      >
-        {button.label}
-      </Button>
-    );
-  }
-
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 w-full md:w-auto">
       {buttons.map((button) => (
         <Button
           key={button.label}
@@ -163,7 +144,7 @@ function ActionButtons({ buttons }: ActionButtonsProps) {
           size="default"
           onClick={button.onClick}
           className={cn(
-            "w-[120px] h-[40px] uppercase tracking-wider",
+            "w-full md:w-[120px] h-[40px] uppercase tracking-wider",
             button.className,
           )}
         >
@@ -199,7 +180,7 @@ export function TokenFooterActions({
     return (
       <FooterContainer>
         {lowestOrder && priceInfo && (
-          <div className="flex gap-3 flex-1">
+          <div className="flex gap-3 flex-1 w-full">
             <PriceDisplay
               label="Total"
               order={lowestOrder}
@@ -229,7 +210,7 @@ export function TokenFooterActions({
     return (
       <FooterContainer>
         {lowestOrder && priceInfo && (
-          <div className="flex gap-3 flex-1">
+          <div className="flex gap-3 flex-1 w-full">
             <PriceDisplay
               label="Listed Price"
               order={lowestOrder}
