@@ -333,6 +333,12 @@ export const MarketplaceItemsContainer = ({
     assets.length === 0 &&
     ["idle", "error", "success"].includes(status);
 
+  const canBuySelection = selectionType === "listed";
+  const canListSelection = selectionType === "owned-unlisted";
+  const canUnlistSelection = selectionType === "owned-listed";
+  const canSendSelection =
+    selectionType === "owned-listed" || selectionType === "owned-unlisted";
+
   if (isLoading) {
     return <ItemsLoadingState />;
   }
@@ -358,18 +364,10 @@ export const MarketplaceItemsContainer = ({
       onClearFilters={clearAllFilters}
       onResetSelection={clearSelection}
       isConnected={isConnected}
-      onBuySelection={
-        selectionType === "listed" ? handleBuySelection : undefined
-      }
-      onListSelection={
-        selectionType === "owned-unlisted" ? handleListSelection : undefined
-      }
-      onUnlistSelection={
-        selectionType === "owned-listed" ? handleUnlistSelection : undefined
-      }
-      onSendSelection={
-        selectionType === "owned-unlisted" ? handleSendSelection : undefined
-      }
+      onBuySelection={canBuySelection ? handleBuySelection : undefined}
+      onListSelection={canListSelection ? handleListSelection : undefined}
+      onUnlistSelection={canUnlistSelection ? handleUnlistSelection : undefined}
+      onSendSelection={canSendSelection ? handleSendSelection : undefined}
       loadingOverlay={{
         isLoading: status === "loading",
         progress: undefined,
