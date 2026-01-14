@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { MarketplaceFiltersContainer } from "@/features/marketplace/filters";
 import { cn } from "@cartridge/ui/utils";
 import { useProject } from "@/hooks/project";

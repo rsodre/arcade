@@ -12,7 +12,6 @@ import {
   Empty,
   InventoryItemCard,
   MarketplaceSearch,
-  Separator,
   Skeleton,
   cn,
 } from "@cartridge/ui";
@@ -109,7 +108,7 @@ export const ItemsView = ({
   listedTokensCount,
 }: ItemsViewProps) => {
   return (
-    <div className="flex flex-col gap-4 h-full w-full overflow-hidden order-3">
+    <div className="relative flex flex-col gap-4 h-full w-full overflow-hidden order-3">
       <div className="min-h-10 w-full flex justify-between items-center relative">
         <div className="flex items-center gap-4">
           <SelectionSummary
@@ -323,11 +322,10 @@ const SelectionFooter = ({
   return (
     <div
       className={cn(
-        "overflow-hidden transition-all duration-500 ease-out",
-        isVisible ? "h-[50px] opacity-100" : "max-h-0 opacity-0",
+        "absolute bottom-[0px] transition-all duration-500 ease-out ease-in",
+        isVisible ? "h-[50px] opacity-100 sticky bottom-0" : "h-0 opacity-0",
       )}
     >
-      <Separator className="w-full bg-background-200" />
       <div className="w-full flex justify-end items-center gap-x-2">
         {onBuySelection && (
           <Button
