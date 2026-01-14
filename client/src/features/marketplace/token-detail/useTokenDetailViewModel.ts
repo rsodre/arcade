@@ -11,6 +11,8 @@ import { useAccountByAddress, useMarketplaceTokens } from "@/effect";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
+import { VoyagerUrl } from "@cartridge/ui/utils";
+import { getChainId } from "@/lib/helpers";
 import {
   useHandleBuyCallback,
   useHandleListCallback,
@@ -34,6 +36,7 @@ interface TokenDetailViewModel {
   controller: { address: string; username: string } | null;
   collectionHref: string;
   ownerHref: string;
+  contractHref: string | undefined;
   handleBuy: () => Promise<void>;
   handleList: () => Promise<void>;
   handleUnlist: () => Promise<void>;
@@ -45,7 +48,7 @@ export function useTokenDetailViewModel({
   tokenId,
 }: UseTokenDetailViewModelArgs): TokenDetailViewModel {
   const { address, isConnected } = useAccount();
-  const { games, editions } = useArcade();
+  const { games, editions, provider } = useArcade();
   const { location } = useRouterState();
 
   const {
@@ -146,6 +149,13 @@ export function useTokenDetailViewModel({
     [navManager, owner],
   );
 
+  const contractHref = useMemo(() => {
+    const chainId = getChainId(provider.provider.channel.nodeUrl);
+    return chainId
+      ? VoyagerUrl(chainId).contract(collectionAddress)
+      : undefined;
+  }, [navManager, collectionAddress]);
+
   const tokenIds = useMemo(() => [tokenId], [tokenId]);
 
   const handleBuyCallback = useHandleBuyCallback(collectionAddress, tokenId);
@@ -164,6 +174,7 @@ export function useTokenDetailViewModel({
     controller: controllerName,
     collectionHref,
     ownerHref,
+    contractHref,
     handleBuy: handleBuyCallback,
     handleList: () => handleListCallback(collectionAddress, tokenIds),
     handleUnlist: () => handleUnlistCallback(collectionAddress, tokenIds),
