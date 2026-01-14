@@ -65,7 +65,7 @@ export function TokenDetailSidebar() {
               {collectionAddressTrunc}
             </DetailItem>
           </Link>
-          <DetailItem label="Token ID">
+          <DetailItem label="Token ID" copyable>
             {truncateAddress(tokenIdStr)}
           </DetailItem>
           <DetailItem label="Token Standard">{tokenStandard}</DetailItem>
@@ -100,8 +100,13 @@ function DetailTitle({ label }: { label: string }) {
 function DetailItem({
   label,
   hoverable = false,
+  copyable = false,
   children,
-}: React.PropsWithChildren<{ label: React.ReactNode; hoverable?: boolean }>) {
+}: React.PropsWithChildren<{
+  label: React.ReactNode;
+  hoverable?: boolean;
+  copyable?: boolean;
+}>) {
   return (
     <div
       className={cn(
@@ -110,7 +115,12 @@ function DetailItem({
       )}
     >
       <span className="text-foreground-300 text-xs font-sans">{label}</span>
-      <span className="text-foreground-100 text-sm font-medium font-mono">
+      <span
+        className={cn(
+          "text-foreground-100 text-sm font-medium font-mono",
+          copyable && "select-all",
+        )}
+      >
         {children}
       </span>
     </div>
