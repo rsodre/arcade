@@ -1,11 +1,12 @@
 import {
   AndComposeClause,
+  ClauseBuilder,
   KeysClause,
   MemberClause,
   ToriiQueryBuilder,
 } from "@dojoengine/sdk";
 import type { constants } from "starknet";
-import { addAddressPadding, getChecksumAddress } from "starknet";
+import { addAddressPadding, cairo, getChecksumAddress } from "starknet";
 import type {
   ToriiClient,
   Token as ToriiToken,
@@ -18,6 +19,7 @@ import { initArcadeSDK } from "../modules";
 import type { SchemaType } from "../bindings";
 import { ArcadeModelsMapping, OrderCategory, OrderStatus } from "../bindings";
 import { NAMESPACE } from "../constants";
+import { Book } from "../modules/marketplace/book";
 import { Order, type OrderModel } from "../modules/marketplace/order";
 import { CategoryType, StatusType } from "../classes";
 import { fetchCollectionTokens, fetchTokenBalances } from "./tokens";
@@ -33,7 +35,10 @@ import type {
   CollectionSummaryOptions,
   MarketplaceClient,
   MarketplaceClientConfig,
+  MarketplaceFees,
   NormalizedCollection,
+  RoyaltyFee,
+  RoyaltyFeeOptions,
   TokenDetails,
   TokenDetailsOptions,
 } from "./types";
@@ -182,6 +187,7 @@ export async function createMarketplaceClient(
     defaultProject = "arcade-main",
     resolveTokenImage,
     resolveContractImage,
+    provider,
   } = config;
 
   const sdk = await initArcadeSDK(chainId as constants.StarknetChainId);
@@ -382,6 +388,55 @@ export async function createMarketplaceClient(
     };
   };
 
+  const getFees = async (): Promise<MarketplaceFees | null> => {
+    const clauses = new ClauseBuilder().keys(
+      [`${NAMESPACE}-${Book.getModelName()}`],
+      [],
+    );
+    const query = new ToriiQueryBuilder<SchemaType>()
+      .withClause(clauses.build())
+      .withEntityModels([`${NAMESPACE}-${Book.getModelName()}`])
+      .includeHashedKeys();
+
+    const entities = await sdk.getEntities({ query });
+    const items = entities?.getItems() ?? [];
+
+    for (const entity of items) {
+      const book = Book.parse(entity);
+      if (book.exists()) {
+        return {
+          feeNum: book.fee_num,
+          feeReceiver: book.fee_receiver,
+          feeDenominator: 10000,
+        };
+      }
+    }
+    return null;
+  };
+
+  const getRoyaltyFee = async (
+    options: RoyaltyFeeOptions,
+  ): Promise<RoyaltyFee | null> => {
+    if (!provider) {
+      throw new Error(
+        "Provider required for getRoyaltyFee. Pass provider in config.",
+      );
+    }
+
+    const result = await provider.callContract({
+      contractAddress: options.collection,
+      entrypoint: "royalty_info",
+      calldata: [cairo.uint256(options.tokenId), cairo.uint256(options.amount)],
+    });
+
+    if (!result || result.length < 2) return null;
+
+    return {
+      receiver: getChecksumAddress(result[0]),
+      amount: BigInt(result[1]),
+    };
+  };
+
   return {
     getCollection,
     listCollectionTokens: (options) =>
@@ -394,5 +449,7 @@ export async function createMarketplaceClient(
     getCollectionOrders,
     listCollectionListings,
     getToken,
+    getFees,
+    getRoyaltyFee,
   };
 }
