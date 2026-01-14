@@ -76,6 +76,8 @@ export const TokenDetailContainer = ({
     (token.metadata as any)?.name || token.name || `#${tokenId}`;
   const tokenImage = (token as any).image;
 
+  const lowestOrder = orders[0] ?? null;
+
   return (
     <div className="flex flex-col h-full justify-between">
       <div>
@@ -94,6 +96,7 @@ export const TokenDetailContainer = ({
           <AssetPreview
             image={tokenImage}
             name={tokenName}
+            order={lowestOrder}
             className="h-[360px]"
           />
 
@@ -111,7 +114,7 @@ export const TokenDetailContainer = ({
         </div>
       </div>
       <TokenFooterActions
-        orders={orders}
+        order={lowestOrder}
         isOwner={isOwner}
         isListed={isListed}
         handleBuy={handleBuy}
