@@ -4,6 +4,8 @@ import type { OrderModel } from "@cartridge/arcade";
 import { Info } from "lucide-react";
 import { formatPriceInfo } from "@/lib/shared/marketplace/utils";
 import { erc20Metadata } from "@cartridge/presets";
+import { useAtomValue } from "@effect-atom/atom-react";
+import { orderWithUsdAtom } from "@/effect/atoms/marketplace";
 
 interface TokenFooterActionsProps {
   isOwner: boolean;
@@ -45,6 +47,7 @@ function TokenSelector({ currencyAddress, currencyImage }: TokenSelectorProps) {
 interface PriceDisplayProps {
   label: string;
   order: OrderModel;
+  usdPrice: number | null;
   showInfoIcon?: boolean;
   showCurrencySymbol?: boolean;
 }
@@ -52,6 +55,7 @@ interface PriceDisplayProps {
 function PriceDisplay({
   label,
   order,
+  usdPrice = null,
   showInfoIcon = false,
   showCurrencySymbol = false,
 }: PriceDisplayProps) {
@@ -59,6 +63,16 @@ function PriceDisplay({
     () => formatPriceInfo(order.currency, order.price, 0, 4, true),
     [order],
   );
+  const usdValue = useMemo(
+    () =>
+      usdPrice == null
+        ? null
+        : usdPrice < 0.01
+          ? "<$0.01"
+          : `$${usdPrice.toFixed(2)}`,
+    [usdPrice],
+  );
+
   const currencySymbol = useMemo(
     () =>
       showCurrencySymbol
@@ -77,6 +91,9 @@ function PriceDisplay({
         {showInfoIcon && <Info className="w-5 h-5 text-foreground-300" />}
       </div>
       <div className="flex items-center gap-1.5">
+        {usdValue && (
+          <span className="text-foreground-300 text-sm">({usdValue})</span>
+        )}
         <span className="text-foreground-100 text-sm font-medium">{value}</span>
         {currencySymbol && (
           <span className="text-foreground-300 text-sm">{currencySymbol}</span>
@@ -168,6 +185,8 @@ export function TokenFooterActions({
 }: TokenFooterActionsProps) {
   const lowestOrder = orders.length > 0 ? orders[0] : null;
 
+  const orderWithUsd = useAtomValue(orderWithUsdAtom(lowestOrder));
+
   if (!isOwner && !isListed) {
     return null;
   }
@@ -181,7 +200,12 @@ export function TokenFooterActions({
       <FooterContainer>
         {lowestOrder && priceInfo && (
           <div className="flex gap-3 flex-1">
-            <PriceDisplay label="Total" order={lowestOrder} showInfoIcon />
+            <PriceDisplay
+              label="Total"
+              order={lowestOrder}
+              usdPrice={orderWithUsd?.usdPrice ?? null}
+              showInfoIcon
+            />
             <TokenSelector
               currencyAddress={lowestOrder.currency}
               currencyImage={priceInfo.image}
@@ -209,6 +233,7 @@ export function TokenFooterActions({
             <PriceDisplay
               label="Listed Price"
               order={lowestOrder}
+              usdPrice={orderWithUsd?.usdPrice ?? null}
               showInfoIcon
             />
             <TokenSelector
