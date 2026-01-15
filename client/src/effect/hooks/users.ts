@@ -28,6 +28,13 @@ export const useAccountByAddress = (address: string | undefined) => {
   return useMemo(() => ({ data: unwrapOr(result, null) }), [result]);
 };
 
+export const useUsernameByAddress = (
+  address: string | undefined,
+): string | undefined => {
+  const result = useAtomValue(accountByAddressAtom(address));
+  return useMemo(() => unwrapOr(result, null)?.username, [result]);
+};
+
 export const useAccountByUsername = (username: string | undefined) => {
   const result = useAtomValue(accountByUsernameAtom(username));
   return useMemo(() => ({ data: unwrapOr(result, null) }), [result]);
