@@ -27,6 +27,7 @@ import { UserAvatar } from "./avatar";
 import { getChecksumAddress } from "starknet";
 import { ShareIcon } from "lucide-react";
 import { ContextCloser } from "../ui/modules/context-closer";
+import { useDevice } from "@/hooks/device";
 
 export const UserCard = React.memo(
   React.forwardRef<HTMLAnchorElement, React.HTMLAttributes<HTMLAnchorElement>>(
@@ -68,6 +69,7 @@ const UserCardInner = React.memo(
     const { location } = useRouterState();
     const { games, editions } = useArcade();
     const { isConnected } = useAccount();
+    const { isMobile } = useDevice();
 
     const usernameStr = username?.username ?? "";
 
@@ -136,41 +138,52 @@ const UserCardInner = React.memo(
     return (
       <div
         className={cn(
-          "flex flex-col items-start py-2 px-3 gap-2 self-stretch w-full bg-background-100 border-b border-spacer-100 lg:border lg:rounded-xl",
-          "lg:border-background-200 lg:hover:border-background-200",
+          "flex flex-col items-start p-3 lg:p-4 gap-2 self-stretch w-full bg-background-100 border-b border-spacer-100 lg:border lg:rounded-xl relative",
+          "lg:border-background-200 lg:hover:border-background-200 overflow-hidden",
           className,
         )}
       >
+        {isPlayer && (
+          <div className="absolute top-5 right-5 z-10">
+            <ContextCloser
+              context="player"
+              className="flex rounded-none rounded-bl rounded-tr-2 bg-background-100 hover:bg-background-200 p-2 w-8 h-8 border-r-0 border-t-0"
+            />
+          </div>
+        )}
         <div
           id="player-label"
-          className="flex items-center self-stretch gap-3 relative"
+          className="flex items-center self-stretch gap-2 relative"
         >
-          <div className="p-3">
+          <div className="-translate-x-1">
             <AchievementPlayerBadge
               icon={Icon}
               variant="default"
-              size="3xl"
-              className="!w-10 !h-10"
+              size={isMobile ? "2xl" : "3xl"}
+              className="!w-14 !h-14 lg:!w-16 lg:!h-16"
             />
           </div>
-          <div className="flex-1">
+          <div className="h-full flex-1 flex flex-col justify-between gap-2 lg:gap-0">
             <div className="flex flex-row justify-between">
-              <div className="flex items-center gap-3">
-                <p className="text-foreground-100 text-[20px] font-semibold">
-                  {usernameStr}
-                </p>
-              </div>
-              <div className="flex items-center gap-1 p-3">
+              <p className="text-foreground-100 text-[16px]/[normal] lg:text-xl/6 font-semibold">
+                {usernameStr}
+              </p>
+              <div
+                className={cn(
+                  "flex items-center gap-1 p-0.5",
+                  isPlayer && "pr-8",
+                )}
+              >
                 <div className="flex items-center gap-0.5 bg-translucent-dark-100 rounded-xl">
                   <SparklesIcon variant="solid" size="xs" />
-                  <p className="text-[14px] text-foreground-100">
+                  <p className="text-xs lg:text-sm font-normal text-foreground-100">
                     {totalEarnings}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-row justify-between items-center">
+            <div className="flex flex-row justify-between">
               <div className="flex items-center font-sans text-foreground-200 gap-1 rounded-md bg-background-200 hover:bg-background-300 shrink-0 px-[6px] py-1">
                 <CopyAddress
                   size="xs"
@@ -180,18 +193,18 @@ const UserCardInner = React.memo(
                   last={2}
                 />
               </div>
-              <div className="flex-1 flex items-center justify-end gap-1">
+              <div className="flex-1 flex items-center justify-end gap-2">
                 <Button
                   variant="tertiary"
                   size="icon"
-                  className="px-[6px] py-1 w-auto h-auto hidden"
+                  className="px-1.5 py-1 w-auto h-auto hidden"
                 >
                   <XIcon size={"sm"} />
                 </Button>
                 <Button
                   variant="tertiary"
                   size="icon"
-                  className="px-[6px] py-1 w-auto h-auto hidden"
+                  className="px-1.5 py-1 w-auto h-auto hidden"
                 >
                   <DiscordIcon size={"sm"} />
                 </Button>
@@ -200,7 +213,7 @@ const UserCardInner = React.memo(
                     <Button
                       variant="tertiary"
                       size="icon"
-                      className="px-[6px] py-1 w-auto h-auto"
+                      className="px-1.5 py-1 w-auto h-auto"
                     >
                       <DotsIcon size={"sm"} />
                     </Button>
@@ -227,7 +240,6 @@ const UserCardInner = React.memo(
               </div>
             </div>
           </div>
-          {isPlayer && <ContextCloser />}
         </div>
       </div>
     );
