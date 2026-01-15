@@ -102,7 +102,7 @@ export function useMarketplaceItemsViewModel({
   const [search, setSearch] = useState<string>("");
   const [lastSearch, setLastSearch] = useState<string>("");
   const [selection, setSelection] = useState<MarketplaceAsset[]>([]);
-  const { tab } = useProject();
+  const { tab, edition } = useProject();
 
   const ownedTokenIdsResult = useAtomValue(
     ownerTokenIdsAtom(collectionAddress, address) as any,
@@ -287,10 +287,18 @@ export function useMarketplaceItemsViewModel({
     [trackEvent, events],
   );
 
-  const handlePurchaseCallback = useHandlePurchaseCallback();
-  const handleListCallback = useHandleListCallback();
-  const handleUnlistCallback = useHandleUnlistCallback();
-  const handleSendCallback = useHandleSendCallback();
+  const handlerParams = useMemo(
+    () => ({
+      project: edition?.config.project,
+      preset: edition?.properties.preset,
+    }),
+    [edition?.id],
+  );
+
+  const handlePurchaseCallback = useHandlePurchaseCallback(handlerParams);
+  const handleListCallback = useHandleListCallback(handlerParams);
+  const handleUnlistCallback = useHandleUnlistCallback(handlerParams);
+  const handleSendCallback = useHandleSendCallback(handlerParams);
 
   const handlePurchase = useCallback(
     async (tokens: MarketplaceAsset[]) =>
