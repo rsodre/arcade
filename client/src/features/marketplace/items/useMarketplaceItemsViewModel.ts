@@ -2,16 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useConnect } from "@starknet-react/core";
 import type { Token } from "@dojoengine/torii-wasm";
 import type { ListingWithUsd } from "@/effect/atoms/marketplace";
-import {
-  addAddressPadding,
-  getChecksumAddress,
-  type RpcProvider,
-} from "starknet";
-import type ControllerConnector from "@cartridge/connector/controller";
-import { useArcade } from "@/hooks/arcade";
+import { type RpcProvider, addAddressPadding } from "starknet";
 import { useMarketplace } from "@/hooks/marketplace";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
+import { DEFAULT_PROJECT } from "@/constants";
 import { useMetadataFilters } from "@/hooks/use-metadata-filters";
 import {
   useMarketplaceTokens,
@@ -20,6 +14,7 @@ import {
   ownerTokenIdsAtom,
 } from "@/effect";
 import {
+  useHandlePurchaseCallback,
   useHandleListCallback,
   useHandleSendCallback,
   useHandleUnlistCallback,
@@ -100,9 +95,8 @@ export const getEntrypoints = async (
 export function useMarketplaceItemsViewModel({
   collectionAddress,
 }: UseMarketplaceItemsViewModelArgs): MarketplaceItemsViewModel {
-  const { connector, address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
-  const { provider } = useArcade();
   const { trackEvent, events } = useAnalytics();
   const { sales } = useMarketplace();
   const [search, setSearch] = useState<string>("");
@@ -293,86 +287,20 @@ export function useMarketplaceItemsViewModel({
     [trackEvent, events],
   );
 
-  const handlePurchase = useCallback(
-    async (tokensToPurchase: MarketplaceAsset[]) => {
-      if (!isConnected || !connector) return;
-      if (tokensToPurchase.length === 0) return;
-
-      const orders = tokensToPurchase.flatMap((token) => token.orders);
-      const contractAddresses = new Set(
-        tokensToPurchase.map((token) => token.contract_address),
-      );
-      if (contractAddresses.size !== 1) return;
-
-      const eventType =
-        tokensToPurchase.length > 1
-          ? events.MARKETPLACE_BULK_PURCHASE_INITIATED
-          : events.MARKETPLACE_PURCHASE_INITIATED;
-
-      const orderIds = orders.map((listing) => listing.order.id).join(",");
-      trackEvent(eventType, {
-        purchase_type: tokensToPurchase.length > 1 ? "bulk" : "single",
-        items_count: tokensToPurchase.length,
-        order_ids: orderIds.split(","),
-        collection_address: Array.from(contractAddresses)[0],
-        buyer_address: address,
-        item_token_ids: tokensToPurchase.map(
-          (token) => token.token_id?.toString() || "",
-        ),
-      });
-
-      const [contractAddress] = Array.from(contractAddresses);
-      const controller = (connector as ControllerConnector)?.controller;
-      const username = await controller?.username();
-      if (!controller || !username) {
-        console.error("Connector not initialized");
-        trackEvent(events.MARKETPLACE_PURCHASE_FAILED, {
-          error_message: "Connector not initialized",
-          purchase_type: tokensToPurchase.length > 1 ? "bulk" : "single",
-        });
-        return;
-      }
-
-      const subpath = isERC1155 ? "collectible" : "collection";
-
-      const project = DEFAULT_PROJECT;
-      const preset = DEFAULT_PRESET;
-      const options = [`ps=${project}`];
-      if (preset) {
-        options.push(`preset=${preset}`);
-      } else {
-        options.push("preset=cartridge");
-      }
-
-      let path: string;
-
-      if (orders.length > 1) {
-        options.push(`orders=${orderIds}`);
-        path = `account/${username}/inventory/${subpath}/${contractAddress}/purchase${options.length > 0 ? `?${options.join("&")}` : ""}`;
-      } else {
-        const [token] = tokensToPurchase;
-        options.push(`address=${getChecksumAddress(token.owner)}`);
-        options.push(`tokenIds=${[token.token_id].join(",")}`);
-        options.push(`orders=${orderIds}`);
-        path = `account/${username}/inventory/${subpath}/${contractAddress}/token/${token.token_id}/purchase${options.length > 0 ? `?${options.join("&")}` : ""}`;
-      }
-
-      controller.openProfileAt(path);
-    },
-    [
-      connector,
-      isConnected,
-      provider.provider,
-      events,
-      trackEvent,
-      address,
-      isERC1155,
-    ],
-  );
-
+  const handlePurchaseCallback = useHandlePurchaseCallback();
   const handleListCallback = useHandleListCallback();
   const handleUnlistCallback = useHandleUnlistCallback();
   const handleSendCallback = useHandleSendCallback();
+
+  const handlePurchase = useCallback(
+    async (tokens: MarketplaceAsset[]) =>
+      handlePurchaseCallback(
+        collectionAddress,
+        tokens.map((token) => token.token_id ?? "").filter(Boolean),
+        tokens.map((token) => token.orders[0].order),
+      ),
+    [collectionAddress, handlePurchaseCallback],
+  );
 
   const handleList = useCallback(
     async (tokens: MarketplaceAsset[]) =>

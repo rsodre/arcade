@@ -235,7 +235,7 @@ export const MarketplaceItemsContainer = ({
     [handleInspect],
   );
 
-  const handleBuySelection = useCallback(() => {
+  const handlePurchaseSelection = useCallback(() => {
     handlePurchase(selection);
   }, [handlePurchase, selection]);
 
@@ -333,7 +333,7 @@ export const MarketplaceItemsContainer = ({
     assets.length === 0 &&
     ["idle", "error", "success"].includes(status);
 
-  const canBuySelection = selectionType === "listed";
+  const canPurchaseSelection = selectionType === "listed";
   const canListSelection = selectionType === "owned-unlisted";
   const canUnlistSelection = selectionType === "owned-listed";
   const canSendSelection =
@@ -364,7 +364,9 @@ export const MarketplaceItemsContainer = ({
       onClearFilters={clearAllFilters}
       onResetSelection={clearSelection}
       isConnected={isConnected}
-      onBuySelection={canBuySelection ? handleBuySelection : undefined}
+      onPurchaseSelection={
+        canPurchaseSelection ? handlePurchaseSelection : undefined
+      }
       onListSelection={canListSelection ? handleListSelection : undefined}
       onUnlistSelection={canUnlistSelection ? handleUnlistSelection : undefined}
       onSendSelection={canSendSelection ? handleSendSelection : undefined}
