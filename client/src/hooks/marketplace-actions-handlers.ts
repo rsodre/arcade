@@ -10,15 +10,24 @@ import { CollectionType } from "@/effect/atoms/tokens";
 import type { OrderModel } from "@cartridge/arcade";
 import { useUsername } from "@/hooks/username";
 
-export function useHandlePurchaseCallback(): (
+export type ActionHandlerParams = {
+  project?: string;
+  preset?: string;
+};
+
+export function useHandlePurchaseCallback(
+  presetParams?: ActionHandlerParams,
+): (
   collectionAddress: string,
   tokenIds: string[],
   orders: OrderModel[],
+  preset?: string,
+  project?: string,
 ) => Promise<void> {
   const { address } = useAccount();
   const { trackEvent, events } = useAnalytics();
 
-  const pathBuilder = useControllerPathBuilder();
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
 
   return useCallback(
@@ -53,7 +62,9 @@ export function useHandlePurchaseCallback(): (
   );
 }
 
-export function useHandlePurchaseViewCallback(): (
+export function useHandlePurchaseViewCallback(
+  presetParams?: ActionHandlerParams,
+): (
   collectionAddress: string,
   tokenIds: string[],
   orders: OrderModel[],
@@ -61,7 +72,7 @@ export function useHandlePurchaseViewCallback(): (
   const { address } = useAccount();
   const { trackEvent, events } = useAnalytics();
 
-  const pathBuilder = useControllerPathBuilder();
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
 
   return useCallback(
@@ -91,11 +102,10 @@ export function useHandlePurchaseViewCallback(): (
   );
 }
 
-export function useHandleListCallback(): (
-  collectionAddress: string,
-  tokenIds: string[],
-) => Promise<void> {
-  const pathBuilder = useControllerPathBuilder();
+export function useHandleListCallback(
+  presetParams?: ActionHandlerParams,
+): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
@@ -110,11 +120,10 @@ export function useHandleListCallback(): (
   );
 }
 
-export function useHandleListViewCallback(): (
-  collectionAddress: string,
-  tokenIds: string[],
-) => Promise<void> {
-  const pathBuilder = useControllerPathBuilder();
+export function useHandleListViewCallback(
+  presetParams?: ActionHandlerParams,
+): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
@@ -129,11 +138,10 @@ export function useHandleListViewCallback(): (
   );
 }
 
-export function useHandleUnlistCallback(): (
-  collectionAddress: string,
-  tokenIds: string[],
-) => Promise<void> {
-  const pathBuilder = useControllerPathBuilder();
+export function useHandleUnlistCallback(
+  presetParams?: ActionHandlerParams,
+): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
@@ -149,11 +157,10 @@ export function useHandleUnlistCallback(): (
   );
 }
 
-export function useHandleUnlistViewCallback(): (
-  collectionAddress: string,
-  tokenIds: string[],
-) => Promise<void> {
-  const pathBuilder = useControllerPathBuilder();
+export function useHandleUnlistViewCallback(
+  presetParams?: ActionHandlerParams,
+): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
@@ -168,11 +175,10 @@ export function useHandleUnlistViewCallback(): (
   );
 }
 
-export function useHandleSendCallback(): (
-  collectionAddress: string,
-  tokenIds: string[],
-) => Promise<void> {
-  const pathBuilder = useControllerPathBuilder();
+export function useHandleSendCallback(
+  presetParams?: ActionHandlerParams,
+): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
@@ -187,11 +193,10 @@ export function useHandleSendCallback(): (
   );
 }
 
-export function useHandleSendViewCallback(): (
-  collectionAddress: string,
-  tokenIds: string[],
-) => Promise<void> {
-  const pathBuilder = useControllerPathBuilder();
+export function useHandleSendViewCallback(
+  presetParams?: ActionHandlerParams,
+): (collectionAddress: string, tokenIds: string[]) => Promise<void> {
+  const pathBuilder = useControllerPathBuilder(presetParams);
   const openController = useOpenControllerAtPathCallback();
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
@@ -223,9 +228,9 @@ type MakeControllerViewPathParams = {
   orders?: OrderModel[];
 };
 
-function useControllerPathBuilder(): (
-  params: MakeControllerViewPathParams,
-) => string | undefined {
+function useControllerPathBuilder(
+  presetParams?: ActionHandlerParams,
+): (params: MakeControllerViewPathParams) => string | undefined {
   const { trackEvent, events } = useAnalytics();
 
   const username = useUsername();
@@ -251,14 +256,11 @@ function useControllerPathBuilder(): (
         : undefined;
       const subpath = isERC1155 ? "collectible" : "collection";
 
-      const project = DEFAULT_PROJECT;
-      const preset = DEFAULT_PRESET;
-      const options = [`ps=${project}`];
-      if (preset) {
-        options.push(`preset=${preset}`);
-      } else {
-        options.push("preset=cartridge");
-      }
+      const options = [
+        // `ps=${presetParams?.project ?? DEFAULT_PROJECT}`, // breaks jokers of neon
+        `ps=${DEFAULT_PROJECT}`,
+        `preset=${presetParams?.preset || DEFAULT_PRESET || "cartridge"}`,
+      ];
 
       if (viewType.endsWith("View")) {
         options.push(`${viewType}=true`);
@@ -298,7 +300,7 @@ function useControllerPathBuilder(): (
 
       return `account/${username}/inventory/${subpath}/${collectionAddress}/${viewType}?${options.join("&")}`;
     },
-    [username, collections, trackEvent, events],
+    [username, collections?.status, trackEvent, events, presetParams],
   );
 
   return callback;

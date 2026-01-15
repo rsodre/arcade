@@ -19,6 +19,7 @@ import {
   useHandleSendCallback,
   useHandleUnlistCallback,
 } from "@/hooks/marketplace-actions-handlers";
+import { useProject } from "@/hooks/project";
 
 interface UseTokenDetailViewModelArgs {
   collectionAddress: string;
@@ -50,6 +51,7 @@ export function useTokenDetailViewModel({
 }: UseTokenDetailViewModelArgs): TokenDetailViewModel {
   const { address, isConnected } = useAccount();
   const { games, editions, provider } = useArcade();
+  const { edition } = useProject();
   const { location } = useRouterState();
 
   const {
@@ -158,10 +160,18 @@ export function useTokenDetailViewModel({
       : undefined;
   }, [navManager, collectionAddress]);
 
-  const handlePurchaseCallback = useHandlePurchaseCallback();
-  const handleListCallback = useHandleListCallback();
-  const handleUnlistCallback = useHandleUnlistCallback();
-  const handleSendCallback = useHandleSendCallback();
+  const handlerParams = useMemo(
+    () => ({
+      project: edition?.config.project,
+      preset: edition?.properties.preset,
+    }),
+    [edition?.id],
+  );
+
+  const handlePurchaseCallback = useHandlePurchaseCallback(handlerParams);
+  const handleListCallback = useHandleListCallback(handlerParams);
+  const handleUnlistCallback = useHandleUnlistCallback(handlerParams);
+  const handleSendCallback = useHandleSendCallback(handlerParams);
 
   const handlePurchase = useCallback(async () => {
     if (lowestOrder) {
