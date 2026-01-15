@@ -1,143 +1,94 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useAccount, useConnect } from "@starknet-react/core";
-import { useMarketBalancesFetcher } from "@/hooks/marketplace-balances-fetcher";
 import { DEFAULT_PRESET, DEFAULT_PROJECT } from "@/constants";
-import { addAddressPadding, getChecksumAddress } from "starknet";
+import { addAddressPadding } from "starknet";
 import { useAnalytics } from "@/hooks/useAnalytics";
-import { useArcade } from "@/hooks/arcade";
-import {
-  ERC1155_ENTRYPOINT,
-  getEntrypoints,
-} from "@/features/marketplace/items";
 import type ControllerConnector from "@cartridge/connector/controller";
-import { collectionOrdersAtom } from "@/effect/atoms";
-import { useAtomValue } from "@effect-atom/atom-react";
 import { useConnectionViewModel } from "@/features/connection";
 import { useTokenContracts } from "@/effect/hooks/tokens";
 import { CollectionType } from "@/effect/atoms/tokens";
-import { useUsernameByAddress } from "@/effect/hooks/users";
+import type { OrderModel } from "@cartridge/arcade";
+import { useUsername } from "@/hooks/username";
 
-export function useHandleBuyCallback(
+export function useHandlePurchaseCallback(): (
   collectionAddress: string,
-  tokenId: string,
-): () => Promise<void> {
-  const { connector } = useConnect();
-  const { address, isConnected } = useAccount();
-  const { onConnect, isConnectDisabled } = useConnectionViewModel();
+  tokenIds: string[],
+  orders: OrderModel[],
+) => Promise<void> {
+  const { address } = useAccount();
   const { trackEvent, events } = useAnalytics();
-  const { provider } = useArcade();
-
-  const { balances } = useMarketBalancesFetcher({
-    project: [DEFAULT_PROJECT],
-    address: collectionAddress,
-    tokenId,
-  });
-  const owner = useMemo(
-    () =>
-      balances && balances.length === 1
-        ? addAddressPadding(balances[0].account_address)
-        : "0x0",
-    [balances],
-  );
-
-  const collectionOrders = useAtomValue(
-    collectionOrdersAtom(collectionAddress),
-  );
-
-  const orders = useMemo(() => {
-    if (!collectionOrders || !tokenId) return [];
-
-    const candidates = new Set<string>();
-    candidates.add(tokenId);
-
-    try {
-      if (tokenId.startsWith("0x")) {
-        const numericId = BigInt(tokenId).toString();
-        candidates.add(numericId);
-      } else {
-        candidates.add(`0x${BigInt(tokenId).toString(16)}`);
-      }
-    } catch (error) {
-      candidates.add(BigInt(`0x${tokenId}`).toString());
-    }
-
-    for (const candidate of candidates) {
-      const tokenOrders = collectionOrders[candidate];
-      if (tokenOrders?.length) {
-        return tokenOrders;
-      }
-    }
-
-    return [];
-  }, [collectionOrders, tokenId]);
 
   const pathBuilder = useControllerPathBuilder();
-  const handleBuyCallback = useCallback(async () => {
-    if (!isConnected) {
-      if (isConnectDisabled) {
-        return;
-      }
-      await onConnect();
-    }
+  const openController = useOpenControllerAtPathCallback();
 
-    const eventType = events.MARKETPLACE_PURCHASE_INITIATED;
+  return useCallback(
+    async (
+      collectionAddress: string,
+      tokenIds: string[],
+      orders: OrderModel[],
+    ) => {
+      const eventType =
+        orders.length > 1
+          ? events.MARKETPLACE_BULK_PURCHASE_INITIATED
+          : events.MARKETPLACE_PURCHASE_INITIATED;
 
-    const orderIds = orders.map((order) => order.id).join(",");
-    trackEvent(eventType, {
-      purchase_type: "single",
-      items_count: 1,
-      order_ids: orderIds.split(","),
-      collection_address: collectionAddress,
-      buyer_address: address,
-      item_token_ids: tokenId,
-    });
-
-    const controller = (connector as ControllerConnector)?.controller;
-    const username = await controller?.username();
-    if (!controller || !username) {
-      console.error("Connector not initialized");
-      trackEvent(events.MARKETPLACE_PURCHASE_FAILED, {
-        error_message: "Connector not initialized",
-        purchase_type: "single",
+      trackEvent(eventType, {
+        purchase_type: orders.length > 1 ? "bulk" : "single",
+        items_count: orders.length,
+        order_ids: orders.map((order) => order.id.toString()),
+        collection_address: collectionAddress,
+        buyer_address: address,
+        item_token_ids: tokenIds,
       });
-      return;
-    }
 
-    const entrypoints = await getEntrypoints(
-      provider.provider,
-      collectionAddress,
-    );
-    const isERC1155 = entrypoints?.includes(ERC1155_ENTRYPOINT);
-    const subpath = isERC1155 ? "collectible" : "collection";
+      const path = pathBuilder({
+        viewType: "purchase",
+        collectionAddress,
+        tokenIds,
+        orders,
+      });
+      return openController(path);
+    },
+    [pathBuilder, openController, trackEvent, events],
+  );
+}
 
-    const project = DEFAULT_PROJECT;
-    const preset = DEFAULT_PRESET;
-    const options = [`ps=${project}`];
-    if (preset) {
-      options.push(`preset=${preset}`);
-    } else {
-      options.push("preset=cartridge");
-    }
+export function useHandlePurchaseViewCallback(): (
+  collectionAddress: string,
+  tokenIds: string[],
+  orders: OrderModel[],
+) => Promise<void> {
+  const { address } = useAccount();
+  const { trackEvent, events } = useAnalytics();
 
-    options.push(`address=${getChecksumAddress(owner)}`);
-    options.push(`tokenIds=${[addAddressPadding(tokenId)].join(",")}`);
+  const pathBuilder = useControllerPathBuilder();
+  const openController = useOpenControllerAtPathCallback();
 
-  }, [
-    address,
-    connector,
-    events,
-    isConnected,
-    isConnectDisabled,
-    provider,
-    tokenId,
-    trackEvent,
-    collectionAddress,
-    orders,
-    owner,
-    pathBuilder,
-  ]);
+  return useCallback(
+    async (
+      collectionAddress: string,
+      tokenIds: string[],
+      orders: OrderModel[],
+    ) => {
+      trackEvent(events.MARKETPLACE_PURCHASE_INITIATED, {
+        purchase_type: "single",
+        items_count: 1,
+        order_ids: [orders[0].id.toString()],
+        collection_address: collectionAddress,
+        buyer_address: address,
+        item_token_ids: [tokenIds[0]],
+      });
 
-  return handleBuyCallback;
+      const path = pathBuilder({
+        viewType: "purchaseView",
+        collectionAddress,
+        tokenIds,
+        orders,
+      });
+      return openController(path);
+    },
+    [pathBuilder, openController, trackEvent, events],
+  );
 }
 
 export function useHandleListCallback(): (
@@ -149,9 +100,9 @@ export function useHandleListCallback(): (
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
       const path = pathBuilder({
+        viewType: "list",
         collectionAddress,
         tokenIds,
-        viewType: "list",
       });
       return openController(path);
     },
@@ -168,9 +119,9 @@ export function useHandleListViewCallback(): (
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
       const path = pathBuilder({
+        viewType: "listView",
         collectionAddress,
         tokenIds,
-        viewType: "listView",
       });
       return openController(path);
     },
@@ -187,9 +138,10 @@ export function useHandleUnlistCallback(): (
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
       const path = pathBuilder({
+        // viewType: "unlist", // TODO: /unlist is not implemented in the controller
+        viewType: "unlistView",
         collectionAddress,
         tokenIds,
-        viewType: "unlist",
       });
       return openController(path);
     },
@@ -206,9 +158,9 @@ export function useHandleUnlistViewCallback(): (
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
       const path = pathBuilder({
+        viewType: "unlistView",
         collectionAddress,
         tokenIds,
-        viewType: "unlistView",
       });
       return openController(path);
     },
@@ -225,9 +177,9 @@ export function useHandleSendCallback(): (
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
       const path = pathBuilder({
+        viewType: "send",
         collectionAddress,
         tokenIds,
-        viewType: "send",
       });
       return openController(path);
     },
@@ -244,9 +196,9 @@ export function useHandleSendViewCallback(): (
   return useCallback(
     async (collectionAddress: string, tokenIds: string[]) => {
       const path = pathBuilder({
+        viewType: "sendView",
         collectionAddress,
         tokenIds,
-        viewType: "sendView",
       });
       return openController(path);
     },
@@ -265,26 +217,27 @@ type ControllerViewType =
   | "send";
 
 type MakeControllerViewPathParams = {
+  viewType: ControllerViewType;
   collectionAddress: string;
   tokenIds: string[];
-  viewType: ControllerViewType;
-  owner?: string;
+  orders?: OrderModel[];
 };
 
 function useControllerPathBuilder(): (
   params: MakeControllerViewPathParams,
 ) => string | undefined {
-  const { address } = useAccount();
-  const username = useUsernameByAddress(address);
+  const { trackEvent, events } = useAnalytics();
+
+  const username = useUsername();
 
   const collections = useTokenContracts();
 
   const callback = useCallback(
     ({
+      viewType,
       collectionAddress,
       tokenIds,
-      viewType,
-      owner,
+      orders,
     }: MakeControllerViewPathParams) => {
       if (!username) return undefined;
       if (!collectionAddress) return undefined;
@@ -311,8 +264,14 @@ function useControllerPathBuilder(): (
         options.push(`${viewType}=true`);
 
         if (viewType === "purchaseView") {
-          if (!owner) return undefined;
-          options.push(`address=${owner}`);
+          if (!orders?.length) {
+            trackEvent(events.MARKETPLACE_PURCHASE_FAILED, {
+              error_message: "Missing orders for purchase",
+              purchase_type: tokenIds.length > 1 ? "bulk" : "single",
+            });
+            return undefined;
+          }
+          options.push(`address=${orders[0].owner}`);
         }
 
         const tokenId = addAddressPadding(tokenIds[0]);
@@ -320,13 +279,26 @@ function useControllerPathBuilder(): (
         return `account/${username}/inventory/${subpath}/${collectionAddress}/token/${tokenId}?${options.join("&")}`;
       }
 
-      tokenIds.forEach((tokenId) => {
-        options.push(`tokenIds=${addAddressPadding(tokenId)}`);
-      });
+      if (viewType === "purchase") {
+        if (!orders?.length) {
+          trackEvent(events.MARKETPLACE_PURCHASE_FAILED, {
+            error_message: "Missing orders for purchase",
+            purchase_type: tokenIds.length > 1 ? "bulk" : "single",
+          });
+          return undefined;
+        }
+        options.push(
+          `orders=${orders.map((order) => order.id.toString()).join(",")}`,
+        );
+      } else {
+        tokenIds.forEach((tokenId) => {
+          options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+        });
+      }
 
       return `account/${username}/inventory/${subpath}/${collectionAddress}/${viewType}?${options.join("&")}`;
     },
-    [username, collections],
+    [username, collections, trackEvent, events],
   );
 
   return callback;

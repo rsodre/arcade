@@ -25,11 +25,11 @@ export const TokenDetailContainer = ({
     isOwner,
     isListed,
     owner,
-    handleBuy,
+    handlePurchase,
     handleList,
     handleUnlist,
     handleSend,
-    orders,
+    lowestOrder,
   } = useTokenDetailViewModel({ collectionAddress, tokenId });
 
   const properties = useMemo(() => {
@@ -76,8 +76,6 @@ export const TokenDetailContainer = ({
     (token.metadata as any)?.name || token.name || `#${tokenId}`;
   const tokenImage = (token as any).image;
 
-  const lowestOrder = orders[0] ?? null;
-
   return (
     <div className="flex flex-col h-full justify-between">
       <div>
@@ -117,7 +115,7 @@ export const TokenDetailContainer = ({
         order={lowestOrder}
         isOwner={isOwner}
         isListed={isListed}
-        handleBuy={handleBuy}
+        handlePurchase={handlePurchase}
         handleSend={handleSend}
         handleList={handleList}
         handleUnlist={handleUnlist}

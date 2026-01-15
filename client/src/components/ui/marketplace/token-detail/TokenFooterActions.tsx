@@ -15,7 +15,7 @@ interface TokenFooterActionsProps {
   isOwner: boolean;
   isListed: boolean;
   order: OrderModel | null;
-  handleBuy: () => void;
+  handlePurchase: () => void;
   handleList: () => void;
   handleUnlist: () => void;
   handleSend: () => void;
@@ -173,7 +173,7 @@ export function TokenFooterActions({
   isOwner,
   isListed,
   order,
-  handleBuy,
+  handlePurchase,
   handleList,
   handleUnlist,
   handleSend,
@@ -207,7 +207,7 @@ export function TokenFooterActions({
         )}
         <ActionButtons
           buttons={[
-            { label: "BUY NOW", variant: "primary", onClick: handleBuy },
+            { label: "BUY NOW", variant: "primary", onClick: handlePurchase },
           ]}
         />
       </FooterContainer>
