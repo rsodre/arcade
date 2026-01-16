@@ -2,14 +2,10 @@ import { useMemo } from "react";
 import { Button, cn, type ButtonProps } from "@cartridge/ui";
 import type { OrderModel } from "@cartridge/arcade";
 import { Info } from "lucide-react";
-import {
-  formatExpirationDate,
-  formatPriceInfo,
-} from "@/lib/shared/marketplace/utils";
+import { formatPriceInfo } from "@/lib/shared/marketplace/utils";
 import { erc20Metadata } from "@cartridge/presets";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { orderWithUsdAtom } from "@/effect/atoms/marketplace";
-import { Tooltip } from "@/components/ui/tooltip";
 
 interface TokenFooterActionsProps {
   isOwner: boolean;
@@ -77,11 +73,6 @@ function PriceDisplay({
     [usdPrice],
   );
 
-  const { duration, dateTime } = useMemo(
-    () => formatExpirationDate(order.expiration),
-    [order.expiration],
-  );
-
   const currencySymbol = useMemo(
     () =>
       showCurrencySymbol
@@ -100,11 +91,6 @@ function PriceDisplay({
         {showInfoIcon && <Info className="w-5 h-5 text-foreground-300" />}
       </div>
       <div className="flex items-center gap-1.5">
-        {duration && (
-          <Tooltip content={dateTime}>
-            <span className="text-foreground-100 text-sm">{duration}</span>
-          </Tooltip>
-        )}
         {usdValue && (
           <span className="text-foreground-300 text-sm">({usdValue})</span>
         )}

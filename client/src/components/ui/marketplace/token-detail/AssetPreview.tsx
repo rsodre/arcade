@@ -1,7 +1,9 @@
-import { TagIcon, TimesIcon } from "@cartridge/ui";
+import { useMemo, useState } from "react";
+import { ClockIcon, CollectibleTag, TagIcon, TimesIcon } from "@cartridge/ui";
 import { cn } from "@cartridge/ui/utils";
-import { useState } from "react";
 import { createPortal } from "react-dom";
+import { formatExpirationDate } from "@/lib/shared/marketplace/utils";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { OrderModel } from "@cartridge/arcade";
 
 interface AssetPreviewProps {
@@ -18,6 +20,11 @@ export function AssetPreview({
   order,
 }: AssetPreviewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const { duration, dateTime } = useMemo(
+    () => formatExpirationDate(order?.expiration, true),
+    [order?.expiration],
+  );
 
   return (
     <>
@@ -41,6 +48,17 @@ export function AssetPreview({
             </div>
           )}
         </div>
+
+        {duration && (
+          <div className="absolute bottom-[12px] left-[12px]">
+            <Tooltip content={dateTime}>
+              <CollectibleTag>
+                <ClockIcon size="sm" variant="solid" className="mr-1" />
+                {duration}
+              </CollectibleTag>
+            </Tooltip>
+          </div>
+        )}
 
         {!!order && (
           <div className="absolute top-[-2px] right-[12px]">

@@ -154,6 +154,7 @@ export const comparePrices = (
 
 export const formatExpirationDate = (
   expiration: number | undefined,
+  detailed?: boolean,
 ): {
   duration: string;
   dateTime: string;
@@ -173,7 +174,7 @@ export const formatExpirationDate = (
     };
   }
   return {
-    duration: getDuration(diff),
+    duration: getDuration(diff, detailed),
     dateTime: `${date.toString()}`,
   };
 };
