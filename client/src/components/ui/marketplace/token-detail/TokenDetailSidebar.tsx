@@ -51,7 +51,12 @@ export function TokenDetailSidebar() {
   const collectionSupply = collection.total_supply;
 
   return (
-    <div className="w-full lg:min-w-[360px] h-full bg-background-100 border border-background-200 rounded-xl p-6 flex flex-col gap-6">
+    <div
+      className={cn(
+        "w-full lg:min-w-[360px] h-full p-4 flex flex-col gap-6 bg-background-100",
+        "lg:border lg:border-background-200 lg:rounded-xl",
+      )}
+    >
       <div className="">
         <DetailTitle label="Details" />
         <div className="flex flex-col gap-[1px]">
