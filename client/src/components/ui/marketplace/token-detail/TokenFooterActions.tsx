@@ -116,7 +116,7 @@ function FooterContainer({
     justify === "between" ? "justify-between" : "justify-end";
   return (
     <div
-      className={`sticky bottom-[-24px] z-50 border-t border-background-200 bg-background-100 py-4 w-full mx-auto flex flex-col md:flex-row items-center ${justifyClass} gap-3`}
+      className={`sticky bottom-[-24px] z-50 bg-background-100 py-4 w-full mx-auto flex flex-col md:flex-row items-center ${justifyClass} gap-3`}
     >
       {children}
     </div>
