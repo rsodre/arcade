@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { MarketplaceFiltersContainer } from "@/features/marketplace/filters";
 import { cn } from "@cartridge/ui/utils";
 import { useProject } from "@/hooks/project";
-import { useDevice } from "@/hooks/device";
 import { UserCard } from "./user/user-card";
 import { NavigationContainer } from "@/features/navigation";
 import { BaseTemplate } from "./base-template";
@@ -15,7 +14,6 @@ export function InventoryItemsTemplate({
   children,
 }: InventoryItemsTemplateProps) {
   const { player } = useProject();
-  const { isMobile } = useDevice();
 
   return (
     <BaseTemplate
@@ -27,7 +25,7 @@ export function InventoryItemsTemplate({
       outerClassName="overflow-y-scroll"
       sidebarContent={
         <>
-          {!isMobile && <UserCard />}
+          <UserCard className="lg:hidden" />
           <div className="flex-1 overflow-hidden">
             <MarketplaceFiltersContainer />
           </div>

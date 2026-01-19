@@ -1,6 +1,5 @@
 import { Button, cn, type ButtonProps } from "@cartridge/ui";
 import type { OrderModel } from "@cartridge/arcade";
-import { formatPriceInfo } from "@/lib/shared/marketplace/utils";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { orderWithUsdAtom } from "@/effect/atoms/marketplace";
 import { PriceFooter } from "../../modules/price-footer";
