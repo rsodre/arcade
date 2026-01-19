@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useArcade } from "./arcade";
-import { getChecksumAddress } from "starknet";
+import { addAddressPadding, getChecksumAddress } from "starknet";
 import { useRouterState, useSearch } from "@tanstack/react-router";
 import { useAccount } from "@/effect";
 import { useAccount as useSnReactAccount } from "@starknet-react/core";
@@ -30,6 +30,7 @@ interface RouteParams {
   edition?: string;
   player?: string;
   collection?: string;
+  tokenId?: string;
   tab?: TabValue;
   token?: string;
 }
@@ -64,6 +65,7 @@ export const parseRouteParams = (pathname: string): RouteParams => {
       case "collection":
         if (next) {
           params.collection = next;
+          params.tokenId = segments[index + 2] ?? undefined;
           index += 1;
         }
         if (params.tab === "inventory") {
@@ -102,6 +104,7 @@ export const useProject = () => {
     edition: editionParam,
     player: playerParam,
     collection: collectionParam,
+    tokenId: tokenIdParam,
     tab,
   } = useMemo(
     () => parseRouteParams(routerState.location.pathname),
@@ -137,6 +140,22 @@ export const useProject = () => {
       return undefined;
     }
   }, [collectionParam]);
+
+  const tokenId = useMemo(() => {
+    if (!tokenIdParam) return undefined;
+    try {
+      if (tokenIdParam.length === 64) {
+        return tokenIdParam;
+      }
+      if (tokenIdParam.startsWith("0x0")) {
+        return addAddressPadding(tokenIdParam).replace("0x", "");
+      }
+      return addAddressPadding(Number(tokenIdParam)).replace("0x", "");
+    } catch (error) {
+      console.error("Invalid token id", error);
+      return undefined;
+    }
+  }, [tokenIdParam]);
 
   const edition = useMemo(() => {
     if (!game || editions.length === 0) return undefined;
@@ -187,6 +206,7 @@ export const useProject = () => {
     player,
     filter,
     collection,
+    tokenId,
     tab,
   };
 };

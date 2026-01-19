@@ -1,8 +1,9 @@
-import { Link, useParams } from "@tanstack/react-router";
-import { useTokenDetailViewModel } from "@/features/marketplace/token-detail";
 import { useMemo } from "react";
+import { Link } from "@tanstack/react-router";
+import { useTokenDetailViewModel } from "@/features/marketplace/token-detail";
 import { LayersIcon } from "@/components/ui/icons";
 import { UserAvatar } from "@/components/user/avatar";
+import { useProject } from "@/hooks/project";
 import { cn } from "@/lib/utils";
 
 export const truncateAddress = (
@@ -17,9 +18,7 @@ export const truncateAddress = (
 
 export function TokenDetailSidebar() {
   const { collection: collectionAddressParam, tokenId: tokenIdParam } =
-    useParams({
-      strict: false,
-    });
+    useProject();
   const {
     token,
     collection,
