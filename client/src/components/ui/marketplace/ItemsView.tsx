@@ -6,6 +6,7 @@ import {
   type MouseEvent,
   type RefObject,
 } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   Button,
   Checkbox,
@@ -15,9 +16,10 @@ import {
   Skeleton,
   cn,
 } from "@cartridge/ui";
-import CollectibleCard from "./collectible-card";
+import type { ListingWithUsd } from "@/effect";
 import { FloatingLoadingSpinner } from "@/components/ui/floating-loading-spinner";
-import { Link } from "@tanstack/react-router";
+import { PriceFooter } from "@/components/ui/modules/price-footer";
+import CollectibleCard from "./collectible-card";
 
 const NOOP = () => {};
 
@@ -80,6 +82,7 @@ interface ItemsViewProps {
   };
   statusFilter: string;
   listedTokensCount: number;
+  selectionOrders: ListingWithUsd[];
 }
 
 export const ItemsView = ({
@@ -105,6 +108,7 @@ export const ItemsView = ({
   loadingOverlay,
   statusFilter,
   listedTokensCount,
+  selectionOrders,
 }: ItemsViewProps) => {
   return (
     <div className="relative flex flex-col gap-4 h-full w-full overflow-hidden order-3">
@@ -174,6 +178,7 @@ export const ItemsView = ({
       <SelectionFooter
         isVisible={isConnected && selectionCount > 0}
         selectionCount={selectionCount}
+        orders={selectionOrders}
         onPurchaseSelection={onPurchaseSelection}
         onListSelection={onListSelection}
         onUnlistSelection={onUnlistSelection}
@@ -306,6 +311,7 @@ function SelectedCount({
 const SelectionFooter = ({
   isVisible,
   selectionCount,
+  orders,
   onPurchaseSelection,
   onListSelection,
   onUnlistSelection,
@@ -313,6 +319,7 @@ const SelectionFooter = ({
 }: {
   isVisible: boolean;
   selectionCount: number;
+  orders: ListingWithUsd[];
   onPurchaseSelection?: () => void;
   onListSelection?: () => void;
   onUnlistSelection?: () => void;
@@ -326,6 +333,13 @@ const SelectionFooter = ({
       )}
     >
       <div className="w-full flex justify-end items-center gap-x-2">
+        {orders.length > 0 && (
+          <PriceFooter
+            label="Total"
+            orders={orders}
+            className="flex gap-3 flex-1 w-full"
+          />
+        )}
         {onPurchaseSelection && (
           <Button
             variant="secondary"

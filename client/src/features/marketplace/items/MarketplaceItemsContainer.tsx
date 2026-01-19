@@ -219,6 +219,10 @@ export const MarketplaceItemsContainer = ({
     return listed ? "listed" : "unlisted";
   }, [selection, ownedTokenIds]);
 
+  const selectionOrders = useMemo(() => {
+    return selection.map((asset) => asset.orders[0]);
+  }, [selection.length]);
+
   const handleToggleSelectById = useCallback(
     (index: number) => {
       const asset = assetsRef.current[index];
@@ -376,6 +380,7 @@ export const MarketplaceItemsContainer = ({
       }}
       statusFilter={statusFilter}
       listedTokensCount={listedTokens.length}
+      selectionOrders={selectionOrders}
     />
   );
 };

@@ -275,7 +275,10 @@ export const usdPriceMappingAtom = Atom.make((get) => {
   }, {});
 });
 
-const orderWithUsd = (order: OrderModel, usdMapping: UsdPriceMapping) => {
+const orderWithUsd = (
+  order: OrderModel,
+  usdMapping: UsdPriceMapping,
+): ListingWithUsd => {
   const isUsd = isUsdCurrency(order.currency);
   const usdPricePerUnit = isUsd ? 1 : usdMapping[order.currency];
   const decimals = getErc20Decimals(order.currency);
