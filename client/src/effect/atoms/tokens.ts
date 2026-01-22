@@ -143,10 +143,23 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
           );
         });
 
+        const contractAddress = getChecksumAddress(contract.contract_address);
+        let contractName = contract.name;
+        let contractSymbol = contract.symbol;
+
+        if (
+          contractAddress ===
+            "0x0107AEfe535adaD25D91F77744BB37eca24D997e8216517736f06BBaEA22d214" &&
+          !contractName
+        ) {
+          contractName = "Dope Gear";
+          contractSymbol = "DOPE G";
+        }
+
         return {
-          contract_address: getChecksumAddress(contract.contract_address),
-          name: contract.name,
-          symbol: contract.symbol,
+          contract_address: contractAddress,
+          name: contractName || "Unknown",
+          symbol: contractSymbol || "???",
           metadata,
           total_supply: contract.total_supply ?? "0x0",
           totalSupply: BigInt(contract.total_supply ?? "0x0"),
