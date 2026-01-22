@@ -12,6 +12,7 @@ import type {
   TokenContract as TokenContractWasm,
 } from "@dojoengine/torii-wasm";
 import { formatBackgroundColor } from "@/hooks/token-fetcher";
+import { ContractType } from "@dojoengine/grpc";
 
 class EnrichTokensError extends Data.TaggedError("EnrichTokensError")<{
   message: string;
@@ -45,39 +46,18 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
     symbol: string;
     metadata: string;
     total_supply: string;
+    contract_type: ContractType;
   }> = [];
 
-  let result = yield* Effect.tryPromise(() =>
-    client.getTokenContracts({
-      contract_addresses: [],
-      contract_types: [],
-      pagination: {
-        limit: 5,
-        cursor: undefined,
-        direction: "Forward",
-        order_by: [],
-      },
-    }),
-  );
+  let cursor: string | undefined;
 
-  for (const item of result.items) {
-    contracts.push({
-      contract_address: item.contract_address,
-      name: item.name ?? "",
-      symbol: item.symbol ?? "",
-      metadata: item.metadata ?? "",
-      total_supply: item.total_supply ?? "0x0",
-    });
-  }
-
-  while (result.next_cursor) {
-    const cursor = result.next_cursor;
-    result = yield* Effect.tryPromise(() =>
+  do {
+    const result = yield* Effect.tryPromise(() =>
       client.getTokenContracts({
         contract_addresses: [],
         contract_types: [],
         pagination: {
-          limit: 5,
+          limit: 50,
           cursor,
           direction: "Forward",
           order_by: [],
@@ -91,9 +71,12 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
         symbol: item.symbol ?? "",
         metadata: item.metadata ?? "",
         total_supply: item.total_supply ?? "0x0",
+        contract_type: item.contract_type ?? ContractType.ERC721,
       });
     }
-  }
+
+    cursor = result.next_cursor;
+  } while (cursor);
 
   const tokenResults = yield* Effect.tryPromise({
     try: () =>
@@ -170,7 +153,10 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
           token_id: tokenId,
           project: DEFAULT_PROJECT,
           image: image ?? "",
-          contract_type: CollectionType.ERC721,
+          contract_type:
+            contract.contract_type == ContractType.ERC1155
+              ? CollectionType.ERC1155
+              : CollectionType.ERC721,
           background_color: backgroundColor,
         } satisfies EnrichedTokenContract;
       }),
