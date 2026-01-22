@@ -30,6 +30,8 @@ export const TokenDetailContainer = ({
     handleUnlist,
     handleSend,
     lowestOrder,
+    collectionHref,
+    ownerHref,
   } = useTokenDetailViewModel({ collectionAddress, tokenId });
 
   const properties = useMemo(() => {
@@ -88,6 +90,8 @@ export const TokenDetailContainer = ({
             tokenId={tokenId}
             owner={owner}
             isOwner={isOwner}
+            collectionHref={collectionHref}
+            ownerHref={ownerHref}
             verified
           />
 

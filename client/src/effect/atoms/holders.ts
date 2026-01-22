@@ -13,6 +13,7 @@ export type MarketplaceHolder = {
   token_ids: string[];
   username?: string;
   ratio: number;
+  href?: string;
 };
 
 type HolderTokenCount = {
