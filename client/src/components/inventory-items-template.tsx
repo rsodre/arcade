@@ -25,7 +25,7 @@ export function InventoryItemsTemplate({
       outerClassName="overflow-y-scroll"
       sidebarContent={
         <>
-          <UserCard className="lg:hidden" />
+          <UserCard />
           <div className="flex-1 overflow-hidden">
             <MarketplaceFiltersContainer />
           </div>

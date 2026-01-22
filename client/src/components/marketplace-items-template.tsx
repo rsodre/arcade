@@ -31,7 +31,7 @@ export function MarketplaceItemsTemplate({
       outerClassName="overflow-y-scroll"
       sidebarContent={
         <>
-          {!isMobile && <UserCard />}
+          <UserCard />
           <div className="flex-1 overflow-hidden">
             <MarketplaceFiltersContainer />
           </div>
