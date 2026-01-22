@@ -1,11 +1,11 @@
+import React, { useCallback, useMemo } from "react";
 import { useAccountByAddress } from "@/effect";
 import { usePlayerStats } from "@/hooks/achievements";
 import { useProject } from "@/hooks/project";
-import { useArcade } from "@/hooks/arcade";
 import { useShare } from "@/hooks/useShare";
 import { AnalyticsEvents } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
-import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
+import { useNavigationManager } from "@/features/navigation/useNavigationManager";
 import {
   AchievementPlayerBadge,
   Button,
@@ -21,8 +21,6 @@ import {
   CopyIcon,
 } from "@cartridge/ui";
 import { useAccount } from "@starknet-react/core";
-import { useRouterState } from "@tanstack/react-router";
-import React, { useCallback, useMemo } from "react";
 import { UserAvatar } from "./avatar";
 import { getChecksumAddress } from "starknet";
 import { ShareIcon } from "lucide-react";
@@ -66,9 +64,6 @@ const UserCardInner = React.memo(
     const { className, address, isPlayer } = props;
 
     const { data: username } = useAccountByAddress(address);
-    const { location } = useRouterState();
-    const { games, editions } = useArcade();
-    const { isConnected } = useAccount();
     const { isMobile } = useDevice();
 
     const usernameStr = username?.username ?? "";
@@ -85,16 +80,7 @@ const UserCardInner = React.memo(
 
     const { earnings: totalEarnings } = usePlayerStats(address);
 
-    const navManager = useMemo(
-      () =>
-        new NavigationContextManager({
-          pathname: location.pathname,
-          games,
-          editions,
-          isLoggedIn: Boolean(isConnected),
-        }),
-      [location.pathname, games, editions, isConnected],
-    );
+    const navManager = useNavigationManager();
 
     const target = useMemo(() => {
       if (!usernameStr && !address) return "/";

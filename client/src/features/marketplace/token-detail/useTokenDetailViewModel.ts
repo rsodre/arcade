@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 import { useAccount } from "@starknet-react/core";
-import { useRouterState } from "@tanstack/react-router";
 import type { Token } from "@/types/torii";
 import type { OrderModel } from "@cartridge/arcade";
 import { useMarketBalancesFetcher } from "@/hooks/marketplace-balances-fetcher";
@@ -10,7 +9,7 @@ import { useArcade } from "@/hooks/arcade";
 import { useAccountByAddress, useMarketplaceTokens } from "@/effect";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
-import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
+import { useNavigationManager } from "@/features/navigation/useNavigationManager";
 import { VoyagerUrl } from "@cartridge/ui/utils";
 import { getChainId } from "@/lib/helpers";
 import {
@@ -49,10 +48,9 @@ export function useTokenDetailViewModel({
   collectionAddress,
   tokenId,
 }: UseTokenDetailViewModelArgs): TokenDetailViewModel {
-  const { address, isConnected } = useAccount();
-  const { games, editions, provider } = useArcade();
+  const { address } = useAccount();
+  const { provider } = useArcade();
   const { edition } = useProject();
-  const { location } = useRouterState();
 
   const {
     collection,
@@ -132,16 +130,7 @@ export function useTokenDetailViewModel({
 
   const isLoading = status === "loading" || status === "idle";
 
-  const navManager = useMemo(
-    () =>
-      new NavigationContextManager({
-        pathname: location.pathname,
-        games,
-        editions,
-        isLoggedIn: Boolean(isConnected),
-      }),
-    [location.pathname, games, editions, isConnected],
-  );
+  const navManager = useNavigationManager();
 
   const collectionHref = useMemo(
     () => navManager.generateCollectionHref(collectionAddress),

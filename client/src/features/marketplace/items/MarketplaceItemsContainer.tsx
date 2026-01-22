@@ -21,9 +21,8 @@ import {
   formatPriceInfo,
   deriveLatestSalePriceForToken,
 } from "@/lib/shared/marketplace/utils";
-import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
-import { useRouterState } from "@tanstack/react-router";
-import { useArcade } from "@/hooks/arcade";
+import type { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
+import { useNavigationManager } from "@/features/navigation/useNavigationManager";
 import { formatBackgroundColor } from "@/hooks/token-fetcher";
 
 const ROW_HEIGHT = 184;
@@ -139,9 +138,6 @@ export const MarketplaceItemsContainer = ({
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const { location } = useRouterState();
-  const { games, editions } = useArcade();
-
   const isLargeScreen = useMediaQuery("(min-width: 1200px)");
   const itemsPerRow = isLargeScreen ? 4 : 2;
 
@@ -173,16 +169,7 @@ export const MarketplaceItemsContainer = ({
       | undefined;
   }, [sales, collectionAddress]);
 
-  const navManager = useMemo(
-    () =>
-      new NavigationContextManager({
-        pathname: location.pathname,
-        games,
-        editions,
-        isLoggedIn: Boolean(isConnected),
-      }),
-    [location.pathname, games, editions, isConnected],
-  );
+  const navManager = useNavigationManager();
 
   const assetsRef = useRef(assets);
   assetsRef.current = assets;
