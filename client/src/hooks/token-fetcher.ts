@@ -345,6 +345,7 @@ export type Collection = {
   iconUrl?: string;
   totalCount: number;
   tokenIds: string[];
+  tokenBalances: number[];
   projects: string[];
 };
 
@@ -428,8 +429,9 @@ function processNFTCollections(
       type: collectionType,
       tokenImageUrl: getAssetImage(innerMeta, project, address, firstNFT),
       tokenBackgroundColor: backgroundColor,
-      totalCount: nfts.length,
+      totalCount: nfts.reduce((acc, nft) => acc + Number(nft.balance), 0),
       tokenIds: nfts.map((nft) => nft.token_id ?? ""),
+      tokenBalances: nfts.map((nft) => Number(nft.balance)),
       projects: [project],
     });
   });

@@ -83,7 +83,11 @@ export function useInventoryCollectionsViewModel({
     });
   }, [collections, ownedAddresses]);
 
+  // useEffect(() => console.log(`editions:`, editions), [editions])
+  // useEffect(() => console.log(`orders:`, orders), [orders])
+
   const collectionCards = useMemo(() => {
+    // console.log(`COLLECTIONS:`, filteredCollections)
     return filteredCollections.map((contract) => {
       const collectionOrders = orders[contract.contract_address];
       const listingCount = collectionOrders

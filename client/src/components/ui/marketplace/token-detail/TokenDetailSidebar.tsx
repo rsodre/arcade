@@ -133,7 +133,7 @@ function DetailItem({
 
 function CollectionName({ name, img }: { name: string; img: string }) {
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-2">
       <img
         src={`${img}?width=28&height=28`}
         className="w-[28px] h-[28px]"

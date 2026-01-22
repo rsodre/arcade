@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAccount, useConnect } from "@starknet-react/core";
+import { useConnect } from "@starknet-react/core";
 import type { Token } from "@dojoengine/torii-wasm";
 import type { ListingWithUsd } from "@/effect/atoms/marketplace";
 import { type RpcProvider, addAddressPadding } from "starknet";
@@ -23,6 +23,8 @@ import { useCollectionOrders, useCombinedTokenFilter } from "./hooks";
 import { useProject } from "@/hooks/project";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { CollectionType } from "@/effect/atoms/tokens";
+import { useCollectibleBalances } from "@/hooks/collectibles";
+import { useAddress } from "@/hooks/address";
 
 export const ERC1155_ENTRYPOINT = "balance_of_batch";
 
@@ -30,6 +32,7 @@ export type MarketplaceAsset = Token & {
   orders: ListingWithUsd[];
   owner: string;
   minUsdPrice: number | null;
+  tokenBalance: number;
 };
 
 interface UseMarketplaceItemsViewModelArgs {
@@ -95,7 +98,7 @@ export const getEntrypoints = async (
 export function useMarketplaceItemsViewModel({
   collectionAddress,
 }: UseMarketplaceItemsViewModelArgs): MarketplaceItemsViewModel {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useAddress();
   const { connect, connectors } = useConnect();
   const { trackEvent, events } = useAnalytics();
   const { sales } = useMarketplace();
@@ -158,6 +161,12 @@ export function useMarketplaceItemsViewModel({
   const isERC1155 = useMemo(
     () => collection?.contract_type === CollectionType.ERC1155,
     [collection],
+  );
+
+  const { balances: collectibleBalances } = useCollectibleBalances(
+    collection,
+    address,
+    ownedTokenIds,
   );
 
   const searchFilteredTokens = useMemo(() => {
@@ -235,6 +244,7 @@ export function useMarketplaceItemsViewModel({
         orders,
         owner: address || "",
         minUsdPrice,
+        tokenBalance: collectibleBalances[token.token_id ?? ""] ?? 1,
       } as MarketplaceAsset;
     });
 
@@ -273,6 +283,7 @@ export function useMarketplaceItemsViewModel({
     address,
     statusFilter,
     listedTokenIds,
+    collectibleBalances,
   ]);
 
   const handleInspect = useCallback(

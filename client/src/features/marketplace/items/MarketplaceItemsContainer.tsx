@@ -53,6 +53,8 @@ interface BaseItemView {
   title: string;
   image?: string | null;
   placeholderImage: string;
+  totalSupply: number;
+  tokenBalance: number;
   listingCount: number;
   price: MarketplaceItemPriceInfo | null;
   lastSale: MarketplaceItemPriceInfo | null;
@@ -82,6 +84,8 @@ const createBaseItemView = (
     image:
       resizeImage((asset as any).image ?? collectionImage, 300, 300) ??
       collectionImage,
+    totalSupply: Number(asset.total_supply ?? "1"),
+    tokenBalance: asset.tokenBalance,
     listingCount: asset.orders.length,
     price: derivePrice(asset),
     lastSale: deriveLastSale(asset, salesByContract),

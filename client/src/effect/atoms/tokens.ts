@@ -71,6 +71,7 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
         symbol: item.symbol ?? "",
         metadata: item.metadata ?? "",
         total_supply: item.total_supply ?? "0x0",
+        //@ts-ignore
         contract_type: item.contract_type ?? ContractType.ERC721,
       });
     }
@@ -167,7 +168,7 @@ const fetchTokenContractsEffect = Effect.gen(function* () {
           project: DEFAULT_PROJECT,
           image: image ?? "",
           contract_type:
-            contract.contract_type == ContractType.ERC1155
+            contract.contract_type === ContractType.ERC1155
               ? CollectionType.ERC1155
               : CollectionType.ERC721,
           background_color: backgroundColor,

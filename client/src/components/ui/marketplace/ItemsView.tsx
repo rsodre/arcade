@@ -34,6 +34,8 @@ export interface MarketplaceItemCardProps {
   title: string;
   image?: string | null;
   placeholderImage?: string;
+  totalSupply: number;
+  tokenBalance: number;
   listingCount: number;
   price: MarketplaceItemPriceInfo | null;
   lastSale: MarketplaceItemPriceInfo | null;
@@ -395,6 +397,8 @@ const MarketplaceItemCard = memo(
     image,
     placeholderImage,
     title,
+    totalSupply,
+    tokenBalance,
     listingCount,
     price,
     lastSale,
@@ -462,6 +466,7 @@ const MarketplaceItemCard = memo(
               title={title}
               images={image ? [image] : []}
               listingCount={listingCount}
+              totalCount={tokenBalance}
               backgroundColor={backgroundColor}
               selectable={selectable}
               selected={selected}
@@ -476,6 +481,7 @@ const MarketplaceItemCard = memo(
               title={title}
               images={[displayImage]}
               listingCount={listingCount}
+              totalCount={totalSupply}
               onClick={handleCardClick}
               className={
                 selectable || canOpen
