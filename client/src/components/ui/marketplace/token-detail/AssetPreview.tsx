@@ -9,15 +9,17 @@ import type { OrderModel } from "@cartridge/arcade";
 interface AssetPreviewProps {
   image?: string;
   name?: string;
-  className?: string;
   order: OrderModel | null;
+  tokenSupply?: number | null;
+  className?: string;
 }
 
 export function AssetPreview({
   image,
   name,
-  className,
   order,
+  tokenSupply,
+  className,
 }: AssetPreviewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -59,6 +61,12 @@ export function AssetPreview({
                 {duration}
               </CollectibleTag>
             </Tooltip>
+          </div>
+        )}
+
+        {tokenSupply && (
+          <div className="absolute bottom-[12px] right-[12px]">
+            <CollectibleTag>{tokenSupply}x</CollectibleTag>
           </div>
         )}
 

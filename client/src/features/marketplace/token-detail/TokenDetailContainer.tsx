@@ -31,6 +31,7 @@ export const TokenDetailContainer = ({
     handleUnlist,
     handleSend,
     lowestOrder,
+    tokenSupply,
     collectionHref,
     ownerHref,
   } = useTokenDetailViewModel({ collectionAddress, tokenId });
@@ -101,6 +102,7 @@ export const TokenDetailContainer = ({
             image={tokenImage}
             name={tokenName}
             order={lowestOrder}
+            tokenSupply={tokenSupply}
             className="h-[360px]"
           />
 
