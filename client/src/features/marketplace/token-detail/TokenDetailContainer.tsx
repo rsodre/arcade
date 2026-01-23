@@ -25,6 +25,7 @@ export const TokenDetailContainer = ({
     isOwner,
     isListed,
     owner,
+    ownerUsername,
     handlePurchase,
     handleList,
     handleUnlist,
@@ -89,6 +90,7 @@ export const TokenDetailContainer = ({
             collectionAddress={collectionAddress}
             tokenId={tokenId}
             owner={owner}
+            ownerUsername={ownerUsername}
             isOwner={isOwner}
             collectionHref={collectionHref}
             ownerHref={ownerHref}

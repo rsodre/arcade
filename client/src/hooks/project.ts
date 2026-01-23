@@ -65,7 +65,10 @@ export const parseRouteParams = (pathname: string): RouteParams => {
       case "collection":
         if (next) {
           params.collection = next;
-          params.tokenId = segments[index + 2] ?? undefined;
+          const tokenId = segments[index + 2] ?? undefined;
+          if (tokenId && !TAB_SEGMENTS.includes(tokenId as TabValue)) {
+            params.tokenId = tokenId;
+          }
           index += 1;
         }
         if (params.tab === "inventory") {
@@ -79,7 +82,7 @@ export const parseRouteParams = (pathname: string): RouteParams => {
         }
         break;
       default:
-        if (!params.tab && TAB_SEGMENTS.includes(segment as any)) {
+        if (!params.tab && TAB_SEGMENTS.includes(segment as TabValue)) {
           params.tab = segment as TabValue;
         }
         break;

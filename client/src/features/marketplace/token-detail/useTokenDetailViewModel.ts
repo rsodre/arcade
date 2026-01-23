@@ -6,7 +6,11 @@ import { useMarketBalancesFetcher } from "@/hooks/marketplace-balances-fetcher";
 import { DEFAULT_PROJECT } from "@/constants";
 import { addAddressPadding, getChecksumAddress } from "starknet";
 import { useArcade } from "@/hooks/arcade";
-import { useAccountByAddress, useMarketplaceTokens } from "@/effect";
+import {
+  useAccountByAddress,
+  useHolders,
+  useMarketplaceTokens,
+} from "@/effect";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { useNavigationManager } from "@/features/navigation/useNavigationManager";
@@ -34,10 +38,12 @@ interface TokenDetailViewModel {
   isOwner: boolean;
   isListed: boolean;
   owner: string;
-  controller: { address: string; username: string } | null;
+  ownerUsername: string | null;
+  holdersCount: number;
   collectionHref: string;
   ownerHref: string;
   contractHref: string | undefined;
+  holdersHref: string | undefined;
   handlePurchase: () => Promise<void>;
   handleList: () => Promise<void>;
   handleUnlist: () => Promise<void>;
@@ -70,7 +76,6 @@ export function useTokenDetailViewModel({
       return addAddressPadding(balances[0].account_address);
     }
     const addr = balances.find((b) => BigInt(b.balance) > 0n)?.account_address;
-
     return undefined !== addr ? addAddressPadding(addr) : "0x0";
   }, [balances]);
   const isOwner = useMemo(
@@ -80,7 +85,7 @@ export function useTokenDetailViewModel({
         getChecksumAddress(addAddressPadding(owner)),
     [address, owner],
   );
-  const { data: controllerName } = useAccountByAddress(owner);
+  const ownerUsername = useAccountByAddress(owner)?.data?.username || null;
 
   const token = useMemo(() => {
     if (!rawTokens || rawTokens.length === 0) return undefined;
@@ -89,6 +94,9 @@ export function useTokenDetailViewModel({
       return tid === tokenId || tid === `0x${tokenId}`;
     });
   }, [rawTokens, tokenId]);
+
+  const { holders } = useHolders(DEFAULT_PROJECT, collectionAddress);
+  const holdersCount = useMemo(() => holders?.length ?? 0, [holders]);
 
   const collectionOrders = useAtomValue(
     collectionOrdersAtom(collectionAddress),
@@ -149,6 +157,11 @@ export function useTokenDetailViewModel({
       : undefined;
   }, [navManager, collectionAddress]);
 
+  const holdersHref = useMemo(
+    () => navManager.generateCollectionHref(collectionAddress, "holders"),
+    [navManager, collectionAddress],
+  );
+
   const handlerParams = useMemo(
     () => ({
       project: edition?.config.project,
@@ -189,10 +202,12 @@ export function useTokenDetailViewModel({
     isOwner,
     isListed,
     owner,
-    controller: controllerName,
+    holdersCount,
+    ownerUsername,
     collectionHref,
     ownerHref,
     contractHref,
+    holdersHref,
     handlePurchase,
     handleList,
     handleUnlist,

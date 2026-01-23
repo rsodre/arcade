@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { truncateAddress } from "./TokenDetailSidebar";
+import { truncateAddress } from "@/components/user/username";
 
 interface TokenProperty {
   name: string;

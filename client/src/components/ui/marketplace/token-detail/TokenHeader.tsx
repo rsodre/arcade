@@ -3,6 +3,7 @@ import { Button, Thumbnail, VerifiedIcon } from "@cartridge/ui";
 import { useShare } from "@/hooks/useShare";
 import { AnalyticsEvents } from "@/hooks/useAnalytics";
 import { Link } from "@tanstack/react-router";
+import { Username } from "@/components/user/username";
 
 interface TokenHeaderProps {
   name: string;
@@ -11,6 +12,7 @@ interface TokenHeaderProps {
   collectionAddress?: string;
   tokenId?: string;
   owner?: string;
+  ownerUsername?: string | null;
   isOwner: boolean;
   collectionHref?: string;
   ownerHref?: string;
@@ -24,6 +26,7 @@ export function TokenHeader({
   collectionAddress,
   tokenId,
   owner,
+  ownerUsername,
   isOwner,
   collectionHref,
   ownerHref,
@@ -43,11 +46,6 @@ export function TokenHeader({
       },
     },
   });
-
-  const truncateAddress = (address: string) => {
-    if (!address) return "";
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
 
   return (
     <div className="flex justify-between gap-4 items-center">
@@ -77,7 +75,11 @@ export function TokenHeader({
                 <div className="flex items-center gap-1.5 bg-background-150 rounded px-2 py-1">
                   <span className="text-foreground-300 text-sm">Owned by</span>
                   <span className="text-foreground-300 text-sm font-medium">
-                    {isOwner ? "you" : truncateAddress(owner)}
+                    {isOwner ? (
+                      "you"
+                    ) : (
+                      <Username username={ownerUsername} address={owner} />
+                    )}
                   </span>
                 </div>
               </Link>
