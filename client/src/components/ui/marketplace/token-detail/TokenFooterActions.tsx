@@ -87,7 +87,7 @@ export function TokenFooterActions({
         {orderWithUsd && (
           <PriceFooter
             label="Total"
-            orders={[orderWithUsd]}
+            orders={orderWithUsd ? [orderWithUsd] : []}
             className="flex gap-3 flex-1 w-full"
           />
         )}
@@ -106,7 +106,7 @@ export function TokenFooterActions({
         {orderWithUsd && (
           <PriceFooter
             label="Listed Price"
-            orders={[orderWithUsd]}
+            orders={orderWithUsd ? [orderWithUsd] : []}
             className="flex gap-3 flex-1 w-full"
           />
         )}

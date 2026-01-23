@@ -26,6 +26,8 @@ export function AssetPreview({
     [order?.expiration],
   );
 
+  const listedCount = order?.quantity ?? 0;
+
   return (
     <>
       <div
@@ -60,10 +62,11 @@ export function AssetPreview({
           </div>
         )}
 
-        {!!order && (
+        {listedCount > 0 && (
           <div className="absolute top-[-2px] right-[12px]">
             <ListedTag>
-              <TagIcon size="sm" variant="solid" className="text-[#0F1410]" />
+              <TagIcon size="sm" variant="solid" />
+              {listedCount > 1 && <>{listedCount}</>}
             </ListedTag>
           </div>
         )}
@@ -97,7 +100,7 @@ export function AssetPreview({
 
 const ListedTag = ({ children }: { children?: React.ReactNode }) => {
   return (
-    <div className="relative w-fit rounded overflow-hidden flex flex-col select-none">
+    <div className="relative w-fit rounded overflow-hidden flex flex-col select-none text-[#0F1410]">
       <div className="px-2.5 pt-[5px] pb-[3px] w-full bg-primary-100 flex items-center justify-center min-h-[28px]">
         {children}
       </div>

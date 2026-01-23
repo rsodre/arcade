@@ -251,11 +251,16 @@ function useControllerPathBuilder(
       const collection = collections.data?.find(
         (collection) => collection.contract_address === collectionAddress,
       );
-      const isERC1155 = collection
-        ? collection.contract_type === CollectionType.ERC1155
-        : undefined;
-      const subpath = isERC1155 ? "collectible" : "collection";
+      const isERC1155 = collection?.contract_type === CollectionType.ERC1155;
+      const tokenId = addAddressPadding(tokenIds[0]);
 
+      const segments = [
+        "account",
+        username,
+        "inventory",
+        isERC1155 ? "collectible" : "collection",
+        collectionAddress,
+      ];
       const options = [
         // `ps=${presetParams?.project ?? DEFAULT_PROJECT}`, // breaks jokers of neon
         `ps=${DEFAULT_PROJECT}`,
@@ -276,29 +281,35 @@ function useControllerPathBuilder(
           options.push(`address=${orders[0].owner}`);
         }
 
-        const tokenId = addAddressPadding(tokenIds[0]);
-
-        return `account/${username}/inventory/${subpath}/${collectionAddress}/token/${tokenId}?${options.join("&")}`;
-      }
-
-      if (viewType === "purchase") {
-        if (!orders?.length) {
-          trackEvent(events.MARKETPLACE_PURCHASE_FAILED, {
-            error_message: "Missing orders for purchase",
-            purchase_type: tokenIds.length > 1 ? "bulk" : "single",
-          });
-          return undefined;
-        }
-        options.push(
-          `orders=${orders.map((order) => order.id.toString()).join(",")}`,
-        );
+        segments.push("token");
+        segments.push(tokenId);
       } else {
-        tokenIds.forEach((tokenId) => {
-          options.push(`tokenIds=${addAddressPadding(tokenId)}`);
-        });
+        if (viewType === "purchase") {
+          if (!orders?.length) {
+            trackEvent(events.MARKETPLACE_PURCHASE_FAILED, {
+              error_message: "Missing orders for purchase",
+              purchase_type: tokenIds.length > 1 ? "bulk" : "single",
+            });
+            return undefined;
+          }
+          options.push(
+            `orders=${orders.map((order) => order.id.toString()).join(",")}`,
+          );
+        } else {
+          tokenIds.forEach((tokenId) => {
+            options.push(`tokenIds=${addAddressPadding(tokenId)}`);
+          });
+        }
+
+        if (isERC1155) {
+          segments.push("token");
+          segments.push(tokenId);
+        }
+
+        segments.push(viewType);
       }
 
-      return `account/${username}/inventory/${subpath}/${collectionAddress}/${viewType}?${options.join("&")}`;
+      return `${segments.join("/")}?${options.join("&")}`;
     },
     [username, collections?.status, trackEvent, events, presetParams],
   );

@@ -211,7 +211,7 @@ export const MarketplaceItemsContainer = ({
   }, [selection, ownedTokenIds]);
 
   const selectionOrders = useMemo(() => {
-    return selection.map((asset) => asset.orders[0]);
+    return selection.map((asset) => asset.orders[0]).filter(Boolean);
   }, [selection.length]);
 
   const handleToggleSelectById = useCallback(
