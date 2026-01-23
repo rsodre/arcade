@@ -6,11 +6,7 @@ import { useMarketBalancesFetcher } from "@/hooks/marketplace-balances-fetcher";
 import { DEFAULT_PROJECT } from "@/constants";
 import { addAddressPadding, getChecksumAddress } from "starknet";
 import { useArcade } from "@/hooks/arcade";
-import {
-  useAccountByAddress,
-  useHolders,
-  useMarketplaceTokens,
-} from "@/effect";
+import { useAccountByAddress, useMarketplaceTokens } from "@/effect";
 import { collectionOrdersAtom } from "@/effect/atoms";
 import { CollectionType } from "@/effect/atoms/tokens";
 import { useAtomValue } from "@effect-atom/atom-react";
@@ -36,16 +32,19 @@ interface TokenDetailViewModel {
   orders: OrderModel[];
   lowestOrder: OrderModel | null;
   isLoading: boolean;
-  isOwner: boolean;
   isListed: boolean;
+  isOwner: boolean;
   owner: string;
   ownerUsername: string | null;
-  holdersCount: number;
-  tokenSupply: number | null;
+  collectible?: {
+    // when ERC-1155
+    tokenSupply: number;
+    ownersCount: number;
+    ownedCount: number;
+  };
   collectionHref: string;
   ownerHref: string;
   contractHref: string | undefined;
-  holdersHref: string | undefined;
   handlePurchase: () => Promise<void>;
   handleList: () => Promise<void>;
   handleUnlist: () => Promise<void>;
@@ -68,18 +67,48 @@ export function useTokenDetailViewModel({
     tokenIds: [tokenId],
   });
 
+  const isERC1155 = useMemo(
+    () => collection?.contract_type === CollectionType.ERC1155,
+    [collection],
+  );
+
   const { balances } = useMarketBalancesFetcher({
     project: [DEFAULT_PROJECT],
     address: collectionAddress,
     tokenId,
   });
+
+  const collectible = useMemo(() => {
+    if (!isERC1155 || !balances) return undefined;
+    const tokenSupply = balances.reduce(
+      (acc, balance) => acc + Number(BigInt(balance.balance)),
+      0,
+    );
+    const ownersCount = balances.length;
+    const ownedBalance = balances.find(
+      (b) => address && BigInt(b.account_address) === BigInt(address),
+    );
+    const ownedCount = Number(BigInt(ownedBalance?.balance ?? 0));
+    return {
+      tokenSupply,
+      ownersCount,
+      ownedCount,
+    };
+  }, [isERC1155, balances, address]);
+
   const owner = useMemo(() => {
+    if (collectible) {
+      return collectible.ownedCount > 0
+        ? addAddressPadding(address as string)
+        : "0x0";
+    }
     if (balances && balances.length === 1) {
       return addAddressPadding(balances[0].account_address);
     }
     const addr = balances.find((b) => BigInt(b.balance) > 0n)?.account_address;
-    return undefined !== addr ? addAddressPadding(addr) : "0x0";
-  }, [balances]);
+    return addr ? addAddressPadding(addr) : "0x0";
+  }, [balances, collectible]);
+
   const isOwner = useMemo(
     () =>
       undefined !== address &&
@@ -87,6 +116,7 @@ export function useTokenDetailViewModel({
         getChecksumAddress(addAddressPadding(owner)),
     [address, owner],
   );
+
   const ownerUsername = useAccountByAddress(owner)?.data?.username || null;
 
   const token = useMemo(() => {
@@ -96,29 +126,6 @@ export function useTokenDetailViewModel({
       return tid === tokenId || tid === `0x${tokenId}`;
     });
   }, [rawTokens, tokenId]);
-
-  const isERC1155 = useMemo(
-    () => collection?.contract_type === CollectionType.ERC1155,
-    [collection],
-  );
-
-  const { holders } = useHolders(DEFAULT_PROJECT, collectionAddress);
-  const holdersCount = useMemo(() => holders?.length ?? 0, [holders]);
-  const tokenSupply = useMemo(
-    () =>
-      !isERC1155
-        ? null
-        : holders.reduce((acc, holder) => {
-            const tokenIndex = holder.token_ids.findIndex((id) =>
-              id.endsWith(tokenId),
-            );
-            if (tokenIndex >= 0) {
-              return acc + holder.balances[tokenIndex];
-            }
-            return acc;
-          }, 0),
-    [holders, isERC1155],
-  );
 
   const collectionOrders = useAtomValue(
     collectionOrdersAtom(collectionAddress),
@@ -179,11 +186,6 @@ export function useTokenDetailViewModel({
       : undefined;
   }, [navManager, collectionAddress]);
 
-  const holdersHref = useMemo(
-    () => navManager.generateCollectionHref(collectionAddress, "holders"),
-    [navManager, collectionAddress],
-  );
-
   const handlerParams = useMemo(
     () => ({
       project: edition?.config.project,
@@ -221,16 +223,14 @@ export function useTokenDetailViewModel({
     orders,
     lowestOrder,
     isLoading,
-    isOwner,
     isListed,
+    isOwner,
     owner,
-    holdersCount,
-    tokenSupply,
     ownerUsername,
+    collectible,
     collectionHref,
     ownerHref,
     contractHref,
-    holdersHref,
     handlePurchase,
     handleList,
     handleUnlist,

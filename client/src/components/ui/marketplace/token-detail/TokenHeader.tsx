@@ -4,6 +4,7 @@ import { useShare } from "@/hooks/useShare";
 import { AnalyticsEvents } from "@/hooks/useAnalytics";
 import { Link } from "@tanstack/react-router";
 import { Username } from "@/components/user/username";
+import { useDevice } from "@/hooks/device";
 
 interface TokenHeaderProps {
   name: string;
@@ -14,6 +15,7 @@ interface TokenHeaderProps {
   owner?: string;
   ownerUsername?: string | null;
   isOwner: boolean;
+  ownedCount?: number | null;
   collectionHref?: string;
   ownerHref?: string;
   verified?: boolean;
@@ -28,6 +30,7 @@ export function TokenHeader({
   owner,
   ownerUsername,
   isOwner,
+  ownedCount,
   collectionHref,
   ownerHref,
   verified = true,
@@ -46,6 +49,9 @@ export function TokenHeader({
       },
     },
   });
+  const { isMobile } = useDevice();
+
+  const displayOwner = owner && (isMobile || isOwner);
 
   return (
     <div className="flex justify-between gap-4 items-center">
@@ -70,17 +76,19 @@ export function TokenHeader({
                 </div>
               </Link>
             )}
-            {owner && (
+            {displayOwner && (
               <Link to={ownerHref} disabled={!ownerHref}>
                 <div className="flex items-center gap-1.5 bg-background-150 rounded px-2 py-1">
-                  <span className="text-foreground-300 text-sm">Owned by</span>
-                  <span className="text-foreground-300 text-sm font-medium">
-                    {isOwner ? (
-                      "you"
-                    ) : (
+                  {isOwner ? (
+                    <span className="text-foreground-300 text-sm">
+                      {ownedCount ? `You own ${ownedCount}` : "Owned by you"}
+                    </span>
+                  ) : (
+                    <span className="text-foreground-300 text-sm">
+                      Owned by{" "}
                       <Username username={ownerUsername} address={owner} />
-                    )}
-                  </span>
+                    </span>
+                  )}
                 </div>
               </Link>
             )}

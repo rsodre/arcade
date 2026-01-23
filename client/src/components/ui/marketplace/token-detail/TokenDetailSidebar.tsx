@@ -14,11 +14,10 @@ export function TokenDetailSidebar() {
     collection,
     ownerUsername,
     owner,
-    holdersCount,
+    collectible,
     collectionHref,
     ownerHref,
     contractHref,
-    holdersHref,
   } = useTokenDetailViewModel({
     collectionAddress: collectionAddressParam ?? "0x0",
     tokenId: tokenIdParam ?? "0x0",
@@ -51,11 +50,17 @@ export function TokenDetailSidebar() {
       <div className="">
         <DetailTitle label="Details" />
         <div className="flex flex-col gap-[1px]">
-          <Link to={ownerHref}>
-            <DetailItem label="Owner" hoverable>
-              <Username username={ownerUsername} address={owner} />
+          {collectible ? (
+            <DetailItem label="Owners" hoverable>
+              {collectible.ownersCount}
             </DetailItem>
-          </Link>
+          ) : (
+            <Link to={ownerHref}>
+              <DetailItem label="Owner" hoverable>
+                <Username username={ownerUsername} address={owner} />
+              </DetailItem>
+            </Link>
+          )}
           <Link to={contractHref} disabled={!contractHref} target="_blank">
             <DetailItem label="Contract Address" hoverable>
               {collectionAddressTrunc}
@@ -65,12 +70,6 @@ export function TokenDetailSidebar() {
             {truncateAddress(tokenIdStr)}
           </DetailItem>
           <DetailItem label="Token Standard">{tokenStandard}</DetailItem>
-          <DetailItem label="Total Supply">{collection.totalSupply}</DetailItem>
-          <Link to={holdersHref} disabled={!holdersHref}>
-            <DetailItem label="Holders" hoverable>
-              {holdersCount}
-            </DetailItem>
-          </Link>
         </div>
       </div>
 

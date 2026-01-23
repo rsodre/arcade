@@ -22,16 +22,16 @@ export const TokenDetailContainer = ({
     token,
     collection,
     isLoading,
-    isOwner,
     isListed,
+    isOwner,
     owner,
     ownerUsername,
+    collectible,
     handlePurchase,
     handleList,
     handleUnlist,
     handleSend,
     lowestOrder,
-    tokenSupply,
     collectionHref,
     ownerHref,
   } = useTokenDetailViewModel({ collectionAddress, tokenId });
@@ -93,6 +93,7 @@ export const TokenDetailContainer = ({
             owner={owner}
             ownerUsername={ownerUsername}
             isOwner={isOwner}
+            ownedCount={collectible?.ownedCount ?? null}
             collectionHref={collectionHref}
             ownerHref={ownerHref}
             verified
@@ -102,7 +103,7 @@ export const TokenDetailContainer = ({
             image={tokenImage}
             name={tokenName}
             order={lowestOrder}
-            tokenSupply={tokenSupply}
+            tokenSupply={collectible?.tokenSupply ?? null}
             className="h-[360px]"
           />
 
