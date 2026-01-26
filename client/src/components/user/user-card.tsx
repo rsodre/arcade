@@ -1,11 +1,12 @@
+import React, { useCallback, useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { useAccountByAddress } from "@/effect";
 import { usePlayerStats } from "@/hooks/achievements";
 import { useProject } from "@/hooks/project";
-import { useArcade } from "@/hooks/arcade";
 import { useShare } from "@/hooks/useShare";
 import { AnalyticsEvents } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
-import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
+import { useNavigationManager } from "@/features/navigation/useNavigationManager";
 import {
   AchievementPlayerBadge,
   Button,
@@ -21,8 +22,6 @@ import {
   CopyIcon,
 } from "@cartridge/ui";
 import { useAccount } from "@starknet-react/core";
-import { useRouterState } from "@tanstack/react-router";
-import React, { useCallback, useMemo } from "react";
 import { UserAvatar } from "./avatar";
 import { getChecksumAddress } from "starknet";
 import { ShareIcon } from "lucide-react";
@@ -66,9 +65,6 @@ const UserCardInner = React.memo(
     const { className, address, isPlayer } = props;
 
     const { data: username } = useAccountByAddress(address);
-    const { location } = useRouterState();
-    const { games, editions } = useArcade();
-    const { isConnected } = useAccount();
     const { isMobile } = useDevice();
 
     const usernameStr = username?.username ?? "";
@@ -85,16 +81,7 @@ const UserCardInner = React.memo(
 
     const { earnings: totalEarnings } = usePlayerStats(address);
 
-    const navManager = useMemo(
-      () =>
-        new NavigationContextManager({
-          pathname: location.pathname,
-          games,
-          editions,
-          isLoggedIn: Boolean(isConnected),
-        }),
-      [location.pathname, games, editions, isConnected],
-    );
+    const navManager = useNavigationManager();
 
     const target = useMemo(() => {
       if (!usernameStr && !address) return "/";
@@ -122,14 +109,18 @@ const UserCardInner = React.memo(
 
     const { handleShare, isShareAvailable } = useShare(shareConfig);
 
+    const profileUrl = useMemo(
+      () => `${window.location.origin}/player/${address}`,
+      [address],
+    );
+
     const handleCopyAddress = useCallback(async () => {
-      const profileUrl = `${window.location.origin}/player/${address}`;
       try {
         await navigator.clipboard.writeText(profileUrl);
       } catch (error) {
         console.error("Copy failed:", error);
       }
-    }, [address]);
+    }, [profileUrl]);
 
     if (!usernameStr && !address) {
       return null;
@@ -165,9 +156,11 @@ const UserCardInner = React.memo(
           </div>
           <div className="h-full flex-1 flex flex-col justify-between gap-2 lg:gap-0">
             <div className="flex flex-row justify-between">
-              <p className="text-foreground-100 text-[16px]/[normal] lg:text-xl/6 font-semibold">
-                {usernameStr}
-              </p>
+              <Link to={profileUrl}>
+                <p className="text-foreground-100 text-[16px]/[normal] lg:text-xl/6 font-semibold">
+                  {usernameStr}
+                </p>
+              </Link>
               <div
                 className={cn(
                   "flex items-center gap-1 p-0.5",

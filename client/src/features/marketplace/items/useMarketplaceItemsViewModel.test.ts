@@ -33,6 +33,14 @@ vi.mock("@/hooks/arcade", () => ({
   useArcade: () => ({ provider: { provider: { getClassAt: mockGetClassAt } } }),
 }));
 
+vi.mock("@/hooks/address", () => ({
+  useAddress: () => ({ address: "0x123", isConnected: true }),
+}));
+
+vi.mock("@/hooks/collectibles", () => ({
+  useCollectibleBalances: () => ({ balances: {} }),
+}));
+
 let mockSales: Record<string, Record<string, any>> = {};
 
 vi.mock("@/hooks/marketplace", () => ({

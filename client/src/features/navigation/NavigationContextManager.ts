@@ -269,7 +269,7 @@ export class NavigationContextManager {
     return joinPaths("collection", checksummedAddress, normalizedTokenId);
   }
 
-  generateCollectionHref(collectionAddress: string): string {
+  generateCollectionHref(collectionAddress: string, tab?: TabValue): string {
     const checksummedAddress = getChecksumAddress(collectionAddress);
 
     if (this.params.edition && this.params.game) {
@@ -292,7 +292,9 @@ export class NavigationContextManager {
       );
     }
 
-    return joinPaths("collection", checksummedAddress);
+    return tab
+      ? joinPaths("collection", checksummedAddress, tab)
+      : joinPaths("collection", checksummedAddress);
   }
 
   generateGameHref(gameIdOrName: string, editionIdOrName?: string): string {

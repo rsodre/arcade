@@ -21,9 +21,8 @@ import {
   formatPriceInfo,
   deriveLatestSalePriceForToken,
 } from "@/lib/shared/marketplace/utils";
-import { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
-import { useRouterState } from "@tanstack/react-router";
-import { useArcade } from "@/hooks/arcade";
+import type { NavigationContextManager } from "@/features/navigation/NavigationContextManager";
+import { useNavigationManager } from "@/features/navigation/useNavigationManager";
 import { formatBackgroundColor } from "@/hooks/token-fetcher";
 
 const ROW_HEIGHT = 184;
@@ -54,6 +53,8 @@ interface BaseItemView {
   title: string;
   image?: string | null;
   placeholderImage: string;
+  totalSupply: number;
+  tokenBalance: number;
   listingCount: number;
   price: MarketplaceItemPriceInfo | null;
   lastSale: MarketplaceItemPriceInfo | null;
@@ -83,6 +84,8 @@ const createBaseItemView = (
     image:
       resizeImage((asset as any).image ?? collectionImage, 300, 300) ??
       collectionImage,
+    totalSupply: Number(asset.total_supply ?? "1"),
+    tokenBalance: asset.tokenBalance,
     listingCount: asset.orders.length,
     price: derivePrice(asset),
     lastSale: deriveLastSale(asset, salesByContract),
@@ -139,9 +142,6 @@ export const MarketplaceItemsContainer = ({
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const { location } = useRouterState();
-  const { games, editions } = useArcade();
-
   const isLargeScreen = useMediaQuery("(min-width: 1200px)");
   const itemsPerRow = isLargeScreen ? 4 : 2;
 
@@ -173,16 +173,7 @@ export const MarketplaceItemsContainer = ({
       | undefined;
   }, [sales, collectionAddress]);
 
-  const navManager = useMemo(
-    () =>
-      new NavigationContextManager({
-        pathname: location.pathname,
-        games,
-        editions,
-        isLoggedIn: Boolean(isConnected),
-      }),
-    [location.pathname, games, editions, isConnected],
-  );
+  const navManager = useNavigationManager();
 
   const assetsRef = useRef(assets);
   assetsRef.current = assets;
@@ -219,6 +210,10 @@ export const MarketplaceItemsContainer = ({
     return listed ? "listed" : "unlisted";
   }, [selection, ownedTokenIds]);
 
+  const selectionOrders = useMemo(() => {
+    return selection.map((asset) => asset.orders[0]).filter(Boolean);
+  }, [selection.length]);
+
   const handleToggleSelectById = useCallback(
     (index: number) => {
       const asset = assetsRef.current[index];
@@ -235,7 +230,7 @@ export const MarketplaceItemsContainer = ({
     [handleInspect],
   );
 
-  const handleBuySelection = useCallback(() => {
+  const handlePurchaseSelection = useCallback(() => {
     handlePurchase(selection);
   }, [handlePurchase, selection]);
 
@@ -333,6 +328,12 @@ export const MarketplaceItemsContainer = ({
     assets.length === 0 &&
     ["idle", "error", "success"].includes(status);
 
+  const canPurchaseSelection = selectionType === "listed";
+  const canListSelection = selectionType === "owned-unlisted";
+  const canUnlistSelection = selectionType === "owned-listed";
+  const canSendSelection =
+    selectionType === "owned-listed" || selectionType === "owned-unlisted";
+
   if (isLoading) {
     return <ItemsLoadingState />;
   }
@@ -358,24 +359,19 @@ export const MarketplaceItemsContainer = ({
       onClearFilters={clearAllFilters}
       onResetSelection={clearSelection}
       isConnected={isConnected}
-      onBuySelection={
-        selectionType === "listed" ? handleBuySelection : undefined
+      onPurchaseSelection={
+        canPurchaseSelection ? handlePurchaseSelection : undefined
       }
-      onListSelection={
-        selectionType === "owned-unlisted" ? handleListSelection : undefined
-      }
-      onUnlistSelection={
-        selectionType === "owned-listed" ? handleUnlistSelection : undefined
-      }
-      onSendSelection={
-        selectionType === "owned-unlisted" ? handleSendSelection : undefined
-      }
+      onListSelection={canListSelection ? handleListSelection : undefined}
+      onUnlistSelection={canUnlistSelection ? handleUnlistSelection : undefined}
+      onSendSelection={canSendSelection ? handleSendSelection : undefined}
       loadingOverlay={{
         isLoading: status === "loading",
         progress: undefined,
       }}
       statusFilter={statusFilter}
       listedTokensCount={listedTokens.length}
+      selectionOrders={selectionOrders}
     />
   );
 };

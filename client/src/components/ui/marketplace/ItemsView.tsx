@@ -6,19 +6,20 @@ import {
   type MouseEvent,
   type RefObject,
 } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   Button,
   Checkbox,
   Empty,
   InventoryItemCard,
   MarketplaceSearch,
-  Separator,
   Skeleton,
   cn,
 } from "@cartridge/ui";
-import CollectibleCard from "./collectible-card";
+import type { ListingWithUsd } from "@/effect";
 import { FloatingLoadingSpinner } from "@/components/ui/floating-loading-spinner";
-import { Link } from "@tanstack/react-router";
+import { PriceFooter } from "@/components/ui/modules/price-footer";
+import CollectibleCard from "./collectible-card";
 
 const NOOP = () => {};
 
@@ -33,6 +34,8 @@ export interface MarketplaceItemCardProps {
   title: string;
   image?: string | null;
   placeholderImage?: string;
+  totalSupply: number;
+  tokenBalance: number;
   listingCount: number;
   price: MarketplaceItemPriceInfo | null;
   lastSale: MarketplaceItemPriceInfo | null;
@@ -46,7 +49,6 @@ export interface MarketplaceItemCardProps {
   backgroundColor?: string;
   onToggleSelectByIndex: (index: number) => void;
   onInspectByIndex: (index: number) => void;
-  onConnect: () => Promise<void> | void;
 }
 
 export interface MarketplaceItemsRow {
@@ -72,7 +74,7 @@ interface ItemsViewProps {
   onClearFilters: () => void;
   onResetSelection: () => void;
   isConnected: boolean;
-  onBuySelection: (() => void) | undefined;
+  onPurchaseSelection: (() => void) | undefined;
   onListSelection: (() => void) | undefined;
   onUnlistSelection: (() => void) | undefined;
   onSendSelection: (() => void) | undefined;
@@ -82,6 +84,7 @@ interface ItemsViewProps {
   };
   statusFilter: string;
   listedTokensCount: number;
+  selectionOrders: ListingWithUsd[];
 }
 
 export const ItemsView = ({
@@ -100,16 +103,17 @@ export const ItemsView = ({
   onClearFilters,
   onResetSelection,
   isConnected,
-  onBuySelection,
+  onPurchaseSelection,
   onListSelection,
   onUnlistSelection,
   onSendSelection,
   loadingOverlay,
   statusFilter,
   listedTokensCount,
+  selectionOrders,
 }: ItemsViewProps) => {
   return (
-    <div className="flex flex-col gap-4 h-full w-full overflow-hidden order-3">
+    <div className="relative flex flex-col gap-4 h-full w-full overflow-hidden order-3">
       <div className="min-h-10 w-full flex justify-between items-center relative">
         <div className="flex items-center gap-4">
           <SelectionSummary
@@ -176,7 +180,8 @@ export const ItemsView = ({
       <SelectionFooter
         isVisible={isConnected && selectionCount > 0}
         selectionCount={selectionCount}
-        onBuySelection={onBuySelection}
+        orders={selectionOrders}
+        onPurchaseSelection={onPurchaseSelection}
         onListSelection={onListSelection}
         onUnlistSelection={onUnlistSelection}
         onSendSelection={onSendSelection}
@@ -308,14 +313,16 @@ function SelectedCount({
 const SelectionFooter = ({
   isVisible,
   selectionCount,
-  onBuySelection,
+  orders,
+  onPurchaseSelection,
   onListSelection,
   onUnlistSelection,
   onSendSelection,
 }: {
   isVisible: boolean;
   selectionCount: number;
-  onBuySelection?: () => void;
+  orders: ListingWithUsd[];
+  onPurchaseSelection?: () => void;
   onListSelection?: () => void;
   onUnlistSelection?: () => void;
   onSendSelection?: () => void;
@@ -323,16 +330,22 @@ const SelectionFooter = ({
   return (
     <div
       className={cn(
-        "overflow-hidden transition-all duration-500 ease-out",
-        isVisible ? "h-[50px] opacity-100" : "max-h-0 opacity-0",
+        "absolute bottom-[0px] transition-all duration-500 ease-out ease-in",
+        isVisible ? "h-[50px] opacity-100 sticky bottom-0" : "h-0 opacity-0",
       )}
     >
-      <Separator className="w-full bg-background-200" />
       <div className="w-full flex justify-end items-center gap-x-2">
-        {onBuySelection && (
+        {orders.length > 0 && (
+          <PriceFooter
+            label="Total"
+            orders={orders}
+            className="flex gap-3 flex-1 w-full"
+          />
+        )}
+        {onPurchaseSelection && (
           <Button
-            variant="primary"
-            onClick={onBuySelection}
+            variant="secondary"
+            onClick={onPurchaseSelection}
             disabled={selectionCount === 0}
           >
             {`Buy (${selectionCount})`}
@@ -340,7 +353,7 @@ const SelectionFooter = ({
         )}
         {onListSelection && (
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={onListSelection}
             disabled={selectionCount === 0}
           >
@@ -349,7 +362,8 @@ const SelectionFooter = ({
         )}
         {onUnlistSelection && (
           <Button
-            variant="primary"
+            variant="secondary"
+            className="text-destructive-100"
             onClick={onUnlistSelection}
             disabled={selectionCount === 0}
           >
@@ -358,7 +372,7 @@ const SelectionFooter = ({
         )}
         {onSendSelection && (
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={onSendSelection}
             disabled={selectionCount === 0}
           >
@@ -379,9 +393,12 @@ const MarketplaceItemCard = memo(
     canOpen,
     isConnected,
     onToggleSelectByIndex,
+    onInspectByIndex,
     image,
     placeholderImage,
     title,
+    totalSupply,
+    tokenBalance,
     listingCount,
     price,
     lastSale,
@@ -430,6 +447,12 @@ const MarketplaceItemCard = memo(
       }
     };
 
+    const handleCardClick = () => {
+      if (canOpen) {
+        onInspectByIndex(index);
+      }
+    };
+
     const handleSelect =
       isConnected && selectable
         ? () => onToggleSelectByIndex(index)
@@ -443,11 +466,12 @@ const MarketplaceItemCard = memo(
               title={title}
               images={image ? [image] : []}
               listingCount={listingCount}
+              totalCount={tokenBalance}
               backgroundColor={backgroundColor}
               selectable={selectable}
               selected={selected}
               onSelect={handleSelect}
-              onClick={canOpen || selectable ? () => {} : undefined}
+              onClick={canOpen || selectable ? handleCardClick : undefined}
             />
           </Link>
         )}
@@ -457,6 +481,8 @@ const MarketplaceItemCard = memo(
               title={title}
               images={[displayImage]}
               listingCount={listingCount}
+              totalCount={totalSupply}
+              onClick={handleCardClick}
               className={
                 selectable || canOpen
                   ? "cursor-pointer"
