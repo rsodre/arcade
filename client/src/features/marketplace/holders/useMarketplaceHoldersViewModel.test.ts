@@ -29,7 +29,6 @@ vi.mock("@/hooks/use-metadata-filters", () => ({
 }));
 
 vi.mock("@/features/navigation/useNavigationManager", () => ({
-  // useNavigationManager: () => mockUseNavigationManager(),
   useNavigationManager: () => ({ generatePlayerHref: () => {} }),
 }));
 
