@@ -31,6 +31,7 @@
     "@cartridge/penpal": "^6.2.3",
     "@cartridge/presets": "catalog:",
     "@cartridge/ui": "catalog:",
+    "@dojoengine/core": "catalog:",
     "@dojoengine/grpc": "catalog:",
     "@dojoengine/react": "catalog:",
     "@dojoengine/sdk": "catalog:",
