@@ -44,7 +44,7 @@ export function TokenDetailSidebar() {
     <div
       className={cn(
         "w-full lg:min-w-[360px] h-full p-4 flex flex-col gap-6 bg-background-100",
-        "lg:border lg:border-background-200 lg:rounded-xl",
+        "border-r border-spacer-100 lg:border lg:border-background-200 lg:rounded-xl",
       )}
     >
       <div className="">
@@ -92,7 +92,7 @@ export function TokenDetailSidebar() {
 
 function DetailTitle({ label }: { label: string }) {
   return (
-    <div className="flex flex-row justify-between py-2 px-3">
+    <div className="flex flex-row justify-between py-2">
       <span className="text-foreground-300 text-xs font-sans">{label}</span>
     </div>
   );
