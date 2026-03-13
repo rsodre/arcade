@@ -144,7 +144,7 @@
     },
     {
       "address": "0x3eb03b8f2be0ec2aafd186d72f6d8f3dd320dbc89f2b6802bca7465f6ccaa43",
-      "class_hash": "0x65768f33cc1d45bdfa5f90c3e19bb50626162e587389d644bab03da473487b5",
+      "class_hash": "0xcfb7ec79554676393139f16d5c30d2dbde3a17a92c51b98d6ffa6fb30251f0",
       "init_calldata": [
         "0x0",
         "0x059b1a0c489b635d7c7f43594d187362ddd2dcea6c82db4eef2579fd185b3753",
