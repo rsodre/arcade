@@ -13,6 +13,7 @@ pub struct Metadata {
     pub image_uri: ByteArray,
     pub items: Span<Item>,
     pub tokens: Span<ContractAddress>,
+    pub conditions: Span<ByteArray>,
 }
 
 // Errors
@@ -35,6 +36,7 @@ pub impl MetadataImpl of MetadataTrait {
         image_uri: ByteArray,
         items: Span<Item>,
         tokens: Span<ContractAddress>,
+        conditions: Span<ByteArray>,
     ) -> Metadata {
         // [Check] Inputs
         MetadataAssert::assert_valid_name(@name);
@@ -42,7 +44,7 @@ pub impl MetadataImpl of MetadataTrait {
         MetadataAssert::assert_valid_image_uri(@image_uri);
         MetadataAssert::assert_valid_items(@items);
         // [Return] Metadata
-        Metadata { name, description, image_uri, items, tokens }
+        Metadata { name, description, image_uri, items, tokens, conditions }
     }
 
     #[inline]
@@ -63,6 +65,7 @@ pub impl MetadataImpl of MetadataTrait {
             .add("image_uri", self.image_uri)
             .add_array("items", items.span())
             .add_array("additional_payment_tokens", tokens.span())
+            .add_array("conditions", self.conditions)
             .build()
     }
 }
@@ -100,6 +103,9 @@ mod tests {
 
     const ICON: felt252 = 'ICON';
     const TOKEN: ContractAddress = 'TOKEN'.try_into().unwrap();
+    fn CONDITIONS() -> Span<ByteArray> {
+        array!["CONDITION", "1234"].span()
+    }
 
     #[test]
     fn test_metadata_complete() {
@@ -108,11 +114,12 @@ mod tests {
         let image_uri: ByteArray = "IMAGE_URI";
         let items: Span<Item> = array![ItemTrait::new("NAME", "DESCRIPTION", "IMAGE_URI")].span();
         let tokens: Span<ContractAddress> = array![TOKEN].span();
-        let metadata: ByteArray = MetadataImpl::new(name, description, image_uri, items, tokens)
+        let conditions: Span<ByteArray> = CONDITIONS();
+        let metadata: ByteArray = MetadataImpl::new(name, description, image_uri, items, tokens, conditions)
             .jsonify();
         assert_eq!(
             metadata,
-            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"additional_payment_tokens\":[\"362107585870\"]}",
+            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"additional_payment_tokens\":[\"362107585870\"],\"conditions\":[\"CONDITION\",\"1234\"]}",
         );
     }
 
@@ -123,11 +130,12 @@ mod tests {
         let image_uri: ByteArray = "IMAGE_URI";
         let items: Span<Item> = array![ItemTrait::new("NAME", "DESCRIPTION", "IMAGE_URI")].span();
         let tokens: Span<ContractAddress> = array![].span();
-        let metadata: ByteArray = MetadataImpl::new(name, description, image_uri, items, tokens)
+        let conditions: Span<ByteArray> = array![].span();
+        let metadata: ByteArray = MetadataImpl::new(name, description, image_uri, items, tokens, conditions)
             .jsonify();
         assert_eq!(
             metadata,
-            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"additional_payment_tokens\":[]}",
+            "{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\",\"items\":[{\"name\":\"NAME\",\"description\":\"DESCRIPTION\",\"image_uri\":\"IMAGE_URI\"}],\"additional_payment_tokens\":[],\"conditions\":[]}",
         );
     }
 
@@ -138,7 +146,8 @@ mod tests {
         let image_uri: ByteArray = "IMAGE_URI";
         let items: Span<Item> = array![ItemTrait::new("NAME", "DESCRIPTION", "IMAGE_URI")].span();
         let tokens: Span<ContractAddress> = array![TOKEN].span();
-        MetadataImpl::new("", description, image_uri, items, tokens).jsonify();
+        let conditions: Span<ByteArray> = CONDITIONS();
+        MetadataImpl::new("", description, image_uri, items, tokens, conditions).jsonify();
     }
 
     #[test]
@@ -148,7 +157,8 @@ mod tests {
         let image_uri: ByteArray = "IMAGE_URI";
         let items: Span<Item> = array![ItemTrait::new("NAME", "DESCRIPTION", "IMAGE_URI")].span();
         let tokens: Span<ContractAddress> = array![TOKEN].span();
-        MetadataImpl::new(name, "", image_uri, items, tokens).jsonify();
+        let conditions: Span<ByteArray> = CONDITIONS();
+        MetadataImpl::new(name, "", image_uri, items, tokens, conditions).jsonify();
     }
 
     #[test]
@@ -158,7 +168,8 @@ mod tests {
         let description: ByteArray = "DESCRIPTION";
         let items: Span<Item> = array![ItemTrait::new("NAME", "DESCRIPTION", "IMAGE_URI")].span();
         let tokens: Span<ContractAddress> = array![TOKEN].span();
-        MetadataImpl::new(name, description, "", items, tokens).jsonify();
+        let conditions: Span<ByteArray> = CONDITIONS();
+        MetadataImpl::new(name, description, "", items, tokens, conditions).jsonify();
     }
 
     #[test]
@@ -169,7 +180,8 @@ mod tests {
         let image_uri: ByteArray = "IMAGE_URI";
         let items: Span<Item> = array![].span();
         let tokens: Span<ContractAddress> = array![TOKEN].span();
-        MetadataImpl::new(name, description, image_uri, items, tokens).jsonify();
+        let conditions: Span<ByteArray> = CONDITIONS();
+        MetadataImpl::new(name, description, image_uri, items, tokens, conditions).jsonify();
     }
 }
 

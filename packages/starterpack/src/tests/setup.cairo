@@ -66,6 +66,7 @@ pub mod setup {
             ]
                 .span(),
             tokens: array![].span(),
+            conditions: array![].span(),
         )
             .jsonify()
     }
