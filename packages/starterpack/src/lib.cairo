@@ -19,6 +19,7 @@ pub mod models {
     pub mod issuance;
     pub mod referral_reward;
     pub mod starterpack;
+    pub mod voucher;
 }
 
 pub mod components {

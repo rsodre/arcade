@@ -14,6 +14,7 @@ pub mod errors {
     pub const STARTERPACK_QUANTITY_EXCEEDS_LIMIT: felt252 = 'Starterpack: quantity > 1';
     pub const STARTERPACK_SUPPLY_EXCEEDED: felt252 = 'Starterpack: supply exceeded';
     pub const STARTERPACK_NOT_FOUND: felt252 = 'Starterpack: not found';
+    pub const STARTERPACK_NOT_CONDITIONAL: felt252 = 'Starterpack: not conditional';
 }
 
 // Traits
@@ -31,6 +32,7 @@ pub impl StarterpackImpl of StarterpackTrait {
         payment_receiver: Option<starknet::ContractAddress>,
         metadata: ByteArray,
         time: u64,
+        conditional: bool,
     ) -> Starterpack {
         Starterpack {
             starterpack_id,
@@ -45,6 +47,7 @@ pub impl StarterpackImpl of StarterpackTrait {
             total_issued: 0,
             created_at: time,
             metadata,
+            conditional,
         }
     }
 
@@ -56,6 +59,7 @@ pub impl StarterpackImpl of StarterpackTrait {
         price: u256,
         payment_token: starknet::ContractAddress,
         payment_receiver: Option<starknet::ContractAddress>,
+        conditional: bool,
     ) {
         self.implementation = implementation;
         self.referral_percentage = referral_percentage;
@@ -63,6 +67,7 @@ pub impl StarterpackImpl of StarterpackTrait {
         self.price = price;
         self.payment_token = payment_token;
         self.payment_receiver = payment_receiver;
+        self.conditional = conditional;
     }
 
     fn update_metadata(ref self: Starterpack, metadata: ByteArray) {
@@ -124,5 +129,9 @@ pub impl StarterpackAssert of StarterpackAssertTrait {
 
     fn assert_does_exist(self: @Starterpack) {
         assert(*self.created_at != 0, errors::STARTERPACK_NOT_FOUND);
+    }
+
+    fn assert_is_conditional(self: @Starterpack) {
+        assert(*self.conditional, errors::STARTERPACK_NOT_CONDITIONAL);
     }
 }

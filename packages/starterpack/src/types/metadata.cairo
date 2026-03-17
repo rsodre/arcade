@@ -115,7 +115,9 @@ mod tests {
         let items: Span<Item> = array![ItemTrait::new("NAME", "DESCRIPTION", "IMAGE_URI")].span();
         let tokens: Span<ContractAddress> = array![TOKEN].span();
         let conditions: Span<ByteArray> = CONDITIONS();
-        let metadata: ByteArray = MetadataImpl::new(name, description, image_uri, items, tokens, conditions)
+        let metadata: ByteArray = MetadataImpl::new(
+            name, description, image_uri, items, tokens, conditions,
+        )
             .jsonify();
         assert_eq!(
             metadata,
@@ -131,7 +133,9 @@ mod tests {
         let items: Span<Item> = array![ItemTrait::new("NAME", "DESCRIPTION", "IMAGE_URI")].span();
         let tokens: Span<ContractAddress> = array![].span();
         let conditions: Span<ByteArray> = array![].span();
-        let metadata: ByteArray = MetadataImpl::new(name, description, image_uri, items, tokens, conditions)
+        let metadata: ByteArray = MetadataImpl::new(
+            name, description, image_uri, items, tokens, conditions,
+        )
             .jsonify();
         assert_eq!(
             metadata,

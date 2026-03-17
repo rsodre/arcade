@@ -38,6 +38,7 @@ fn test_sp_register() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Assert] Starterpack is created
@@ -78,6 +79,7 @@ fn test_sp_register_invalid_referral_percentage() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 }
 
@@ -103,6 +105,7 @@ fn test_sp_register_multiple_starterpacks() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata.clone(),
+            conditional: false,
         );
 
     // [Register] Second starterpack
@@ -116,6 +119,7 @@ fn test_sp_register_multiple_starterpacks() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: true,
         );
 
     // [Assert] Both starterpacks exist and are different
@@ -127,6 +131,8 @@ fn test_sp_register_multiple_starterpacks() {
     assert_eq!(sp2.referral_percentage, 20);
     assert_eq!(sp1.reissuable, true);
     assert_eq!(sp2.reissuable, false);
+    assert_eq!(sp1.conditional, false);
+    assert_eq!(sp2.conditional, true);
 }
 
 #[test]
@@ -179,6 +185,7 @@ fn test_sp_not_found_update() {
             price: PRICE,
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
+            conditional: false,
         );
 }
 

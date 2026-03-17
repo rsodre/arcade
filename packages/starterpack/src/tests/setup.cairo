@@ -101,6 +101,7 @@ pub mod setup {
                 TestResource::Model(starterpack_models::m_Issuance::TEST_CLASS_HASH),
                 TestResource::Model(starterpack_models::m_ReferralReward::TEST_CLASS_HASH),
                 TestResource::Model(starterpack_models::m_GroupReward::TEST_CLASS_HASH),
+                TestResource::Model(starterpack_models::m_Voucher::TEST_CLASS_HASH),
                 TestResource::Event(starterpack_events::e_StarterpackRegistered::TEST_CLASS_HASH),
                 TestResource::Event(starterpack_events::e_StarterpackUpdated::TEST_CLASS_HASH),
                 TestResource::Event(starterpack_events::e_StarterpackIssued::TEST_CLASS_HASH),

@@ -37,6 +37,7 @@ fn test_sp_fees_distribution_no_referrer() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Record] Initial balances
@@ -57,6 +58,7 @@ fn test_sp_fees_distribution_no_referrer() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Fee distribution
@@ -100,6 +102,7 @@ fn test_sp_fees_distribution_with_referrer() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Record] Initial balances
@@ -122,6 +125,7 @@ fn test_sp_fees_distribution_with_referrer() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Fee distribution
@@ -174,6 +178,7 @@ fn test_sp_quote_calculation() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Quote] Without referrer
@@ -217,6 +222,7 @@ fn test_sp_free() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Record] Initial balance
@@ -232,6 +238,7 @@ fn test_sp_free() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] No payment made
@@ -260,6 +267,7 @@ fn test_sp_fees_self_referral_ignored() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Record] Initial balances
@@ -280,6 +288,7 @@ fn test_sp_fees_self_referral_ignored() {
             quantity: 1,
             referrer: Option::Some(context.spender), // self-referral
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Self-referral is ignored, behaves like no referrer

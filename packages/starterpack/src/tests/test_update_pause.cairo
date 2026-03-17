@@ -37,6 +37,7 @@ fn test_sp_update() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Update] Starterpack settings
@@ -52,6 +53,7 @@ fn test_sp_update() {
             price: new_price,
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
+            conditional: true,
         );
 
     // [Assert] Changes applied
@@ -60,6 +62,7 @@ fn test_sp_update() {
     assert_eq!(starterpack.price, new_price);
     assert_eq!(starterpack.referral_percentage, new_referral);
     assert_eq!(starterpack.reissuable, true);
+    assert_eq!(starterpack.conditional, true);
 }
 
 #[test]
@@ -85,6 +88,7 @@ fn test_sp_update_unauthorized() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Update] Try to update from different address - should fail
@@ -99,6 +103,7 @@ fn test_sp_update_unauthorized() {
             price: 1,
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
+            conditional: true,
         );
 }
 
@@ -124,6 +129,7 @@ fn test_sp_pause_resume() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Pause]
@@ -165,6 +171,7 @@ fn test_sp_pause_unauthorized() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Pause] Try from unauthorized address - should fail
@@ -195,6 +202,7 @@ fn test_sp_resume_unauthorized() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Pause] As owner
