@@ -67,6 +67,13 @@ pub trait IStarterpackRegistry<TContractState> {
         referrer_group: Option<felt252>,
         voucher_key: Option<felt252>,
     );
+
+    fn allow(
+        ref self: TContractState,
+        recipient: ContractAddress,
+        starterpack_id: u32,
+        voucher_key: felt252,
+    );
 }
 
 
@@ -88,6 +95,9 @@ pub mod StarterpackRegistry {
     use starterpack::models::config::ConfigTrait;
     use starterpack::models::starterpack::StarterpackAssert;
     use starterpack::store::{ConfigStoreTrait, StarterpackStoreTrait, StoreTrait};
+    use models::rbac::models::moderator::ModeratorAssert;
+    use models::rbac::store::ModeratorStoreTrait;
+    use models::rbac::types::role::Role;
     use super::{IAdministration, IStarterpackRegistry, StarterpackQuote};
 
     // Components
@@ -299,7 +309,33 @@ pub mod StarterpackRegistry {
             let world = self.world_storage();
             self
                 .issuable
-                .issue(world, recipient, starterpack_id, quantity, referrer, referrer_group, voucher_key);
+                .issue(
+                    world,
+                    recipient,
+                    starterpack_id,
+                    quantity,
+                    referrer,
+                    referrer_group,
+                    voucher_key,
+                );
+        }
+
+        fn allow(
+            ref self: ContractState,
+            recipient: ContractAddress,
+            starterpack_id: u32,
+            voucher_key: felt252,
+        ) {
+            let world = self.world_storage();
+
+            // [Check] Caller is allowed
+            let caller_moderator = ModeratorStoreTrait::moderator(
+                world, starknet::get_caller_address().into(),
+            );
+            caller_moderator.assert_is_allowed(Role::Admin);
+
+            // [Effect] Register voucher
+            self.issuable.allow(world, recipient, starterpack_id, voucher_key);
         }
     }
 

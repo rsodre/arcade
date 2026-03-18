@@ -35,6 +35,10 @@ pub mod setup {
         'OWNER'.try_into().unwrap()
     }
 
+    pub fn ADMIN() -> ContractAddress {
+        'ADMIN'.try_into().unwrap()
+    }
+
     pub fn CREATOR() -> ContractAddress {
         'CREATOR'.try_into().unwrap()
     }
@@ -73,6 +77,7 @@ pub mod setup {
     pub struct Context {
         pub player_id: felt252,
         pub owner: starknet::ContractAddress,
+        pub admin: starknet::ContractAddress,
         pub receiver: starknet::ContractAddress,
         pub spender: starknet::ContractAddress,
         pub holder: starknet::ContractAddress,
@@ -110,6 +115,7 @@ pub mod setup {
                 TestResource::Model(starterpack_models::m_Issuance::TEST_CLASS_HASH),
                 TestResource::Model(starterpack_models::m_ReferralReward::TEST_CLASS_HASH),
                 TestResource::Model(starterpack_models::m_GroupReward::TEST_CLASS_HASH),
+                TestResource::Model(starterpack_models::m_Voucher::TEST_CLASS_HASH),
                 TestResource::Event(social_events::e_Follow::TEST_CLASS_HASH),
                 TestResource::Event(orderbook_events::e_Listing::TEST_CLASS_HASH),
                 TestResource::Event(orderbook_events::e_Sale::TEST_CLASS_HASH),
@@ -179,6 +185,7 @@ pub mod setup {
         let context = Context {
             player_id: PLAYER().into(),
             owner: setup_account(OWNER().into()),
+            admin: setup_account(ADMIN().into()),
             receiver: setup_account(RECEIVER().into()),
             spender: setup_account(SPENDER().into()),
             holder: setup_account(HOLDER().into()),
