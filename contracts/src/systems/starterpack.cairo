@@ -81,6 +81,9 @@ pub trait IStarterpackRegistry<TContractState> {
 pub mod StarterpackRegistry {
     use arcade::constants::NAMESPACE;
     use dojo::world::WorldStorage;
+    use models::rbac::models::moderator::ModeratorAssert;
+    use models::rbac::store::ModeratorStoreTrait;
+    use models::rbac::types::role::Role;
     use starknet::ContractAddress;
 
     // Component imports
@@ -95,9 +98,6 @@ pub mod StarterpackRegistry {
     use starterpack::models::config::ConfigTrait;
     use starterpack::models::starterpack::StarterpackAssert;
     use starterpack::store::{ConfigStoreTrait, StarterpackStoreTrait, StoreTrait};
-    use models::rbac::models::moderator::ModeratorAssert;
-    use models::rbac::store::ModeratorStoreTrait;
-    use models::rbac::types::role::Role;
     use super::{IAdministration, IStarterpackRegistry, StarterpackQuote};
 
     // Components

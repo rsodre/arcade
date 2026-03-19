@@ -1,9 +1,11 @@
 // Internal imports
 
+use arcade::systems::starterpack::{
+    IAdministrationDispatcher, IAdministrationDispatcherTrait, IStarterpackRegistryDispatcherTrait,
+};
+use arcade::tests::setup::setup::{OWNER, PLAYER, spawn};
 use models::rbac::types::role::Role;
 use starknet::testing;
-use arcade::systems::starterpack::{IStarterpackRegistryDispatcherTrait, IAdministrationDispatcher, IAdministrationDispatcherTrait};
-use arcade::tests::setup::setup::{spawn, OWNER, PLAYER};
 use starterpack::types::item::ItemTrait;
 use starterpack::types::metadata::MetadataTrait;
 
@@ -58,7 +60,9 @@ fn test_allow() {
 
     // [Grant] Admin role to ADMIN
     testing::set_contract_address(OWNER());
-    let admin = IAdministrationDispatcher { contract_address: systems.starterpack.contract_address };
+    let admin = IAdministrationDispatcher {
+        contract_address: systems.starterpack.contract_address,
+    };
     admin.grant_role(context.admin, Role::Admin.into());
 
     // [Allow] Should not panic because ADMIN has admin role
