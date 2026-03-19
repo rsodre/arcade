@@ -57,6 +57,7 @@ build-external-contracts = [
     "starterpack::models::index::m_Issuance",
     "starterpack::models::index::m_ReferralReward",
     "starterpack::models::index::m_GroupReward",
+    "starterpack::models::index::m_Voucher",
     "starterpack::events::index::e_StarterpackRegistered",
     "starterpack::events::index::e_StarterpackUpdated",
     "starterpack::events::index::e_StarterpackIssued",
