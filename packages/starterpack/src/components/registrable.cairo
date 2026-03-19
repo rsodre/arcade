@@ -36,6 +36,7 @@ pub mod RegistrableComponent {
             payment_token: ContractAddress,
             payment_receiver: Option<ContractAddress>,
             metadata: ByteArray,
+            conditional: bool,
         ) -> u32 {
             // [Setup] Datastore
             let store = StoreTrait::new(world);
@@ -58,6 +59,7 @@ pub mod RegistrableComponent {
                 payment_receiver: payment_receiver,
                 metadata: metadata,
                 time: time,
+                conditional: conditional,
             );
             store.set_starterpack(@starterpack);
 
@@ -78,6 +80,7 @@ pub mod RegistrableComponent {
             price: u256,
             payment_token: ContractAddress,
             payment_receiver: Option<ContractAddress>,
+            conditional: bool,
         ) {
             // [Setup] Datastore
             let store = StoreTrait::new(world);
@@ -102,6 +105,7 @@ pub mod RegistrableComponent {
                     price,
                     payment_token,
                     payment_receiver,
+                    conditional,
                 );
 
             // [Effect] Store updated starterpack

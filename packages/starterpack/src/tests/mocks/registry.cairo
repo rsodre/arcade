@@ -44,6 +44,7 @@ pub trait IRegistry<TContractState> {
         payment_token: ContractAddress,
         payment_receiver: Option<ContractAddress>,
         metadata: ByteArray,
+        conditional: bool,
     ) -> u32; // returns starterpack_id
 
     fn update(
@@ -55,6 +56,7 @@ pub trait IRegistry<TContractState> {
         price: u256,
         payment_token: ContractAddress,
         payment_receiver: Option<ContractAddress>,
+        conditional: bool,
     );
 
     fn update_metadata(ref self: TContractState, starterpack_id: u32, metadata: ByteArray);
@@ -70,6 +72,14 @@ pub trait IRegistry<TContractState> {
         quantity: u32,
         referrer: Option<ContractAddress>,
         referrer_group: Option<felt252>,
+        voucher_key: Option<felt252>,
+    );
+
+    fn allow(
+        ref self: TContractState,
+        recipient: ContractAddress,
+        starterpack_id: u32,
+        voucher_key: felt252,
     );
 }
 
@@ -228,6 +238,7 @@ pub mod Registry {
             payment_token: ContractAddress,
             payment_receiver: Option<ContractAddress>,
             metadata: ByteArray,
+            conditional: bool,
         ) -> u32 {
             let world = self.world_storage();
             self
@@ -241,6 +252,7 @@ pub mod Registry {
                     payment_token,
                     payment_receiver,
                     metadata,
+                    conditional,
                 )
         }
 
@@ -253,6 +265,7 @@ pub mod Registry {
             price: u256,
             payment_token: ContractAddress,
             payment_receiver: Option<ContractAddress>,
+            conditional: bool,
         ) {
             let world = self.world_storage();
             self
@@ -266,6 +279,7 @@ pub mod Registry {
                     price,
                     payment_token,
                     payment_receiver,
+                    conditional,
                 );
         }
 
@@ -291,11 +305,30 @@ pub mod Registry {
             quantity: u32,
             referrer: Option<ContractAddress>,
             referrer_group: Option<felt252>,
+            voucher_key: Option<felt252>,
         ) {
             let world = self.world_storage();
             self
                 .issuable
-                .issue(world, recipient, starterpack_id, quantity, referrer, referrer_group);
+                .issue(
+                    world,
+                    recipient,
+                    starterpack_id,
+                    quantity,
+                    referrer,
+                    referrer_group,
+                    voucher_key,
+                );
+        }
+
+        fn allow(
+            ref self: ContractState,
+            recipient: ContractAddress,
+            starterpack_id: u32,
+            voucher_key: felt252,
+        ) {
+            let world = self.world_storage();
+            self.issuable.allow(world, recipient, starterpack_id, voucher_key);
         }
     }
 

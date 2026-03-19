@@ -37,6 +37,7 @@ pub trait IStarterpackRegistry<TContractState> {
         payment_token: ContractAddress,
         payment_receiver: Option<ContractAddress>,
         metadata: ByteArray,
+        conditional: bool,
     ) -> u32; // returns starterpack_id
 
     fn update(
@@ -48,6 +49,7 @@ pub trait IStarterpackRegistry<TContractState> {
         price: u256,
         payment_token: ContractAddress,
         payment_receiver: Option<ContractAddress>,
+        conditional: bool,
     );
 
     fn update_metadata(ref self: TContractState, starterpack_id: u32, metadata: ByteArray);
@@ -63,6 +65,14 @@ pub trait IStarterpackRegistry<TContractState> {
         quantity: u32,
         referrer: Option<ContractAddress>,
         referrer_group: Option<felt252>,
+        voucher_key: Option<felt252>,
+    );
+
+    fn allow(
+        ref self: TContractState,
+        recipient: ContractAddress,
+        starterpack_id: u32,
+        voucher_key: felt252,
     );
 }
 
@@ -71,6 +81,9 @@ pub trait IStarterpackRegistry<TContractState> {
 pub mod StarterpackRegistry {
     use arcade::constants::NAMESPACE;
     use dojo::world::WorldStorage;
+    use models::rbac::models::moderator::ModeratorAssert;
+    use models::rbac::store::ModeratorStoreTrait;
+    use models::rbac::types::role::Role;
     use starknet::ContractAddress;
 
     // Component imports
@@ -224,6 +237,7 @@ pub mod StarterpackRegistry {
             payment_token: ContractAddress,
             payment_receiver: Option<ContractAddress>,
             metadata: ByteArray,
+            conditional: bool,
         ) -> u32 {
             let world = self.world_storage();
             self
@@ -237,6 +251,7 @@ pub mod StarterpackRegistry {
                     payment_token,
                     payment_receiver,
                     metadata,
+                    conditional,
                 )
         }
 
@@ -249,6 +264,7 @@ pub mod StarterpackRegistry {
             price: u256,
             payment_token: ContractAddress,
             payment_receiver: Option<ContractAddress>,
+            conditional: bool,
         ) {
             let world = self.world_storage();
             self
@@ -262,6 +278,7 @@ pub mod StarterpackRegistry {
                     price,
                     payment_token,
                     payment_receiver,
+                    conditional,
                 );
         }
 
@@ -287,11 +304,38 @@ pub mod StarterpackRegistry {
             quantity: u32,
             referrer: Option<ContractAddress>,
             referrer_group: Option<felt252>,
+            voucher_key: Option<felt252>,
         ) {
             let world = self.world_storage();
             self
                 .issuable
-                .issue(world, recipient, starterpack_id, quantity, referrer, referrer_group);
+                .issue(
+                    world,
+                    recipient,
+                    starterpack_id,
+                    quantity,
+                    referrer,
+                    referrer_group,
+                    voucher_key,
+                );
+        }
+
+        fn allow(
+            ref self: ContractState,
+            recipient: ContractAddress,
+            starterpack_id: u32,
+            voucher_key: felt252,
+        ) {
+            let world = self.world_storage();
+
+            // [Check] Caller is allowed
+            let caller_moderator = ModeratorStoreTrait::moderator(
+                world, starknet::get_caller_address().into(),
+            );
+            caller_moderator.assert_is_allowed(Role::Admin);
+
+            // [Effect] Register voucher
+            self.issuable.allow(world, recipient, starterpack_id, voucher_key);
         }
     }
 

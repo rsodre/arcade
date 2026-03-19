@@ -15,7 +15,7 @@ use crate::events::index::{
 
 // Internal imports
 
-use crate::models::index::{Config, GroupReward, Issuance, ReferralReward, Starterpack};
+use crate::models::index::{Config, GroupReward, Issuance, ReferralReward, Starterpack, Voucher};
 
 // Store trait
 
@@ -158,3 +158,15 @@ pub impl GroupRewardStoreImpl of GroupRewardStoreTrait {
     }
 }
 
+// Voucher getters/setters
+
+#[generate_trait]
+pub impl VoucherStoreImpl of VoucherStoreTrait {
+    fn get_voucher(self: Store, starterpack_id: u32, voucher_key: felt252) -> Voucher {
+        self.world.read_model((starterpack_id, voucher_key))
+    }
+
+    fn set_voucher(mut self: Store, voucher: @Voucher) {
+        self.world.write_model(voucher);
+    }
+}

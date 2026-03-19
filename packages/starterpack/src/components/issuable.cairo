@@ -20,9 +20,10 @@ pub mod IssuableComponent {
     use starterpack::models::issuance::{IssuanceAssert, IssuanceTrait};
     use starterpack::models::referral_reward::ReferralRewardTrait;
     use starterpack::models::starterpack::{StarterpackAssert, StarterpackTrait};
+    use starterpack::models::voucher::{VoucherAssert, VoucherTrait};
     use starterpack::store::{
         ConfigStoreTrait, GroupRewardStoreTrait, IssuanceStoreTrait, ReferralRewardStoreTrait,
-        StarterpackStoreTrait, StoreTrait,
+        StarterpackStoreTrait, StoreTrait, VoucherStoreTrait,
     };
 
     // Storage
@@ -48,6 +49,7 @@ pub mod IssuableComponent {
             quantity: u32,
             referrer: Option<ContractAddress>,
             referrer_group: Option<felt252>,
+            voucher_key: Option<felt252>,
         ) {
             // [Setup] Datastore
             let store = StoreTrait::new(world);
@@ -63,6 +65,26 @@ pub mod IssuableComponent {
             if !starterpack.reissuable {
                 let issuance = store.get_issuance(starterpack_id, recipient);
                 issuance.assert_not_issued();
+            }
+
+            let time = get_block_timestamp();
+
+            if starterpack.conditional {
+                // [Check] Voucher key
+                let voucher_key = match voucher_key {
+                    Option::Some(value) => value,
+                    Option::None => 0,
+                };
+                VoucherAssert::assert_valid_key(voucher_key);
+
+                // [Check] Voucher
+                let mut voucher = store.get_voucher(starterpack_id, voucher_key);
+                voucher.assert_is_recipient(recipient);
+                voucher.assert_not_claimed();
+
+                // [Effect] Update voucher
+                voucher.claim(time);
+                store.set_voucher(@voucher);
             }
 
             // [Setup] Payment
@@ -139,7 +161,6 @@ pub mod IssuableComponent {
                 contract_address: starterpack.implementation,
             };
             implementation_dispatcher.on_issue(recipient, starterpack_id, quantity);
-            let time = get_block_timestamp();
             let issuance = IssuanceTrait::new(starterpack_id, recipient, time);
             store.set_issuance(@issuance);
 
@@ -151,6 +172,34 @@ pub mod IssuableComponent {
             let total_amount = base_price + config.protocol_fee_amount(base_price);
             store.issued(@starterpack, @issuance, total_amount, quantity, referrer, referrer_group);
         }
+
+        fn allow(
+            self: @ComponentState<TContractState>,
+            mut world: WorldStorage,
+            recipient: ContractAddress,
+            starterpack_id: u32,
+            voucher_key: felt252,
+        ) {
+            // [Setup] Datastore
+            let store = StoreTrait::new(world);
+
+            // [Check] Starterpack
+            let mut starterpack = store.get_starterpack(starterpack_id);
+            starterpack.assert_does_exist();
+            starterpack.assert_is_active();
+            starterpack.assert_is_conditional();
+
+            // [Check] Voucher
+            VoucherAssert::assert_valid_key(voucher_key);
+            VoucherAssert::assert_valid_recipient(recipient);
+
+            // [Check] Voucher not claimed
+            let mut voucher = store.get_voucher(starterpack_id, voucher_key);
+            voucher.assert_not_claimed();
+
+            // [Effect] Update voucher
+            voucher.allow(recipient);
+            store.set_voucher(@voucher);
+        }
     }
 }
-

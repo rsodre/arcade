@@ -2,18 +2,20 @@
 
 use openzeppelin::token::erc20::interface::IERC20DispatcherTrait;
 use starknet::testing;
-use crate::models::index::{GroupReward, ReferralReward, Starterpack};
+use crate::models::index::{GroupReward, ReferralReward, Starterpack, Voucher};
 use crate::store::{
     GroupRewardStoreTrait, ReferralRewardStoreTrait, StarterpackStoreTrait, StoreTrait,
+    VoucherStoreTrait,
 };
 use crate::tests::mocks::registry::IRegistryDispatcherTrait;
-use crate::tests::setup::setup::{METADATA, OWNER, PLAYER, spawn};
+use crate::tests::setup::setup::{METADATA, OWNER, PLAYER, SPENDER, spawn};
 
 // Constants
 
 const PROTOCOL_FEE: u8 = 5; // 5%
 const REFERRAL_PERCENTAGE: u8 = 10; // 10%
 const PRICE: u256 = 1_000_000_000_000_000_000; // 1 token
+const VOUCHER_KEY: felt252 = 'VOUCHER_KEY';
 
 // Tests
 
@@ -39,6 +41,7 @@ fn test_sp_issue() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] Starterpack to player
@@ -53,6 +56,7 @@ fn test_sp_issue() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Total issued count incremented
@@ -83,6 +87,7 @@ fn test_sp_issue_with_referrer() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Record] Initial balances
@@ -100,6 +105,7 @@ fn test_sp_issue_with_referrer() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Referrer received fee (10% of PRICE)
@@ -131,6 +137,7 @@ fn test_sp_issue_not_reissuable() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] First time
@@ -145,6 +152,7 @@ fn test_sp_issue_not_reissuable() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Issue] Try again - should fail
@@ -156,6 +164,7 @@ fn test_sp_issue_not_reissuable() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 }
 
@@ -181,6 +190,7 @@ fn test_sp_issue_reissuable() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] First time
@@ -195,6 +205,7 @@ fn test_sp_issue_reissuable() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Issue] Second time - should succeed
@@ -206,6 +217,7 @@ fn test_sp_issue_reissuable() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Total issued is 2
@@ -237,6 +249,7 @@ fn test_sp_issue_paused() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Pause] Starterpack
@@ -254,6 +267,7 @@ fn test_sp_issue_paused() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 }
 
@@ -279,6 +293,7 @@ fn test_sp_referral_reward_tracking() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] With referrer
@@ -293,6 +308,7 @@ fn test_sp_referral_reward_tracking() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Referral reward tracked
@@ -327,6 +343,7 @@ fn test_sp_group_reward_tracking() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] With referrer and group
@@ -342,6 +359,7 @@ fn test_sp_group_reward_tracking() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::Some(group_name),
+            voucher_key: Option::None,
         );
 
     // [Assert] Group reward tracked
@@ -376,6 +394,7 @@ fn test_sp_multiple_referrals_accumulation() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] First purchase with referrer
@@ -390,6 +409,7 @@ fn test_sp_multiple_referrals_accumulation() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Issue] Second purchase with same referrer
@@ -401,6 +421,7 @@ fn test_sp_multiple_referrals_accumulation() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Referral rewards accumulated
@@ -434,6 +455,7 @@ fn test_sp_group_multiple_referrals_accumulation() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     let group_name = 'awesome_group';
@@ -450,6 +472,7 @@ fn test_sp_group_multiple_referrals_accumulation() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::Some(group_name),
+            voucher_key: Option::None,
         );
 
     // [Issue] Second purchase - same group
@@ -461,6 +484,7 @@ fn test_sp_group_multiple_referrals_accumulation() {
             quantity: 1,
             referrer: Option::Some(context.holder),
             referrer_group: Option::Some(group_name),
+            voucher_key: Option::None,
         );
 
     // [Assert] Both individual and group rewards accumulated
@@ -501,6 +525,7 @@ fn test_sp_no_referral_tracking_without_referrer() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] Without referrer
@@ -515,6 +540,7 @@ fn test_sp_no_referral_tracking_without_referrer() {
             quantity: 1,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] No referral reward tracked
@@ -547,6 +573,7 @@ fn test_sp_issue_with_quantity() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] 5 starterpacks at once
@@ -563,6 +590,7 @@ fn test_sp_issue_with_quantity() {
             quantity: quantity,
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Total issued reflects quantity
@@ -593,6 +621,7 @@ fn test_sp_quote_with_quantity() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Quote] For quantity of 3
@@ -632,6 +661,7 @@ fn test_sp_quote_with_quantity_and_referrer() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Quote] For quantity of 3 with referrer
@@ -672,6 +702,7 @@ fn test_sp_issue_quantity_with_referrer() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Record] Initial balances
@@ -692,6 +723,7 @@ fn test_sp_issue_quantity_with_referrer() {
             quantity: quantity,
             referrer: Option::Some(context.holder),
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 
     // [Assert] Balances reflect quantity
@@ -737,6 +769,7 @@ fn test_sp_issue_quantity_group_rewards() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     let group_name = 'quantity_group';
@@ -755,6 +788,7 @@ fn test_sp_issue_quantity_group_rewards() {
             quantity: quantity,
             referrer: Option::Some(context.holder),
             referrer_group: Option::Some(group_name),
+            voucher_key: Option::None,
         );
 
     // [Assert] Group rewards track the full amount
@@ -789,6 +823,7 @@ fn test_sp_issue_quantity_exceeds_limit_non_reissuable() {
             payment_token: systems.erc20.contract_address,
             payment_receiver: Option::None,
             metadata: metadata,
+            conditional: false,
         );
 
     // [Issue] Try to issue quantity > 1 on non-reissuable - should fail
@@ -805,6 +840,510 @@ fn test_sp_issue_quantity_exceeds_limit_non_reissuable() {
             quantity: quantity, // This should fail
             referrer: Option::None,
             referrer_group: Option::None,
+            voucher_key: Option::None,
         );
 }
 
+#[test]
+#[should_panic(expected: ('Voucher: invalid key', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_allow_invalid_key() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: 0,
+            reissuable: false,
+            price: 0,
+            payment_token: 0.try_into().unwrap(),
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Try to register a voucher with invalid key
+    systems
+        .starterpack
+        .allow(
+            recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: 0 // cannot be zero
+        );
+}
+
+#[test]
+#[should_panic(expected: ('Starterpack: not conditional', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_allow_not_conditional() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: 0,
+            reissuable: false,
+            price: 0,
+            payment_token: 0.try_into().unwrap(),
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: false // had to be conditional
+        );
+
+    // [Register] Try to register a voucher to not conditional starterpack
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+}
+
+#[test]
+#[should_panic(expected: ('Voucher: invalid recipient', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_allow_invalid_recipient() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: REFERRAL_PERCENTAGE,
+            reissuable: false,
+            price: PRICE,
+            payment_token: systems.erc20.contract_address,
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(
+            recipient: 0.try_into().unwrap(), // need a valid recipient
+            starterpack_id: starterpack_id,
+            voucher_key: VOUCHER_KEY,
+        );
+}
+
+
+#[test]
+fn test_sp_conditional_issue_paid() {
+    // [Setup]
+    let (world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: REFERRAL_PERCENTAGE,
+            reissuable: false,
+            price: PRICE,
+            payment_token: systems.erc20.contract_address,
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Issue] Starterpack to player
+    testing::set_contract_address(context.spender);
+    let total_cost = PRICE + (PRICE * PROTOCOL_FEE.into() / 100);
+    systems.erc20.approve(systems.starterpack.contract_address, total_cost);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some(VOUCHER_KEY),
+        );
+
+    // [Assert] Total issued count incremented
+    let mut store = StoreTrait::new(world);
+    let starterpack: Starterpack = store.get_starterpack(starterpack_id);
+    assert_eq!(starterpack.total_issued, 1);
+
+    // [Assert] Voucher claimed
+    let mut store = StoreTrait::new(world);
+    let voucher: Voucher = store.get_voucher(starterpack_id, VOUCHER_KEY);
+    assert_gt!(voucher.claimed_at, 0);
+}
+
+#[test]
+fn test_sp_conditional_issue_free() {
+    // [Setup]
+    let (world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: 0,
+            reissuable: false,
+            price: 0,
+            payment_token: 0.try_into().unwrap(),
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Issue] Starterpack to player
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some(VOUCHER_KEY),
+        );
+
+    // [Assert] Total issued count incremented
+    let mut store = StoreTrait::new(world);
+    let starterpack: Starterpack = store.get_starterpack(starterpack_id);
+    assert_eq!(starterpack.total_issued, 1);
+
+    // [Assert] Voucher claimed
+    let mut store = StoreTrait::new(world);
+    let voucher: Voucher = store.get_voucher(starterpack_id, VOUCHER_KEY);
+    assert_gt!(voucher.claimed_at, 0);
+}
+
+#[test]
+#[should_panic(expected: ('Voucher: already claimed', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_issue_once() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: 0,
+            reissuable: true, // conditional overrides reissuable
+            price: 0,
+            payment_token: 0.try_into().unwrap(),
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Issue] Starterpack to player
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some(VOUCHER_KEY),
+        );
+
+    // [Issue] Try to issue again
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some(VOUCHER_KEY),
+        );
+}
+
+#[test]
+#[should_panic(expected: ('Starterpack: not active', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_allow_paused() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: 0,
+            reissuable: false,
+            price: 0,
+            payment_token: 0.try_into().unwrap(),
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true,
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Pause] Starterpack
+    systems.starterpack.pause(starterpack_id);
+
+    // [Issue] Try to issue an inactive starterpack
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some(VOUCHER_KEY),
+        );
+}
+
+#[test]
+#[should_panic(expected: ('Voucher: invalid key', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_issue_without_voucher() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: REFERRAL_PERCENTAGE,
+            reissuable: false,
+            price: PRICE,
+            payment_token: systems.erc20.contract_address,
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Issue] Try to issue a conditional starterpack without a voucher
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::None // need a valid key
+        );
+}
+
+#[test]
+#[should_panic(expected: ('Voucher: not recipient', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_issue_with_wrong_voucher() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: REFERRAL_PERCENTAGE,
+            reissuable: false,
+            price: PRICE,
+            payment_token: systems.erc20.contract_address,
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Issue] Try to issue a conditional starterpack with the wrong key
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some('WRONG_KEY'),
+        );
+}
+
+#[test]
+#[should_panic(expected: ('Voucher: not recipient', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_issue_not_recipient() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: 0,
+            reissuable: false,
+            price: 0,
+            payment_token: 0.try_into().unwrap(),
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Issue] Try to issue to another player
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: SPENDER(), // not the recipient
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some(VOUCHER_KEY),
+        );
+}
+
+#[test]
+#[should_panic(expected: ('Voucher: already claimed', 'ENTRYPOINT_FAILED'))]
+fn test_sp_conditional_allow_already_claimed() {
+    // [Setup]
+    let (_world, systems, context) = spawn();
+
+    // [Initialize]
+    testing::set_contract_address(OWNER());
+    testing::set_block_timestamp(1);
+
+    // [Register] Conditional starterpack
+    testing::set_contract_address(context.creator);
+    let metadata = METADATA();
+    let starterpack_id = systems
+        .starterpack
+        .register(
+            implementation: systems.starterpack_impl,
+            referral_percentage: 0,
+            reissuable: false,
+            price: 0,
+            payment_token: 0.try_into().unwrap(),
+            payment_receiver: Option::None,
+            metadata: metadata,
+            conditional: true // is conditional
+        );
+
+    // [Register] Voucher to player
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+
+    // [Issue] Starterpack to player
+    testing::set_contract_address(context.spender);
+    systems
+        .starterpack
+        .issue(
+            recipient: PLAYER(),
+            starterpack_id: starterpack_id,
+            quantity: 1,
+            referrer: Option::None,
+            referrer_group: Option::None,
+            voucher_key: Option::Some(VOUCHER_KEY),
+        );
+
+    // [Register] ry to register a claimed voucher key
+    systems
+        .starterpack
+        .allow(recipient: PLAYER(), starterpack_id: starterpack_id, voucher_key: VOUCHER_KEY);
+}

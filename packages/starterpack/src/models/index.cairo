@@ -28,6 +28,7 @@ pub struct Starterpack {
     pub created_at: u64,
     pub metadata: ByteArray,
     pub payment_receiver: Option<ContractAddress>,
+    pub conditional: bool,
 }
 
 #[derive(Copy, Drop, Serde)]
@@ -56,4 +57,15 @@ pub struct GroupReward {
     pub group: felt252,
     pub total_fees: u256,
     pub total_referrals: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct Voucher {
+    #[key]
+    pub starterpack_id: u32,
+    #[key]
+    pub voucher_key: felt252,
+    pub recipient: ContractAddress,
+    pub claimed_at: u64,
 }

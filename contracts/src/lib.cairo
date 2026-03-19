@@ -13,6 +13,7 @@ pub mod systems {
 mod tests {
     mod setup;
     mod test_setup;
+    mod test_starterpack;
 
     pub mod mocks {
         pub mod account;
